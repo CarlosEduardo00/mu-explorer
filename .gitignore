@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+build/
+dist/
+
+# HTML bruto: grande e regerável. Só a amostra usada em testes vai para tests/fixtures/.
+data/raw/*
+!data/raw/.gitkeep
+
+# Ambiente / credenciais
+.env
+.env.*
+*.local.json
+
+# Editores / SO
+.DS_Store
+.idea/
+.vscode/

@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/carloseduardo00/mu-explorer/schema/monster.schema.json",
+  "title": "Monster",
+  "description": "Monstro do jogo.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "level",
+    "hp",
+    "atk_min",
+    "atk_max",
+    "atk_rate",
+    "def",
+    "def_rate",
+    "respawn_seconds",
+    "respawn_raw",
+    "drops_normal_items",
+    "image_url",
+    "season",
+    "source",
+    "source_url",
+    "scraped_at",
+    "page_updated_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "level": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "hp": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "atk_min": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "atk_max": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "atk_rate": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "def": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "def_rate": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "respawn_seconds": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "respawn_raw": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "description": "Texto original do respawn, para auditoria da conversão."
+    },
+    "drops_normal_items": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "false quando a página diz que não dropa itens normais."
+    },
+    "image_url": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^https?://"
+    },
+    "season": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Season dos dados (ex.: 'S19'); null quando a fonte não informa."
+    },
+    "source": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "source_url": {
+      "type": "string",
+      "pattern": "^https?://"
+    },
+    "scraped_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+    },
+    "page_updated_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+  }
+}

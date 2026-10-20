@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/carloseduardo00/mu-explorer/schema/spawn.schema.json",
+  "title": "Spawn",
+  "description": "Monstro aparece em um mapa.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "monster_id",
+    "map_id",
+    "season",
+    "source",
+    "source_url",
+    "scraped_at"
+  ],
+  "properties": {
+    "monster_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "map_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "season": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Season dos dados (ex.: 'S19'); null quando a fonte não informa."
+    },
+    "source": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "source_url": {
+      "type": "string",
+      "pattern": "^https?://"
+    },
+    "scraped_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+    }
+  }
+}
