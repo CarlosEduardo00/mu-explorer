@@ -8,6 +8,7 @@
   "required": [
     "id",
     "name",
+    "number",
     "level",
     "difficulty",
     "hp",
@@ -38,6 +39,14 @@
     "name": {
       "type": "string",
       "minLength": 1
+    },
+    "number": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "description": "Número do monstro no servidor (Monster.xml/MonsterSetBase do MU); null se a fonte não informa."
     },
     "level": {
       "type": [

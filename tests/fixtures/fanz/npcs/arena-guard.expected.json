@@ -1,0 +1,214 @@
+{
+  "record": {
+    "id": "arena-guard",
+    "name": "Arena Guard",
+    "type": "Merchant NPC",
+    "locations": [
+      {
+        "map_id": "arena",
+        "map_name": "Arena",
+        "x": 72,
+        "y": 164
+      }
+    ],
+    "description": "Arena Guard offers general items for sale including health potions, mana potions, Arrows and Bolts, Town Portal Scroll, Armor of Guardsman, and other miscellaneous items.",
+    "sells": [
+      {
+        "item_id": "apple",
+        "item_name": "Apple",
+        "category": "Recovery Items",
+        "price_zen": 20,
+        "details": null
+      },
+      {
+        "item_id": "small-healing-potion",
+        "item_name": "Small Healing Potion",
+        "category": "Recovery Items",
+        "price_zen": 80,
+        "details": null
+      },
+      {
+        "item_id": "healing-potion",
+        "item_name": "Healing Potion",
+        "category": "Recovery Items",
+        "price_zen": 330,
+        "details": null
+      },
+      {
+        "item_id": "large-healing-potion",
+        "item_name": "Large Healing Potion",
+        "category": "Recovery Items",
+        "price_zen": 1500,
+        "details": null
+      },
+      {
+        "item_id": "small-mana-potion",
+        "item_name": "Small Mana Potion",
+        "category": "Recovery Items",
+        "price_zen": 80,
+        "details": null
+      },
+      {
+        "item_id": "mana-potion",
+        "item_name": "Mana Potion",
+        "category": "Recovery Items",
+        "price_zen": 330,
+        "details": null
+      },
+      {
+        "item_id": "large-mana-potion",
+        "item_name": "Large Mana Potion",
+        "category": "Recovery Items",
+        "price_zen": 1500,
+        "details": null
+      },
+      {
+        "item_id": "antidote",
+        "item_name": "Antidote",
+        "category": "Recovery Items",
+        "price_zen": 80,
+        "details": null
+      },
+      {
+        "item_id": "apple-1",
+        "item_name": "Apple +1",
+        "category": "Recovery Items",
+        "price_zen": 40,
+        "details": null
+      },
+      {
+        "item_id": "small-healing-potion-1",
+        "item_name": "Small Healing Potion +1",
+        "category": "Recovery Items",
+        "price_zen": 160,
+        "details": null
+      },
+      {
+        "item_id": "healing-potion-1",
+        "item_name": "Healing Potion +1",
+        "category": "Recovery Items",
+        "price_zen": 660,
+        "details": null
+      },
+      {
+        "item_id": "large-healing-potion-1",
+        "item_name": "Large Healing Potion +1",
+        "category": "Recovery Items",
+        "price_zen": 3000,
+        "details": null
+      },
+      {
+        "item_id": "bolt",
+        "item_name": "Bolt",
+        "category": "Other Items",
+        "price_zen": 100,
+        "details": null
+      },
+      {
+        "item_id": "bolt-1",
+        "item_name": "Bolt +1",
+        "category": "Other Items",
+        "price_zen": 1400,
+        "details": null
+      },
+      {
+        "item_id": "bolt-2",
+        "item_name": "Bolt +2",
+        "category": "Other Items",
+        "price_zen": 2200,
+        "details": null
+      },
+      {
+        "item_id": "bolt-3",
+        "item_name": "Bolt +3",
+        "category": "Other Items",
+        "price_zen": 3000,
+        "details": null
+      },
+      {
+        "item_id": "arrow",
+        "item_name": "Arrow",
+        "category": "Other Items",
+        "price_zen": 70,
+        "details": null
+      },
+      {
+        "item_id": "arrow-1",
+        "item_name": "Arrow +1",
+        "category": "Other Items",
+        "price_zen": 1200,
+        "details": null
+      },
+      {
+        "item_id": "arrow-2",
+        "item_name": "Arrow +2",
+        "category": "Other Items",
+        "price_zen": 2000,
+        "details": null
+      },
+      {
+        "item_id": "arrow-3",
+        "item_name": "Arrow +3",
+        "category": "Other Items",
+        "price_zen": 2800,
+        "details": null
+      },
+      {
+        "item_id": "town-portal-scroll",
+        "item_name": "Town Portal Scroll",
+        "category": "Other Items",
+        "price_zen": 750,
+        "details": null
+      },
+      {
+        "item_id": "armor-of-guardsman",
+        "item_name": "Armor of Guardsman",
+        "category": "Other Items",
+        "price_zen": 5000,
+        "details": null
+      },
+      {
+        "item_id": "muun-energy-converter",
+        "item_name": "Muun Energy Converter",
+        "category": "Other Items",
+        "price_zen": 900000,
+        "details": null
+      },
+      {
+        "item_id": "elemental-rune",
+        "item_name": "Elemental Rune",
+        "category": "Other Items",
+        "price_zen": 80000000,
+        "details": null
+      },
+      {
+        "item_id": "sphere",
+        "item_name": "Sphere",
+        "category": "Other Items",
+        "price_zen": 30000000,
+        "details": null
+      },
+      {
+        "item_id": "archer",
+        "item_name": "Archer",
+        "category": "Other Items",
+        "price_zen": 1500000,
+        "details": null
+      },
+      {
+        "item_id": "spearman",
+        "item_name": "Spearman",
+        "category": "Other Items",
+        "price_zen": 1200000,
+        "details": null
+      }
+    ],
+    "image_url": "https://muonlinefanz.com/tools/npc/data/graphics/Arena%20Guard/Arena%20Guard.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/npc/data/npcdb/Arena%20Guard.php",
+    "scraped_at": "2026-10-21T14:09:27Z",
+    "page_updated_at": null
+  },
+  "related": {}
+}

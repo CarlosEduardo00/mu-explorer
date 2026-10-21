@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "maps",
+  "key": "Lorencia",
+  "file": "lorencia.html",
+  "url": "https://muonlinefanz.com/tools/maps/data/mapdb/Lorencia.php",
+  "final_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Lorencia.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T14:10:48Z",
+  "bytes": 73162,
+  "sha256": "3e6f3edfde63d85f71fd7ff86858ea12ac374693b2b58a0e94a57f290f3d4beb"
+}

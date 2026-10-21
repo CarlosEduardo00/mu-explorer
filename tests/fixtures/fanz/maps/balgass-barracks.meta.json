@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "maps",
+  "key": "Balgass Barracks",
+  "file": "balgass-barracks.html",
+  "url": "https://muonlinefanz.com/tools/maps/data/mapdb/Balgass%20Barracks.php",
+  "final_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Balgass%20Barracks.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T14:09:06Z",
+  "bytes": 54609,
+  "sha256": "e32a597ec50f00b32369dedafdcaab4e6e0f6092bb9f0f00078fabcd48323f5f"
+}

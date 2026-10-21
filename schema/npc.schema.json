@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/carloseduardo00/mu-explorer/schema/npc.schema.json",
+  "title": "NPC",
+  "description": "NPC do jogo (mercador, quest, crafting...).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "description": "Merchant NPC, Quest NPC, Crafting NPC..."
+    },
+    "locations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "map_id",
+          "map_name",
+          "x",
+          "y"
+        ],
+        "properties": {
+          "map_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "map_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "x": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "y": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "sells": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "item_id",
+          "item_name",
+          "category",
+          "price_zen",
+          "details"
+        ],
+        "properties": {
+          "item_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "item_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "price_zen": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "details": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1,
+            "description": "Nível/opções do item vendido, em texto original (ex.: '[+3] [+5 DEF Rate] [+Luck]')."
+          }
+        }
+      }
+    },
+    "image_url": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^https?://"
+    },
+    "season": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Season dos dados (ex.: 'S19'); null quando a fonte não informa."
+    },
+    "source": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "source_url": {
+      "type": "string",
+      "pattern": "^https?://"
+    },
+    "scraped_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+    },
+    "page_updated_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "type",
+    "locations",
+    "description",
+    "sells",
+    "image_url",
+    "season",
+    "source",
+    "source_url",
+    "scraped_at",
+    "page_updated_at"
+  ]
+}

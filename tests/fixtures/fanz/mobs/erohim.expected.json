@@ -2,6 +2,7 @@
   "record": {
     "id": "erohim",
     "name": "Erohim",
+    "number": null,
     "level": 128,
     "difficulty": null,
     "hp": 3000000,
@@ -34,16 +35,35 @@
       {
         "id": "land-of-trials",
         "name": "Land of Trials",
+        "parent_id": null,
+        "description": null,
+        "quick_facts": [],
+        "valued_drops": {},
+        "monsters": [],
+        "special_monsters": [],
+        "bosses": [],
+        "npcs": [],
+        "connections": [],
+        "notes": [],
+        "image_url": null,
         "season": null,
         "source": "fanz",
         "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Land%20of%20Trials.php",
-        "scraped_at": "2026-10-21T12:04:26Z"
+        "scraped_at": "2026-10-21T12:04:26Z",
+        "page_updated_at": null
       }
     ],
     "spawns": [
       {
         "monster_id": "erohim",
         "map_id": "land-of-trials",
+        "kind": null,
+        "x": null,
+        "y": null,
+        "x2": null,
+        "y2": null,
+        "radius": null,
+        "count": null,
         "season": null,
         "source": "fanz",
         "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Erohim.php",

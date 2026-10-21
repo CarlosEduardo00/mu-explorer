@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "index",
+  "key": "npc-list-p1",
+  "file": "npc-list-p1.html",
+  "url": "https://muonlinefanz.com/tools/npc/",
+  "final_url": "https://muonlinefanz.com/tools/npc/",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T14:09:05Z",
+  "bytes": 53842,
+  "sha256": "ba32791a6533b10e0929ceab565d9aa39acb84a80b35065cd3fc2b517f47fb7c"
+}

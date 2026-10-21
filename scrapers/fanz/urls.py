@@ -13,6 +13,9 @@ SITEMAP_URL = "https://www.muonlinefanz.com/files/sitemap/sitemap.txt"  # o robo
 
 ITEM_LIST_URL = f"{BASE_URL}/tools/items/"
 MOB_LIST_URL = f"{BASE_URL}/tools/mobs/"
+MAP_LIST_URL = f"{BASE_URL}/tools/maps/"
+NPC_LIST_URL = f"{BASE_URL}/tools/npc/"
+LIST_URLS = {"item": ITEM_LIST_URL, "monster": MOB_LIST_URL, "map": MAP_LIST_URL, "npc": NPC_LIST_URL}
 PREFIXES = {
     "item": "/tools/items/data/itemdb/",
     "monster": "/tools/mobs/data/mobdb/",

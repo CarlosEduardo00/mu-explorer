@@ -12,7 +12,8 @@ def test_schemas_sao_validos(entity):
 
 
 def test_schema_rejeita_campo_extra_e_falta_de_obrigatorio():
-    spawn = {"monster_id": "goblin", "map_id": "lorencia", "season": None, "source": "fanz",
+    spawn = {"monster_id": "goblin", "map_id": "lorencia", "kind": "spot", "x": 180, "y": 111, "x2": 190,
+             "y2": 121, "radius": 30, "count": 10, "season": None, "source": "fanz",
              "source_url": "https://muonlinefanz.com/x", "scraped_at": "2026-10-20T12:00:00Z"}
     assert validate("spawn", spawn) == []
     assert validate("spawn", {**spawn, "extra": 1})

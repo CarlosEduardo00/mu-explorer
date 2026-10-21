@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "npcs",
+  "key": "Chaos Goblin Machine",
+  "file": "chaos-goblin-machine.html",
+  "url": "https://muonlinefanz.com/tools/npc/data/npcdb/Chaos%20Goblin%20Machine.php",
+  "final_url": "https://muonlinefanz.com/tools/npc/data/npcdb/Chaos%20Goblin%20Machine.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T14:11:02Z",
+  "bytes": 190216,
+  "sha256": "01b474e0d812638452aa56f271a12c6076e90d30e25a51c1946938adcdfb8355"
+}

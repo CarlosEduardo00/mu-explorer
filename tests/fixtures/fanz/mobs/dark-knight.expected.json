@@ -2,6 +2,7 @@
   "record": {
     "id": "dark-knight",
     "name": "Dark Knight",
+    "number": null,
     "level": 48,
     "difficulty": null,
     "hp": 3000,
@@ -29,16 +30,35 @@
       {
         "id": "dungeon",
         "name": "Dungeon",
+        "parent_id": null,
+        "description": null,
+        "quick_facts": [],
+        "valued_drops": {},
+        "monsters": [],
+        "special_monsters": [],
+        "bosses": [],
+        "npcs": [],
+        "connections": [],
+        "notes": [],
+        "image_url": null,
         "season": null,
         "source": "fanz",
         "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Dungeon.php",
-        "scraped_at": "2026-10-21T12:04:23Z"
+        "scraped_at": "2026-10-21T12:04:23Z",
+        "page_updated_at": null
       }
     ],
     "spawns": [
       {
         "monster_id": "dark-knight",
         "map_id": "dungeon",
+        "kind": null,
+        "x": null,
+        "y": null,
+        "x2": null,
+        "y2": null,
+        "radius": null,
+        "count": null,
         "season": null,
         "source": "fanz",
         "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Dark%20Knight.php",

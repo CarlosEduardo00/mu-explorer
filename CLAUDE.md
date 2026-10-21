@@ -16,10 +16,17 @@ pytest                             # testes (offline, usam fixtures de HTML)
 
 python -m scrapers.fanz fetch --items 20 --mobs 20   # baixa HTML bruto para data/raw/fanz/ (~1 min, 1 req/s)
 python -m scrapers.fanz parse                        # HTML bruto -> data/processed/fanz/*.json + poc_report.md
+python -m scrapers.fanz fetch --items 0 --mobs 0 --maps 1000 --npcs 1000   # mapas (36) e NPCs (58), ~2 min
+python -m scrapers.fanz fetch-linked                 # baixa itens dropados que não estão na listagem (depois: parse)
 python -m scrapers.fanz poc                          # fetch + parse
 python -m scrapers.fanz fixtures --golden --only dark-knight,aegis   # copia páginas p/ tests/fixtures/fanz/
                                                      # (+ <slug>.expected.json; revise o diff antes de commitar)
 # opções do fetch: --sample first|spread, --list-pages 5, --refresh (rebaixa o que já está em disco)
+python -m scrapers.fanz qa --previous-git origin/main   # QA: contagens, schema, integridade, variação
+                                                        # vs coleta anterior -> data/processed/fanz/qa_report.md
+python -m scrapers.muemu fetch                       # git clone do MuEmu em data/raw/muemu/repo (+ meta.json)
+python -m scrapers.muemu parse                       # arquivos do MuEmu -> data/processed/muemu/*.json
+python -m scrapers.combine                           # Fanz + MuEmu -> data/processed/combined/ + combine_report.md
 ```
 
 `parse` nunca acessa a rede: dá para refazer o parsing quantas vezes quiser sem rebaixar nada.
@@ -35,10 +42,10 @@ npm run deploy:hml   # publicação manual (precisa de `npx wrangler login`); no
 
 ## Ambientes e branches
 
-| ambiente | Worker (Cloudflare) | branch            | deploy command                   |
-|----------|---------------------|-------------------|----------------------------------|
-| hml      | `mu-explorer-hml`   | `mu-explorer-dev` | `npx wrangler deploy --env hml`  |
-| prod     | `mu-explorer`       | `main`            | `npx wrangler deploy --env prod` |
+| ambiente | Worker (Cloudflare) | branch            | deploy command                   | endereço                                |
+|----------|---------------------|-------------------|----------------------------------|-----------------------------------------|
+| hml      | `mu-explorer-hml`   | `mu-explorer-dev` | `npx wrangler deploy --env hml`  | https://mu-explorer-hml.buiu.workers.dev |
+| prod     | `mu-explorer`       | `main`            | `npx wrangler deploy --env prod` | https://mu-explorer.buiu.workers.dev     |
 
 Fluxo: branch curta a partir de `mu-explorer-dev` → PR para `mu-explorer-dev` (publica em
 hml para testar) → PR de `mu-explorer-dev` para `main` (publica em prod). Nunca commitar direto na `main`.
@@ -48,8 +55,13 @@ hml para testar) → PR de `mu-explorer-dev` para `main` (publica em prod). Nunc
 ```
 scrapers/common/   http.py (cliente educado: robots, 1 req/s, retries), storage.py (HTML bruto),
                    html.py (extração por rótulo/seção), parsing.py (números, faixas, datas),
-                   ids.py (slugs), mu.py (classes do jogo), model.py (ParseResult, validação de schema)
-scrapers/fanz/     urls.py, discover.py, parse_item.py, parse_monster.py, pipeline.py, report.py, cli.py
+                   ids.py (slugs), mu.py (classes do jogo), model.py (ParseResult, validação de schema),
+                   qa.py (verificações da fase 3, independentes da fonte)
+scrapers/fanz/     urls.py, discover.py, parse_item.py, parse_monster.py, parse_map.py, parse_npc.py,
+                   pipeline.py, report.py, cli.py
+scrapers/muemu/    source.py (vocabulário, fórmula de requisitos), parse.py, cli.py
+scrapers/combine.py  cruzamento Fanz + MuEmu (Fanz é a base; MuEmu só preenche campos vazios)
+docs/              rascunhos e notas (ex.: pedido de acesso ao muonline.us)
 schema/            JSON Schema (draft 2020-12) de cada entidade publicada
 data/raw/          HTML bruto + .meta.json por página (fora do git)
 data/processed/    JSON normalizado por fonte + poc_report.md
@@ -122,13 +134,42 @@ wrangler.jsonc     configuração dos Workers (env prod = mu-explorer, env hml =
   `Excellent Drop Table`, `Excellent <Set> Drop Table`, `Ancient Drop Table`. Algumas tabelas são só uma
   frase ("This monster can drop any Excellent Holyangel armor item.") e vão para `notes`.
   Alguns monstros têm seletor de dificuldade (POST); a PoC guarda só a dificuldade padrão (`difficulty` = 1).
-- **O Fanz NÃO publica**: respawn, durabilidade, categoria do item, data de atualização dos itens, taxa de
-  drop, grupo/índice do MU, season. Esses campos ficam `null` (os dois primeiros virão de outras fontes).
-  Algumas páginas não têm imagem do item (só o ícone de ajuda) e alguns monstros não têm HP/ATK na página.
+- **O Fanz NÃO publica**: durabilidade, categoria do item, data de atualização dos itens, taxa de drop,
+  grupo/índice do MU, season, e respawn de monstros comuns. Esses campos ficam `null` no Fanz (o MuEmu
+  completa no cruzamento). Algumas páginas não têm imagem do item e alguns monstros não têm HP/ATK.
+
+**Coleta completa (out/2026):** 3.089 itens e 291 monstros na listagem, 1 req/s, ~1h. Achados:
+- 15 itens da listagem e 37 itens linkados nos drops respondem **HTTP 200 com "404 - Page not found"** ou
+  corpo vazio (links quebrados no próprio site). Viram falha no parse e aviso no QA, não registro.
+- Bosses têm respawn: "Respawns after 24 Hours" (-> `respawn_seconds`) ou horários fixos em UTC
+  (-> `respawn_raw` = "UTC: 18:11, 22:00..."). "This monster does not drop 'normal grade' items." ->
+  `drops_normal_items = false`.
+- Tabelas como "Bloodangel Drop Table" têm o tipo na primeira frase ("can drop any normal ... item").
+- Monstros em vários mapas têm uma tabela de drop por mapa, escolhida num seletor; só a do mapa padrão vem
+  na página.
+- Títulos com sufixo "[Lv: 1]" ou "[+0]"; 4 itens com "Can be equipped by Classes" (sem a lista, bug do site).
+
+**Mapas e NPCs (`/tools/maps/`: 36 mapas; `/tools/npc/`: 58 NPCs, 1 quebrado):**
+- Mapa: descrição, Quick Facts (requisito de entrada, nível recomendado), drops valiosos por grupo, listas de
+  monstros/especiais/bosses (links), NPCs, Notes & Tips com "This map has entrances to/from:" (-> `connections`).
+- Os **Hot Spots** do mapa ficam num iframe em `/tools/maps/data/php/...`, **bloqueado no robots.txt**: não
+  coletamos. Coordenadas de spots vêm do MuEmu.
+- Mapas citados só em páginas de monstro ("Spawns in Kalima 1." com link para Kalima.php) viram variantes
+  com `parent_id` (kalima-1 -> kalima).
+- NPC: tipo (Merchant/Quest/Crafting/Miscellaneous/Mini-game/Event), localização `Mapa @(x, y)` (pode ser
+  `@(?, ?)` ou `@(various)`), descrição e lista de venda com preço em Zen (e linha de opções `[+3] [+Luck]`).
+  Receitas de crafting (Chaos Goblin Machine etc.) ainda não são extraídas.
 - O rodapé diz que é recurso de fã operado com permissão da Webzen; o conteúdo é do autor
   (IZAKTLY). Dar crédito e, se o site for público, pedir autorização.
 
 ### 2. muonline.us (toplist de servidores privados) — fonte secundária de drops por mapa
+
+**Bloqueado para coleta automática (out/2026):** todas as páginas, inclusive o
+`sitemap.xml`, respondem 403 com o desafio anti-bot da Cloudflare ("Just a moment..."). Pela regra de não
+contornar bloqueios (inclusive desafios anti-bot), não coletamos. Pedido de acesso/exportação ao dono em
+`docs/contato-muonline-us.md`; enquanto isso, grupo/índice/durabilidade vêm do MuEmu. O resto desta seção é
+o que foi mapeado antes do bloqueio.
+
 - Sitemap: `https://muonline.us/sitemap.xml`.
 - Item: `/drop/item/<Nome+com+mais>-c<grupo>-i<indice>` (ex.: `Ancient+Armor-c8-i41`).
   `c`/`i` parecem grupo e índice interno do item no MU: candidato a **chave primária**.
@@ -142,10 +183,21 @@ wrangler.jsonc     configuração dos Workers (env prod = mu-explorer, env hml =
   registro e pastas de tradução `database-xx`).
 - Ressalva: drops parecem genéricos de emulador, não oficiais por season. Cruzar com o Fanz.
 
-### 3. Outras (referência, não prioritárias)
+### 3. MuEmu (github.com/deep-thought-42/MuEmu) — grupo/índice, durabilidade, respawn e spots
+- Emulador C# open source (licença MIT do código). Não é scraping: `git clone` do repositório.
+  Dados de **servidor privado**: itens da Season 16 (`Data/itemS16.txt`), monstros (`Monster.xml`, com
+  `RegenTime` = respawn em segundos) e spawns com coordenadas (`MonsterSetBase.xml`).
+- `itemS16.txt` guarda **fatores**, não requisitos finais. Requisito +0 = `20 + fator × DropLevel × 3 / 100`
+  (energia: × 4; livros do Summoner: × 3; scrolls do grupo 15: valor direto). Validado contra o Fanz:
+  força/agilidade batem em ~98% dos itens. Vitalidade/comando usam × 3 sem validação (o Fanz não traz casos).
+- Nomes repetidos são do próprio jogo (ex.: "Adamantine Armor" 8/26 e 8/66, modelo novo); ganham sufixo
+  `-g<grupo>-i<índice>` no id. Monstros com o mesmo nome são variantes de nível (Aegis em Kalima 1..7).
+- No cruzamento, excellent/ancient do Fanz casam com o item base (no MU têm o mesmo grupo/índice).
+
+### 4. Outras (referência, não prioritárias)
 muonline.fandom.com (MediaWiki, `/api.php`, cobertura parcial), StrategyWiki (antiga),
 wiki.infinitymu.net e info.topmuonline.net (servidores privados), globalmuonline.com/drop
-(Season 19/21), MuEmu (github.com/deep-thought-42/MuEmu: `Data/Monster`, `MonsterSetBase`, bom para spawns).
+(Season 19/21).
 
 ## Modelo de dados
 
@@ -158,7 +210,10 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 - `monster`: id, name, level, difficulty, hp, atk_min, atk_max, atk_rate, def, def_rate, elemental_def,
   elemental_dmg_min/max, respawn_seconds, respawn_raw, drops_normal_items, notes, image_url, season,
   source, source_url, scraped_at, page_updated_at.
-- `map`: id, name. `spawn`: monster_id, map_id. `drop`: monster_id, item_id, item_name, kind
+- `map`: id, name, parent_id, description, quick_facts, valued_drops, monsters, special_monsters, bosses,
+  npcs, connections, notes, image_url. `npc`: id, name, type, locations (map_id, x, y), description, sells
+  (item, categoria, preço em Zen, detalhes). `spawn`: monster_id, map_id, kind, x, y, x2, y2, radius, count.
+  `drop`: monster_id, item_id, item_name, kind
   (normal/excellent/ancient/socket/unknown), table, category, quantity, rate (null se a fonte não informa).
   Um drop do Fanz significa "o monstro pode dropar este item"; não há taxa.
 - `source`: id, name, url, scraped_at, credit.

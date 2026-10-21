@@ -26,7 +26,7 @@ def links_from_list_page(html: str, base_url: str, kind: str) -> list[str]:
     for a in tree.css("a[href]"):
         url = absolute_url(base_url, a.attributes["href"] or "")
         if urls.classify(url) == kind:
-            out.append(url)
+            out.append(urls.canonical(url))  # algumas listagens linkam com http:// ou www.
     return list(dict.fromkeys(out))
 
 

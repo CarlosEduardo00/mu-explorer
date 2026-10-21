@@ -5,6 +5,11 @@ Os dados vêm de scraping educado de fontes de fãs, são normalizados, validado
 JSON Schema e publicados como API estática. Contexto completo, regras de coleta e
 convenções em [`CLAUDE.md`](CLAUDE.md).
 
+## Endereços
+
+- Produção: https://mu-explorer.buiu.workers.dev (branch `main`)
+- Homologação: https://mu-explorer-hml.buiu.workers.dev (branch `mu-explorer-dev`)
+
 ## Uso
 
 ```bash
@@ -22,7 +27,8 @@ python -m scrapers.fanz fixtures --golden           # vira fixture de teste (rev
 - [x] Scraper do Fanz (itens e monstros) com parse para JSON, relatório de campos e testes sobre HTML real.
 - [x] Prova de conceito rodada no site real: 20 itens + 20 monstros, 0 erros de schema.
       Resultado em `data/processed/fanz/` e `poc_report.md`; fixtures em `tests/fixtures/fanz/`.
-- [ ] Coleta completa do Fanz (3.090 itens + ~290 monstros, ~55 min a 1 req/s), mapas e NPCs.
+- [x] Coleta completa do Fanz: 3.074 itens, 291 monstros, 23.759 drops (QA: 0 erros). Mapas (36 + variantes) e NPCs (57, com 545 itens à venda) também.
+- [x] MuEmu + cruzamento: grupo/índice em 1.863 itens, respawn em 158 monstros, 1.717 spots com coordenadas.
 - [x] Hosting no Cloudflare Workers (Static Assets) com página inicial "em construção" (`site/public/`).
 - [ ] muonline.us, validação cruzada, publicação dos dados, site.
 

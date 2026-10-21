@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<SetBase xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <NPC Type="226" Map="Lorencia" Radio="0" PosX="122" PosY="110" Dir="3">//Trainer</NPC>
+  <Normal Type="10" Map="Dugeon" Radio="30" PosX="41" PosY="88" Dir="-1">//Dark Knight</Normal>
+  <Normal Type="10" Map="Dugeon" Radio="30" PosX="19" PosY="120" Dir="-1">//Dark Knight</Normal>
+  <Normal Type="147" Map="Kalima1" Radio="30" PosX="34" PosY="22" Dir="-1">//Aegis</Normal>
+  <Spot Type="413" Map="Lorencia" Radio="30" PosX="180" PosY="111" PosX2="190" PosY2="121" Dir="-1" Quant="10">//RabbiT<Element>None</Element></Spot>
+</SetBase>

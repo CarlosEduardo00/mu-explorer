@@ -8,6 +8,13 @@
   "required": [
     "monster_id",
     "map_id",
+    "kind",
+    "x",
+    "y",
+    "x2",
+    "y2",
+    "radius",
+    "count",
     "season",
     "source",
     "source_url",
@@ -21,6 +28,58 @@
     "map_id": {
       "type": "string",
       "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "kind": {
+      "enum": [
+        "spot",
+        "normal",
+        "golden",
+        "event",
+        null
+      ],
+      "description": "Tipo de spawn no servidor (MuEmu); null quando a fonte só diz o mapa (Fanz)."
+    },
+    "x": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Coordenada X (ou X inicial da área)"
+    },
+    "y": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Coordenada Y (ou Y inicial da área)"
+    },
+    "x2": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "X final da área de spawn"
+    },
+    "y2": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Y final da área de spawn"
+    },
+    "radius": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Raio de movimento"
+    },
+    "count": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "Quantidade de monstros"
     },
     "season": {
       "type": [

@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "maps",
+  "key": "Kalima",
+  "file": "kalima.html",
+  "url": "https://muonlinefanz.com/tools/maps/data/mapdb/Kalima.php",
+  "final_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Kalima.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T14:10:42Z",
+  "bytes": 66513,
+  "sha256": "4f9bd7b93eee7755cc5ed71b15f13ed7dd521d6d1733ff8d913e96baf9bfc155"
+}
