@@ -1,6 +1,6 @@
 ---
 // Lista com filtro por texto, feito no navegador (JS mínimo, sem framework).
-interface Row { href: string; cells: (string | number | null)[]; search: string }
+interface Row { href: string; cells: (string | number | null)[]; search: string; image?: string | null }
 interface Props { columns: { label: string; num?: boolean }[]; rows: Row[]; placeholder: string; noun: string }
 const { columns, rows, placeholder, noun } = Astro.props;
 ---
@@ -14,7 +14,9 @@ const { columns, rows, placeholder, noun } = Astro.props;
         <tr data-search={r.search}>
           {r.cells.map((cell, i) => (
             <td class={columns[i].num ? "num" : undefined}>
-              {i === 0 ? <a href={r.href}>{cell}</a> : (cell ?? "—")}
+              {i === 0
+                ? <a href={r.href} class="name-cell">{r.image && <img class="thumb" src={r.image} alt="" loading="lazy" referrerpolicy="no-referrer" />}{cell}</a>
+                : (cell ?? "—")}
             </td>
           ))}
         </tr>

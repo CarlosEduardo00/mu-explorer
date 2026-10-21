@@ -137,7 +137,8 @@
     "page_updated_at": null,
     "level_required": null,
     "level_recommended_min": 40,
-    "level_recommended_max": 450
+    "level_recommended_max": 450,
+    "minimap_url": "https://muonlinefanz.com/tools/maps/data/graphics/Kalima/map.jpg"
   },
   "related": {}
 }

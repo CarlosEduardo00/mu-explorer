@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generated_at": "2026-10-21T20:03:30Z",
+ "generated_at": "2026-10-21T21:21:59Z",
  "stats": [
   "str",
   "agi",
@@ -12,9 +12,9 @@
   {
    "id": "global-atual",
    "name": "Global atual",
-   "description": "Regras do jogo atual, segundo os guias de classe do Fanz.",
+   "description": "Regras do jogo atual, segundo os guias de classe do Fanz; Illusion Knight, Alchemist e Crusader (que o Fanz não cobre) e a 5ª classe, segundo os guias do Global MU Online e as fontes citadas em cada classe.",
    "publish": false,
-   "credit": "Dados de regra (números e nomes) dos guias de classe de MU Online Fanz (muonlinefanz.com), conteúdo de IZAKTLY.",
+   "credit": "Dados de regra (números e nomes) dos guias de classe de MU Online Fanz (muonlinefanz.com), conteúdo de IZAKTLY. Imagens, 5ª classe e Illusion Knight, Alchemist e Crusader: guias do Global MU Online e guias citados em cada classe.",
    "classes": [
     {
      "id": "gun-crusher",
@@ -44,30 +44,41 @@
       {
        "tier": 1,
        "name": "Gun Crusher",
-       "level": null
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/gun-crusher-t1.webp"
       },
       {
        "tier": 2,
        "name": "Gun Breaker",
-       "level": 150
+       "level": 150,
+       "image_url": "https://globalmuonline.com/guides/classes/img/gun-crusher-t2.webp"
       },
       {
        "tier": 3,
        "name": "Master Gun Breaker",
-       "level": 400
+       "level": 400,
+       "image_url": "https://globalmuonline.com/guides/classes/img/gun-crusher-t3.webp"
       },
       {
        "tier": 4,
        "name": "Heist Gun Crusher",
-       "level": 800
+       "level": 800,
+       "image_url": "https://globalmuonline.com/guides/classes/img/gun-crusher-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Magnus Gun Crusher",
+       "level": null
       }
      ],
      "names": [
       "Gun Crusher",
       "Gun Breaker",
       "Master Gun Breaker",
-      "Heist Gun Crusher"
-     ]
+      "Heist Gun Crusher",
+      "Magnus Gun Crusher"
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/gun-crusher-t1.webp"
     },
     {
      "id": "slayer",
@@ -97,30 +108,41 @@
       {
        "tier": 1,
        "name": "Slayer",
-       "level": null
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/slayer-t1.webp"
       },
       {
        "tier": 2,
        "name": "Royal Slayer",
-       "level": 150
+       "level": 150,
+       "image_url": "https://globalmuonline.com/guides/classes/img/slayer-t2.webp"
       },
       {
        "tier": 3,
        "name": "Master Slayer",
-       "level": 400
+       "level": 400,
+       "image_url": "https://globalmuonline.com/guides/classes/img/slayer-t3.webp"
       },
       {
        "tier": 4,
        "name": "Slaughterer",
-       "level": 800
+       "level": 800,
+       "image_url": "https://globalmuonline.com/guides/classes/img/slayer-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Rogue Slayer",
+       "level": null
       }
      ],
      "names": [
       "Slayer",
       "Royal Slayer",
       "Master Slayer",
-      "Slaughterer"
-     ]
+      "Slaughterer",
+      "Rogue Slayer"
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/slayer-t1.webp"
     },
     {
      "id": "grow-lancer",
@@ -146,24 +168,34 @@
       {
        "tier": 2,
        "name": "Grow Lancer",
-       "level": null
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/grow-lancer-t1.webp"
       },
       {
        "tier": 3,
        "name": "Mirage Lancer",
-       "level": 400
+       "level": 400,
+       "image_url": "https://globalmuonline.com/guides/classes/img/grow-lancer-t3.webp"
       },
       {
        "tier": 4,
        "name": "Shining Lancer",
-       "level": 800
+       "level": 800,
+       "image_url": "https://globalmuonline.com/guides/classes/img/grow-lancer-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Arcane Lancer",
+       "level": null
       }
      ],
      "names": [
       "Grow Lancer",
       "Mirage Lancer",
-      "Shining Lancer"
-     ]
+      "Shining Lancer",
+      "Arcane Lancer"
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/grow-lancer-t1.webp"
     },
     {
      "id": "dark-wizard",
@@ -193,30 +225,41 @@
       {
        "tier": 1,
        "name": "Dark Wizard",
-       "level": null
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/dark-wizard-t1.webp"
       },
       {
        "tier": 2,
        "name": "Soul Master",
-       "level": 150
+       "level": 150,
+       "image_url": "https://globalmuonline.com/guides/classes/img/dark-wizard-t2.webp"
       },
       {
        "tier": 3,
        "name": "Grand Master",
-       "level": 400
+       "level": 400,
+       "image_url": "https://globalmuonline.com/guides/classes/img/dark-wizard-t3.webp"
       },
       {
        "tier": 4,
        "name": "Soul Wizard",
-       "level": 800
+       "level": 800,
+       "image_url": "https://globalmuonline.com/guides/classes/img/dark-wizard-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Darkness Wizard",
+       "level": null
       }
      ],
      "names": [
       "Dark Wizard",
       "Soul Master",
       "Grand Master",
-      "Soul Wizard"
-     ]
+      "Soul Wizard",
+      "Darkness Wizard"
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/dark-wizard-t1.webp"
     },
     {
      "id": "dark-knight",
@@ -246,30 +289,41 @@
       {
        "tier": 1,
        "name": "Dark Knight",
-       "level": null
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/dark-knight-t1.webp"
       },
       {
        "tier": 2,
        "name": "Blade Knight",
-       "level": 150
+       "level": 150,
+       "image_url": "https://globalmuonline.com/guides/classes/img/dark-knight-t2.webp"
       },
       {
        "tier": 3,
        "name": "Blade Master",
-       "level": 400
+       "level": 400,
+       "image_url": "https://globalmuonline.com/guides/classes/img/dark-knight-t3.webp"
       },
       {
        "tier": 4,
        "name": "Dragon Knight",
-       "level": 800
+       "level": 800,
+       "image_url": "https://globalmuonline.com/guides/classes/img/dark-knight-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Ignition Knight",
+       "level": null
       }
      ],
      "names": [
       "Dark Knight",
       "Blade Knight",
       "Blade Master",
-      "Dragon Knight"
-     ]
+      "Dragon Knight",
+      "Ignition Knight"
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/dark-knight-t1.webp"
     },
     {
      "id": "fairy-elf",
@@ -299,30 +353,41 @@
       {
        "tier": 1,
        "name": "Fairy Elf",
-       "level": null
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/elf-t1.webp"
       },
       {
        "tier": 2,
        "name": "Muse Elf",
-       "level": 150
+       "level": 150,
+       "image_url": "https://globalmuonline.com/guides/classes/img/elf-t2.webp"
       },
       {
        "tier": 3,
        "name": "High Elf",
-       "level": 400
+       "level": 400,
+       "image_url": "https://globalmuonline.com/guides/classes/img/elf-t3.webp"
       },
       {
        "tier": 4,
        "name": "Noble Elf",
-       "level": 800
+       "level": 800,
+       "image_url": "https://globalmuonline.com/guides/classes/img/elf-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Royal Elf",
+       "level": null
       }
      ],
      "names": [
       "Fairy Elf",
       "Muse Elf",
       "High Elf",
-      "Noble Elf"
-     ]
+      "Noble Elf",
+      "Royal Elf"
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/elf-t1.webp"
     },
     {
      "id": "magic-gladiator",
@@ -348,24 +413,34 @@
       {
        "tier": 2,
        "name": "Magic Gladiator",
-       "level": null
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/magic-gladiator-t1.webp"
       },
       {
        "tier": 3,
        "name": "Duel Master",
-       "level": 400
+       "level": 400,
+       "image_url": "https://globalmuonline.com/guides/classes/img/magic-gladiator-t3.webp"
       },
       {
        "tier": 4,
        "name": "Magic Knight",
-       "level": 800
+       "level": 800,
+       "image_url": "https://globalmuonline.com/guides/classes/img/magic-gladiator-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Duple Knight",
+       "level": null
       }
      ],
      "names": [
       "Magic Gladiator",
       "Duel Master",
-      "Magic Knight"
-     ]
+      "Magic Knight",
+      "Duple Knight"
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/magic-gladiator-t1.webp"
     },
     {
      "id": "dark-lord",
@@ -391,24 +466,34 @@
       {
        "tier": 2,
        "name": "Dark Lord",
-       "level": null
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/dark-lord-t1.webp"
       },
       {
        "tier": 3,
        "name": "Lord Emperor",
-       "level": 400
+       "level": 400,
+       "image_url": "https://globalmuonline.com/guides/classes/img/dark-lord-t3.webp"
       },
       {
        "tier": 4,
        "name": "Empire Lord",
-       "level": 800
+       "level": 800,
+       "image_url": "https://globalmuonline.com/guides/classes/img/dark-lord-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Force Empire",
+       "level": null
       }
      ],
      "names": [
       "Dark Lord",
       "Lord Emperor",
-      "Empire Lord"
-     ]
+      "Empire Lord",
+      "Force Empire"
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/dark-lord-t1.webp"
     },
     {
      "id": "summoner",
@@ -438,30 +523,41 @@
       {
        "tier": 1,
        "name": "Summoner",
-       "level": null
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/summoner-t1.webp"
       },
       {
        "tier": 2,
        "name": "Bloody Summoner",
-       "level": 150
+       "level": 150,
+       "image_url": "https://globalmuonline.com/guides/classes/img/summoner-t2.webp"
       },
       {
        "tier": 3,
        "name": "Dimension Master",
-       "level": 400
+       "level": 400,
+       "image_url": "https://globalmuonline.com/guides/classes/img/summoner-t3.webp"
       },
       {
        "tier": 4,
        "name": "Dimension Summoner",
-       "level": 800
+       "level": 800,
+       "image_url": "https://globalmuonline.com/guides/classes/img/summoner-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Endless Summoner",
+       "level": null
       }
      ],
      "names": [
       "Summoner",
       "Bloody Summoner",
       "Dimension Master",
-      "Dimension Summoner"
-     ]
+      "Dimension Summoner",
+      "Endless Summoner"
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/summoner-t1.webp"
     },
     {
      "id": "rage-fighter",
@@ -487,24 +583,34 @@
       {
        "tier": 2,
        "name": "Rage Fighter",
-       "level": null
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/rage-fighter-t1.webp"
       },
       {
        "tier": 3,
        "name": "Fist Master",
-       "level": 400
+       "level": 400,
+       "image_url": "https://globalmuonline.com/guides/classes/img/rage-fighter-t3.webp"
       },
       {
        "tier": 4,
        "name": "Fist Blazer",
-       "level": 800
+       "level": 800,
+       "image_url": "https://globalmuonline.com/guides/classes/img/rage-fighter-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Bloody Fighter",
+       "level": null
       }
      ],
      "names": [
       "Rage Fighter",
       "Fist Master",
-      "Fist Blazer"
-     ]
+      "Fist Blazer",
+      "Bloody Fighter"
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/rage-fighter-t1.webp"
     },
     {
      "id": "rune-mage",
@@ -534,30 +640,41 @@
       {
        "tier": 1,
        "name": "Rune Mage",
-       "level": null
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/rune-wizard-t1.webp"
       },
       {
        "tier": 2,
        "name": "Rune Spell Master",
-       "level": 150
+       "level": 150,
+       "image_url": "https://globalmuonline.com/guides/classes/img/rune-wizard-t2.webp"
       },
       {
        "tier": 3,
        "name": "Rune Grand Master",
-       "level": 400
+       "level": 400,
+       "image_url": "https://globalmuonline.com/guides/classes/img/rune-wizard-t3.webp"
       },
       {
        "tier": 4,
        "name": "Rune Wizard",
-       "level": 800
+       "level": 800,
+       "image_url": "https://globalmuonline.com/guides/classes/img/rune-wizard-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Infinity Rune Wizard",
+       "level": null
       }
      ],
      "names": [
       "Rune Mage",
       "Rune Wizard",
       "Rune Spell Master",
-      "Rune Grand Master"
-     ]
+      "Rune Grand Master",
+      "Infinity Rune Wizard"
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/rune-wizard-t1.webp"
     },
     {
      "id": "white-wizard",
@@ -587,30 +704,41 @@
       {
        "tier": 1,
        "name": "White Wizard",
-       "level": null
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/white-wizard-t1.webp"
       },
       {
        "tier": 2,
        "name": "Light Master",
-       "level": 150
+       "level": 150,
+       "image_url": "https://globalmuonline.com/guides/classes/img/white-wizard-t2.webp"
       },
       {
        "tier": 3,
        "name": "Shine Wizard",
-       "level": 400
+       "level": 400,
+       "image_url": "https://globalmuonline.com/guides/classes/img/white-wizard-t3.webp"
       },
       {
        "tier": 4,
        "name": "Shine Master",
-       "level": 800
+       "level": 800,
+       "image_url": "https://globalmuonline.com/guides/classes/img/white-wizard-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Glory Wizard",
+       "level": null
       }
      ],
      "names": [
       "White Wizard",
       "Light Master",
       "Shine Wizard",
-      "Shine Master"
-     ]
+      "Shine Master",
+      "Glory Wizard"
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/white-wizard-t1.webp"
     },
     {
      "id": "mage",
@@ -640,30 +768,266 @@
       {
        "tier": 1,
        "name": "Mage",
-       "level": null
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/lemuria-mage-t1.webp"
       },
       {
        "tier": 2,
        "name": "Wo Mage",
-       "level": 150
+       "level": 150,
+       "image_url": "https://globalmuonline.com/guides/classes/img/lemuria-mage-t2.webp"
       },
       {
        "tier": 3,
        "name": "Arch Mage",
-       "level": 400
+       "level": 400,
+       "image_url": "https://globalmuonline.com/guides/classes/img/lemuria-mage-t3.webp"
       },
       {
        "tier": 4,
        "name": "Mystic Mage",
-       "level": 800
+       "level": 800,
+       "image_url": "https://globalmuonline.com/guides/classes/img/lemuria-mage-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Battle Mage",
+       "level": null
       }
      ],
      "names": [
       "Mage",
       "Wo Mage",
       "Arch Mage",
-      "Mystic Mage"
-     ]
+      "Mystic Mage",
+      "Battle Mage"
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/lemuria-mage-t1.webp"
+    },
+    {
+     "id": "illusion-knight",
+     "name": "Illusion Knight",
+     "tier": 1,
+     "unlock_level": null,
+     "base": {
+      "str": 25,
+      "agi": 28,
+      "vit": 15,
+      "ene": 10,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 1,
+       "name": "Illusion Knight",
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/illusion-knight-t1.webp"
+      },
+      {
+       "tier": 2,
+       "name": "Mirage Knight",
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/illusion-knight-t2.webp"
+      },
+      {
+       "tier": 3,
+       "name": "Illusion Master",
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/illusion-knight-t3.webp"
+      },
+      {
+       "tier": 4,
+       "name": "Mystic Knight",
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/illusion-knight-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Phantom Pain Knight",
+       "level": null
+      }
+     ],
+     "names": [
+      "Illusion Knight",
+      "Mirage Knight",
+      "Illusion Master",
+      "Mystic Knight",
+      "Phantom Pain Knight"
+     ],
+     "sources": [
+      {
+       "name": "Guide MU Online: Illusion Knight",
+       "url": "https://guidemuonline.com/characters/illusion-knight"
+      },
+      {
+       "name": "muonline.eu: Illusion Knight (S18)",
+       "url": "https://muonline.eu/index.php?/topic/27-illusion-knight-mu-online-season-18/"
+      },
+      {
+       "name": "Global MU Online: guia do Illusion Knight",
+       "url": "https://globalmuonline.com/guides/illusion-knight/"
+      }
+     ],
+     "notes": [
+      "Base 25/28/15/10 em três guias; um post de lançamento cita Energia 15.",
+      "Pontos por nível: 5 (guia do GMO); sem fonte para o bônus da quest Hero Status."
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/illusion-knight-t1.webp"
+    },
+    {
+     "id": "alchemist",
+     "name": "Alchemist",
+     "tier": 1,
+     "unlock_level": null,
+     "base": {
+      "str": 15,
+      "agi": 20,
+      "vit": 23,
+      "ene": 25,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 1,
+       "name": "Alchemist",
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/alchemist-t1.webp"
+      },
+      {
+       "tier": 2,
+       "name": "Alchemic Magician",
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/alchemist-t2.webp"
+      },
+      {
+       "tier": 3,
+       "name": "Alchemic Master",
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/alchemist-t3.webp"
+      },
+      {
+       "tier": 4,
+       "name": "Alchemic Force",
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/alchemist-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Creator",
+       "level": null
+      }
+     ],
+     "names": [
+      "Alchemist",
+      "Alchemic Magician",
+      "Alchemic Master",
+      "Alchemic Force",
+      "Creator"
+     ],
+     "sources": [
+      {
+       "name": "Webzen: guia do Alchemist",
+       "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/365"
+      },
+      {
+       "name": "Global MU Online: guia do Alchemist",
+       "url": "https://globalmuonline.com/guides/alchemist/"
+      }
+     ],
+     "notes": [
+      "Pontos por nível: 5 (guia do GMO); sem fonte para o bônus da quest Hero Status."
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/alchemist-t1.webp"
+    },
+    {
+     "id": "crusader",
+     "name": "Crusader",
+     "tier": 1,
+     "unlock_level": null,
+     "base": {
+      "str": 26,
+      "agi": 18,
+      "vit": 19,
+      "ene": 20,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 1,
+       "name": "Crusader",
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/crusader-t1.webp"
+      },
+      {
+       "tier": 2,
+       "name": "Impact Crusader",
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/crusader-t2.webp"
+      },
+      {
+       "tier": 3,
+       "name": "Master Paladin",
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/crusader-t3.webp"
+      },
+      {
+       "tier": 4,
+       "name": "Sacred Paladin",
+       "level": null,
+       "image_url": "https://globalmuonline.com/guides/classes/img/crusader-t4.webp"
+      },
+      {
+       "tier": 5,
+       "name": "Templar Commander",
+       "level": null
+      }
+     ],
+     "names": [
+      "Crusader",
+      "Impact Crusader",
+      "Master Paladin",
+      "Sacred Paladin",
+      "Templar Commander"
+     ],
+     "sources": [
+      {
+       "name": "muonline.eu: Crusader (S21)",
+       "url": "https://muonline.eu/index.php?/topic/72-crusader-mu-online-season-21/"
+      },
+      {
+       "name": "Global MU Online: guia do Crusader",
+       "url": "https://globalmuonline.com/guides/crusader/"
+      }
+     ],
+     "notes": [
+      "Atributos base de uma única fonte (muonline.eu); confira no jogo.",
+      "Pontos por nível: 5 (guia do GMO); sem fonte para o bônus da quest Hero Status."
+     ],
+     "image_url": "https://globalmuonline.com/guides/classes/img/crusader-t1.webp"
     }
    ]
   },

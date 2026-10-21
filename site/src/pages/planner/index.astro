@@ -22,6 +22,7 @@ import Base from "../../layouts/Base.astro";
     <h2>Classe</h2>
     <div id="classes" class="chips" role="radiogroup" aria-label="Classe"></div>
     <p id="class-note" class="muted"></p>
+    <div id="evolutions" class="evolutions"></div>
 
     <h2>Build</h2>
     <div class="planner-controls">
@@ -62,6 +63,12 @@ import Base from "../../layouts/Base.astro";
   .chips { display: flex; flex-wrap: wrap; gap: .4rem; }
   .chip { font: inherit; cursor: pointer; padding: .3rem .8rem; border-radius: 1rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
   .chip[aria-checked="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  .chip.with-img { display: inline-flex; align-items: center; gap: .35rem; padding-left: .3rem; }
+  .chip img { width: 26px; height: 26px; object-fit: contain; border-radius: 50%; background: #12131a; }
+  .evolutions { display: flex; gap: .5rem; overflow-x: auto; padding: .25rem 0 .5rem; }
+  .evolutions figure { margin: 0; flex: 0 0 6.5rem; text-align: center; font-size: .8rem; }
+  .evolutions img, .evolutions .noimg { display: block; width: 6.5rem; height: 6.5rem; object-fit: contain; background: #12131a; border-radius: .5rem; }
+  .evolutions figcaption { margin-top: .25rem; line-height: 1.25; }
   .btn { font: inherit; cursor: pointer; padding: .35rem .8rem; border-radius: .4rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
   .btn.small { padding: .15rem .5rem; font-size: .8rem; }
   .points { font-size: 1.05rem; }
@@ -191,7 +198,7 @@ import Base from "../../layouts/Base.astro";
 
     function renderClasses() {
       $("classes").innerHTML = rules().classes
-        .map((c) => `<button type="button" role="radio" class="chip" aria-checked="${c.id === state.classId}" data-class="${c.id}">${c.name}</button>`)
+        .map((c) => `<button type="button" role="radio" class="chip${c.image_url ? " with-img" : ""}" aria-checked="${c.id === state.classId}" data-class="${c.id}">${c.image_url ? `<img src="${esc(c.image_url)}" alt="" loading="lazy" referrerpolicy="no-referrer" />` : ""}${esc(c.name)}</button>`)
         .join("");
     }
 
@@ -261,7 +268,11 @@ import Base from "../../layouts/Base.astro";
 
       const tier = c.tier === 2 ? ` Classe de 2º tier${c.unlock_level ? `: libera no nível ${c.unlock_level} de outro personagem` : ""}.` : "";
       const evo = c.evolutions.length ? ` Evolução: ${c.evolutions.map((e) => e.name).join(" → ")}.` : "";
-      $("class-note").textContent = `${tier}${evo}`.trim();
+      const classSources = c.sources?.length ? ` Fontes: ${c.sources.map((x) => x.name).join("; ")}.` : "";
+      $("class-note").textContent = `${tier}${evo}${classSources}${c.notes?.length ? " " + c.notes.join(" ") : ""}`.trim();
+      $("evolutions").innerHTML = c.evolutions.some((e) => e.image_url)
+        ? c.evolutions.map((e) => `<figure>${e.image_url ? `<img src="${esc(e.image_url)}" alt="${esc(e.name)}" loading="lazy" referrerpolicy="no-referrer" />` : `<span class="noimg"></span>`}<figcaption>${esc(e.name)}${e.level ? `<br><small>nv ${fmt(e.level)}</small>` : ""}</figcaption></figure>`).join("")
+        : "";
       $("ruleset-note").textContent = r.description;
       $("credit").textContent = r.credit;
       ($("level") as HTMLInputElement).max = String(c.max_level);

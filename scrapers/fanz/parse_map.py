@@ -16,6 +16,7 @@ Estrutura real (conteúdo entre o menu e o rodapé):
 from __future__ import annotations
 
 import re
+from urllib.parse import unquote, urlsplit
 
 from scrapers.common.html import Line
 from scrapers.common.ids import slugify
@@ -95,6 +96,7 @@ def parse_map(html: str, meta: dict) -> ParseResult:
         record[key] = list(dict.fromkeys(record[key]))
     record["image_url"] = find_image(doc, MAP_IMAGE_PREFIX)
     record.update(map_levels(record["quick_facts"]))
+    record["minimap_url"] = find_minimap(doc)
     return ParseResult(kind="map", record=record, source_file=meta.get("file", ""), warnings=warnings,
                        unmapped=unmapped, headings=doc.headings)
 
@@ -102,6 +104,18 @@ def parse_map(html: str, meta: dict) -> ParseResult:
 _REQUIRES = re.compile(r"^Requires character level ([\d,]+) to enter", re.IGNORECASE)
 _RECOMMENDED = re.compile(r"^Recommended for characters level ([\d,]+) ~ ([\d,]+|\?)", re.IGNORECASE)
 _LESS_THAN = re.compile(r"^Recommended for characters less than level ([\d,]+)", re.IGNORECASE)
+
+
+_MINIMAP = re.compile(r"/tools/maps/data/graphics/[^/]+/map\.jpg$", re.IGNORECASE)
+
+
+def find_minimap(doc) -> str | None:
+    """Minimapa do jogo (graphics/<Mapa>/map.jpg, 1024×1024 = 4 px por casa; horizontal = y, vertical = x).
+    É a imagem de fundo dos Hot Spots; os pontos dos Hot Spots ficam no php bloqueado e não são coletados."""
+    for image in doc.images:
+        if _MINIMAP.search(unquote(urlsplit(image.src).path)):
+            return image.src
+    return None
 
 
 def map_levels(quick_facts: list[str]) -> dict:

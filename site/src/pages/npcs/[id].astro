@@ -11,6 +11,7 @@ const categories = [...new Set(npc.sells.map((s) => s.category ?? "Itens"))];
 <Base title={npc.name} description={npc.description ?? `${npc.name}: localização e itens à venda em MU Online.`}>
   <p class="crumbs"><a href="/npcs/">NPCs</a>{npc.type && <> › {npc.type}</>}</p>
   <h1>{npc.name}</h1>
+  {npc.image_url && <img class="hero-img" src={npc.image_url} alt={npc.name} loading="lazy" referrerpolicy="no-referrer" />}
   {npc.description && <p class="lead">{npc.description}</p>}
   {npc.locations.length > 0 && (
     <>

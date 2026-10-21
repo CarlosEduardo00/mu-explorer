@@ -10,7 +10,9 @@ export type Allocation = Record<Stat, number>;
 export interface Step { from_level: number; per_level: number }
 export interface ClassRules {
   id: string; name: string; tier: number | null; unlock_level: number | null; base: Allocation;
-  points: Step[]; max_level_points: number; max_level: number; evolutions: { tier: number; name: string; level: number | null }[]; names: string[];
+  points: Step[]; max_level_points: number; max_level: number;
+  evolutions: { tier: number; name: string; level: number | null; image_url?: string | null }[]; names: string[];
+  image_url?: string | null; sources?: { name: string; url: string }[]; notes?: string[];
 }
 export interface Ruleset { id: string; name: string; description: string; publish: boolean; credit: string; classes: ClassRules[] }
 

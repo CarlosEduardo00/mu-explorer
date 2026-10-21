@@ -1,6 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
-import SpotMap from "../../components/SpotMap.astro";
+import MapExplorer from "../../components/MapExplorer.astro";
 import { maps, mapById, monsterById, npcById, spawnsByMap, spotsByMap, markersByMap, fmt } from "../../lib/data";
 
 export function getStaticPaths() {
@@ -21,6 +21,7 @@ const markers = markersByMap.get(map.id) ?? [];
 <Base title={map.name} description={map.description ?? `${map.name}: monstros e NPCs em MU Online.`}>
   <p class="crumbs"><a href="/mapas/">Mapas</a>{parent && <> › <a href={`/mapas/${parent.id}/`}>{parent.name}</a></>}</p>
   <h1>{map.name}</h1>
+  {map.image_url && <img class="map-img" src={map.image_url} alt={`Mapa ${map.name}`} loading="lazy" referrerpolicy="no-referrer" />}
   {map.description && <p class="lead">{map.description}</p>}
   {map.quick_facts.length > 0 && <ul>{map.quick_facts.map((f) => <li>{f}</li>)}</ul>}
   {Object.entries(map.valued_drops).map(([group, lines]) => (
@@ -38,7 +39,7 @@ const markers = markersByMap.get(map.id) ?? [];
           <thead><tr><th>Nome</th><th class="num">Nível</th><th class="num">Pontos de spawn</th></tr></thead>
           <tbody>
             {listed.map((m) => (
-              <tr><td><a href={`/monstros/${m.id}/`}>{m.name}</a></td><td class="num">{fmt(m.level)}</td><td class="num">{fmt(spotsOf(m.id).length || null)}</td></tr>
+              <tr><td><a href={`/monstros/${m.id}/`} class="name-cell">{m.image_url && <img class="thumb" src={m.image_url} alt="" loading="lazy" referrerpolicy="no-referrer" />}{m.name}</a></td><td class="num">{fmt(m.level)}</td><td class="num">{fmt(spotsOf(m.id).length || null)}</td></tr>
             ))}
           </tbody>
         </table>
@@ -48,23 +49,23 @@ const markers = markersByMap.get(map.id) ?? [];
   {spots.length > 0 && (
     <>
       <h2 id="spots">Spots de farm</h2>
-      <SpotMap spots={spots} markers={markers} label={`Spots de farm em ${map.name}`} />
+      <MapExplorer mapName={map.name} spots={spots} markers={markers} minimap={map.minimap_url} />
       <div class="table-wrap">
         <table>
           <thead><tr><th class="num">#</th><th>Coordenadas</th><th class="num">Nível</th><th>Monstros</th></tr></thead>
           <tbody>
             {spots.map((s, i) => (
-              <tr>
+              <tr id={`spot-row-${i + 1}`} data-spot-row={i + 1}>
                 <td class="num">{i + 1}</td>
                 <td>{s.x}, {s.y}</td>
                 <td class="num">{s.level_min == null ? "—" : s.level_min === s.level_max ? fmt(s.level_min) : `${fmt(s.level_min)}–${fmt(s.level_max)}`}</td>
-                <td>{s.monsters.map((m, j) => <>{j > 0 && ", "}<a href={`/monstros/${m.monster_id}/`}>{m.name}</a> ×{m.count}</>)}</td>
+                <td>{s.monsters.map((m, j) => <>{j > 0 && ", "}<a href={`/monstros/${m.monster_id}/`} class="name-cell">{monsterById.get(m.monster_id)?.image_url && <img class="thumb" src={monsterById.get(m.monster_id)?.image_url} alt="" loading="lazy" referrerpolicy="no-referrer" />}{m.name}</a> ×{m.count}</>)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <p class="muted">Desenho esquemático pelas coordenadas (x para a direita, y para baixo); a orientação pode não bater com o minimapa do jogo. Áreas agrupadas por região (grade de 32 × 32 casas). <a href="/spots/">Todos os spots</a>.</p>
+      <p class="muted">{map.minimap_url ? "Spots sobre o minimapa do jogo (imagem do MU Online Fanz)." : "Desenho esquemático pelas coordenadas, na orientação do minimapa do jogo."} Áreas agrupadas por região (grade de 32 × 32 casas); a coordenada (x, y) é a do jogo. <a href="/spots/">Todos os spots</a>.</p>
     </>
   )}
   {npcsHere.length > 0 && (<><h2>NPCs</h2><ul class="tags">{npcsHere.map((n) => <li><a href={`/npcs/${n.id}/`}>{n.name}</a></li>)}</ul></>)}
