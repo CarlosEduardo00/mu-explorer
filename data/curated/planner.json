@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generated_at": "2026-10-21T21:53:28Z",
+ "generated_at": "2026-10-21T22:16:16Z",
  "stats": [
   "str",
   "agi",
@@ -12,7 +12,7 @@
   {
    "id": "global-atual",
    "name": "Global atual",
-   "description": "Regras do jogo atual, segundo os guias de classe do Fanz; Illusion Knight, Alchemist e Crusader (que o Fanz não cobre) e a 5ª classe, segundo os guias do Global MU Online e as fontes citadas em cada classe.",
+   "description": "Regras do jogo atual (16 classes, até a 5ª evolução).",
    "publish": true,
    "credit": "Dados de regra (números e nomes) dos guias de classe de MU Online Fanz (muonlinefanz.com), conteúdo de IZAKTLY. Imagens, 5ª classe e Illusion Knight, Alchemist e Crusader: guias do Global MU Online e guias citados em cada classe.",
    "classes": [
@@ -878,7 +878,7 @@
      ],
      "notes": [
       "Base 25/28/15/10 em três guias; um post de lançamento cita Energia 15.",
-      "Pontos por nível: 5 (guia do GMO); sem fonte para o bônus da quest Hero Status."
+      "Pontos por nível: 5; sem referência para o bônus da quest Hero Status."
      ],
      "image_url": "https://globalmuonline.com/guides/classes/img/illusion-knight-t1.webp"
     },
@@ -951,7 +951,7 @@
       }
      ],
      "notes": [
-      "Pontos por nível: 5 (guia do GMO); sem fonte para o bônus da quest Hero Status."
+      "Pontos por nível: 5; sem referência para o bônus da quest Hero Status."
      ],
      "image_url": "https://globalmuonline.com/guides/classes/img/alchemist-t1.webp"
     },
@@ -1024,8 +1024,8 @@
       }
      ],
      "notes": [
-      "Atributos base de uma única fonte (muonline.eu); confira no jogo.",
-      "Pontos por nível: 5 (guia do GMO); sem fonte para o bônus da quest Hero Status."
+      "Atributos base de uma única referência; confira no jogo.",
+      "Pontos por nível: 5; sem referência para o bônus da quest Hero Status."
      ],
      "image_url": "https://globalmuonline.com/guides/classes/img/crusader-t1.webp"
     }
@@ -1034,7 +1034,7 @@
   {
    "id": "classico",
    "name": "Clássico (emulador MuEmu)",
-   "description": "Regras de um servidor clássico, segundo o emulador MuEmu (5 pontos por nível; 7 para MG e DL).",
+   "description": "Regras de um servidor clássico (5 pontos por nível; 7 para MG e DL).",
    "publish": true,
    "credit": "Characters.xml e código do MuEmu (github.com/deep-thought-42/MuEmu), licença MIT.",
    "classes": [

@@ -2,7 +2,7 @@
  * Liga os dados do build (lib/data.ts) à API (lib/api.ts). Só o conjunto do build entra: em hml/prod é o
  * `muemu`; o `combined` (com Fanz) só aparece em build local, como no resto do site.
  */
-import { items, monsters, maps, npcs, spawns, drops, sources, datasetName, monsterById, mapById } from "./data";
+import { sourceItems as items, sourceMonsters as monsters, sourceMaps as maps, sourceNpcs as npcs, spawns, drops, sources, datasetName, monsterById, mapById } from "./data";
 import { buildManifest, type Dataset } from "./api";
 
 type Row = Record<string, unknown>;

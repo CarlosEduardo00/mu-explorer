@@ -5,39 +5,143 @@
   "description": "Spot de farm: grupo de spawns próximos no mesmo mapa (gerado por scrapers/spots.py a partir das coordenadas da fonte).",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "map_id", "map_name", "x", "y", "x_min", "y_min", "x_max", "y_max", "monsters", "total",
-               "level_min", "level_max", "season", "source", "source_url", "scraped_at"],
+  "required": [
+    "id",
+    "map_id",
+    "map_name",
+    "x",
+    "y",
+    "x_min",
+    "y_min",
+    "x_max",
+    "y_max",
+    "monsters",
+    "total",
+    "level_min",
+    "level_max",
+    "season",
+    "source",
+    "source_url",
+    "scraped_at",
+    "heat"
+  ],
   "properties": {
-    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-    "map_id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-    "map_name": { "type": "string", "minLength": 1 },
-    "x": { "type": "integer", "minimum": 0 },
-    "y": { "type": "integer", "minimum": 0 },
-    "x_min": { "type": "integer", "minimum": 0 },
-    "y_min": { "type": "integer", "minimum": 0 },
-    "x_max": { "type": "integer", "minimum": 0 },
-    "y_max": { "type": "integer", "minimum": 0 },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "map_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "map_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "x": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "y": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "x_min": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "y_min": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "x_max": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "y_max": {
+      "type": "integer",
+      "minimum": 0
+    },
     "monsters": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["monster_id", "name", "level", "count"],
+        "required": [
+          "monster_id",
+          "name",
+          "level",
+          "count"
+        ],
         "properties": {
-          "monster_id": { "type": "string" },
-          "name": { "type": "string" },
-          "level": { "type": ["integer", "null"] },
-          "count": { "type": "integer", "minimum": 1 }
+          "monster_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "level": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1
+          }
         }
       }
     },
-    "total": { "type": "integer", "minimum": 1 },
-    "level_min": { "type": ["integer", "null"] },
-    "level_max": { "type": ["integer", "null"] },
-    "season": { "type": ["string", "null"] },
-    "source": { "type": ["string", "null"] },
-    "source_url": { "type": ["string", "null"] },
-    "scraped_at": { "type": ["string", "null"] }
+    "total": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "level_min": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "level_max": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "season": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_url": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "scraped_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "heat": {
+      "enum": [
+        "hot",
+        "mid",
+        "low",
+        "boss"
+      ],
+      "description": "boss: tem chefe; hot/mid/low: terço do volume de monstros entre os spots do mapa."
+    }
   }
 }
