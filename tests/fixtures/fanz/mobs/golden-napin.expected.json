@@ -1,0 +1,107 @@
+{
+  "record": {
+    "id": "golden-napin",
+    "name": "Golden Napin",
+    "level": 112,
+    "difficulty": null,
+    "hp": 77000,
+    "atk_min": 1440,
+    "atk_max": 2020,
+    "atk_rate": 1350,
+    "def": 585,
+    "def_rate": 840,
+    "elemental_def": null,
+    "elemental_dmg_min": null,
+    "elemental_dmg_max": null,
+    "respawn_seconds": null,
+    "respawn_raw": null,
+    "drops_normal_items": true,
+    "notes": [],
+    "image_url": "https://muonlinefanz.com/tools/mobs/data/graphics/Golden%20Napin.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Golden%20Napin.php",
+    "scraped_at": "2026-10-21T12:04:28Z",
+    "page_updated_at": "2019-05-03"
+  },
+  "related": {
+    "maps": [
+      {
+        "id": "swamp-of-peace",
+        "name": "Swamp of Peace",
+        "season": null,
+        "source": "fanz",
+        "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Swamp%20of%20Peace.php",
+        "scraped_at": "2026-10-21T12:04:28Z"
+      }
+    ],
+    "spawns": [
+      {
+        "monster_id": "golden-napin",
+        "map_id": "swamp-of-peace",
+        "season": null,
+        "source": "fanz",
+        "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Golden%20Napin.php",
+        "scraped_at": "2026-10-21T12:04:28Z"
+      }
+    ],
+    "drops": [
+      {
+        "monster_id": "golden-napin",
+        "item_id": "symbol-of-kundun-7",
+        "item_name": "Symbol of Kundun +7",
+        "kind": "normal",
+        "table": "General Drop Table",
+        "category": "misc",
+        "quantity": null,
+        "rate": null,
+        "season": null,
+        "source": "fanz",
+        "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Golden%20Napin.php",
+        "scraped_at": "2026-10-21T12:04:28Z"
+      },
+      {
+        "monster_id": "golden-napin",
+        "item_id": "elena-s-letter",
+        "item_name": "Elena's Letter",
+        "kind": "normal",
+        "table": "General Drop Table",
+        "category": "misc",
+        "quantity": null,
+        "rate": null,
+        "season": null,
+        "source": "fanz",
+        "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Golden%20Napin.php",
+        "scraped_at": "2026-10-21T12:04:28Z"
+      },
+      {
+        "monster_id": "golden-napin",
+        "item_id": "condor-s-magic-bubble",
+        "item_name": "Condor's Magic Bubble",
+        "kind": "normal",
+        "table": "General Drop Table",
+        "category": "misc",
+        "quantity": null,
+        "rate": null,
+        "season": null,
+        "source": "fanz",
+        "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Golden%20Napin.php",
+        "scraped_at": "2026-10-21T12:04:28Z"
+      },
+      {
+        "monster_id": "golden-napin",
+        "item_id": "box-of-kundun-5",
+        "item_name": "Box of Kundun +5",
+        "kind": "normal",
+        "table": "General Drop Table",
+        "category": "misc",
+        "quantity": null,
+        "rate": null,
+        "season": null,
+        "source": "fanz",
+        "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Golden%20Napin.php",
+        "scraped_at": "2026-10-21T12:04:28Z"
+      }
+    ]
+  }
+}

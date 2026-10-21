@@ -30,6 +30,21 @@ def links_from_list_page(html: str, base_url: str, kind: str) -> list[str]:
     return list(dict.fromkeys(out))
 
 
+def list_page_count(html: str) -> int:
+    """Total de páginas da listagem: maior valor dos botões <button name="curpagenum"> (1 se não houver)."""
+    tree = LexborHTMLParser(html)
+    numbers = [int(b.attributes["value"]) for b in tree.css('button[name="curpagenum"]')
+               if (b.attributes.get("value") or "").isdigit()]
+    return max(numbers, default=1)
+
+
+def spread_pages(total: int, n: int) -> list[int]:
+    """Até n números de página (1..total) espaçados, sempre incluindo a primeira e a última."""
+    if total <= 0 or n <= 0:
+        return []
+    return sample(list(range(1, total + 1)), n, "spread")
+
+
 def group_by_kind(all_urls: list[str]) -> dict[str, list[str]]:
     grouped: dict[str, list[str]] = {"item": [], "monster": [], "map": [], "npc": []}
     for url in all_urls:

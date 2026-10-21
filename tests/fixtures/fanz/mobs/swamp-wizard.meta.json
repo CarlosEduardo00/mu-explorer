@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "mobs",
+  "key": "Swamp Wizard",
+  "file": "swamp-wizard.html",
+  "url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Swamp%20Wizard.php",
+  "final_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Swamp%20Wizard.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T12:04:36Z",
+  "bytes": 56505,
+  "sha256": "c2f49e10f7fef30b525bf90cf79e0cc4af5615031f28d637efeca189204e96d2"
+}

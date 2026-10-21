@@ -147,3 +147,21 @@ def test_charset_from():
     assert charset_from("text/html; charset=ISO-8859-1") == "iso-8859-1"
     assert charset_from("text/html") is None
     assert charset_from(None) is None
+
+
+def test_post_form_passa_pelas_mesmas_regras(clock):
+    key = ("POST", f"{BASE}/lista", (("curpagenum", "3"),))
+    session, fake = make({ROBOTS_URL: robots(), key: html_response("pagina 3")}, clock)
+    session.get(f"{BASE}/lista")  # 404 (rota GET inexistente), só para consumir o primeiro intervalo
+    result = session.post_form(f"{BASE}/lista", {"curpagenum": "3"})
+    assert (result.status, result.text) == (200, "pagina 3")
+    assert fake.posts == [(f"{BASE}/lista", {"curpagenum": "3"})]
+    times = [t for t, _ in fake.calls]
+    assert all(later - earlier >= 1.0 for earlier, later in zip(times, times[1:]))
+
+
+def test_post_form_respeita_bloqueios(clock):
+    session, fake = make({ROBOTS_URL: robots()}, clock)
+    with pytest.raises(BlockedByRobots):
+        session.post_form(f"{BASE}/tools/items/data/php/list.php", {"a": "1"})
+    assert getattr(fake, "posts", []) == []

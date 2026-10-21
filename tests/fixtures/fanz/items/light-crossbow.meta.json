@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "items",
+  "key": "Light Crossbow",
+  "file": "light-crossbow.html",
+  "url": "https://muonlinefanz.com/tools/items/data/itemdb/Light%20Crossbow.php",
+  "final_url": "https://muonlinefanz.com/tools/items/data/itemdb/Light%20Crossbow.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T12:04:12Z",
+  "bytes": 44881,
+  "sha256": "e133e67550bcc49478d7014acd2ff55a9a5c329f51d9fc396ee3e7b071855825"
+}

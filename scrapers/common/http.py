@@ -5,7 +5,8 @@
 - no máximo 1 requisição/segundo por host (ou o Crawl-delay, se maior), sem paralelismo;
 - User-Agent identificado;
 - retries com backoff exponencial em 429/5xx e erros de rede, respeitando Retry-After;
-- segue redirecionamentos manualmente, checando robots.txt a cada salto.
+- segue redirecionamentos manualmente, checando robots.txt a cada salto;
+- GET e POST de formulário de consulta (post_form) compartilham todas essas regras.
 """
 from __future__ import annotations
 
@@ -141,8 +142,19 @@ class PoliteSession:
         return self._robots_for(url).can_fetch(self.user_agent, url)
 
     def get(self, url: str) -> FetchResult:
+        return self._fetch(url, None)
+
+    def post_form(self, url: str, data: dict[str, str]) -> FetchResult:
+        """POST de formulário de consulta (ex.: botão de página de uma listagem).
+
+        Só para formulários que apenas LEEM dados (paginação, filtros): como o GET, é repetido
+        em caso de erro temporário. Passa pelas mesmas regras (robots, bloqueios, 1 req/s).
+        """
+        return self._fetch(url, dict(data))
+
+    def _fetch(self, url: str, data: dict[str, str] | None) -> FetchResult:
         requested = normalize_url(url)
-        resp, final_url = self._follow(requested, check_robots=True)
+        resp, final_url = self._follow(requested, check_robots=True, data=data)
         content_type = resp.headers.get("Content-Type")
         return FetchResult(
             url=requested,
@@ -156,15 +168,17 @@ class PoliteSession:
 
     # --- internos -------------------------------------------------------------------------
 
-    def _follow(self, url: str, *, check_robots: bool) -> tuple[requests.Response, str]:
+    def _follow(self, url: str, *, check_robots: bool,
+                data: dict[str, str] | None = None) -> tuple[requests.Response, str]:
         current = url
         for _ in range(self.max_redirects + 1):
             if check_robots and not self.is_allowed(current):
                 raise BlockedByRobots(current)
-            resp = self._send(current)
+            resp = self._send(current, data)
             location = resp.headers.get("Location")
             if resp.status_code in REDIRECT_STATUS and location:
                 current = normalize_url(urljoin(current, location))
+                data = None  # após redirecionamento, segue por GET
                 continue
             return resp, current
         raise requests.TooManyRedirects(url)
@@ -195,13 +209,16 @@ class PoliteSession:
         log.info("robots.txt carregado de %s (crawl-delay=%s)", robots_url, delay)
         return parser
 
-    def _send(self, url: str) -> requests.Response:
+    def _send(self, url: str, data: dict[str, str] | None = None) -> requests.Response:
         key = host_key(url)
         for attempt in range(1, self.max_attempts + 1):
             self.limiter.wait(key, self._crawl_delay.get(key))
             try:
                 self.request_count += 1
-                resp = self.session.get(url, timeout=self.timeout, allow_redirects=False)
+                if data is None:
+                    resp = self.session.get(url, timeout=self.timeout, allow_redirects=False)
+                else:
+                    resp = self.session.post(url, data=data, timeout=self.timeout, allow_redirects=False)
             except (requests.ConnectionError, requests.Timeout):
                 self.limiter.mark(key)
                 if attempt == self.max_attempts:

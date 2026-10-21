@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "items",
+  "key": "AGI Fruit",
+  "file": "agi-fruit.html",
+  "url": "https://muonlinefanz.com/tools/items/data/itemdb/AGI%20Fruit.php",
+  "final_url": "https://muonlinefanz.com/tools/items/data/itemdb/AGI%20Fruit.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T12:03:57Z",
+  "bytes": 41927,
+  "sha256": "26c511427f7b581973423ae5c51457afbe9e0a623ea760ff5c9d292b91036b8c"
+}

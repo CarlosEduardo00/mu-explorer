@@ -1,0 +1,47 @@
+{
+  "record": {
+    "id": "light-crossbow",
+    "name": "Light Crossbow",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Fairy Elf"
+    ],
+    "requirements": {
+      "level": null,
+      "strength": 48,
+      "agility": 106,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "hands": 1,
+      "damage_min": 35,
+      "damage_max": 44,
+      "attack_speed": 40
+    },
+    "durability": null,
+    "grade": "normal",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [],
+    "related_items": [
+      "excellent-light-crossbow"
+    ],
+    "notes": [
+      "This item is a 'normal' grade item; you can learn more about item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Light%20Crossbow.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Light%20Crossbow.php",
+    "scraped_at": "2026-10-21T12:04:12Z",
+    "page_updated_at": null
+  },
+  "related": {}
+}

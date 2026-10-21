@@ -17,7 +17,9 @@
     "durability",
     "grade",
     "options",
+    "option_groups",
     "related_items",
+    "notes",
     "image_url",
     "season",
     "source",
@@ -155,7 +157,41 @@
         "minLength": 1
       },
       "uniqueItems": true,
-      "description": "Opções adicionais possíveis (Luck, Jewel of Life, Jewel of Harmony...)."
+      "description": "Opções extras que o item aceita (Luck, Jewel of Life, Jewel of Harmony, Socket)."
+    },
+    "option_groups": {
+      "type": "array",
+      "description": "Grupos de opções do item como a fonte lista (excellent, additional, elemental, base, set, errtel...). Linhas em texto original.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "title",
+          "max",
+          "lines"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "max": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1,
+            "description": "'(x3 max)': quantas opções do grupo podem vir juntas."
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
     },
     "related_items": {
       "type": "array",
@@ -164,6 +200,14 @@
         "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
       },
       "uniqueItems": true
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Textos de uso/observações da página (Item usage, Notes & links)."
     },
     "image_url": {
       "type": [

@@ -14,10 +14,12 @@ português do Brasil, de forma direta e concisa.**
 pip install -e ".[dev]"            # dependências (requests, selectolax, jsonschema, pytest)
 pytest                             # testes (offline, usam fixtures de HTML)
 
-python -m scrapers.fanz fetch --items 20 --mobs 20   # baixa HTML bruto para data/raw/fanz/
-python -m scrapers.fanz parse                        # HTML bruto -> data/processed/fanz/*.json + relatório
+python -m scrapers.fanz fetch --items 20 --mobs 20   # baixa HTML bruto para data/raw/fanz/ (~1 min, 1 req/s)
+python -m scrapers.fanz parse                        # HTML bruto -> data/processed/fanz/*.json + poc_report.md
 python -m scrapers.fanz poc                          # fetch + parse
-python -m scrapers.fanz fixtures [--golden]          # copia o HTML bruto para tests/fixtures/fanz/
+python -m scrapers.fanz fixtures --golden --only dark-knight,aegis   # copia páginas p/ tests/fixtures/fanz/
+                                                     # (+ <slug>.expected.json; revise o diff antes de commitar)
+# opções do fetch: --sample first|spread, --list-pages 5, --refresh (rebaixa o que já está em disco)
 ```
 
 `parse` nunca acessa a rede: dá para refazer o parsing quantas vezes quiser sem rebaixar nada.
@@ -81,6 +83,27 @@ site/              frontend (ainda não iniciado)
   Sitemap: `http://www.muonlinefanz.com/files/sitemap/sitemap.txt`.
 - Frescura: lista de itens atualizada em maio/2025, mas páginas de monstros podem ter
   "Data updated May 03, 2019". Registrar a data de cada página (`page_updated_at`).
+
+**O que a PoC descobriu no HTML real (40 páginas, out/2026):**
+- O sitemap só lista guias e 3 páginas de ferramentas; **não tem itens nem monstros**. As URLs vêm das
+  listagens `/tools/items/` (52 páginas) e `/tools/mobs/` (5 páginas), 59 links por página. A paginação é
+  **POST** `curpagenum=N` na própria URL (`PoliteSession.post_form`). Use o sitemap por **HTTPS**: o proxy
+  do ambiente cloud só aceita HTTPS, embora o robots.txt cite `http://`.
+- Toda página tem ~110 linhas de menu antes do conteúdo e rodapé depois. Recortamos entre a linha `|||` e a
+  linha de versão do template (`b2023.11.20.001`). Não há `<h1>..<h6>` de seção: as seções são `<div>`s
+  (`Item details...`, `Requirements...`, `Monster details:`, `General Drop Table`).
+- **Item**: Item details (DEF, N-H ATK DMG, ATK Speed...), Requirements (Strength/Agility/Energy, `Character
+  Level N`, `Can be equipped by DK, DW` com abreviações como `DiM`), opções (`+Luck option`...), grupos
+  Excellent/Additional/Elemental/Base/Set option, Related items, Notes (o grau vem em frase:
+  "This item is an 'excellent' grade item"). Páginas de consumíveis usam `Item usage...`/`Prerequisites...`.
+- **Monstro**: nível, Max HP, ATK DMG, ATK Rate, DEF, DEF Rate (+ Elemental DEF/DMG nos novos), `Spawns in <Mapa>.`
+  (link para o mapa, nem sempre), e tabelas de drop: `General Drop Table` (normal, ~100 itens possíveis),
+  `Excellent Drop Table`, `Excellent <Set> Drop Table`, `Ancient Drop Table`. Algumas tabelas são só uma
+  frase ("This monster can drop any Excellent Holyangel armor item.") e vão para `notes`.
+  Alguns monstros têm seletor de dificuldade (POST); a PoC guarda só a dificuldade padrão (`difficulty` = 1).
+- **O Fanz NÃO publica**: respawn, durabilidade, categoria do item, data de atualização dos itens, taxa de
+  drop, grupo/índice do MU, season. Esses campos ficam `null` (os dois primeiros virão de outras fontes).
+  Algumas páginas não têm imagem do item (só o ícone de ajuda) e alguns monstros não têm HP/ATK na página.
 - O rodapé diz que é recurso de fã operado com permissão da Webzen; o conteúdo é do autor
   (IZAKTLY). Dar crédito e, se o site for público, pedir autorização.
 
@@ -107,12 +130,16 @@ wiki.infinitymu.net e info.topmuonline.net (servidores privados), globalmuonline
 
 Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 - `item`: id, name, category, group, index, classes, requirements (level/strength/agility/
-  vitality/energy/command), stats, durability, grade, options, related_items, image_url, season,
+  vitality/energy/command), stats (chaves em snake_case: defense, damage_min/max, attack_speed,
+  elemental_def, `*_pct` para percentuais...), durability, grade, options (Luck, Jewel of Life...),
+  option_groups (título, max, linhas em texto original), related_items, notes, image_url, season,
   source, source_url, scraped_at, page_updated_at.
-- `monster`: id, name, level, hp, atk_min, atk_max, atk_rate, def, def_rate, respawn_seconds,
-  respawn_raw, drops_normal_items, image_url, season, source, source_url, scraped_at, page_updated_at.
-- `map`: id, name. `spawn`: monster_id, map_id. `drop`: monster_id, item_id, kind
-  (normal/excellent/ancient/socket/unknown), category, rate (null se a fonte não informa).
+- `monster`: id, name, level, difficulty, hp, atk_min, atk_max, atk_rate, def, def_rate, elemental_def,
+  elemental_dmg_min/max, respawn_seconds, respawn_raw, drops_normal_items, notes, image_url, season,
+  source, source_url, scraped_at, page_updated_at.
+- `map`: id, name. `spawn`: monster_id, map_id. `drop`: monster_id, item_id, item_name, kind
+  (normal/excellent/ancient/socket/unknown), table, category, quantity, rate (null se a fonte não informa).
+  Um drop do Fanz significa "o monstro pode dropar este item"; não há taxa.
 - `source`: id, name, url, scraped_at, credit.
 - Builds **não existem como dado** nas fontes: serão curadoria nossa (referência: guias por
   classe e Stat Planner do Fanz).

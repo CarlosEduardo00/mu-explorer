@@ -1,0 +1,73 @@
+{
+  "record": {
+    "id": "akhir-s-hirat-gloves",
+    "name": "Akhir's Hirat Gloves",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Grow Lancer"
+    ],
+    "requirements": {
+      "level": null,
+      "strength": 1209,
+      "agility": 315,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "defense": 49
+    },
+    "durability": null,
+    "grade": "ancient",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [
+      {
+        "title": "Additional option",
+        "max": null,
+        "lines": [
+          "Any Stat +5 ~ +10"
+        ]
+      },
+      {
+        "title": "Set option",
+        "max": null,
+        "lines": [
+          "If you equip multiple items from the Akhir's Hirat set, you'll unlock additional options...",
+          "x2 items:",
+          "Skill DMG +30",
+          "x3 items:",
+          "Strength Level +30",
+          "x4 items:",
+          "Excellent DMG +20",
+          "Critical DMG +20",
+          "Critical DMG chance +15%",
+          "Excellent DMG chance +15%",
+          "Ignore DEF chance +5%"
+        ]
+      }
+    ],
+    "related_items": [
+      "akhir-s-hirat-pants",
+      "akhir-s-hirat-boots",
+      "anas-s-hirat-gloves",
+      "excellent-hirat-gloves",
+      "hirat-gloves"
+    ],
+    "notes": [
+      "This item is an 'ancient' grade item; ancient items are special because you can gain passive bonuses when equipping multiple parts of the same 'ancient set name.' You can learn more about ancient items and their possible additional options in the ancient items guide. You can learn more about all item grades and their possible additional options in the combat items guide. Additionally, there are 'Lucky Tickets' sold in the cash item shop which allow you to purchase non-tradable parts of a special premium ancient set for your character. You can learn more about those sets in the lucky sets guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Akhir's%20Hirat%20Gloves.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Akhir's%20Hirat%20Gloves.php",
+    "scraped_at": "2026-10-21T12:03:58Z",
+    "page_updated_at": null
+  },
+  "related": {}
+}

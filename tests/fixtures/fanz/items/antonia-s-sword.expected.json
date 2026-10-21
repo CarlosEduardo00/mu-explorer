@@ -1,0 +1,81 @@
+{
+  "record": {
+    "id": "antonia-s-sword",
+    "name": "Antonia's Sword",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [],
+    "requirements": {
+      "level": 300,
+      "strength": null,
+      "agility": null,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "elemental_dmg_min": 209,
+      "elemental_dmg_max": 284,
+      "elemental_def": 288
+    },
+    "durability": null,
+    "grade": null,
+    "options": [],
+    "option_groups": [
+      {
+        "title": "Possible additional options",
+        "max": null,
+        "lines": [
+          "Trade Limit: 1/255",
+          "1 ~ 5 Sockets"
+        ]
+      },
+      {
+        "title": "Errtel bonus",
+        "max": null,
+        "lines": [
+          "Resistance against elemental attack +5%*",
+          "Defense to elemental defense +5%**"
+        ]
+      }
+    ],
+    "related_items": [
+      "pentagram-for-beginners",
+      "muren-s-book-of-magic",
+      "scroll-of-etramu",
+      "lorencia-knight-s-iron-shield",
+      "hero-elixir",
+      "gladiator-s-dagger",
+      "thoughtful-sage-s-jewel",
+      "iron-shield-of-the-magic",
+      "brave-hero-elixir",
+      "merciless-gladiator-s-dagger",
+      "kundun-s-madness-blade",
+      "kundun-s-magic-spell-scroll",
+      "empire-guardian-s-stronghold",
+      "ancient-icarus-scroll",
+      "runedil-s-goldentune-harp",
+      "lemuria-s-orb",
+      "norrwen-s-bloodstring-lyra",
+      "kundun-s-seal-scroll",
+      "expansion-scroll-of-radiance-slot",
+      "errtel-of-anger",
+      "errtel-of-blessing",
+      "errtel-of-integrity",
+      "errtel-of-divinity",
+      "errtel-of-radiance",
+      "sword"
+    ],
+    "notes": [
+      "This is a pentagram item; you can learn more about pentagrams and their possible additional options in the pentagrams & errtel guide. These items can be one of five different elemental types: fire, water, earth, darkness, or wind."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Antonia's%20Sword.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Antonia's%20Sword.php",
+    "scraped_at": "2026-10-21T12:04:02Z",
+    "page_updated_at": null
+  },
+  "related": {}
+}

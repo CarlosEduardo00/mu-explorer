@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "mobs",
+  "key": "Aegis",
+  "file": "aegis.html",
+  "url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Aegis.php",
+  "final_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Aegis.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T12:04:18Z",
+  "bytes": 50847,
+  "sha256": "b0bce9e2b50e53953fb1a8c60b221617be778c65c2b7d21b44a2598feaaef38d"
+}

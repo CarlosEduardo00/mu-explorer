@@ -41,8 +41,21 @@ class FakeSession:
         self.calls: list[tuple[float, str]] = []
 
     def get(self, url: str, timeout: float, allow_redirects: bool):
+        return self._respond("GET", url, None, allow_redirects)
+
+    def post(self, url: str, data: dict, timeout: float, allow_redirects: bool):
+        return self._respond("POST", url, data, allow_redirects)
+
+    def _respond(self, method: str, url: str, data: dict | None, allow_redirects: bool):
         assert allow_redirects is False
         self.calls.append((self.clock.now, url))
+        self.posts = getattr(self, "posts", [])
+        if method == "POST":
+            self.posts.append((url, data))
+            route = self.routes.get(("POST", url, tuple(sorted(data.items()))))
+            if route is None:
+                return FakeResponse(404, b"not found")
+            return route
         route = self.routes.get(url)
         if route is None:
             return FakeResponse(404, b"not found")

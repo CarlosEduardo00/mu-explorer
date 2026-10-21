@@ -1,0 +1,46 @@
+{
+  "record": {
+    "id": "agi-fruit",
+    "name": "AGI Fruit",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [],
+    "requirements": {
+      "level": null,
+      "strength": null,
+      "agility": null,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {},
+    "durability": null,
+    "grade": null,
+    "options": [],
+    "option_groups": [],
+    "related_items": [
+      "str-fruit",
+      "sta-fruit",
+      "eng-fruit",
+      "com-fruit",
+      "jewel-of-creation",
+      "jewel-of-chaos"
+    ],
+    "notes": [
+      "It is used to create additional stat points, or reassign existing stat points.",
+      "Most characters can create up to x127 additional stat points.",
+      "This item can be crafted from a Jewel of Creation and a Jewel of Chaos through NPC Chaos Goblin Machine.",
+      "When using this item, you can choose to either add or reassign stat points. Sometimes there is a chance to fail adding or reassigning stat points. The success rate is displayed in the character menu, towards the top of the menu. The success rate will decrease as you add or reassign stat points from your character.",
+      "You must remove all equipment before using the item.",
+      "Occasionally, there will be a promotional event which will reset the count of how many stat points you've reassigned. This will allow you to use more stat fruits in order to reassign additional stat points again as part of a promotional free-to-play event."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/AGI%20Fruit.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/AGI%20Fruit.php",
+    "scraped_at": "2026-10-21T12:03:57Z",
+    "page_updated_at": null
+  },
+  "related": {}
+}

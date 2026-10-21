@@ -1,0 +1,1162 @@
+[
+  {
+    "id": "agi-fruit",
+    "name": "AGI Fruit",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [],
+    "requirements": {
+      "level": null,
+      "strength": null,
+      "agility": null,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {},
+    "durability": null,
+    "grade": null,
+    "options": [],
+    "option_groups": [],
+    "related_items": [
+      "str-fruit",
+      "sta-fruit",
+      "eng-fruit",
+      "com-fruit",
+      "jewel-of-creation",
+      "jewel-of-chaos"
+    ],
+    "notes": [
+      "It is used to create additional stat points, or reassign existing stat points.",
+      "Most characters can create up to x127 additional stat points.",
+      "This item can be crafted from a Jewel of Creation and a Jewel of Chaos through NPC Chaos Goblin Machine.",
+      "When using this item, you can choose to either add or reassign stat points. Sometimes there is a chance to fail adding or reassigning stat points. The success rate is displayed in the character menu, towards the top of the menu. The success rate will decrease as you add or reassign stat points from your character.",
+      "You must remove all equipment before using the item.",
+      "Occasionally, there will be a promotional event which will reset the count of how many stat points you've reassigned. This will allow you to use more stat fruits in order to reassign additional stat points again as part of a promotional free-to-play event."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/AGI%20Fruit.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/AGI%20Fruit.php",
+    "scraped_at": "2026-10-21T12:03:57Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "akhir-s-hirat-gloves",
+    "name": "Akhir's Hirat Gloves",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Grow Lancer"
+    ],
+    "requirements": {
+      "level": null,
+      "strength": 1209,
+      "agility": 315,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "defense": 49
+    },
+    "durability": null,
+    "grade": "ancient",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [
+      {
+        "title": "Additional option",
+        "max": null,
+        "lines": [
+          "Any Stat +5 ~ +10"
+        ]
+      },
+      {
+        "title": "Set option",
+        "max": null,
+        "lines": [
+          "If you equip multiple items from the Akhir's Hirat set, you'll unlock additional options...",
+          "x2 items:",
+          "Skill DMG +30",
+          "x3 items:",
+          "Strength Level +30",
+          "x4 items:",
+          "Excellent DMG +20",
+          "Critical DMG +20",
+          "Critical DMG chance +15%",
+          "Excellent DMG chance +15%",
+          "Ignore DEF chance +5%"
+        ]
+      }
+    ],
+    "related_items": [
+      "akhir-s-hirat-pants",
+      "akhir-s-hirat-boots",
+      "anas-s-hirat-gloves",
+      "excellent-hirat-gloves",
+      "hirat-gloves"
+    ],
+    "notes": [
+      "This item is an 'ancient' grade item; ancient items are special because you can gain passive bonuses when equipping multiple parts of the same 'ancient set name.' You can learn more about ancient items and their possible additional options in the ancient items guide. You can learn more about all item grades and their possible additional options in the combat items guide. Additionally, there are 'Lucky Tickets' sold in the cash item shop which allow you to purchase non-tradable parts of a special premium ancient set for your character. You can learn more about those sets in the lucky sets guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Akhir's%20Hirat%20Gloves.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Akhir's%20Hirat%20Gloves.php",
+    "scraped_at": "2026-10-21T12:03:58Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "ambition-boots",
+    "name": "Ambition Boots",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Lord Emperor"
+    ],
+    "requirements": {
+      "level": 400,
+      "strength": 490,
+      "agility": 112,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "defense": 47
+    },
+    "durability": null,
+    "grade": "socket",
+    "options": [
+      "Socket",
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [],
+    "related_items": [
+      "ambition-mask",
+      "ambition-armor",
+      "ambition-pants",
+      "ambition-gloves"
+    ],
+    "notes": [
+      "This item is a 'socket' grade item; socket items are special because you can add Seed Spheres onto them in order to add additional options to the item. You can learn more about socket items and their possible additional options in the socket items guide. You can learn more about all item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Ambition%20Boots.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Ambition%20Boots.php",
+    "scraped_at": "2026-10-21T12:03:59Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "ancient-boots",
+    "name": "Ancient Boots",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Summoner"
+    ],
+    "requirements": {
+      "level": null,
+      "strength": 123,
+      "agility": 51,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "defense": 21
+    },
+    "durability": null,
+    "grade": "normal",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [],
+    "related_items": [
+      "ancient-helm",
+      "ancient-armor",
+      "ancient-pants",
+      "ancient-gloves",
+      "harpy-ancient-boots",
+      "excellent-ancient-boots"
+    ],
+    "notes": [
+      "This item is a 'normal' grade item; you can learn more about item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Ancient%20Boots.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Ancient%20Boots.php",
+    "scraped_at": "2026-10-21T12:04:00Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "antonia-s-sword",
+    "name": "Antonia's Sword",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [],
+    "requirements": {
+      "level": 300,
+      "strength": null,
+      "agility": null,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "elemental_dmg_min": 209,
+      "elemental_dmg_max": 284,
+      "elemental_def": 288
+    },
+    "durability": null,
+    "grade": null,
+    "options": [],
+    "option_groups": [
+      {
+        "title": "Possible additional options",
+        "max": null,
+        "lines": [
+          "Trade Limit: 1/255",
+          "1 ~ 5 Sockets"
+        ]
+      },
+      {
+        "title": "Errtel bonus",
+        "max": null,
+        "lines": [
+          "Resistance against elemental attack +5%*",
+          "Defense to elemental defense +5%**"
+        ]
+      }
+    ],
+    "related_items": [
+      "pentagram-for-beginners",
+      "muren-s-book-of-magic",
+      "scroll-of-etramu",
+      "lorencia-knight-s-iron-shield",
+      "hero-elixir",
+      "gladiator-s-dagger",
+      "thoughtful-sage-s-jewel",
+      "iron-shield-of-the-magic",
+      "brave-hero-elixir",
+      "merciless-gladiator-s-dagger",
+      "kundun-s-madness-blade",
+      "kundun-s-magic-spell-scroll",
+      "empire-guardian-s-stronghold",
+      "ancient-icarus-scroll",
+      "runedil-s-goldentune-harp",
+      "lemuria-s-orb",
+      "norrwen-s-bloodstring-lyra",
+      "kundun-s-seal-scroll",
+      "expansion-scroll-of-radiance-slot",
+      "errtel-of-anger",
+      "errtel-of-blessing",
+      "errtel-of-integrity",
+      "errtel-of-divinity",
+      "errtel-of-radiance",
+      "sword"
+    ],
+    "notes": [
+      "This is a pentagram item; you can learn more about pentagrams and their possible additional options in the pentagrams & errtel guide. These items can be one of five different elemental types: fire, water, earth, darkness, or wind."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Antonia's%20Sword.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Antonia's%20Sword.php",
+    "scraped_at": "2026-10-21T12:04:02Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "excellent-bloodangel-rune-mage-helm",
+    "name": "Excellent Bloodangel Rune Mage Helm",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Rune Grand Master"
+    ],
+    "requirements": {
+      "level": 400,
+      "strength": 209,
+      "agility": 88,
+      "vitality": null,
+      "energy": 867,
+      "command": null
+    },
+    "stats": {
+      "defense": 107
+    },
+    "durability": null,
+    "grade": "excellent",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [
+      {
+        "title": "Excellent option",
+        "max": 3,
+        "lines": [
+          "HP +165",
+          "Mana +165",
+          "DEF Rate +10%",
+          "Decrease DMG +45",
+          "Reflect DMG +5%",
+          "Amount of Zen dropped from monsters +42%"
+        ]
+      }
+    ],
+    "related_items": [
+      "plural-s-bloodangel-rune-mage-helm",
+      "excellent-bloodangel-rune-mage-armor",
+      "excellent-bloodangel-rune-mage-pants",
+      "excellent-bloodangel-rune-mage-gloves",
+      "excellent-bloodangel-rune-mage-boots"
+    ],
+    "notes": [
+      "This item is an 'excellent' grade item; you can learn more about excellent items and their possible additional options in the excellent items guide. You can learn more about all item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Bloodangel%20Rune%20Mage%20Helm.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Excellent%20Bloodangel%20Rune%20Mage%20Helm.php",
+    "scraped_at": "2026-10-21T12:04:03Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "excellent-bloodangel-summoner-gloves",
+    "name": "Excellent Bloodangel Summoner Gloves",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Dimension Master"
+    ],
+    "requirements": {
+      "level": null,
+      "strength": 151,
+      "agility": 46,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "defense": 72
+    },
+    "durability": null,
+    "grade": "excellent",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [
+      {
+        "title": "Excellent option",
+        "max": 3,
+        "lines": [
+          "HP +165",
+          "Mana +165",
+          "DEF Rate +10%",
+          "Decrease DMG +45",
+          "Reflect DMG +5%",
+          "Amount of Zen dropped from monsters +42%"
+        ]
+      }
+    ],
+    "related_items": [
+      "honor-s-bloodangel-summoner-gloves",
+      "excellent-bloodangel-summoner-helm",
+      "excellent-bloodangel-summoner-armor",
+      "excellent-bloodangel-summoner-pants",
+      "excellent-bloodangel-summoner-boots"
+    ],
+    "notes": [
+      "This item is an 'excellent' grade item; you can learn more about excellent items and their possible additional options in the excellent items guide. You can learn more about all item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Bloodangel%20Summoner%20Gloves.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Excellent%20Bloodangel%20Summoner%20Gloves.php",
+    "scraped_at": "2026-10-21T12:04:04Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "excellent-blue-eye-elf-boots-ene",
+    "name": "Excellent Blue Eye Elf Boots (ENE)",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Noble Elf"
+    ],
+    "requirements": {
+      "level": 1000,
+      "strength": 88,
+      "agility": 151,
+      "vitality": null,
+      "energy": 1063,
+      "command": null
+    },
+    "stats": {
+      "defense": 186
+    },
+    "durability": null,
+    "grade": "excellent",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [
+      {
+        "title": "Excellent option",
+        "max": 3,
+        "lines": [
+          "HP +165",
+          "Mana +165",
+          "DEF Rate +10%",
+          "Decrease DMG +45",
+          "Reflect DMG +5%",
+          "Base DEF +1.5 per 20 levels"
+        ]
+      }
+    ],
+    "related_items": [
+      "excellent-blue-eye-elf-ene-helm",
+      "excellent-blue-eye-elf-ene-armor",
+      "excellent-blue-eye-elf-ene-pants",
+      "excellent-blue-eye-elf-ene-gloves",
+      "excellent-blue-eye-elf-ene-boots"
+    ],
+    "notes": [
+      "This item is an 'excellent' grade item; you can learn more about excellent items and their possible additional options in the excellent items guide. You can learn more about all item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Excellent%20Blue%20Eye%20Elf%20Boots%20(ENE).jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Excellent%20Blue%20Eye%20Elf%20Boots%20(ENE).php",
+    "scraped_at": "2026-10-21T12:04:05Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "excellent-blue-eye-gun-crusher-helm",
+    "name": "Excellent Blue Eye Gun Crusher Helm",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Heist Gun Crusher"
+    ],
+    "requirements": {
+      "level": 1000,
+      "strength": null,
+      "agility": 272,
+      "vitality": null,
+      "energy": 804,
+      "command": null
+    },
+    "stats": {
+      "defense": 277
+    },
+    "durability": null,
+    "grade": "excellent",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [
+      {
+        "title": "Excellent option",
+        "max": 3,
+        "lines": [
+          "HP +165",
+          "Mana +165",
+          "DEF Rate +10%",
+          "Decrease DMG +45",
+          "Reflect DMG +5%",
+          "Base DEF +1.5 per 20 levels"
+        ]
+      }
+    ],
+    "related_items": [
+      "excellent-blue-eye-gun-crusher-armor",
+      "excellent-blue-eye-gun-crusher-pants",
+      "excellent-blue-eye-gun-crusher-gloves",
+      "excellent-blue-eye-gun-crusher-boots"
+    ],
+    "notes": [
+      "This item is an 'excellent' grade item; you can learn more about excellent items and their possible additional options in the excellent items guide. You can learn more about all item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": null,
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Excellent%20Blue%20Eye%20Gun%20Crusher%20Helm.php",
+    "scraped_at": "2026-10-21T12:04:06Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "excellent-silver-heart-fighter-helm",
+    "name": "Excellent Silver Heart Fighter Helm",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Fist Blazer"
+    ],
+    "requirements": {
+      "level": 1100,
+      "strength": 392,
+      "agility": 350,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "defense": 304
+    },
+    "durability": null,
+    "grade": "excellent",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [
+      {
+        "title": "Excellent option",
+        "max": 3,
+        "lines": [
+          "HP +165",
+          "Mana +165",
+          "DEF Rate +10%",
+          "Decrease DMG +45",
+          "Reflect DMG +5%",
+          "Base DEF +1.5 per 20 levels"
+        ]
+      }
+    ],
+    "related_items": [
+      "forefather-s-silver-heart-fighter-helm",
+      "excellent-silver-heart-fighter-armor",
+      "excellent-silver-heart-fighter-pants",
+      "excellent-silver-heart-fighter-boots"
+    ],
+    "notes": [
+      "This item is an 'excellent' grade item; you can learn more about excellent items and their possible additional options in the excellent items guide. You can learn more about all item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Excellent%20Silver%20Heart%20Fighter%20Helm.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Excellent%20Silver%20Heart%20Fighter%20Helm.php",
+    "scraped_at": "2026-10-21T12:04:07Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "excellent-silver-heart-knight-helm-belief",
+    "name": "Excellent Silver Heart Knight Helm (Belief)",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Dragon Knight"
+    ],
+    "requirements": {
+      "level": 1100,
+      "strength": null,
+      "agility": 125,
+      "vitality": null,
+      "energy": 755,
+      "command": null
+    },
+    "stats": {
+      "defense": 348
+    },
+    "durability": null,
+    "grade": "excellent",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [
+      {
+        "title": "Excellent option",
+        "max": 3,
+        "lines": [
+          "HP +165",
+          "Mana +165",
+          "DEF Rate +10%",
+          "Decrease DMG +45",
+          "Reflect DMG +5%",
+          "Base DEF +1.5 per 20 levels"
+        ]
+      }
+    ],
+    "related_items": [
+      "forefather-s-silver-heart-knight-helm",
+      "forefather-s-silver-heart-knight-helm-belief",
+      "excellent-silver-heart-knight-belief-helm",
+      "excellent-silver-heart-knight-belief-armor",
+      "excellent-silver-heart-knight-belief-pants",
+      "excellent-silver-heart-knight-belief-gloves",
+      "excellent-silver-heart-knight-belief-boots"
+    ],
+    "notes": [
+      "This item is an 'excellent' grade item; you can learn more about excellent items and their possible additional options in the excellent items guide. You can learn more about all item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": null,
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Excellent%20Silver%20Heart%20Knight%20Helm%20(Belief).php",
+    "scraped_at": "2026-10-21T12:04:08Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "excellent-silver-heart-magic-armor-atk",
+    "name": "Excellent Silver Heart Magic Armor (ATK)",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Magic Knight"
+    ],
+    "requirements": {
+      "level": 1100,
+      "strength": 770,
+      "agility": 324,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "defense": 350
+    },
+    "durability": null,
+    "grade": "excellent",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [
+      {
+        "title": "Excellent option",
+        "max": 3,
+        "lines": [
+          "HP +165",
+          "Mana +165",
+          "DEF Rate +10%",
+          "Decrease DMG +45",
+          "Reflect DMG +5%",
+          "Base DEF +1.5 per 20 levels"
+        ]
+      }
+    ],
+    "related_items": [
+      "forefather-s-silver-heart-magic-armor-atk",
+      "excellent-silver-heart-magic-atk-armor",
+      "excellent-silver-heart-magic-atk-pants",
+      "excellent-silver-heart-magic-atk-gloves",
+      "excellent-silver-heart-magic-atk-boots"
+    ],
+    "notes": [
+      "This item is an 'excellent' grade item; you can learn more about excellent items and their possible additional options in the excellent items guide. You can learn more about all item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Excellent%20Silver%20Heart%20Magic%20Armor%20(ATK).jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Excellent%20Silver%20Heart%20Magic%20Armor%20(ATK).php",
+    "scraped_at": "2026-10-21T12:04:09Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "excellent-silver-heart-rune-mace",
+    "name": "Excellent Silver Heart Rune Mace",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Rune Grand Master"
+    ],
+    "requirements": {
+      "level": 1100,
+      "strength": 294,
+      "agility": 113,
+      "vitality": null,
+      "energy": 1108,
+      "command": null
+    },
+    "stats": {
+      "hands": 1,
+      "damage_min": 193,
+      "damage_max": 200,
+      "attack_speed": 40,
+      "wiz_dmg_raise_pct": 123
+    },
+    "durability": null,
+    "grade": "excellent",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [
+      {
+        "title": "Excellent option",
+        "max": 3,
+        "lines": [
+          "EXC DMG chance +10%",
+          "WIZ DMG +2.4 per 20 levels",
+          "WIZ DMG +68",
+          "ATK Speed +7",
+          "Restore (1/8) of HP per monster killed",
+          "Restore (1/8) of Mana per monster killed"
+        ]
+      }
+    ],
+    "related_items": [
+      "excellent-bloodangel-rune-mace",
+      "excellent-darkangel-rune-mace",
+      "excellent-holyangel-rune-mace",
+      "excellent-soul-rune-mace",
+      "excellent-blue-eye-rune-mace",
+      "excellent-manticore-rune-mace"
+    ],
+    "notes": [
+      "This item is an 'excellent' grade item; you can learn more about excellent items and their possible additional options in the excellent items guide. You can learn more about all item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Excellent%20Silver%20Heart%20Rune%20Mace.png",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Excellent%20Silver%20Heart%20Rune%20Mace.php",
+    "scraped_at": "2026-10-21T12:04:10Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "legendary-boots",
+    "name": "Legendary Boots",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Dark Wizard",
+      "Magic Gladiator"
+    ],
+    "requirements": {
+      "level": null,
+      "strength": 61,
+      "agility": 0,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "defense": 12
+    },
+    "durability": null,
+    "grade": "normal",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [],
+    "related_items": [
+      "legendary-helm",
+      "legendary-armor",
+      "legendary-pants",
+      "legendary-gloves",
+      "enis-legendary-boots",
+      "taros-s-legendary-boots",
+      "excellent-legendary-boots"
+    ],
+    "notes": [
+      "This item is a 'normal' grade item; you can learn more about item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Legendary%20Boots.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Legendary%20Boots.php",
+    "scraped_at": "2026-10-21T12:04:11Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "light-crossbow",
+    "name": "Light Crossbow",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Fairy Elf"
+    ],
+    "requirements": {
+      "level": null,
+      "strength": 48,
+      "agility": 106,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "hands": 1,
+      "damage_min": 35,
+      "damage_max": 44,
+      "attack_speed": 40
+    },
+    "durability": null,
+    "grade": "normal",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [],
+    "related_items": [
+      "excellent-light-crossbow"
+    ],
+    "notes": [
+      "This item is a 'normal' grade item; you can learn more about item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Light%20Crossbow.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Light%20Crossbow.php",
+    "scraped_at": "2026-10-21T12:04:12Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "light-plate-gloves",
+    "name": "Light Plate Gloves",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Dark Lord"
+    ],
+    "requirements": {
+      "level": null,
+      "strength": 108,
+      "agility": 45,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "defense": 12
+    },
+    "durability": null,
+    "grade": "normal",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [],
+    "related_items": [
+      "light-plate-mask",
+      "light-plate-armor",
+      "light-plate-pants",
+      "light-plate-boots",
+      "kantata-light-plate-gloves",
+      "excellent-light-plate-gloves"
+    ],
+    "notes": [
+      "This item is a 'normal' grade item; you can learn more about item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Light%20Plate%20Gloves.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Light%20Plate%20Gloves.php",
+    "scraped_at": "2026-10-21T12:04:13Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "lost-map-5",
+    "name": "Lost Map +5",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [],
+    "requirements": {
+      "level": null,
+      "strength": null,
+      "agility": null,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {},
+    "durability": null,
+    "grade": null,
+    "options": [],
+    "option_groups": [],
+    "related_items": [
+      "symbol-of-kundun-1",
+      "symbol-of-kundun-2",
+      "symbol-of-kundun-3",
+      "symbol-of-kundun-4",
+      "symbol-of-kundun-5",
+      "symbol-of-kundun-6",
+      "symbol-of-kundun-7",
+      "lost-map-1",
+      "lost-map-2",
+      "lost-map-3",
+      "lost-map-4",
+      "lost-map-6",
+      "lost-map-7"
+    ],
+    "notes": [
+      "It is used to enter Kalima. Toss the item onto the ground to use it.",
+      "This item doesn't drop by any monster...",
+      "This item can be obtained by collecting five Symbol of Kundun +5, and stacking them together."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Lost%20Map%20+5.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Lost%20Map%20+5.php",
+    "scraped_at": "2026-10-21T12:04:14Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "wings-of-conviction",
+    "name": "Wings of Conviction",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Slaughterer"
+    ],
+    "requirements": {
+      "level": 800,
+      "strength": null,
+      "agility": null,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "defense": 140,
+      "damage": 100,
+      "dmg_pct": 55,
+      "absorb_dmg_pct": 43
+    },
+    "durability": null,
+    "grade": null,
+    "options": [
+      "Jewel of Life",
+      "Luck"
+    ],
+    "option_groups": [
+      {
+        "title": "Additional option",
+        "max": 4,
+        "lines": [
+          "Recover 100% HP chance: +3% ~ +10%",
+          "Recover 100% Mana chance: +3% ~ +10%",
+          "Reflect DMG chance: +3% ~ +10%",
+          "Ignore DEF chance: +3% ~ +10%",
+          "Excellent DMG chance: +3% ~ +10%",
+          "Double DMG chance: +3% ~ +10%",
+          "ATK\\WIZ Speed: +5 ~ +12",
+          "STR Level: +10 ~ +65",
+          "AGI Level: +10 ~ +65",
+          "STA Level: +10 ~ +65",
+          "ENE Level: +10 ~ +65"
+        ]
+      },
+      {
+        "title": "Base option",
+        "max": null,
+        "lines": [
+          "Elemental DEF +25 ~ +193"
+        ]
+      },
+      {
+        "title": "Additional option",
+        "max": 1,
+        "lines": [
+          "ELE DMG +20 ~ +170",
+          "ELE ATK SUCC Rate +5 ~ +125",
+          "ELE DEF SUCC Rate +5 ~ +125",
+          "ELE DMG (II) +30 ~ +195",
+          "ELE DEF (II) +4 ~ +64",
+          "ELE ATK SUCC Rate (II) +10 ~ +200",
+          "ELE DEF SUCC Rate (II) +10 ~ +200"
+        ]
+      }
+    ],
+    "related_items": [
+      "wings-of-flame-god",
+      "wing-of-celestial-body",
+      "wings-of-elysium",
+      "wings-of-annihilation",
+      "wings-of-fate",
+      "wings-of-bloodshed",
+      "cloak-of-dominator",
+      "wings-of-other-world",
+      "cloak-of-judgment",
+      "cloak-of-isolation",
+      "wings-of-explosion"
+    ],
+    "notes": [
+      "Increased Movement Speed",
+      "You can learn more about wings and capes and their possible additional options in the wings and capes guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Wings%20of%20Conviction.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Wings%20of%20Conviction.php",
+    "scraped_at": "2026-10-21T12:04:15Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "wings-of-other-world",
+    "name": "Wings of Other World",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Dimension Summoner"
+    ],
+    "requirements": {
+      "level": 800,
+      "strength": null,
+      "agility": null,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "defense": 140,
+      "wiz_curse_dmg": 100,
+      "dmg_pct": 55,
+      "absorb_dmg_pct": 43
+    },
+    "durability": null,
+    "grade": null,
+    "options": [
+      "Jewel of Life",
+      "Luck"
+    ],
+    "option_groups": [
+      {
+        "title": "Additional option",
+        "max": 4,
+        "lines": [
+          "Recover 100% HP chance: +3% ~ +10%",
+          "Recover 100% Mana chance: +3% ~ +10%",
+          "Reflect DMG chance: +3% ~ +10%",
+          "Ignore DEF chance: +3% ~ +10%",
+          "Excellent DMG chance: +3% ~ +10%",
+          "Double DMG chance: +3% ~ +10%",
+          "ATK\\WIZ Speed: +5 ~ +12",
+          "STR Level: +10 ~ +65",
+          "AGI Level: +10 ~ +65",
+          "STA Level: +10 ~ +65",
+          "ENE Level: +10 ~ +65"
+        ]
+      },
+      {
+        "title": "Base option",
+        "max": null,
+        "lines": [
+          "Elemental DEF +25 ~ +193"
+        ]
+      },
+      {
+        "title": "Additional option",
+        "max": 1,
+        "lines": [
+          "ELE DMG +20 ~ +170",
+          "ELE ATK SUCC Rate +5 ~ +125",
+          "ELE DEF SUCC Rate +5 ~ +125",
+          "ELE DMG (II) +30 ~ +195",
+          "ELE DEF (II) +4 ~ +64",
+          "ELE ATK SUCC Rate (II) +10 ~ +200",
+          "ELE DEF SUCC Rate (II) +10 ~ +200"
+        ]
+      }
+    ],
+    "related_items": [
+      "wings-of-flame-god",
+      "wings-of-conviction",
+      "wing-of-celestial-body",
+      "wings-of-elysium",
+      "wings-of-annihilation",
+      "wings-of-fate",
+      "wings-of-bloodshed",
+      "cloak-of-dominator",
+      "cloak-of-judgment",
+      "cloak-of-isolation",
+      "wings-of-explosion"
+    ],
+    "notes": [
+      "Increased Movement Speed",
+      "You can learn more about wings and capes and their possible additional options in the wings and capes guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Wings%20of%20Other%20World.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Wings%20of%20Other%20World.php",
+    "scraped_at": "2026-10-21T12:04:16Z",
+    "page_updated_at": null
+  },
+  {
+    "id": "wrath-scroll",
+    "name": "Wrath Scroll",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Grow Lancer"
+    ],
+    "requirements": {
+      "level": 66,
+      "strength": 200,
+      "agility": 200,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {},
+    "durability": null,
+    "grade": null,
+    "options": [],
+    "option_groups": [],
+    "related_items": [
+      "spin-step-scroll",
+      "obsidian-scroll",
+      "magic-pin-scroll",
+      "harsh-strike-scroll",
+      "shining-peak-scroll",
+      "breche-scroll"
+    ],
+    "notes": [
+      "You can learn more about this basic skill in the Grow Lancer guide. Your character can learn the skill by right-clicking the item, but only if your character meets the skill's prerequisites."
+    ],
+    "image_url": null,
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Wrath%20Scroll.php",
+    "scraped_at": "2026-10-21T12:04:17Z",
+    "page_updated_at": null
+  }
+]

@@ -9,15 +9,20 @@
     "id",
     "name",
     "level",
+    "difficulty",
     "hp",
     "atk_min",
     "atk_max",
     "atk_rate",
     "def",
     "def_rate",
+    "elemental_def",
+    "elemental_dmg_min",
+    "elemental_dmg_max",
     "respawn_seconds",
     "respawn_raw",
     "drops_normal_items",
+    "notes",
     "image_url",
     "season",
     "source",
@@ -40,6 +45,14 @@
         "null"
       ],
       "minimum": 0
+    },
+    "difficulty": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "description": "Dificuldade (1-7) a que os números da página se referem; null se o monstro não tem seletor."
     },
     "hp": {
       "type": [
@@ -83,12 +96,34 @@
       ],
       "minimum": 0
     },
-    "respawn_seconds": {
+    "elemental_def": {
       "type": [
         "integer",
         "null"
       ],
       "minimum": 0
+    },
+    "elemental_dmg_min": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "elemental_dmg_max": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "respawn_seconds": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "description": "O Fanz não publica respawn; sempre null nesta fonte."
     },
     "respawn_raw": {
       "type": [
@@ -104,6 +139,14 @@
         "null"
       ],
       "description": "false quando a página diz que não dropa itens normais."
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Textos livres da página (ajustes de dano/defesa, tabelas de drop descritas em frase, etc.)."
     },
     "image_url": {
       "type": [

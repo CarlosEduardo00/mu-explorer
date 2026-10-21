@@ -1,0 +1,95 @@
+{
+  "record": {
+    "id": "wings-of-conviction",
+    "name": "Wings of Conviction",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Slaughterer"
+    ],
+    "requirements": {
+      "level": 800,
+      "strength": null,
+      "agility": null,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "defense": 140,
+      "damage": 100,
+      "dmg_pct": 55,
+      "absorb_dmg_pct": 43
+    },
+    "durability": null,
+    "grade": null,
+    "options": [
+      "Jewel of Life",
+      "Luck"
+    ],
+    "option_groups": [
+      {
+        "title": "Additional option",
+        "max": 4,
+        "lines": [
+          "Recover 100% HP chance: +3% ~ +10%",
+          "Recover 100% Mana chance: +3% ~ +10%",
+          "Reflect DMG chance: +3% ~ +10%",
+          "Ignore DEF chance: +3% ~ +10%",
+          "Excellent DMG chance: +3% ~ +10%",
+          "Double DMG chance: +3% ~ +10%",
+          "ATK\\WIZ Speed: +5 ~ +12",
+          "STR Level: +10 ~ +65",
+          "AGI Level: +10 ~ +65",
+          "STA Level: +10 ~ +65",
+          "ENE Level: +10 ~ +65"
+        ]
+      },
+      {
+        "title": "Base option",
+        "max": null,
+        "lines": [
+          "Elemental DEF +25 ~ +193"
+        ]
+      },
+      {
+        "title": "Additional option",
+        "max": 1,
+        "lines": [
+          "ELE DMG +20 ~ +170",
+          "ELE ATK SUCC Rate +5 ~ +125",
+          "ELE DEF SUCC Rate +5 ~ +125",
+          "ELE DMG (II) +30 ~ +195",
+          "ELE DEF (II) +4 ~ +64",
+          "ELE ATK SUCC Rate (II) +10 ~ +200",
+          "ELE DEF SUCC Rate (II) +10 ~ +200"
+        ]
+      }
+    ],
+    "related_items": [
+      "wings-of-flame-god",
+      "wing-of-celestial-body",
+      "wings-of-elysium",
+      "wings-of-annihilation",
+      "wings-of-fate",
+      "wings-of-bloodshed",
+      "cloak-of-dominator",
+      "wings-of-other-world",
+      "cloak-of-judgment",
+      "cloak-of-isolation",
+      "wings-of-explosion"
+    ],
+    "notes": [
+      "Increased Movement Speed",
+      "You can learn more about wings and capes and their possible additional options in the wings and capes guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Wings%20of%20Conviction.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Wings%20of%20Conviction.php",
+    "scraped_at": "2026-10-21T12:04:15Z",
+    "page_updated_at": null
+  },
+  "related": {}
+}

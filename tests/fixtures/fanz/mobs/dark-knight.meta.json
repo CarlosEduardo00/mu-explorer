@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "mobs",
+  "key": "Dark Knight",
+  "file": "dark-knight.html",
+  "url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Dark%20Knight.php",
+  "final_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Dark%20Knight.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T12:04:23Z",
+  "bytes": 62107,
+  "sha256": "99a4852b149cbef55adb2ad65a3f43c5341fe18af481ca5618da2b15322fc724"
+}

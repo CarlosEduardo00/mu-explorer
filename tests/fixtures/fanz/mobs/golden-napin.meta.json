@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "mobs",
+  "key": "Golden Napin",
+  "file": "golden-napin.html",
+  "url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Golden%20Napin.php",
+  "final_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Golden%20Napin.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T12:04:28Z",
+  "bytes": 42295,
+  "sha256": "8713f3f0b49f4e62a33b6d6798c306542cfea160631a7932cd208253ad8512de"
+}

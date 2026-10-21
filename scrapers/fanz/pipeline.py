@@ -38,13 +38,13 @@ class FetchStats:
 
 
 def _get_text(session: PoliteSession, store: RawStore, kind_dir: str, key: str, url: str,
-              ext: str, refresh: bool) -> str | None:
+              ext: str, refresh: bool, form: dict[str, str] | None = None) -> str | None:
     """Baixa (ou reaproveita do disco) uma página de índice e devolve o texto."""
     if not refresh:
         page = store.load(SOURCE, kind_dir, key, url, ext)
         if page and 200 <= page.meta.get("status", 0) < 300:
             return page.html
-    result = session.get(url)
+    result = session.post_form(url, form) if form else session.get(url)
     store.save(SOURCE, kind_dir, key, result, ext)
     if not result.ok:
         log.warning("HTTP %s em %s", result.status, url)
@@ -52,7 +52,10 @@ def _get_text(session: PoliteSession, store: RawStore, kind_dir: str, key: str, 
     return result.text
 
 
-def discover_urls(session: PoliteSession, store: RawStore, refresh: bool = False) -> dict[str, list[str]]:
+def discover_urls(session: PoliteSession, store: RawStore, refresh: bool = False,
+                  list_pages: int = 5) -> dict[str, list[str]]:
+    """Sitemap primeiro. O sitemap do Fanz só lista guias, então na prática cai na listagem:
+    página 1 por GET e mais algumas páginas espaçadas por POST (botão de página do site)."""
     grouped: dict[str, list[str]] = {"item": [], "monster": []}
     try:
         text = _get_text(session, store, "index", "sitemap", urls.SITEMAP_URL, ".txt", refresh)
@@ -65,15 +68,25 @@ def discover_urls(session: PoliteSession, store: RawStore, refresh: bool = False
         if grouped[kind]:
             continue
         log.info("sem URLs de %s no sitemap; usando a listagem %s", kind, list_url)
-        html = _get_text(session, store, "index", f"{kind}-list", list_url, ".html", refresh)
-        if html:
-            grouped[kind] = discover.links_from_list_page(html, list_url, kind)
+        html = _get_text(session, store, "index", f"{kind}-list-p1", list_url, ".html", refresh)
+        if not html:
+            continue
+        found = discover.links_from_list_page(html, list_url, kind)
+        total = discover.list_page_count(html)
+        extra = [n for n in discover.spread_pages(total, list_pages) if n != 1]
+        log.info("listagem de %s: %d páginas no site; baixando também as páginas %s", kind, total, extra)
+        for number in extra:
+            page_html = _get_text(session, store, "index", f"{kind}-list-p{number}", list_url, ".html",
+                                  refresh, form={"curpagenum": str(number)})
+            if page_html:
+                found += discover.links_from_list_page(page_html, list_url, kind)
+        grouped[kind] = list(dict.fromkeys(found))
     return grouped
 
 
 def fetch(session: PoliteSession, store: RawStore, *, items: int = 20, mobs: int = 20,
-          mode: str = "spread", refresh: bool = False) -> FetchStats:
-    grouped = discover_urls(session, store, refresh)
+          mode: str = "spread", refresh: bool = False, list_pages: int = 5) -> FetchStats:
+    grouped = discover_urls(session, store, refresh, list_pages)
     stats = FetchStats(discovered={kind: len(found) for kind, found in grouped.items()})
     for kind, n in (("item", items), ("monster", mobs)):
         log.info("%d URLs de %s descobertas; amostra de %d (%s)", len(grouped[kind]), kind, n, mode)

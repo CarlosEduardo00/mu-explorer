@@ -16,6 +16,7 @@ Formatos de par reconhecidos:
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from functools import cached_property
 from urllib.parse import urljoin
@@ -248,9 +249,16 @@ class _LineBuilder:
 
 
 class Document:
-    """Página HTML já convertida em linhas, seções e pares rótulo -> valor."""
+    """Página HTML já convertida em linhas, seções e pares rótulo -> valor.
 
-    def __init__(self, html: str, base_url: str):
+    `start`/`end` (regex sobre o texto da linha) recortam o conteúdo: ficam as linhas depois da
+    primeira que casa com `start` e antes da primeira, depois dela, que casa com `end`. Serve para
+    descartar menu e rodapé. `heading` (regex ou função de Line) marca como título de seção linhas
+    que o site não escreve com <h1>..<h6>.
+    """
+
+    def __init__(self, html: str, base_url: str, *, start: str | None = None, end: str | None = None,
+                 heading: str | Callable[[Line], bool] | None = None):
         tree = LexborHTMLParser(html)
         title = tree.css_first("title")
         self.title = clean(title.text()) if title else ""
@@ -259,7 +267,23 @@ class Document:
         if tree.body is not None:
             builder.walk(tree.body)
         builder.end_line()
-        self.lines: list[Line] = builder.lines
+        lines = builder.lines
+        self.trimmed = False
+        if start is not None:
+            first = next((i for i, line in enumerate(lines) if re.search(start, line.text)), None)
+            if first is not None:
+                lines = lines[first + 1:]
+                self.trimmed = True
+        if end is not None:
+            last = next((i for i, line in enumerate(lines) if re.search(end, line.text)), None)
+            if last is not None:
+                lines = lines[:last]
+        if heading is not None:
+            is_heading = (lambda line: bool(re.search(heading, line.text))) if isinstance(heading, str) else heading
+            for line in lines:
+                if line.text and is_heading(line):
+                    line.heading = True
+        self.lines: list[Line] = lines
 
     @cached_property
     def text_lines(self) -> list[str]:

@@ -9,7 +9,7 @@ SOURCE_NAME = "MU Online Fanz"
 SOURCE_CREDIT = "Dados de MU Online Fanz (muonlinefanz.com), conteúdo de IZAKTLY, recurso de fã operado com permissão da Webzen."
 BASE_URL = "https://muonlinefanz.com"
 HOSTS = frozenset({"muonlinefanz.com", "www.muonlinefanz.com"})
-SITEMAP_URL = "http://www.muonlinefanz.com/files/sitemap/sitemap.txt"
+SITEMAP_URL = "https://www.muonlinefanz.com/files/sitemap/sitemap.txt"  # o robots.txt cita http://, mas o proxy do ambiente só aceita HTTPS
 
 ITEM_LIST_URL = f"{BASE_URL}/tools/items/"
 MOB_LIST_URL = f"{BASE_URL}/tools/mobs/"
@@ -29,6 +29,14 @@ DENY_PATHS = (
     "/tools/npc/data/php/",
     "/tools/maps/data/php/",
 )
+
+
+def canonical(url: str) -> str:
+    """Força https e tira o 'www.' (as páginas misturam http://, https:// e www)."""
+    parts = urlsplit(url)
+    if (parts.hostname or "").lower() not in HOSTS:
+        return url
+    return parts._replace(scheme="https", netloc="muonlinefanz.com").geturl()
 
 
 def is_fanz(url: str) -> bool:

@@ -1,0 +1,61 @@
+{
+  "record": {
+    "id": "excellent-bloodangel-summoner-gloves",
+    "name": "Excellent Bloodangel Summoner Gloves",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Dimension Master"
+    ],
+    "requirements": {
+      "level": null,
+      "strength": 151,
+      "agility": 46,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {
+      "defense": 72
+    },
+    "durability": null,
+    "grade": "excellent",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [
+      {
+        "title": "Excellent option",
+        "max": 3,
+        "lines": [
+          "HP +165",
+          "Mana +165",
+          "DEF Rate +10%",
+          "Decrease DMG +45",
+          "Reflect DMG +5%",
+          "Amount of Zen dropped from monsters +42%"
+        ]
+      }
+    ],
+    "related_items": [
+      "honor-s-bloodangel-summoner-gloves",
+      "excellent-bloodangel-summoner-helm",
+      "excellent-bloodangel-summoner-armor",
+      "excellent-bloodangel-summoner-pants",
+      "excellent-bloodangel-summoner-boots"
+    ],
+    "notes": [
+      "This item is an 'excellent' grade item; you can learn more about excellent items and their possible additional options in the excellent items guide. You can learn more about all item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Bloodangel%20Summoner%20Gloves.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Excellent%20Bloodangel%20Summoner%20Gloves.php",
+    "scraped_at": "2026-10-21T12:04:04Z",
+    "page_updated_at": null
+  },
+  "related": {}
+}

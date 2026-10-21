@@ -1,0 +1,50 @@
+{
+  "record": {
+    "id": "lost-map-5",
+    "name": "Lost Map +5",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [],
+    "requirements": {
+      "level": null,
+      "strength": null,
+      "agility": null,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {},
+    "durability": null,
+    "grade": null,
+    "options": [],
+    "option_groups": [],
+    "related_items": [
+      "symbol-of-kundun-1",
+      "symbol-of-kundun-2",
+      "symbol-of-kundun-3",
+      "symbol-of-kundun-4",
+      "symbol-of-kundun-5",
+      "symbol-of-kundun-6",
+      "symbol-of-kundun-7",
+      "lost-map-1",
+      "lost-map-2",
+      "lost-map-3",
+      "lost-map-4",
+      "lost-map-6",
+      "lost-map-7"
+    ],
+    "notes": [
+      "It is used to enter Kalima. Toss the item onto the ground to use it.",
+      "This item doesn't drop by any monster...",
+      "This item can be obtained by collecting five Symbol of Kundun +5, and stacking them together."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Lost%20Map%20+5.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Lost%20Map%20+5.php",
+    "scraped_at": "2026-10-21T12:04:14Z",
+    "page_updated_at": null
+  },
+  "related": {}
+}

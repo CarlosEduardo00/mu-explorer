@@ -17,9 +17,9 @@ KNOWN_CLASSES = [
     "Summoner", "Bloody Summoner", "Dimension Master", "Dimension Summoner",
     "Rage Fighter", "Fist Master", "Fist Blazer",
     "Grow Lancer", "Mirage Lancer", "Shining Lancer",
-    "Rune Wizard", "Rune Spell Master", "Grand Rune Master", "Majestic Rune Wizard",
+    "Rune Wizard", "Rune Mage", "Rune Spell Master", "Grand Rune Master", "Rune Grand Master", "Majestic Rune Wizard",
     "Slayer", "Royal Slayer", "Master Slayer", "Slaughterer",
-    "Gun Crusher", "Gun Breaker", "Master Gun Breaker", "Heist Gun Crasher",
+    "Gun Crusher", "Gun Breaker", "Master Gun Breaker", "Heist Gun Crasher", "Heist Gun Crusher",
     "Light Wizard", "White Wizard", "Lemuria Mage", "Illusion Knight", "Alchemist", "Crusader",
 ]
 ABBREVIATIONS = {
@@ -27,7 +27,7 @@ ABBREVIATIONS = {
     "DK": "Dark Knight", "BK": "Blade Knight", "BM": "Blade Master",
     "FE": "Fairy Elf", "ELF": "Fairy Elf", "ME": "Muse Elf", "HE": "High Elf",
     "MG": "Magic Gladiator", "DL": "Dark Lord", "LE": "Lord Emperor",
-    "SUM": "Summoner", "BS": "Bloody Summoner", "RF": "Rage Fighter", "FM": "Fist Master",
+    "SUM": "Summoner", "BS": "Bloody Summoner", "DIM": "Dimension Master", "RF": "Rage Fighter", "FM": "Fist Master",
     "GL": "Grow Lancer", "ML": "Mirage Lancer", "RW": "Rune Wizard", "SL": "Slayer", "GC": "Gun Crusher",
 }
 
@@ -47,13 +47,13 @@ def split_classes(text: str) -> list[str]:
     """'Dark Wizard, Soul Master / DK' -> ['Dark Wizard', 'Soul Master', 'Dark Knight']."""
     out: list[str] = []
     for part in _SPLIT_RE.split(text):
-        part = clean(part)
+        part = clean(part).strip("[]() ")
         if not part:
             continue
         found = _CLASS_RE.findall(part)
         if found:
             out.extend(_CANONICAL[f.lower()] for f in found)
-        elif part.upper() in ABBREVIATIONS and part.isupper():
+        elif part.upper() in ABBREVIATIONS and len(part) <= 4:  # 'DW', 'ELF', 'DiM'...
             out.append(ABBREVIATIONS[part.upper()])
         else:
             out.append(part)

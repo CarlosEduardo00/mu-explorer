@@ -1,0 +1,162 @@
+[
+  {
+    "monster_id": "aegis",
+    "map_id": "kalima",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Aegis.php",
+    "scraped_at": "2026-10-21T12:04:18Z"
+  },
+  {
+    "monster_id": "bass",
+    "map_id": "nixies-lake",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Bass.php",
+    "scraped_at": "2026-10-21T12:04:19Z"
+  },
+  {
+    "monster_id": "bow-scout",
+    "map_id": "crywolf",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Bow%20Scout.php",
+    "scraped_at": "2026-10-21T12:04:20Z"
+  },
+  {
+    "monster_id": "crimson-flame-s-megacrust",
+    "map_id": "crimson-flame-s-icarus",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Crimson%20Flame's%20Megacrust.php",
+    "scraped_at": "2026-10-21T12:04:22Z"
+  },
+  {
+    "monster_id": "dark-knight",
+    "map_id": "dungeon",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Dark%20Knight.php",
+    "scraped_at": "2026-10-21T12:04:23Z"
+  },
+  {
+    "monster_id": "death-spirit",
+    "map_id": "crywolf",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Death%20Spirit.php",
+    "scraped_at": "2026-10-21T12:04:24Z"
+  },
+  {
+    "monster_id": "deep-d-skeleton-warrior",
+    "map_id": "deep-dungeon",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Deep%20D%20Skeleton%20Warrior.php",
+    "scraped_at": "2026-10-21T12:04:25Z"
+  },
+  {
+    "monster_id": "erohim",
+    "map_id": "land-of-trials",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Erohim.php",
+    "scraped_at": "2026-10-21T12:04:26Z"
+  },
+  {
+    "monster_id": "giant-ogre",
+    "map_id": "blood-castle-mini-game-1",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Giant%20Ogre.php",
+    "scraped_at": "2026-10-21T12:04:27Z"
+  },
+  {
+    "monster_id": "golden-napin",
+    "map_id": "swamp-of-peace",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Golden%20Napin.php",
+    "scraped_at": "2026-10-21T12:04:28Z"
+  },
+  {
+    "monster_id": "hand-of-maya-left",
+    "map_id": "kanturu-relics",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Hand%20of%20Maya%20(left).php",
+    "scraped_at": "2026-10-21T12:04:29Z"
+  },
+  {
+    "monster_id": "ice-walker",
+    "map_id": "raklion",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Ice%20Walker.php",
+    "scraped_at": "2026-10-21T12:04:30Z"
+  },
+  {
+    "monster_id": "lord-ferea",
+    "map_id": "ferea",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Lord%20Ferea.php",
+    "scraped_at": "2026-10-21T12:04:31Z"
+  },
+  {
+    "monster_id": "nars-devil-fairy",
+    "map_id": "acheron",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Nars%20Devil%20Fairy.php",
+    "scraped_at": "2026-10-21T12:04:32Z"
+  },
+  {
+    "monster_id": "poison-shadow",
+    "map_id": "lost-tower",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Poison%20Shadow.php",
+    "scraped_at": "2026-10-21T12:04:33Z"
+  },
+  {
+    "monster_id": "sapi-tres",
+    "map_id": "swamp-of-peace",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Sapi-Tres.php",
+    "scraped_at": "2026-10-21T12:04:34Z"
+  },
+  {
+    "monster_id": "silla",
+    "map_id": "acheron",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Silla.php",
+    "scraped_at": "2026-10-21T12:04:35Z"
+  },
+  {
+    "monster_id": "swamp-wizard",
+    "map_id": "swamp-of-darkness",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Swamp%20Wizard.php",
+    "scraped_at": "2026-10-21T12:04:36Z"
+  },
+  {
+    "monster_id": "vasuki",
+    "map_id": "nixies-lake",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Vasuki.php",
+    "scraped_at": "2026-10-21T12:04:37Z"
+  },
+  {
+    "monster_id": "zombie-fighter-hero",
+    "map_id": "vulcanus",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Zombie%20Fighter%20(Hero).php",
+    "scraped_at": "2026-10-21T12:04:38Z"
+  }
+]

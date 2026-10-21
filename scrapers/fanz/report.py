@@ -92,22 +92,19 @@ def build_report(dataset: Dataset) -> str:
     ]
     for kind, title in (("item", "itens"), ("monster", "monstros")):
         results = [r for r in dataset.results if r.kind == kind]
-        labels: Counter[str] = Counter()
-        examples: dict[str, str] = {}
+        lines: Counter[str] = Counter()
         headings: Counter[str] = Counter()
         for result in results:
-            for pair in result.unmapped:
-                labels[pair.label] += 1
-                examples.setdefault(pair.label, pair.value[:60])
+            lines.update(set(result.unmapped))
             headings.update(set(result.headings))
-        out += [f"## Rótulos encontrados e não mapeados — {title}", ""]
-        if labels:
-            out += ["| rótulo | páginas | exemplo de valor |", "|---|---:|---|"]
-            out += [f"| {_cell(label)} | {n} | {_cell(examples[label])} |" for label, n in labels.most_common(40)]
+        out += [f"## Linhas não aproveitadas — {title}", ""]
+        if lines:
+            out += ["| linha | páginas |", "|---|---:|"]
+            out += [f"| {_cell(text)} | {n} |" for text, n in lines.most_common(40)]
         else:
-            out.append("Nenhum.")
-        out += ["", f"## Títulos de seção vistos — {title}", ""]
-        out += [f"- {h} ({n})" for h, n in headings.most_common(30)] or ["Nenhum."]
+            out.append("Nenhuma.")
+        out += ["", f"## Seções vistas — {title}", ""]
+        out += [f"- {h} ({n})" for h, n in headings.most_common(30)] or ["Nenhuma."]
         out.append("")
 
     out += ["## Avisos por página", ""]

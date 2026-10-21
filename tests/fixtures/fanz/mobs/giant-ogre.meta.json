@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "mobs",
+  "key": "Giant Ogre",
+  "file": "giant-ogre.html",
+  "url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Giant%20Ogre.php",
+  "final_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Giant%20Ogre.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T12:04:27Z",
+  "bytes": 56430,
+  "sha256": "ff271491cc7180ffaf56dcfd7372c89ac5a35c8ff24e7341136d827cb9f75523"
+}

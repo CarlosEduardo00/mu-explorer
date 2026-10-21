@@ -23,6 +23,8 @@ def _add_fetch_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--mobs", type=int, default=20, help="quantos monstros baixar (padrão: 20)")
     parser.add_argument("--sample", choices=("spread", "first"), default="spread",
                         help="spread: espaçados ao longo da lista; first: os primeiros")
+    parser.add_argument("--list-pages", type=int, default=5,
+                        help="quantas páginas das listagens usar para descobrir URLs (padrão: 5, espaçadas)")
     parser.add_argument("--refresh", action="store_true", help="rebaixa páginas que já estão em disco")
     parser.add_argument("--interval", type=float, default=1.0, help="segundos entre requisições (mín. 1)")
 
@@ -32,7 +34,7 @@ def cmd_fetch(args: argparse.Namespace) -> int:
     store = RawStore(args.data_dir / "raw")
     try:
         stats = pipeline.fetch(session, store, items=args.items, mobs=args.mobs,
-                               mode=args.sample, refresh=args.refresh)
+                               mode=args.sample, refresh=args.refresh, list_pages=args.list_pages)
     except RobotsUnavailable as exc:
         log.error("robots.txt indisponível, coleta abortada: %s", exc)
         return 2
@@ -66,14 +68,19 @@ def cmd_poc(args: argparse.Namespace) -> int:
 
 
 def cmd_fixtures(args: argparse.Namespace) -> int:
-    """Copia o HTML bruto para tests/fixtures/fanz; com --golden grava também o parse atual como esperado."""
+    """Copia o HTML bruto para tests/fixtures/fanz; com --golden grava também o parse atual como esperado.
+
+    --only slug1,slug2 limita às páginas indicadas (nomes dos arquivos em data/raw, sem extensão).
+    As páginas 1 das listagens e o sitemap vão junto, para os testes de descoberta.
+    """
     store = RawStore(args.data_dir / "raw")
+    only = {slug.strip() for slug in args.only.split(",")} if args.only else None
     copied = 0
     for kind, kind_dir in pipeline.KIND_DIRS.items():
         target = FIXTURES_DIR / kind_dir
         target.mkdir(parents=True, exist_ok=True)
         for page in store.iter(pipeline.SOURCE, kind_dir):
-            if not 200 <= page.meta.get("status", 0) < 300:
+            if not 200 <= page.meta.get("status", 0) < 300 or (only and page.path.stem not in only):
                 continue
             shutil.copy2(page.path, target / page.path.name)
             shutil.copy2(store.meta_path(page.path), target / store.meta_path(page.path).name)
@@ -83,6 +90,12 @@ def cmd_fixtures(args: argparse.Namespace) -> int:
                 expected = {"record": result.record, "related": result.related}
                 (target / f"{page.path.stem}.expected.json").write_text(
                     json.dumps(expected, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    index_target = FIXTURES_DIR / "index"
+    index_target.mkdir(parents=True, exist_ok=True)
+    for page in store.iter(pipeline.SOURCE, "index"):
+        if page.path.stem in ("sitemap", "item-list-p1", "monster-list-p1"):
+            shutil.copy2(page.path, index_target / page.path.name)
+            shutil.copy2(store.meta_path(page.path), index_target / store.meta_path(page.path).name)
     log.info("%d páginas copiadas para %s%s", copied, FIXTURES_DIR, " (com golden)" if args.golden else "")
     return 0
 
@@ -97,6 +110,7 @@ def main(argv: list[str] | None = None) -> int:
     _add_fetch_args(sub.add_parser("poc", help="fetch + parse"))
     fixtures = sub.add_parser("fixtures", help="copia o HTML bruto para tests/fixtures/fanz")
     fixtures.add_argument("--golden", action="store_true", help="grava <arquivo>.expected.json com o parse atual")
+    fixtures.add_argument("--only", help="slugs separados por vírgula (ex.: dark-knight,aegis); padrão: todas")
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO,
                         format="%(levelname)s %(message)s", stream=sys.stderr)

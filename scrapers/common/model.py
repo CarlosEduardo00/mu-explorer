@@ -8,8 +8,6 @@ from pathlib import Path
 
 from jsonschema import Draft202012Validator
 
-from scrapers.common.html import Pair
-
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_DIR = REPO_ROOT / "schema"
 ENTITIES = ("item", "monster", "map", "spawn", "drop", "source")
@@ -21,7 +19,7 @@ class ParseResult:
     record: dict
     source_file: str = ""
     warnings: list[str] = field(default_factory=list)
-    unmapped: list[Pair] = field(default_factory=list)   # rótulos achados e não mapeados
+    unmapped: list[str] = field(default_factory=list)    # linhas do conteúdo não aproveitadas ('Seção: texto')
     headings: list[str] = field(default_factory=list)    # títulos de seção da página
     related: dict[str, list[dict]] = field(default_factory=dict)  # maps/spawns/drops extraídos
 

@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "index",
+  "key": "item-list-p1",
+  "file": "item-list-p1.html",
+  "url": "https://muonlinefanz.com/tools/items/",
+  "final_url": "https://muonlinefanz.com/tools/items/",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T12:03:46Z",
+  "bytes": 73467,
+  "sha256": "e6b75c1a315a84ea6c4c11489f315866d595d15ce8ecfb57928bd7bb7cd50b25"
+}

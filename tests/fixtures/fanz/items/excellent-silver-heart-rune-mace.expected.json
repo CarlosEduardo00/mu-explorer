@@ -1,0 +1,66 @@
+{
+  "record": {
+    "id": "excellent-silver-heart-rune-mace",
+    "name": "Excellent Silver Heart Rune Mace",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Rune Grand Master"
+    ],
+    "requirements": {
+      "level": 1100,
+      "strength": 294,
+      "agility": 113,
+      "vitality": null,
+      "energy": 1108,
+      "command": null
+    },
+    "stats": {
+      "hands": 1,
+      "damage_min": 193,
+      "damage_max": 200,
+      "attack_speed": 40,
+      "wiz_dmg_raise_pct": 123
+    },
+    "durability": null,
+    "grade": "excellent",
+    "options": [
+      "Jewel of Life",
+      "Jewel of Harmony",
+      "Luck"
+    ],
+    "option_groups": [
+      {
+        "title": "Excellent option",
+        "max": 3,
+        "lines": [
+          "EXC DMG chance +10%",
+          "WIZ DMG +2.4 per 20 levels",
+          "WIZ DMG +68",
+          "ATK Speed +7",
+          "Restore (1/8) of HP per monster killed",
+          "Restore (1/8) of Mana per monster killed"
+        ]
+      }
+    ],
+    "related_items": [
+      "excellent-bloodangel-rune-mace",
+      "excellent-darkangel-rune-mace",
+      "excellent-holyangel-rune-mace",
+      "excellent-soul-rune-mace",
+      "excellent-blue-eye-rune-mace",
+      "excellent-manticore-rune-mace"
+    ],
+    "notes": [
+      "This item is an 'excellent' grade item; you can learn more about excellent items and their possible additional options in the excellent items guide. You can learn more about all item grades and their possible additional options in the combat items guide."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Excellent%20Silver%20Heart%20Rune%20Mace.png",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Excellent%20Silver%20Heart%20Rune%20Mace.php",
+    "scraped_at": "2026-10-21T12:04:10Z",
+    "page_updated_at": null
+  },
+  "related": {}
+}

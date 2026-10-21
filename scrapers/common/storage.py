@@ -66,8 +66,9 @@ class RawStore:
         return directory / f"{base}--{hashlib.sha1(url.encode()).hexdigest()[:8]}{ext}"
 
     def exists(self, source: str, kind: str, key: str, url: str, ext: str = ".html") -> bool:
-        path = self.path_for(source, kind, key, url, ext)
-        return path.exists() and self.meta_path(path).exists()
+        """True se a página já foi baixada com sucesso (2xx). Erros ficam no disco, mas são refeitos."""
+        page = self.load(source, kind, key, url, ext)
+        return page is not None and 200 <= page.meta.get("status", 0) < 300
 
     def save(self, source: str, kind: str, key: str, result: FetchResult, ext: str = ".html") -> Path:
         path = self.path_for(source, kind, key, result.url, ext)

@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "index",
+  "key": "monster-list-p1",
+  "file": "monster-list-p1.html",
+  "url": "https://muonlinefanz.com/tools/mobs/",
+  "final_url": "https://muonlinefanz.com/tools/mobs/",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T12:03:52Z",
+  "bytes": 58481,
+  "sha256": "a1cdad0b2e7995bc95cd85b578c1d0fac6547d6de561eb2b4e2848d0ea3ab951"
+}

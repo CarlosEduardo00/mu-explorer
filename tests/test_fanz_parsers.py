@@ -1,168 +1,204 @@
-"""Testes dos parsers do Fanz com HTML HIPOTÉTICO, escrito à mão.
+"""Asserts explícitos sobre páginas REAIS do Fanz (tests/fixtures/fanz/).
 
-Não é HTML real do muonlinefanz.com: o ambiente onde o parser foi escrito não tinha acesso
-ao site. Estes testes garantem que a extração por rótulo/seção funciona em layouts comuns
-(tabela rótulo/valor, "Rótulo: valor", drops por coluna ou por linha). A validação contra
-páginas reais fica em test_fanz_fixtures.py, que roda sobre tests/fixtures/fanz/.
+Cada teste confere valores contra o que a página mostra, para pegar erro de interpretação que
+o teste de regressão (test_fanz_fixtures.py, que só compara com o parse anterior) não pegaria.
 """
+import collections
+import json
+from pathlib import Path
+
+import pytest
+
 from scrapers.common.model import validate
+from scrapers.common.storage import decode_html
 from scrapers.fanz.parse_item import parse_item
 from scrapers.fanz.parse_monster import parse_monster
-from tests.conftest import meta_for
 
-ITEM_URL = "https://muonlinefanz.com/tools/items/data/itemdb/Dragon%20Armor.php"
-MOB_URL = "https://muonlinefanz.com/tools/mobs/data/mobdb/Goblin.php"
-ITEMDB = "/tools/items/data/itemdb"
-
-ITEM_TABLE_LAYOUT = f"""<html><head><title>Dragon Armor - MU Online Fanz</title></head><body>
-<div id="menu"><a href="/tools/items/">Items</a> <a href="/tools/mobs/">Mobs</a></div>
-<h1>Dragon Armor</h1>
-<img src="/tools/items/data/graphics/Dragon Armor.jpg" alt="Dragon Armor">
-<table>
-  <tr><th>Item Details</th></tr>
-  <tr><td>DEF</td><td>50</td></tr>
-  <tr><td>Durability</td><td>68</td></tr>
-  <tr><td>Item Grade</td><td>Normal</td></tr>
-  <tr><th>Requirements</th></tr>
-  <tr><td>Level</td><td>45</td></tr>
-  <tr><td>Strength</td><td>120</td></tr>
-  <tr><td>Agility</td><td>30</td></tr>
-  <tr><td>Can be equipped by</td><td>Dark Knight, Blade Knight, Magic Gladiator</td></tr>
-  <tr><th>Possible Additional Options</th></tr>
-  <tr><td colspan="2">Jewel of Life</td></tr>
-  <tr><td colspan="2">Jewel of Harmony</td></tr>
-  <tr><td colspan="2">Luck</td></tr>
-</table>
-<h3>Related Items</h3>
-<ul><li><a href="{ITEMDB}/Dragon Helm.php">Dragon Helm</a></li>
-    <li><a href="{ITEMDB}/Dragon Pants.php">Dragon Pants</a></li></ul>
-<p>Data updated May 10, 2025</p>
-<footer>MU Online Fanz is a fan resource operated with permission of Webzen.</footer>
-</body></html>"""
-
-ITEM_TEXT_LAYOUT = """<h2>Kris</h2>
-<div>Attack: 6 ~ 10</div><div>Attack Speed: 50</div><div>Durability: 20</div>
-<div>Required Strength: 10</div><div>Required Agility: 8</div>
-<div>Classes: DW / DK / ELF / MG</div>
-<div>Luck: Yes</div><div>Skill: No</div><div>Grade: Normal</div><div>Weight: 3</div>"""
-
-MOB_COLUMN_LAYOUT = f"""<html><head><title>Goblin - MU Online Fanz</title></head><body>
-<h1>Goblin</h1>
-<img src="/tools/mobs/data/graphics/Goblin.jpg">
-<table>
-  <tr><th>Level</th><td>3</td></tr>
-  <tr><th>Max HP</th><td>45</td></tr>
-  <tr><th>ATK DMG</th><td>7 ~ 10</td></tr>
-  <tr><th>ATK Rate</th><td>13</td></tr>
-  <tr><th>DEF</th><td>1</td></tr>
-  <tr><th>DEF Rate</th><td>1</td></tr>
-  <tr><th>Respawn Time</th><td>10 seconds</td></tr>
-  <tr><th>Map</th><td><a href="/tools/maps/data/mapdb/Lorencia.php">Lorencia</a>,
-                      <a href="/tools/maps/data/mapdb/Noria.php">Noria</a></td></tr>
-</table>
-<h3>Drops</h3>
-<p>This monster does not drop normal items.</p>
-<table>
-  <tr><th>Excellent Armors</th><th>Excellent Attack Weapons</th><th>Excellent Magic Weapons</th><th>Excellent Shields</th></tr>
-  <tr><td><a href="{ITEMDB}/Leather Armor.php">Leather Armor</a><br><a href="{ITEMDB}/Leather Helm.php">Leather Helm</a></td>
-      <td><a href="{ITEMDB}/Kris.php">Kris</a></td>
-      <td><a href="{ITEMDB}/Skull Staff.php">Skull Staff</a></td>
-      <td><a href="{ITEMDB}/Small Shield.php">Small Shield</a></td></tr>
-</table>
-<p>Data updated May 03, 2019</p>
-</body></html>"""
-
-MOB_ROW_LAYOUT = f"""<h2>Spider</h2>
-<ul><li>Level: 2</li><li>HP: 30</li><li>Attack: 4-7</li><li>Defense: 1</li><li>Spawn: Lorencia</li>
-    <li>Moving Speed: 400</li></ul>
-<table><tr><th>Drop List</th></tr>
-  <tr><td>Excellent Armor</td><td><a href="{ITEMDB}/Pad Armor.php">Pad Armor</a>, <a href="{ITEMDB}/Pad Helm.php">Pad Helm</a></td></tr>
-</table>"""
+FIXTURES = Path(__file__).parent / "fixtures" / "fanz"
 
 
-def test_item_layout_tabela():
-    result = parse_item(ITEM_TABLE_LAYOUT, meta_for(ITEM_URL))
-    record = result.record
-    assert validate("item", record) == []
-    assert record["id"] == "dragon-armor"
-    assert record["name"] == "Dragon Armor"
-    assert record["stats"] == {"defense": 50}
-    assert record["durability"] == 68
-    assert record["grade"] == "normal"
-    assert record["requirements"] == {"level": 45, "strength": 120, "agility": 30,
-                                      "vitality": None, "energy": None, "command": None}
-    assert record["classes"] == ["Dark Knight", "Blade Knight", "Magic Gladiator"]
-    assert record["options"] == ["Jewel of Life", "Jewel of Harmony", "Luck"]
-    assert record["related_items"] == ["dragon-helm", "dragon-pants"]
-    assert record["image_url"] == "https://muonlinefanz.com/tools/items/data/graphics/Dragon%20Armor.jpg"
-    assert record["page_updated_at"] == "2025-05-10"
-    assert (record["source"], record["source_url"], record["scraped_at"]) == ("fanz", ITEM_URL, "2026-10-20T12:00:00Z")
-    assert record["category"] is None  # não está na página: fica null, não é inventado
-    assert result.unmapped == [] and result.warnings == []
+def load(kind_dir: str, slug: str):
+    meta = json.loads((FIXTURES / kind_dir / f"{slug}.meta.json").read_text(encoding="utf-8"))
+    html = decode_html((FIXTURES / kind_dir / f"{slug}.html").read_bytes(), meta.get("encoding"))
+    return html, meta
 
 
-def test_item_layout_texto():
-    result = parse_item(ITEM_TEXT_LAYOUT, meta_for("https://muonlinefanz.com/tools/items/data/itemdb/Kris.php"))
-    record = result.record
-    assert validate("item", record) == []
-    assert record["stats"] == {"damage_min": 6, "damage_max": 10, "attack_speed": 50}
-    assert record["requirements"]["strength"] == 10 and record["requirements"]["agility"] == 8
-    assert record["classes"] == ["Dark Wizard", "Dark Knight", "Fairy Elf", "Magic Gladiator"]
-    assert record["options"] == ["Luck"]  # "Skill: No" não entra
-    assert record["image_url"] is None
-    assert [p.label for p in result.unmapped] == ["Weight"]  # vai para o relatório
+def item(slug: str):
+    return parse_item(*load("items", slug))
 
 
-def test_item_nome_da_pagina_diferente_da_url_gera_aviso():
-    result = parse_item("<h1>Something Else</h1>", meta_for(ITEM_URL))
-    assert result.record["name"] == "Dragon Armor"
-    assert any("nenhum título bate" in w for w in result.warnings)
+def mob(slug: str):
+    return parse_monster(*load("mobs", slug))
 
 
-def test_monstro_drops_por_coluna():
-    result = parse_monster(MOB_COLUMN_LAYOUT, meta_for(MOB_URL))
-    record = result.record
-    assert validate("monster", record) == []
-    assert {k: record[k] for k in ("id", "level", "hp", "atk_min", "atk_max", "atk_rate", "def", "def_rate")} == {
-        "id": "goblin", "level": 3, "hp": 45, "atk_min": 7, "atk_max": 10, "atk_rate": 13, "def": 1, "def_rate": 1}
-    assert (record["respawn_seconds"], record["respawn_raw"]) == (10, "10 seconds")
-    assert record["drops_normal_items"] is False
-    assert record["page_updated_at"] == "2019-05-03"
-    assert record["image_url"] == "https://muonlinefanz.com/tools/mobs/data/graphics/Goblin.jpg"
+# --- itens ---------------------------------------------------------------------------------
 
-    maps = result.related["maps"]
-    assert [(m["id"], m["source_url"]) for m in maps] == [
-        ("lorencia", "https://muonlinefanz.com/tools/maps/data/mapdb/Lorencia.php"),
-        ("noria", "https://muonlinefanz.com/tools/maps/data/mapdb/Noria.php"),
-    ]
-    assert [(s["monster_id"], s["map_id"]) for s in result.related["spawns"]] == [("goblin", "lorencia"), ("goblin", "noria")]
-    drops = {(d["item_id"], d["kind"], d["category"]) for d in result.related["drops"]}
-    assert drops == {
-        ("leather-armor", "excellent", "armor"), ("leather-helm", "excellent", "armor"),
-        ("kris", "excellent", "weapon"), ("skull-staff", "excellent", "magic_weapon"),
-        ("small-shield", "excellent", "shield"),
-    }
-    for entity in ("map", "spawn", "drop"):
-        for row in result.related[f"{entity}s"]:
-            assert validate(entity, row) == []
-    assert result.unmapped == [] and result.warnings == []
+def test_item_armadura_excellent():
+    result = item("excellent-silver-heart-knight-helm-belief")
+    r = result.record
+    assert validate("item", r) == []
+    assert (r["id"], r["name"]) == ("excellent-silver-heart-knight-helm-belief",
+                                    "Excellent Silver Heart Knight Helm (Belief)")
+    assert r["stats"] == {"defense": 348}
+    assert r["requirements"] == {"level": 1100, "strength": None, "agility": 125, "vitality": None,
+                                 "energy": 755, "command": None}
+    assert r["classes"] == ["Dragon Knight"]
+    assert r["grade"] == "excellent"
+    assert r["options"] == ["Jewel of Life", "Jewel of Harmony", "Luck"]
+    assert r["option_groups"] == [{
+        "title": "Excellent option", "max": 3,
+        "lines": ["HP +165", "Mana +165", "DEF Rate +10%", "Decrease DMG +45", "Reflect DMG +5%",
+                  "Base DEF +1.5 per 20 levels"],
+    }]
+    assert r["related_items"][:2] == ["forefather-s-silver-heart-knight-helm",
+                                      "forefather-s-silver-heart-knight-helm-belief"]
+    assert r["image_url"] is None  # esta página só tem o ícone de ajuda, sem imagem do item
+    assert (r["source"], r["season"], r["page_updated_at"]) == ("fanz", None, None)
+    assert result.warnings == [] and result.unmapped == []
 
 
-def test_monstro_drops_por_linha_e_mapa_sem_link():
-    result = parse_monster(MOB_ROW_LAYOUT, meta_for("https://muonlinefanz.com/tools/mobs/data/mobdb/Spider.php"))
-    record = result.record
-    assert validate("monster", record) == []
-    assert (record["level"], record["hp"], record["atk_min"], record["atk_max"], record["def"]) == (2, 30, 4, 7, 1)
-    assert record["atk_rate"] is None and record["respawn_seconds"] is None and record["drops_normal_items"] is None
-    assert [m["id"] for m in result.related["maps"]] == ["lorencia"]
-    assert any("mapas sem link" in w for w in result.warnings)
-    assert {(d["item_id"], d["kind"], d["category"]) for d in result.related["drops"]} == {
-        ("pad-armor", "excellent", "armor"), ("pad-helm", "excellent", "armor")}
-    assert [p.label for p in result.unmapped] == ["Moving Speed"]
+def test_item_arma_com_faixa_de_dano():
+    r = item("excellent-silver-heart-rune-mace").record
+    assert validate("item", r) == []
+    assert r["stats"] == {"hands": 1, "damage_min": 193, "damage_max": 200, "attack_speed": 40,
+                          "wiz_dmg_raise_pct": 123}
+    assert r["classes"] == ["Rune Grand Master"]  # "[Rune Grand Master]" na página
 
 
-def test_secao_de_drop_sem_links_gera_aviso():
-    html = "<h1>Bat</h1><h3>Drops</h3><p>Excellent items level 10~20</p>"
-    result = parse_monster(html, meta_for("https://muonlinefanz.com/tools/mobs/data/mobdb/Bat.php"))
-    assert result.related["drops"] == []
-    assert any("sem links de item" in w for w in result.warnings)
+def test_item_com_varias_classes_e_abreviacoes():
+    assert item("light-crossbow").record["classes"] == ["Fairy Elf"]
+    assert item("excellent-bloodangel-summoner-gloves").record["classes"] == ["Dimension Master"]  # "DiM"
+
+
+def test_item_imagem_so_da_pasta_de_graficos():
+    assert item("light-crossbow").record["image_url"] == (
+        "https://muonlinefanz.com/tools/items/data/graphics/Light%20Crossbow.jpg")
+    assert item("wrath-scroll").record["image_url"] is None  # só o ícone de ajuda
+
+
+def test_item_consumivel_sem_detalhes():
+    result = item("agi-fruit")
+    r = result.record
+    assert validate("item", r) == []
+    assert r["stats"] == {} and r["classes"] == [] and r["options"] == [] and r["grade"] is None
+    assert r["notes"][0].startswith("It is used to create additional stat points")
+    assert "agi-fruit" not in r["related_items"] and "str-fruit" in r["related_items"]
+
+
+def test_item_prerequisites_em_vez_de_requirements():
+    r = item("wrath-scroll").record
+    assert (r["requirements"]["strength"], r["requirements"]["agility"], r["requirements"]["level"]) == (200, 200, 66)
+    assert r["classes"] == ["Grow Lancer"]  # "GL"
+
+
+def test_item_asas_sem_secao_item_details():
+    r = item("wings-of-conviction").record
+    assert r["stats"] == {"defense": 140, "damage": 100, "dmg_pct": 55, "absorb_dmg_pct": 43}
+    assert r["requirements"]["level"] == 800 and r["classes"] == ["Slaughterer"]
+    assert "Increased Movement Speed" in r["notes"]
+    assert [(g["title"], g["max"]) for g in r["option_groups"]] == [
+        ("Additional option", 4), ("Base option", None), ("Additional option", 1)]
+    assert r["options"] == ["Jewel of Life", "Luck"]
+
+
+def test_item_elemental_e_errtel():
+    r = item("antonia-s-sword").record
+    assert r["stats"] == {"elemental_dmg_min": 209, "elemental_dmg_max": 284, "elemental_def": 288}
+    assert r["requirements"]["level"] == 300
+    assert {g["title"] for g in r["option_groups"]} == {"Possible additional options", "Errtel bonus"}
+
+
+def test_item_conjunto_ancient_e_grau():
+    r = item("akhir-s-hirat-gloves").record
+    assert r["grade"] == "ancient" and r["classes"] == ["Grow Lancer"]
+    assert any(g["title"] == "Set option" for g in r["option_groups"])
+
+
+def test_item_que_nao_dropa():
+    r = item("lost-map-5").record
+    assert validate("item", r) == []
+    assert "This item doesn't drop by any monster..." in r["notes"]
+
+
+# --- monstros ------------------------------------------------------------------------------
+
+def test_monstro_basico():
+    result = mob("dark-knight")
+    r = result.record
+    assert validate("monster", r) == []
+    assert {k: r[k] for k in ("id", "name", "level", "hp", "atk_min", "atk_max", "atk_rate", "def", "def_rate")} == {
+        "id": "dark-knight", "name": "Dark Knight", "level": 48, "hp": 3000, "atk_min": 150, "atk_max": 155,
+        "atk_rate": 240, "def": 80, "def_rate": 70}
+    assert r["page_updated_at"] == "2019-05-03"
+    assert r["respawn_seconds"] is None and r["respawn_raw"] is None  # o site não publica respawn
+    assert r["difficulty"] is None and r["drops_normal_items"] is True
+    assert r["image_url"] == "https://muonlinefanz.com/tools/mobs/data/graphics/Dark%20Knight.jpg"
+    assert result.related["maps"] == [{
+        "id": "dungeon", "name": "Dungeon", "season": None, "source": "fanz",
+        "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Dungeon.php",
+        "scraped_at": r["scraped_at"]}]
+    assert [(s["monster_id"], s["map_id"]) for s in result.related["spawns"]] == [("dark-knight", "dungeon")]
+    assert result.warnings == [] and result.unmapped == []
+
+
+def test_monstro_drops_por_tabela_e_categoria():
+    drops = mob("dark-knight").related["drops"]
+    assert len(drops) == 161
+    for drop in drops:
+        assert validate("drop", drop) == []
+    by = collections.Counter((d["kind"], d["category"]) for d in drops)
+    assert by[("normal", "armor")] == 38 and by[("excellent", "armor")] == 19
+    assert by[("excellent", "magic_weapon")] == 1 and by[("normal", "skill")] == 24
+    by_id = {d["item_id"]: d for d in drops}
+    assert by_id["scale-armor"]["table"] == "General Drop Table"
+    assert by_id["excellent-bronze-helm"]["kind"] == "excellent"
+    assert by_id["suspicious-scrap-of-paper"]["quantity"] == 1          # "(x1)"
+    assert by_id["archangel-scroll-3"]["item_name"] == "Archangel Scroll +3"
+    assert "zen" not in by_id  # Zen não é item
+    assert all(d["rate"] is None for d in drops)  # o site não informa taxa
+
+
+def test_monstro_com_dificuldade_e_sufixo_no_titulo():
+    r = mob("aegis").record
+    assert (r["name"], r["id"], r["difficulty"], r["level"], r["hp"]) == ("Aegis", "aegis", 1, 17, 440)
+
+
+def test_monstro_elemental_e_tabelas_em_frase():
+    result = mob("bass")
+    r = result.record
+    assert validate("monster", r) == []
+    assert (r["elemental_def"], r["elemental_dmg_min"], r["elemental_dmg_max"]) == (1500, 960, 990)
+    assert r["atk_rate"] is None  # a página não tem ATK Rate
+    assert r["notes"] == ["Excellent Holyangel Drop Table: This monster can drop any Excellent Holyangel armor item."]
+    assert {d["table"] for d in result.related["drops"]} == {
+        "General Drop Table", "Excellent Drop Table", "Excellent Holyangel Drop Table"}
+
+
+def test_monstro_tabela_ancient():
+    result = mob("erohim")
+    assert "Ancient Drop Table: Ancient Physical Weapons" in result.record["notes"]
+    assert {d["kind"] for d in result.related["drops"]} <= {"normal", "excellent", "ancient"}
+
+
+def test_monstro_sem_estatisticas_na_pagina():
+    r = mob("swamp-wizard").record
+    assert validate("monster", r) == []
+    assert r["level"] == 275
+    assert all(r[k] is None for k in ("hp", "atk_min", "atk_max", "atk_rate", "def", "def_rate"))
+    assert r["notes"][0] == "DMG & DEF Adjustment removed after character level 875."
+
+
+def test_monstro_com_mapa_sem_link():
+    result = mob("giant-ogre")
+    assert [m["id"] for m in result.related["maps"]] == ["blood-castle-mini-game-1"]
+    assert result.warnings == ["mapa sem link: 'Blood Castle Mini-game 1'"]
+
+
+@pytest.mark.parametrize("parser, html", [(parse_item, "<html><body><p>sem menu</p></body></html>"),
+                                          (parse_monster, "<html><body><p>sem menu</p></body></html>")])
+def test_pagina_sem_estrutura_conhecida_gera_aviso_e_nao_quebra(parser, html):
+    meta = {"url": "https://muonlinefanz.com/tools/items/data/itemdb/X.php", "final_url": None,
+            "fetched_at": "2026-10-21T12:00:00Z", "status": 200, "file": "x.html"}
+    result = parser(html, meta)
+    assert any("não encontrado" in w for w in result.warnings)
+    assert result.record["name"] == "X"

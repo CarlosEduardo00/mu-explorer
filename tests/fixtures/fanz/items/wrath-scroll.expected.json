@@ -1,0 +1,43 @@
+{
+  "record": {
+    "id": "wrath-scroll",
+    "name": "Wrath Scroll",
+    "category": null,
+    "group": null,
+    "index": null,
+    "classes": [
+      "Grow Lancer"
+    ],
+    "requirements": {
+      "level": 66,
+      "strength": 200,
+      "agility": 200,
+      "vitality": null,
+      "energy": null,
+      "command": null
+    },
+    "stats": {},
+    "durability": null,
+    "grade": null,
+    "options": [],
+    "option_groups": [],
+    "related_items": [
+      "spin-step-scroll",
+      "obsidian-scroll",
+      "magic-pin-scroll",
+      "harsh-strike-scroll",
+      "shining-peak-scroll",
+      "breche-scroll"
+    ],
+    "notes": [
+      "You can learn more about this basic skill in the Grow Lancer guide. Your character can learn the skill by right-clicking the item, but only if your character meets the skill's prerequisites."
+    ],
+    "image_url": null,
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Wrath%20Scroll.php",
+    "scraped_at": "2026-10-21T12:04:17Z",
+    "page_updated_at": null
+  },
+  "related": {}
+}

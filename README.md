@@ -18,10 +18,11 @@ python -m scrapers.fanz fixtures --golden           # vira fixture de teste (rev
 
 ## Estado
 
-- [x] Estrutura, `CLAUDE.md`, schemas (`schema/`), cliente HTTP educado, armazenamento bruto.
-- [x] Scraper do Fanz (itens e monstros) com parse para JSON, relatório de campos e testes.
-- [ ] Rodar a PoC contra o site real e ajustar os padrões de rótulo com base no relatório.
-      Os parsers foram escritos sem acesso ao HTML real; os testes atuais usam HTML hipotético.
+- [x] Estrutura, `CLAUDE.md`, schemas (`schema/`), cliente HTTP educado (GET e POST de paginação), armazenamento bruto.
+- [x] Scraper do Fanz (itens e monstros) com parse para JSON, relatório de campos e testes sobre HTML real.
+- [x] Prova de conceito rodada no site real: 20 itens + 20 monstros, 0 erros de schema.
+      Resultado em `data/processed/fanz/` e `poc_report.md`; fixtures em `tests/fixtures/fanz/`.
+- [ ] Coleta completa do Fanz (3.090 itens + ~290 monstros, ~55 min a 1 req/s), mapas e NPCs.
 - [ ] muonline.us, validação cruzada, publicação, site.
 
 ## Créditos

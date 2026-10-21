@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "mobs",
+  "key": "Bass",
+  "file": "bass.html",
+  "url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Bass.php",
+  "final_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Bass.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T12:04:19Z",
+  "bytes": 64799,
+  "sha256": "c5a85128581287f198a3ff90237e812608a5797db7e97f11482274d6977a6e12"
+}

@@ -10,7 +10,9 @@
     "item_id",
     "item_name",
     "kind",
+    "table",
     "category",
+    "quantity",
     "rate",
     "season",
     "source",
@@ -39,13 +41,28 @@
         "unknown"
       ]
     },
+    "table": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Tabela de drop da página (General Drop Table, Excellent Holyangel Drop Table...)."
+    },
     "category": {
       "type": [
         "string",
         "null"
       ],
       "minLength": 1,
-      "description": "armor, weapon, magic_weapon, shield, wings, jewel, accessory..."
+      "description": "armor, weapon, magic_weapon, shield, accessory, skill, crafting, misc..."
+    },
+    "quantity": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "description": "'(x1)' ao lado do item; null se não informado."
     },
     "rate": {
       "type": [

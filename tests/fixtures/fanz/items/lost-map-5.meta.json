@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "items",
+  "key": "Lost Map +5",
+  "file": "lost-map-5.html",
+  "url": "https://muonlinefanz.com/tools/items/data/itemdb/Lost%20Map%20+5.php",
+  "final_url": "https://muonlinefanz.com/tools/items/data/itemdb/Lost%20Map%20+5.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T12:04:14Z",
+  "bytes": 42033,
+  "sha256": "4b6c1fe9fe6d4660692d105da7d2e0c7e067118e056ad9a7b322942c5c7f52e6"
+}
