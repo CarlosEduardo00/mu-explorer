@@ -223,3 +223,25 @@ def write_dataset(dataset: Dataset, out_dir: Path) -> list[Path]:
         path.write_text(json.dumps(getattr(dataset, attr), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         written.append(path)
     return written
+
+
+def expected_counts(store: RawStore) -> tuple[dict[str, int], list[str]]:
+    """Quantos itens/monstros as listagens do site mostram. Só conta se TODAS as páginas da
+    listagem estiverem em disco (numa amostra, a contagem esperada não faz sentido)."""
+    counts: dict[str, int] = {}
+    notes: list[str] = []
+    pages = {page.path.stem: page for page in store.iter(SOURCE, "index")
+             if 200 <= page.meta.get("status", 0) < 300}
+    for kind, list_url in (("item", urls.ITEM_LIST_URL), ("monster", urls.MOB_LIST_URL)):
+        first = pages.get(f"{kind}-list-p1")
+        if first is None:
+            notes.append(f"{kind}: página 1 da listagem não está em disco")
+            continue
+        total = discover.list_page_count(first.html)
+        have = [pages.get(f"{kind}-list-p{n}") for n in range(1, total + 1)]
+        if not all(have):
+            notes.append(f"{kind}: só {sum(1 for p in have if p)} de {total} páginas da listagem em disco")
+            continue
+        links = {link for page in have for link in discover.links_from_list_page(page.html, list_url, kind)}
+        counts[kind] = len(links)
+    return counts, notes

@@ -20,6 +20,8 @@ python -m scrapers.fanz poc                          # fetch + parse
 python -m scrapers.fanz fixtures --golden --only dark-knight,aegis   # copia páginas p/ tests/fixtures/fanz/
                                                      # (+ <slug>.expected.json; revise o diff antes de commitar)
 # opções do fetch: --sample first|spread, --list-pages 5, --refresh (rebaixa o que já está em disco)
+python -m scrapers.fanz qa --previous-git origin/main   # QA: contagens, schema, integridade, variação
+                                                        # vs coleta anterior -> data/processed/fanz/qa_report.md
 ```
 
 `parse` nunca acessa a rede: dá para refazer o parsing quantas vezes quiser sem rebaixar nada.
@@ -48,7 +50,8 @@ hml para testar) → PR de `mu-explorer-dev` para `main` (publica em prod). Nunc
 ```
 scrapers/common/   http.py (cliente educado: robots, 1 req/s, retries), storage.py (HTML bruto),
                    html.py (extração por rótulo/seção), parsing.py (números, faixas, datas),
-                   ids.py (slugs), mu.py (classes do jogo), model.py (ParseResult, validação de schema)
+                   ids.py (slugs), mu.py (classes do jogo), model.py (ParseResult, validação de schema),
+                   qa.py (verificações da fase 3, independentes da fonte)
 scrapers/fanz/     urls.py, discover.py, parse_item.py, parse_monster.py, pipeline.py, report.py, cli.py
 schema/            JSON Schema (draft 2020-12) de cada entidade publicada
 data/raw/          HTML bruto + .meta.json por página (fora do git)
@@ -129,6 +132,13 @@ wrangler.jsonc     configuração dos Workers (env prod = mu-explorer, env hml =
   (IZAKTLY). Dar crédito e, se o site for público, pedir autorização.
 
 ### 2. muonline.us (toplist de servidores privados) — fonte secundária de drops por mapa
+
+**Bloqueado para coleta automática (out/2026):** todas as páginas, inclusive o
+`sitemap.xml`, respondem 403 com o desafio anti-bot da Cloudflare ("Just a moment..."). Pela regra de não
+contornar bloqueios, não coletamos. Caminhos possíveis: pedir acesso ou exportação ao dono do site, ou
+buscar grupo/índice/durabilidade em outra fonte (ex.: arquivos de dados do MuEmu). O resto desta seção é
+o que foi mapeado antes do bloqueio.
+
 - Sitemap: `https://muonline.us/sitemap.xml`.
 - Item: `/drop/item/<Nome+com+mais>-c<grupo>-i<indice>` (ex.: `Ancient+Armor-c8-i41`).
   `c`/`i` parecem grupo e índice interno do item no MU: candidato a **chave primária**.

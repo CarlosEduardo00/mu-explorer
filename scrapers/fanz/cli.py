@@ -5,10 +5,13 @@ import argparse
 import json
 import logging
 import shutil
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 from scrapers.common.http import RobotsUnavailable
+from scrapers.common import qa
 from scrapers.common.model import REPO_ROOT
 from scrapers.common.storage import RawStore
 from scrapers.fanz import pipeline
@@ -100,6 +103,42 @@ def cmd_fixtures(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_qa(args: argparse.Namespace) -> int:
+    """Verificações da fase 3 sobre data/processed/fanz; grava qa_report.md e sai com 1 se houver erro."""
+    out_dir = args.data_dir / "processed" / pipeline.SOURCE
+    data = qa.load(out_dir)
+    expected, notes = pipeline.expected_counts(RawStore(args.data_dir / "raw"))
+    checks = qa.check_counts(data, expected) + qa.check_schema(data) + qa.check_required(data) + qa.check_integrity(data)
+    checks += [qa.Check("contagem esperada", "aviso", note) for note in notes]
+    previous = _previous_snapshot(args, out_dir)
+    if previous is not None:
+        checks += qa.check_drift(data, previous)
+    report = qa.build_report(f"{pipeline.SOURCE} ({len(data['item'])} itens, {len(data['monster'])} monstros)", checks)
+    (out_dir / "qa_report.md").write_text(report, encoding="utf-8")
+    errors = [c for c in checks if c.severity == "erro"]
+    for check in checks:
+        if check.severity != "ok":
+            log.warning("%s: %s — %s", check.severity, check.name, check.detail)
+    log.info("%d verificações, %d erros; relatório em %s", len(checks), len(errors), out_dir / "qa_report.md")
+    return 1 if errors else 0
+
+
+def _previous_snapshot(args: argparse.Namespace, out_dir: Path) -> dict | None:
+    """Coleta anterior para comparação: uma pasta (--previous) ou uma revisão do git (--previous-git)."""
+    if args.previous:
+        return qa.load(Path(args.previous))
+    if not args.previous_git:
+        return None
+    relative = out_dir.resolve().relative_to(REPO_ROOT)
+    with tempfile.TemporaryDirectory() as tmp:
+        for filename in qa.FILES.values():
+            shown = subprocess.run(["git", "-C", str(REPO_ROOT), "show", f"{args.previous_git}:{relative / filename}"],
+                                   capture_output=True)
+            if shown.returncode == 0:
+                (Path(tmp) / filename).write_bytes(shown.stdout)
+        return qa.load(Path(tmp))
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m scrapers.fanz", description="Scraper do MU Online Fanz")
     parser.add_argument("--data-dir", type=Path, default=REPO_ROOT / "data", help="raiz de raw/ e processed/")
@@ -111,8 +150,11 @@ def main(argv: list[str] | None = None) -> int:
     fixtures = sub.add_parser("fixtures", help="copia o HTML bruto para tests/fixtures/fanz")
     fixtures.add_argument("--golden", action="store_true", help="grava <arquivo>.expected.json com o parse atual")
     fixtures.add_argument("--only", help="slugs separados por vírgula (ex.: dark-knight,aegis); padrão: todas")
+    qa_parser = sub.add_parser("qa", help="verificações de QA sobre data/processed/fanz (gera qa_report.md)")
+    qa_parser.add_argument("--previous", help="pasta com a coleta anterior, para alertar variações grandes")
+    qa_parser.add_argument("--previous-git", help="revisão do git com a coleta anterior (ex.: HEAD, origin/main)")
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO,
                         format="%(levelname)s %(message)s", stream=sys.stderr)
-    commands = {"fetch": cmd_fetch, "parse": cmd_parse, "poc": cmd_poc, "fixtures": cmd_fixtures}
+    commands = {"fetch": cmd_fetch, "parse": cmd_parse, "poc": cmd_poc, "fixtures": cmd_fixtures, "qa": cmd_qa}
     return commands[args.command](args)
