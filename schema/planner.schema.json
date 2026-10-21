@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/carloseduardo00/mu-explorer/schema/planner.schema.json",
+  "title": "Planner",
+  "description": "Regras de classes por conjunto de regras, para o planner de builds (data/curated/planner.json).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "generated_at",
+    "stats",
+    "rulesets"
+  ],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "stats": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "str",
+          "agi",
+          "vit",
+          "ene",
+          "cmd"
+        ]
+      }
+    },
+    "rulesets": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Da mais nova para a mais antiga.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "description",
+          "publish",
+          "credit",
+          "classes"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "publish": {
+            "type": "boolean",
+            "description": "false: só aparece em build local (dados do Fanz)."
+          },
+          "credit": {
+            "type": "string"
+          },
+          "classes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "name",
+                "tier",
+                "unlock_level",
+                "base",
+                "points",
+                "max_level_points",
+                "evolutions",
+                "names",
+                "max_level"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "tier": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1,
+                  "maximum": 2,
+                  "description": "1 = classe inicial; 2 = só desbloqueia depois (MG, DL, RF, GL)."
+                },
+                "unlock_level": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "description": "Nível de outro personagem para liberar a classe; null se livre ou desconhecido."
+                },
+                "base": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "str",
+                    "agi",
+                    "vit",
+                    "ene",
+                    "cmd"
+                  ],
+                  "properties": {
+                    "str": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "agi": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "vit": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "ene": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "cmd": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  }
+                },
+                "points": {
+                  "type": "array",
+                  "minItems": 1,
+                  "description": "Pontos por nível, por faixa: vale a faixa de maior from_level <= nível.",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "from_level",
+                      "per_level"
+                    ],
+                    "properties": {
+                      "from_level": {
+                        "type": "integer",
+                        "minimum": 2
+                      },
+                      "per_level": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                },
+                "max_level_points": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Acima deste nível não há pontos por nível."
+                },
+                "evolutions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "tier",
+                      "name",
+                      "level"
+                    ],
+                    "properties": {
+                      "tier": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "name": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "level": {
+                        "type": [
+                          "integer",
+                          "null"
+                        ],
+                        "minimum": 0
+                      }
+                    }
+                  }
+                },
+                "names": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true,
+                  "description": "Todos os nomes da classe (base, evoluções, apelidos) como aparecem em 'classes' dos itens."
+                },
+                "max_level": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Nível máximo do personagem no conjunto de regras."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -44,3 +44,8 @@ def empty_map(map_id: str, name: str, provenance: dict, parent_id: str | None = 
         "valued_drops": {}, "monsters": [], "special_monsters": [], "bosses": [], "npcs": [],
         "connections": [], "notes": [], "image_url": None, **provenance, "page_updated_at": None,
     }
+
+
+def validate_file(entity: str, data) -> list[str]:
+    """Valida um documento inteiro (ex.: data/curated/planner.json) contra schema/<entity>.schema.json."""
+    return validate(entity, data)

@@ -8,6 +8,7 @@
  */
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
+import type { Ruleset } from "./planner";
 
 export type Requirements = Record<"level" | "strength" | "agility" | "vitality" | "energy" | "command", number | null>;
 
@@ -56,6 +57,15 @@ export const npcs = load<Npc>("npcs.json");
 export const spawns = load<Spawn>("spawns.json");
 export const drops = load<Drop>("drops.json");
 export const sources = load<Source>("sources.json");
+
+/**
+ * Regras do planner (data/curated/planner.json), da season mais nova para a mais antiga.
+ * Conjuntos com `publish: false` (regras tiradas do Fanz) só entram em build local com outro SITE_DATA.
+ */
+interface PlannerFile { rulesets: Ruleset[] }
+const plannerPath = resolve(process.cwd(), "data", "curated", "planner.json");
+const plannerFile: PlannerFile = existsSync(plannerPath) ? JSON.parse(readFileSync(plannerPath, "utf-8")) : { rulesets: [] };
+export const rulesets: Ruleset[] = plannerFile.rulesets.filter((r) => r.publish || dataset !== "muemu");
 
 export const itemById = new Map(items.map((i) => [i.id, i]));
 export const monsterById = new Map(monsters.map((m) => [m.id, m]));
