@@ -1,6 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { items, itemById, dropsByItem, monsterById, fmt } from "../../lib/data";
+import { items, itemById, dropsByItem, monsterById, spotRefsByMonster, spawnsByMonster, mapById, fmt } from "../../lib/data";
 
 export function getStaticPaths() {
   return items.map((item) => ({ params: { id: item.id }, props: { item } }));
@@ -12,13 +12,18 @@ const reqRows: [string, number | null][] = [
   ["Vitalidade", req.vitality], ["Energia", req.energy], ["Comando", req.command],
 ];
 const statRows = Object.entries(item.stats);
-const droppers = [...new Set((dropsByItem.get(item.id) ?? []).map((d) => d.monster_id))]
-  .map((id) => monsterById.get(id)).filter((m) => m !== undefined);
+const dropRows = dropsByItem.get(item.id) ?? [];
+const droppers = [...new Set(dropRows.map((d) => d.monster_id))]
+  .map((id) => monsterById.get(id)).filter((m) => m !== undefined)
+  .sort((a, b) => (a.level ?? 0) - (b.level ?? 0));
+const dropKind = (monsterId: string) => [...new Set(dropRows.filter((d) => d.monster_id === monsterId).map((d) => d.table ?? d.kind))].join(", ");
+const whereMaps = (monsterId: string) => [...new Set((spawnsByMonster.get(monsterId) ?? []).map((s) => s.map_id))];
 const related = item.related_items.map((id) => itemById.get(id)).filter((i) => i !== undefined);
 ---
 <Base title={item.name} description={`${item.name}: requisitos, atributos e onde dropa em MU Online.`}>
   <p class="crumbs"><a href="/itens/">Itens</a> › {item.category ?? "item"}</p>
   <h1>{item.name}</h1>
+  {item.image_url && <img class="hero-img" src={item.image_url} alt={item.name} loading="lazy" referrerpolicy="no-referrer" />}
   <p class="muted">
     {item.group != null && <>Grupo {item.group} · índice {item.index} · </>}
     {item.grade && <>{item.grade} · </>}
@@ -54,8 +59,34 @@ const related = item.related_items.map((id) => itemById.get(id)).filter((i) => i
 
   {droppers.length > 0 && (
     <>
-      <h2>Quem dropa</h2>
-      <ul class="tags">{droppers.map((m) => <li><a href={`/monstros/${m.id}/`}>{m.name}</a></li>)}</ul>
+      <h2 id="onde-dropa">Onde dropa</h2>
+      <p class="muted">{droppers.length} monstros podem dropar este item. Os spots levam ao mapa interativo, com os monstros de cada spot.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Monstro</th><th class="num">Nível</th><th>Tabela</th><th>Onde farmar</th></tr></thead>
+          <tbody>
+            {droppers.map((m) => {
+              const refs = spotRefsByMonster.get(m.id) ?? [];
+              const maps = whereMaps(m.id);
+              return (
+                <tr>
+                  <td><a href={`/monstros/${m.id}/`} class="name-cell">{m.image_url && <img class="thumb" src={m.image_url} alt="" loading="lazy" referrerpolicy="no-referrer" />}{m.name}</a></td>
+                  <td class="num">{fmt(m.level)}</td>
+                  <td>{dropKind(m.id)}</td>
+                  <td>
+                    {refs.length > 0
+                      ? refs.slice(0, 6).map((r, i) => <>{i > 0 && ", "}<a href={`/mapas/${r.map_id}/#spot-${r.n}`}>{r.map_name} · spot {r.n}</a></>)
+                      : maps.length > 0
+                        ? maps.map((id, i) => <>{i > 0 && ", "}<a href={`/mapas/${id}/`}>{mapById.get(id)?.name ?? id}</a></>)
+                        : <span class="muted">—</span>}
+                    {refs.length > 6 && <span class="muted"> e mais {refs.length - 6}</span>}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </>
   )}
   {related.length > 0 && (

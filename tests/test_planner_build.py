@@ -68,7 +68,24 @@ def test_planner_json_ordem_e_publicacao(planner):
     atual, classico = planner["rulesets"]
     assert atual["publish"] is False and classico["publish"] is True  # Fanz só em build local
     assert [c["id"] for c in atual["classes"][:3]] == ["gun-crusher", "slayer", "grow-lancer"]
-    assert len(atual["classes"]) == 13 and len(classico["classes"]) == 11
+    assert len(atual["classes"]) == 16 and len(classico["classes"]) == 11
+
+
+def test_classes_novas_do_gmo_com_base_citada_e_imagens(planner):
+    atual = {c["id"]: c for c in planner["rulesets"][0]["classes"]}
+    cr = atual["crusader"]
+    assert cr["base"] == {"str": 26, "agi": 18, "vit": 19, "ene": 20, "cmd": 0} and cr["sources"]
+    assert [e["name"] for e in cr["evolutions"]][-1] == "Templar Commander"
+    assert atual["alchemist"]["base"]["ene"] == 25 and atual["illusion-knight"]["base"]["agi"] == 28
+    assert all(c.get("image_url", "").startswith("https://globalmuonline.com/guides/classes/img/") for c in atual.values())
+    assert atual["magic-gladiator"]["evolutions"][0]["image_url"].endswith("magic-gladiator-t1.webp")
+
+
+def test_guia_de_classe_do_gmo():
+    info = build.parse_gmo_class((FIX / "gmo-crusader.html").read_text(encoding="utf-8"))
+    assert info["points"] == 5
+    assert info["line"][0] == (1, "Crusader") and info["line"][-1] == (5, "Templar Commander")
+    assert info["images"][1] == "https://globalmuonline.com/guides/classes/img/crusader-t1.webp"
 
 
 def test_planner_json_regras_das_tres_primeiras_classes(planner):

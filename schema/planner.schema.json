@@ -193,6 +193,12 @@
                           "null"
                         ],
                         "minimum": 0
+                      },
+                      "image_url": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       }
                     }
                   }
@@ -210,6 +216,40 @@
                   "type": "integer",
                   "minimum": 1,
                   "description": "Nível máximo do personagem no conjunto de regras."
+                },
+                "image_url": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Imagem da classe (1ª evolução), quando a fonte tem."
+                },
+                "sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "name",
+                      "url"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string",
+                        "pattern": "^https?://"
+                      }
+                    }
+                  },
+                  "description": "Fontes dos números desta classe, quando não vêm do conjunto inteiro."
+                },
+                "notes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 }
               }
             }

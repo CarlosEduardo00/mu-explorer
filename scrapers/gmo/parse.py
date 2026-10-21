@@ -68,6 +68,12 @@ def _seconds(text: str | None) -> int | None:
     return int(value * {"s": 1, "sec": 1, "m": 60, "min": 60, "h": 3600}[m.group(2)])
 
 
+def zone_count(detail: str | None) -> int | None:
+    """Quantidade de monstros da zona: "... · 9 here" (alguns mapas) ou "... · 9 per spot" (outros)."""
+    m = re.search(r"([\d,]+)\s*(?:here|per spot)\b", detail or "")
+    return _num(m.group(1)) if m else None
+
+
 def _stat_table(root) -> list[dict]:
     """Linhas da tabela cujo cabeçalho começa com Monster/Lv/HP, como dicionários coluna -> texto."""
     for table in root.css("table"):
@@ -137,12 +143,12 @@ def parse_map_guide(html: str, meta: dict) -> dict | None:
                 **prov, "page_updated_at": _updated(tree),
             }
         c = _coords(a.get("data-c"))
-        count = re.search(r"([\d,]+)\s*here", _clean(a.get("data-d")) or "")
+        count = zone_count(_clean(a.get("data-d")))
         spawns.append({
             "monster_id": slugify(mname), "map_id": map_id, "kind": "spot",
             "x": c[0] if len(c) > 0 else None, "y": c[1] if len(c) > 1 else None,
             "x2": c[2] if len(c) > 3 else None, "y2": c[3] if len(c) > 3 else None,
-            "radius": None, "count": _num(count.group(1)) if count else None, **prov,
+            "radius": None, "count": count, **prov,
         })
 
     markers = []

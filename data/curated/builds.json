@@ -143,7 +143,7 @@
           }
         },
         {
-          "from_level": 350,
+          "from_level": 250,
           "fill": [
             {
               "stat": "str",
@@ -163,7 +163,7 @@
           }
         },
         {
-          "from_level": 400,
+          "from_level": 300,
           "fill": [
             {
               "stat": "str",
@@ -189,7 +189,7 @@
       ],
       "notes": [
         "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "Degraus de Agilidade: 100 (Sword Inertia), 380 (Bat Flock), 800 (Detection), 1.100 (Pierce Attack, que também pede 300 de Força). Demolish pede 1.450.",
+        "Degraus de Agilidade (fecham até o nível 400, quando acabam os pontos por nível): 100 (Sword Inertia), 380 (Bat Flock), 800 (Detection), 1.100 (Pierce Attack, que também pede 300 de Força). Demolish pede 1.450.",
         "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500)."
       ],
       "sources": [
@@ -232,7 +232,7 @@
           }
         },
         {
-          "from_level": 400,
+          "from_level": 300,
           "fill": [
             {
               "stat": "str",
@@ -1354,6 +1354,485 @@
         {
           "name": "Guide MU Online: Lemuria",
           "url": "https://guidemuonline.com/characters/lemuria"
+        }
+      ]
+    },
+    {
+      "id": "crusader-forca",
+      "class_id": "crusader",
+      "name": "Força (martelo)",
+      "role": "pvm",
+      "summary": "Força como atributo principal (dano Força/6 a Força/4) e Agilidade em segundo: a defesa do Crusader é Agilidade/2, a melhor proporção do jogo. Os degraus seguem os requisitos das skills de cada evolução.",
+      "phases": [
+        {
+          "from_level": 1,
+          "fill": [
+            {
+              "stat": "str",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": "gear"
+            },
+            {
+              "stat": "str",
+              "to": 60
+            },
+            {
+              "stat": "agi",
+              "to": 29
+            }
+          ],
+          "split": {
+            "str": 3,
+            "agi": 1
+          }
+        },
+        {
+          "from_level": 150,
+          "fill": [
+            {
+              "stat": "str",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": "gear"
+            },
+            {
+              "stat": "str",
+              "to": 420
+            },
+            {
+              "stat": "agi",
+              "to": 168
+            },
+            {
+              "stat": "ene",
+              "to": 200
+            }
+          ],
+          "split": {
+            "str": 3,
+            "agi": 1
+          }
+        },
+        {
+          "from_level": 250,
+          "fill": [
+            {
+              "stat": "str",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": "gear"
+            },
+            {
+              "stat": "str",
+              "to": 1045
+            },
+            {
+              "stat": "agi",
+              "to": 420
+            },
+            {
+              "stat": "ene",
+              "to": 200
+            }
+          ],
+          "split": {
+            "str": 3,
+            "agi": 1
+          }
+        }
+      ],
+      "notes": [
+        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
+        "Degraus: 60/29 (Divine Fall), 420/168 de Força/Agilidade e 200 de Energia (Holly Sweep, Lugard's Protection), 1.045/418 (Sacred Impact) e 420 de Agilidade (armadura Imperial).",
+        "Requisitos do servidor Global MU Online (S21); confira no seu servidor."
+      ],
+      "sources": [
+        {
+          "name": "Global MU Online: guia do Crusader (requisitos de skill)",
+          "url": "https://globalmuonline.com/guides/crusader/"
+        },
+        {
+          "name": "muonline.net: Crusader",
+          "url": "https://muonline.net/guides/mu-online-crusader/"
+        },
+        {
+          "name": "muonline.eu: Crusader (S21)",
+          "url": "https://muonline.eu/index.php?/topic/72-crusader-mu-online-season-21/"
+        }
+      ]
+    },
+    {
+      "id": "crusader-escudo",
+      "class_id": "crusader",
+      "name": "Escudo (tanque / PvP)",
+      "role": "pvp",
+      "summary": "Força para o dano e Vitalidade para o HP, com Agilidade para a defesa: Crusader de escudo para PvP e para segurar o grupo.",
+      "phases": [
+        {
+          "from_level": 1,
+          "fill": [
+            {
+              "stat": "str",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": "gear"
+            },
+            {
+              "stat": "str",
+              "to": 60
+            },
+            {
+              "stat": "agi",
+              "to": 29
+            }
+          ],
+          "split": {
+            "str": 2,
+            "vit": 2,
+            "agi": 1
+          }
+        },
+        {
+          "from_level": 150,
+          "fill": [
+            {
+              "stat": "str",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": "gear"
+            },
+            {
+              "stat": "str",
+              "to": 420
+            },
+            {
+              "stat": "agi",
+              "to": 168
+            },
+            {
+              "stat": "ene",
+              "to": 200
+            }
+          ],
+          "split": {
+            "str": 2,
+            "vit": 2,
+            "agi": 1
+          }
+        },
+        {
+          "from_level": 250,
+          "fill": [
+            {
+              "stat": "str",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": "gear"
+            },
+            {
+              "stat": "str",
+              "to": 1045
+            },
+            {
+              "stat": "agi",
+              "to": 420
+            },
+            {
+              "stat": "ene",
+              "to": 200
+            }
+          ],
+          "split": {
+            "str": 2,
+            "vit": 2,
+            "agi": 1
+          }
+        }
+      ],
+      "notes": [
+        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
+        "Mesmos degraus de requisito da build de Força."
+      ],
+      "sources": [
+        {
+          "name": "Global MU Online: guia do Crusader (requisitos de skill)",
+          "url": "https://globalmuonline.com/guides/crusader/"
+        },
+        {
+          "name": "muonline.net: Crusader",
+          "url": "https://muonline.net/guides/mu-online-crusader/"
+        }
+      ]
+    },
+    {
+      "id": "ik-agilidade",
+      "class_id": "illusion-knight",
+      "name": "Agilidade (lâminas)",
+      "role": "pvm",
+      "summary": "Agilidade como atributo principal: o dano do Illusion Knight vem sobretudo da Agilidade (Agilidade/9 + Força/11 a Agilidade/6 + Força/9) e ela também dá velocidade. Força em segundo, que soma no dano e na defesa.",
+      "phases": [
+        {
+          "from_level": 1,
+          "fill": [
+            {
+              "stat": "str",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": 80
+            }
+          ],
+          "split": {
+            "agi": 3,
+            "str": 1
+          }
+        },
+        {
+          "from_level": 150,
+          "fill": [
+            {
+              "stat": "str",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": 900
+            }
+          ],
+          "split": {
+            "agi": 3,
+            "str": 1
+          }
+        },
+        {
+          "from_level": 250,
+          "fill": [
+            {
+              "stat": "str",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": 1150
+            }
+          ],
+          "split": {
+            "agi": 3,
+            "str": 1
+          }
+        }
+      ],
+      "notes": [
+        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
+        "Degraus de Agilidade: 80 (Charge Slash), 900 (Illusion Avatar), 1.150 (Blade Storm).",
+        "Requisitos do servidor Global MU Online (S21); confira no seu servidor."
+      ],
+      "sources": [
+        {
+          "name": "Global MU Online: guia do Illusion Knight (requisitos de skill)",
+          "url": "https://globalmuonline.com/guides/illusion-knight/"
+        },
+        {
+          "name": "Guide MU Online: Illusion Knight",
+          "url": "https://guidemuonline.com/characters/illusion-knight"
+        },
+        {
+          "name": "muonline.net: Illusion Knight",
+          "url": "https://muonline.net/guides/mu-online-illusion-knight/"
+        }
+      ]
+    },
+    {
+      "id": "ik-pvp",
+      "class_id": "illusion-knight",
+      "name": "Agilidade com Vitalidade (PvP)",
+      "role": "pvp",
+      "summary": "Agilidade principal, Força em segundo (dano e defesa: Força/5) e Vitalidade para aguentar no PvP.",
+      "phases": [
+        {
+          "from_level": 1,
+          "fill": [
+            {
+              "stat": "str",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": 80
+            }
+          ],
+          "split": {
+            "agi": 2,
+            "str": 1,
+            "vit": 1
+          }
+        },
+        {
+          "from_level": 150,
+          "fill": [
+            {
+              "stat": "str",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": 900
+            }
+          ],
+          "split": {
+            "agi": 2,
+            "str": 1,
+            "vit": 1
+          }
+        },
+        {
+          "from_level": 250,
+          "fill": [
+            {
+              "stat": "str",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": 1150
+            }
+          ],
+          "split": {
+            "agi": 2,
+            "str": 1,
+            "vit": 1
+          }
+        }
+      ],
+      "notes": [
+        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner."
+      ],
+      "sources": [
+        {
+          "name": "Global MU Online: guia do Illusion Knight (requisitos de skill)",
+          "url": "https://globalmuonline.com/guides/illusion-knight/"
+        },
+        {
+          "name": "muonline.net: Illusion Knight",
+          "url": "https://muonline.net/guides/mu-online-illusion-knight/"
+        }
+      ]
+    },
+    {
+      "id": "alchemist-energia",
+      "class_id": "alchemist",
+      "name": "Energia (alquimia)",
+      "role": "pvm",
+      "summary": "Energia como atributo principal (wizardry Energia/4 a Energia/3 e as skills de alquimia); um pouco de Agilidade para defesa (Agilidade/2) e velocidade de cast.",
+      "phases": [
+        {
+          "from_level": 1,
+          "fill": [
+            {
+              "stat": "str",
+              "to": "gear"
+            },
+            {
+              "stat": "agi",
+              "to": "gear"
+            }
+          ],
+          "split": {
+            "ene": 4,
+            "agi": 1
+          }
+        }
+      ],
+      "notes": [
+        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
+        "Requisitos de Energia: Angel Homunculus 70, Ignition Bomber 680, Confusion Stone 850, Countless Weapon 1.025 (GMO, S21)."
+      ],
+      "sources": [
+        {
+          "name": "Global MU Online: guia do Alchemist (requisitos de skill)",
+          "url": "https://globalmuonline.com/guides/alchemist/"
+        },
+        {
+          "name": "Webzen: guia do Alchemist",
+          "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/365"
+        },
+        {
+          "name": "muonline.net: Alchemist",
+          "url": "https://muonline.net/guides/mu-online-alchemist/"
+        }
+      ]
+    },
+    {
+      "id": "alchemist-pvp",
+      "class_id": "alchemist",
+      "name": "Energia com Agilidade e Vitalidade (PvP)",
+      "role": "pvp",
+      "summary": "Energia principal, com Agilidade para defesa e Vitalidade para o HP no PvP.",
+      "phases": [
+        {
+          "from_level": 1,
+          "fill": [
+            {
+              "stat": "str",
+              "to": "gear"
+            }
+          ],
+          "split": {
+            "ene": 5,
+            "agi": 2,
+            "vit": 2
+          }
+        }
+      ],
+      "notes": [
+        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner."
+      ],
+      "sources": [
+        {
+          "name": "Global MU Online: guia do Alchemist (requisitos de skill)",
+          "url": "https://globalmuonline.com/guides/alchemist/"
+        },
+        {
+          "name": "muonline.net: Alchemist",
+          "url": "https://muonline.net/guides/mu-online-alchemist/"
         }
       ]
     }

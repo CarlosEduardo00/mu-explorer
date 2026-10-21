@@ -4,6 +4,7 @@ import FilterList from "../../components/FilterList.astro";
 import { monsters, fmt } from "../../lib/data";
 const rows = monsters.map((m) => ({
   href: `/monstros/${m.id}/`,
+  image: m.image_url,
   cells: [m.name, fmt(m.level), fmt(m.hp), m.atk_min != null ? `${fmt(m.atk_min)} ~ ${fmt(m.atk_max)}` : "—", fmt(m.def)],
   search: m.name.toLowerCase(),
 }));

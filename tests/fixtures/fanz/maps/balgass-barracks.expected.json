@@ -60,7 +60,8 @@
     "page_updated_at": null,
     "level_required": null,
     "level_recommended_min": null,
-    "level_recommended_max": null
+    "level_recommended_max": null,
+    "minimap_url": "https://muonlinefanz.com/tools/maps/data/graphics/Balgass%20Barracks/map.jpg"
   },
   "related": {}
 }
