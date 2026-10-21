@@ -22,6 +22,9 @@ python -m scrapers.fanz fixtures --golden --only dark-knight,aegis   # copia pá
 # opções do fetch: --sample first|spread, --list-pages 5, --refresh (rebaixa o que já está em disco)
 python -m scrapers.fanz qa --previous-git origin/main   # QA: contagens, schema, integridade, variação
                                                         # vs coleta anterior -> data/processed/fanz/qa_report.md
+python -m scrapers.muemu fetch                       # git clone do MuEmu em data/raw/muemu/repo (+ meta.json)
+python -m scrapers.muemu parse                       # arquivos do MuEmu -> data/processed/muemu/*.json
+python -m scrapers.combine                           # Fanz + MuEmu -> data/processed/combined/ + combine_report.md
 ```
 
 `parse` nunca acessa a rede: dá para refazer o parsing quantas vezes quiser sem rebaixar nada.
@@ -53,6 +56,9 @@ scrapers/common/   http.py (cliente educado: robots, 1 req/s, retries), storage.
                    ids.py (slugs), mu.py (classes do jogo), model.py (ParseResult, validação de schema),
                    qa.py (verificações da fase 3, independentes da fonte)
 scrapers/fanz/     urls.py, discover.py, parse_item.py, parse_monster.py, pipeline.py, report.py, cli.py
+scrapers/muemu/    source.py (vocabulário, fórmula de requisitos), parse.py, cli.py
+scrapers/combine.py  cruzamento Fanz + MuEmu (Fanz é a base; MuEmu só preenche campos vazios)
+docs/              rascunhos e notas (ex.: pedido de acesso ao muonline.us)
 schema/            JSON Schema (draft 2020-12) de cada entidade publicada
 data/raw/          HTML bruto + .meta.json por página (fora do git)
 data/processed/    JSON normalizado por fonte + poc_report.md
@@ -135,8 +141,8 @@ wrangler.jsonc     configuração dos Workers (env prod = mu-explorer, env hml =
 
 **Bloqueado para coleta automática (out/2026):** todas as páginas, inclusive o
 `sitemap.xml`, respondem 403 com o desafio anti-bot da Cloudflare ("Just a moment..."). Pela regra de não
-contornar bloqueios, não coletamos. Caminhos possíveis: pedir acesso ou exportação ao dono do site, ou
-buscar grupo/índice/durabilidade em outra fonte (ex.: arquivos de dados do MuEmu). O resto desta seção é
+contornar bloqueios (inclusive desafios anti-bot), não coletamos. Pedido de acesso/exportação ao dono em
+`docs/contato-muonline-us.md`; enquanto isso, grupo/índice/durabilidade vêm do MuEmu. O resto desta seção é
 o que foi mapeado antes do bloqueio.
 
 - Sitemap: `https://muonline.us/sitemap.xml`.
@@ -152,10 +158,21 @@ o que foi mapeado antes do bloqueio.
   registro e pastas de tradução `database-xx`).
 - Ressalva: drops parecem genéricos de emulador, não oficiais por season. Cruzar com o Fanz.
 
-### 3. Outras (referência, não prioritárias)
+### 3. MuEmu (github.com/deep-thought-42/MuEmu) — grupo/índice, durabilidade, respawn e spots
+- Emulador C# open source (licença MIT do código). Não é scraping: `git clone` do repositório.
+  Dados de **servidor privado**: itens da Season 16 (`Data/itemS16.txt`), monstros (`Monster.xml`, com
+  `RegenTime` = respawn em segundos) e spawns com coordenadas (`MonsterSetBase.xml`).
+- `itemS16.txt` guarda **fatores**, não requisitos finais. Requisito +0 = `20 + fator × DropLevel × 3 / 100`
+  (energia: × 4; livros do Summoner: × 3; scrolls do grupo 15: valor direto). Validado contra o Fanz:
+  força/agilidade batem em ~98% dos itens. Vitalidade/comando usam × 3 sem validação (o Fanz não traz casos).
+- Nomes repetidos são do próprio jogo (ex.: "Adamantine Armor" 8/26 e 8/66, modelo novo); ganham sufixo
+  `-g<grupo>-i<índice>` no id. Monstros com o mesmo nome são variantes de nível (Aegis em Kalima 1..7).
+- No cruzamento, excellent/ancient do Fanz casam com o item base (no MU têm o mesmo grupo/índice).
+
+### 4. Outras (referência, não prioritárias)
 muonline.fandom.com (MediaWiki, `/api.php`, cobertura parcial), StrategyWiki (antiga),
 wiki.infinitymu.net e info.topmuonline.net (servidores privados), globalmuonline.com/drop
-(Season 19/21), MuEmu (github.com/deep-thought-42/MuEmu: `Data/Monster`, `MonsterSetBase`, bom para spawns).
+(Season 19/21).
 
 ## Modelo de dados
 

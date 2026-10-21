@@ -2,6 +2,7 @@
   "record": {
     "id": "bass",
     "name": "Bass",
+    "number": null,
     "level": 127,
     "difficulty": null,
     "hp": 120000,
@@ -41,6 +42,13 @@
       {
         "monster_id": "bass",
         "map_id": "nixies-lake",
+        "kind": null,
+        "x": null,
+        "y": null,
+        "x2": null,
+        "y2": null,
+        "radius": null,
+        "count": null,
         "season": null,
         "source": "fanz",
         "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Bass.php",

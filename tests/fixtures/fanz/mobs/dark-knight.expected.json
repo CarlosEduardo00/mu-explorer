@@ -2,6 +2,7 @@
   "record": {
     "id": "dark-knight",
     "name": "Dark Knight",
+    "number": null,
     "level": 48,
     "difficulty": null,
     "hp": 3000,
@@ -39,6 +40,13 @@
       {
         "monster_id": "dark-knight",
         "map_id": "dungeon",
+        "kind": null,
+        "x": null,
+        "y": null,
+        "x2": null,
+        "y2": null,
+        "radius": null,
+        "count": null,
         "season": null,
         "source": "fanz",
         "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Dark%20Knight.php",

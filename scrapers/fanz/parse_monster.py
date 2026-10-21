@@ -79,6 +79,7 @@ def parse_monster(html: str, meta: dict) -> ParseResult:
     record = {
         "id": monster_id,
         "name": name,
+        "number": None,
         "level": stats.get("level"),
         "difficulty": difficulty,
         "hp": stats.get("hp"),
@@ -98,7 +99,8 @@ def parse_monster(html: str, meta: dict) -> ParseResult:
         **provenance,
         "page_updated_at": find_updated_date([line.text for line in details]),
     }
-    spawns = [{"monster_id": monster_id, "map_id": m["id"], **provenance} for m in maps]
+    spawns = [{"monster_id": monster_id, "map_id": m["id"], "kind": None, "x": None, "y": None, "x2": None,
+               "y2": None, "radius": None, "count": None, **provenance} for m in maps]
     return ParseResult(
         kind="monster",
         record=record,
@@ -159,19 +161,28 @@ def _maps(details: list[Line], provenance: dict, warnings: list[str]) -> list[di
         match = _SPAWNS.match(line.text)
         if not match:
             continue
+        where = _map_name(match["where"])
         links = [link for link in line.links if urls.classify(link.href) == "map"]
         if links:
             for link in links:
                 map_name = urls.name_from_url(link.href)
+                # "Spawns in Kalima 1.": o link é "Kalima", mas Kalima 1..7 são mapas distintos no jogo.
+                if len(links) == 1 and re.fullmatch(rf"{re.escape(map_name)} \d+", where):
+                    map_name = where
                 found.setdefault(slugify(map_name), {"name": map_name, "url": urls.canonical(link.href)})
         else:
-            map_name = clean(re.sub(r"[.\s]+$", "", match["where"]))
-            warnings.append(f"mapa sem link: {map_name!r}")
-            found.setdefault(slugify(map_name), {"name": map_name, "url": None})
+            warnings.append(f"mapa sem link: {where!r}")
+            found.setdefault(slugify(where), {"name": where, "url": None})
     return [
         {"id": map_id, "name": m["name"], **provenance, "source_url": m["url"] or provenance["source_url"]}
         for map_id, m in found.items() if map_id
     ]
+
+
+def _map_name(text: str) -> str:
+    """'Blood Castle Mini-game 1.' -> 'Blood Castle 1' (mesmo nome que o servidor usa)."""
+    name = clean(re.sub(r"[.\s]+$", "", text))
+    return re.sub(r"\s+Mini-game(?=\s+\d+$)", "", name, flags=re.IGNORECASE)
 
 
 def _table_kind(title: str) -> str:

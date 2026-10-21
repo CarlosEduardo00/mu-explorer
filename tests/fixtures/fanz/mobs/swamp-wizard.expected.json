@@ -2,6 +2,7 @@
   "record": {
     "id": "swamp-wizard",
     "name": "Swamp Wizard",
+    "number": null,
     "level": 275,
     "difficulty": null,
     "hp": null,
@@ -42,6 +43,13 @@
       {
         "monster_id": "swamp-wizard",
         "map_id": "swamp-of-darkness",
+        "kind": null,
+        "x": null,
+        "y": null,
+        "x2": null,
+        "y2": null,
+        "radius": null,
+        "count": null,
         "season": null,
         "source": "fanz",
         "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Swamp%20Wizard.php",

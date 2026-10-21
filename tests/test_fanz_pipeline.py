@@ -94,7 +94,7 @@ def test_parse_valida_e_escreve(tmp_path, clock):
     assert dataset.failures == [("absolute-scepter.html", "HTTP 404"), ("agon.html", "HTTP 404")]
     assert [i["id"] for i in dataset.items] == ["agi-fruit"]
     assert [m["id"] for m in dataset.monsters] == ["aegis"]
-    assert len(dataset.drops) == 63 and [m["id"] for m in dataset.maps] == ["kalima"]
+    assert len(dataset.drops) == 63 and [m["id"] for m in dataset.maps] == ["kalima-1"]
     assert dataset.sources[0]["pages"] == 2
 
     written = pipeline.write_dataset(dataset, tmp_path / "processed")

@@ -2,6 +2,7 @@
   "record": {
     "id": "giant-ogre",
     "name": "Giant Ogre",
+    "number": null,
     "level": 70,
     "difficulty": 1,
     "hp": 9500,
@@ -27,8 +28,8 @@
   "related": {
     "maps": [
       {
-        "id": "blood-castle-mini-game-1",
-        "name": "Blood Castle Mini-game 1",
+        "id": "blood-castle-1",
+        "name": "Blood Castle 1",
         "season": null,
         "source": "fanz",
         "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Giant%20Ogre.php",
@@ -38,7 +39,14 @@
     "spawns": [
       {
         "monster_id": "giant-ogre",
-        "map_id": "blood-castle-mini-game-1",
+        "map_id": "blood-castle-1",
+        "kind": null,
+        "x": null,
+        "y": null,
+        "x2": null,
+        "y2": null,
+        "radius": null,
+        "count": null,
         "season": null,
         "source": "fanz",
         "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Giant%20Ogre.php",

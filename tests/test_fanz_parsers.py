@@ -159,8 +159,12 @@ def test_monstro_drops_por_tabela_e_categoria():
 
 
 def test_monstro_com_dificuldade_e_sufixo_no_titulo():
-    r = mob("aegis").record
+    result = mob("aegis")
+    r = result.record
     assert (r["name"], r["id"], r["difficulty"], r["level"], r["hp"]) == ("Aegis", "aegis", 1, 17, 440)
+    # "Spawns in Kalima 1." com link para Kalima.php: Kalima 1..7 são mapas distintos.
+    assert [(m["id"], m["name"]) for m in result.related["maps"]] == [("kalima-1", "Kalima 1")]
+    assert result.related["maps"][0]["source_url"] == "https://muonlinefanz.com/tools/maps/data/mapdb/Kalima.php"
 
 
 def test_monstro_elemental_e_tabelas_em_frase():
@@ -190,8 +194,8 @@ def test_monstro_sem_estatisticas_na_pagina():
 
 def test_monstro_com_mapa_sem_link():
     result = mob("giant-ogre")
-    assert [m["id"] for m in result.related["maps"]] == ["blood-castle-mini-game-1"]
-    assert result.warnings == ["mapa sem link: 'Blood Castle Mini-game 1'"]
+    assert [m["id"] for m in result.related["maps"]] == ["blood-castle-1"]  # "Blood Castle Mini-game 1."
+    assert result.warnings == ["mapa sem link: 'Blood Castle 1'"]
 
 
 @pytest.mark.parametrize("parser, html", [(parse_item, "<html><body><p>sem menu</p></body></html>"),

@@ -2,6 +2,7 @@
   "record": {
     "id": "golden-napin",
     "name": "Golden Napin",
+    "number": null,
     "level": 112,
     "difficulty": null,
     "hp": 77000,
@@ -39,6 +40,13 @@
       {
         "monster_id": "golden-napin",
         "map_id": "swamp-of-peace",
+        "kind": null,
+        "x": null,
+        "y": null,
+        "x2": null,
+        "y2": null,
+        "radius": null,
+        "count": null,
         "season": null,
         "source": "fanz",
         "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Golden%20Napin.php",

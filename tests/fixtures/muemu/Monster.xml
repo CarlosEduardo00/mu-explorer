@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<Monster xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Info Monster="10" Rate="1" Name="Dark Knight" Level="48" HP="3000" MP="0" DmgMin="150" DmgMax="155" Defense="80" MagicDefense="0" Attack="240" Success="70" MoveRange="3" Spell="None" AttackRange="1" ViewRange="5" MoveSpeed="400" AttackSpeed="1400" RegenTime="10" Attribute="2" ItemRate="200" M_Rate="14" MaxItem="3" Skill="0" Ice_Resistance="3" Possion_Resistance="3" Lightning_Resistance="3" Fire_Resistance="3">
+    <MainAttribute>0</MainAttribute>
+    <AttributePattern>0</AttributePattern>
+    <PentagramDamageMin>0</PentagramDamageMin>
+    <PentagramDamageMax>0</PentagramDamageMax>
+    <PentagramAttackRate>0</PentagramAttackRate>
+    <PentagramDefenseRate>0</PentagramDefenseRate>
+    <PentagramDefense>7</PentagramDefense>
+  </Info>
+  <Info Monster="147" Rate="1" Name="Aegis" Level="17" HP="440" MP="0" DmgMin="55" DmgMax="62" Defense="17" MagicDefense="0" Attack="75" Success="17" MoveRange="3" Spell="EnergyBall" AttackRange="1" ViewRange="7" MoveSpeed="500" AttackSpeed="1500" RegenTime="10" Attribute="2" ItemRate="180" M_Rate="0" MaxItem="3" Skill="0" Ice_Resistance="8" Possion_Resistance="8" Lightning_Resistance="8" Fire_Resistance="8">
+    <MainAttribute>0</MainAttribute>
+    <AttributePattern>0</AttributePattern>
+    <PentagramDamageMin>0</PentagramDamageMin>
+    <PentagramDamageMax>0</PentagramDamageMax>
+    <PentagramAttackRate>0</PentagramAttackRate>
+    <PentagramDefenseRate>0</PentagramDefenseRate>
+    <PentagramDefense>7</PentagramDefense>
+  </Info>
+  <Info Monster="177" Rate="1" Name="Aegis" Level="32" HP="1000" MP="0" DmgMin="105" DmgMax="112" Defense="42" MagicDefense="0" Attack="135" Success="33" MoveRange="3" Spell="EnergyBall" AttackRange="1" ViewRange="7" MoveSpeed="500" AttackSpeed="1500" RegenTime="10" Attribute="2" ItemRate="180" M_Rate="0" MaxItem="3" Skill="0" Ice_Resistance="11" Possion_Resistance="11" Lightning_Resistance="11" Fire_Resistance="11">
+    <MainAttribute>0</MainAttribute>
+    <AttributePattern>0</AttributePattern>
+    <PentagramDamageMin>0</PentagramDamageMin>
+    <PentagramDamageMax>0</PentagramDamageMax>
+    <PentagramAttackRate>0</PentagramAttackRate>
+    <PentagramDefenseRate>0</PentagramDefenseRate>
+    <PentagramDefense>7</PentagramDefense>
+  </Info>
+</Monster>

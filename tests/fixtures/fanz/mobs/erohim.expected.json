@@ -2,6 +2,7 @@
   "record": {
     "id": "erohim",
     "name": "Erohim",
+    "number": null,
     "level": 128,
     "difficulty": null,
     "hp": 3000000,
@@ -44,6 +45,13 @@
       {
         "monster_id": "erohim",
         "map_id": "land-of-trials",
+        "kind": null,
+        "x": null,
+        "y": null,
+        "x2": null,
+        "y2": null,
+        "radius": null,
+        "count": null,
         "season": null,
         "source": "fanz",
         "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Erohim.php",
