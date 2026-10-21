@@ -1,6 +1,6 @@
 # Relatório da coleta — MU Online Fanz
 
-Gerado em 2026-10-21T21:13:22Z.
+Gerado em 2026-10-21T21:52:29Z.
 
 ## Resumo
 
@@ -147,7 +147,7 @@ Gerado em 2026-10-21T21:13:22Z.
 | `level_required` | 26 | 53% |  |
 | `level_recommended_min` | 28 | 57% |  |
 | `level_recommended_max` | 26 | 53% |  |
-| `minimap_url` | 32 | 65% |  |
+| `minimap_url` | 33 | 67% |  |
 | `valued_drops.elite` | 1 | 2% |  |
 | `valued_drops.special` | 8 | 16% |  |
 
@@ -178,15 +178,15 @@ Gerado em 2026-10-21T21:13:22Z.
 | Requirements: Character Level ? | 5 |
 | Requirements: Energy: ? | 2 |
 | Item details: Pet DMG Raise: +?% | 1 |
-| Requirements: Agility: ? | 1 |
 | Requirements: Strength: ? | 1 |
+| Requirements: Agility: ? | 1 |
 
 ## Seções vistas — itens
 
 - Notes & links (3074)
 - Related items (3073)
-- Possible additional options (2689)
 - Requirements (2689)
+- Possible additional options (2689)
 - Item details (2533)
 - Excellent option (1122)
 - Additional option (856)
@@ -201,11 +201,11 @@ Gerado em 2026-10-21T21:13:22Z.
 - Base option (12)
 - Elemental option (12)
 - Set bonus (6)
-- Armor items (5)
-- Weapon items (5)
-- Shield items (5)
-- Other items (5)
 - Wizardry items (5)
+- Weapon items (5)
+- Other items (5)
+- Shield items (5)
+- Armor items (5)
 - Accessory items (4)
 - *can toggle the New Year character skin (2)
 - *can toggle the Christmas character skin (1)
@@ -260,40 +260,40 @@ Nenhuma.
 | Required ingredients: | 6 |
 | Jewel of Chaos | 6 |
 | Difficulty: moderate | 6 |
-| All other items in the combination are consumed. | 4 |
-| If the combination succeeds: | 4 |
-| Possible Combinations | 4 |
-| Click to jump 👇 | 4 |
-| Crafting Failure | 4 |
 | Crafting Success | 4 |
 | 100% Success Rate | 4 |
+| If the combination succeeds: | 4 |
+| Crafting Failure | 4 |
+| Click to jump 👇 | 4 |
+| Possible Combinations | 4 |
+| All other items in the combination are consumed. | 4 |
 | Discontinued NPC. | 4 |
 | Jewel of Creation | 4 |
-| Zen x150,000 | 3 |
-| The combination cannot fail. | 3 |
 | All items in the combination are destroyed. | 3 |
+| Zen x150,000 | 3 |
 | 80% Success Rate | 3 |
+| The combination cannot fail. | 3 |
 | This NPC is currently not available in the game. | 3 |
 | This NPC has been discontinued. | 3 |
 | Jewel of Bless x5 | 3 |
-| Jewel of Soul x5 | 3 |
 | Crafting Recipes | 3 |
+| Jewel of Soul x5 | 3 |
 | The Mercenary Guild is a strong Guild which has been known for ultimately preventing Kundun from breeching MU's main cities, several times. Since then, several Guild Members have retired and now the Guild needs extra assistance slaying monsters. The Guild is actively recruiting players, as a Free Mercenary, to kill monsters. A Free Mercenary is not technically a part of the Guild, but it is an established rank amongst the Mercenary Guild, and, as such, you will earn respect from it. It will cost Zen (x1,000,000) to register with the Guild. | 3 |
 | Daily Quests | 3 |
-| Zen x450,000 | 2 |
+| All items in the combination are consumed. | 2 |
 | Possible Crafted Items List | 2 |
-| +10 Upgrade | 2 |
 | 70% Success Rate | 2 |
+| If the combination fails: | 2 |
 | Zen x300,000 | 2 |
+| Jewel of Bless | 2 |
+| Zen x450,000 | 2 |
 | 60% Success Rate | 2 |
 | 90% Success Rate | 2 |
-| All items in the combination are consumed. | 2 |
 | Zen x100,000 | 2 |
-| Jewel of Bless | 2 |
-| If the combination fails: | 2 |
+| +10 Upgrade | 2 |
+| Evidence of Strength - Task 1 | 2 |
 | Requires completion of the Hero Status quest. | 2 |
 | "Go to the northern graveyard of Crywolf and find the soldier that escaped from the Balgass' Barrack. Lugard's blessing has allowed him to have the intelligence to get you inside of the Barracks. He calls himself Werewolf Guardsman." | 2 |
-| Evidence of Strength - Task 1 | 2 |
 | This NPC is basically pointless. 😐 | 2 |
 
 ## Seções vistas — NPCs

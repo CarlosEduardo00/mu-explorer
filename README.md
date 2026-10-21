@@ -36,5 +36,10 @@ python -m scrapers.fanz fixtures --golden           # vira fixture de teste (rev
 
 ## Créditos
 
-Dados de itens e monstros: [MU Online Fanz](https://muonlinefanz.com) (conteúdo de IZAKTLY).
+Publicados com autorização dos autores:
+- Itens, monstros, mapas, NPCs, drops, minimapas e imagens: [MU Online Fanz](https://muonlinefanz.com) (conteúdo de IZAKTLY).
+- Imagens de monstros e personagens, zonas de spawn, spots do minimapa e classes da Season 21:
+  [Global MU Online](https://globalmuonline.com).
+- Grupo/índice, durabilidade, respawn e spawns: [MuEmu](https://github.com/deep-thought-42/MuEmu) (licença MIT).
+
 MU Online é marca da Webzen.

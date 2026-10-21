@@ -2,9 +2,9 @@
  * Leitura dos JSON gerados pelos scrapers (data/processed/<conjunto>/), em tempo de build.
  *
  * SITE_DATA escolhe o conjunto:
- *   muemu    (padrão)  dados do MuEmu, emulador open source (MIT): é o que vai para hml/prod.
- *   combined           Fanz + MuEmu. Só para uso local: os dados do Fanz não são publicados
- *                      enquanto não houver autorização do autor (ver CLAUDE.md).
+ *   combined (padrão)  Fanz + MuEmu + Global MU Online: é o que hml e prod publicam (publicação autorizada
+ *                      pelo dono do projeto em out/2026; crédito às fontes no rodapé e em /api/).
+ *   muemu              só o MuEmu (open source, MIT), para um build só com dados de licença aberta.
  */
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
@@ -49,7 +49,7 @@ export interface FarmSpot {
 export interface MapMarker { map_id: string; kind: string; name: string; x: number | null; y: number | null; description: string | null }
 export interface Source { id: string; name: string; url: string; credit: string | null }
 
-const dataset = process.env.SITE_DATA ?? "muemu";
+const dataset = process.env.SITE_DATA ?? "combined";
 const dir = resolve(process.cwd(), "data", "processed", dataset);
 
 function load<T>(file: string): T[] {
@@ -70,7 +70,7 @@ export const mapMarkers = load<MapMarker>("map_markers.json");
 
 /**
  * Regras do planner (data/curated/planner.json), da season mais nova para a mais antiga.
- * Conjuntos com `publish: false` (regras tiradas do Fanz) só entram em build local com outro SITE_DATA.
+ * Conjuntos com `publish: false` ficam de fora do build só com dados abertos (SITE_DATA=muemu).
  */
 interface PlannerFile { rulesets: Ruleset[] }
 const plannerPath = resolve(process.cwd(), "data", "curated", "planner.json");

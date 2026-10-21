@@ -106,16 +106,15 @@ _RECOMMENDED = re.compile(r"^Recommended for characters level ([\d,]+) ~ ([\d,]+
 _LESS_THAN = re.compile(r"^Recommended for characters less than level ([\d,]+)", re.IGNORECASE)
 
 
-_MINIMAP = re.compile(r"/tools/maps/data/graphics/[^/]+/map\.jpg$", re.IGNORECASE)
+_MINIMAP = re.compile(r"/tools/maps/data/graphics/[^/]+/map(\d*)\.jpg$", re.IGNORECASE)
 
 
 def find_minimap(doc) -> str | None:
     """Minimapa do jogo (graphics/<Mapa>/map.jpg, 1024×1024 = 4 px por casa; horizontal = y, vertical = x).
-    É a imagem de fundo dos Hot Spots; os pontos dos Hot Spots ficam no php bloqueado e não são coletados."""
-    for image in doc.images:
-        if _MINIMAP.search(unquote(urlsplit(image.src).path)):
-            return image.src
-    return None
+    É a imagem de fundo dos Hot Spots; os pontos dos Hot Spots ficam no php bloqueado e não são coletados.
+    Prefere map.jpg; sem ele, o primeiro mapN.jpg (Debenter só tem map2.jpg). Em Karutan, map2.jpg é o Karutan 2."""
+    found = [(m.group(1), image.src) for image in doc.images if (m := _MINIMAP.search(unquote(urlsplit(image.src).path)))]
+    return next((src for n, src in found if n == ""), found[0][1] if found else None)
 
 
 def map_levels(quick_facts: list[str]) -> dict:
