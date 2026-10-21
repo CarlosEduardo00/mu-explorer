@@ -39,6 +39,11 @@ export interface Npc {
 }
 export interface Spawn { monster_id: string; map_id: string; kind: string | null; x: number | null; y: number | null; count: number | null }
 export interface Drop { monster_id: string; item_id: string; item_name: string; kind: string; table: string | null; category: string | null; quantity: number | null }
+export interface FarmSpot {
+  id: string; map_id: string; map_name: string; x: number; y: number; x_min: number; y_min: number; x_max: number; y_max: number;
+  monsters: { monster_id: string; name: string; level: number | null; count: number }[];
+  total: number; level_min: number | null; level_max: number | null; source: string | null; source_url: string | null;
+}
 export interface Source { id: string; name: string; url: string; credit: string | null }
 
 const dataset = process.env.SITE_DATA ?? "muemu";
@@ -57,6 +62,7 @@ export const npcs = load<Npc>("npcs.json");
 export const spawns = load<Spawn>("spawns.json");
 export const drops = load<Drop>("drops.json");
 export const sources = load<Source>("sources.json");
+export const farmSpots = load<FarmSpot>("farm_spots.json");
 
 /**
  * Regras do planner (data/curated/planner.json), da season mais nova para a mais antiga.
@@ -80,6 +86,7 @@ export const spawnsByMonster = groupBy(spawns, (s) => s.monster_id);
 export const spawnsByMap = groupBy(spawns, (s) => s.map_id);
 export const dropsByMonster = groupBy(drops, (d) => d.monster_id);
 export const dropsByItem = groupBy(drops, (d) => d.item_id);
+export const spotsByMap = groupBy(farmSpots, (s) => s.map_id);
 
 function groupBy<T>(rows: T[], key: (row: T) => string): Map<string, T[]> {
   const out = new Map<string, T[]>();

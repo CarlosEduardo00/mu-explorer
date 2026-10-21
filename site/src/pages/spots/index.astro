@@ -1,0 +1,83 @@
+---
+import Base from "../../layouts/Base.astro";
+import { farmSpots, sources, fmt } from "../../lib/data";
+
+// Mapas em ordem do spot de menor nível; dentro do mapa, spots por nível.
+const byMap = new Map<string, typeof farmSpots>();
+for (const s of [...farmSpots].sort((a, b) => (a.level_min ?? 0) - (b.level_min ?? 0) || a.id.localeCompare(b.id, "en", { numeric: true }))) {
+  const list = byMap.get(s.map_id) ?? [];
+  list.push(s);
+  byMap.set(s.map_id, list);
+}
+const levelText = (s: (typeof farmSpots)[number]) =>
+  s.level_min == null ? "—" : s.level_min === s.level_max ? fmt(s.level_min) : `${fmt(s.level_min)}–${fmt(s.level_max)}`;
+const source = sources[0];
+---
+<Base title="Spots de farm" description="Onde upar em MU Online: grupos de monstros por mapa, com coordenadas e faixa de nível.">
+  <h1>Spots de farm</h1>
+  <p class="lead">
+    Grupos de monstros por região do mapa (grade de 32 × 32 casas), com coordenadas e faixa de nível dos monstros.
+    Gerados a partir dos spawns{source && <> do <a href={source.url}>{source.name}</a></>}; eventos ficam de fora.
+    Spot de farm bom depende também da classe, do equipamento e das taxas do servidor.
+  </p>
+
+  <div class="spot-filter">
+    <label>Seu nível <input id="char-level" type="number" min="1" step="1" inputmode="numeric" placeholder="ex.: 80" /></label>
+    <label>Níveis abaixo <input id="below" type="number" min="0" step="1" value="15" inputmode="numeric" /></label>
+    <label>Níveis acima <input id="above" type="number" min="0" step="1" value="5" inputmode="numeric" /></label>
+  </div>
+  <p class="count" id="spot-count">{fmt(farmSpots.length)} spots em {fmt(byMap.size)} mapas</p>
+
+  {[...byMap.entries()].map(([mapId, spots]) => (
+    <section class="spot-map-section" data-map>
+      <h2><a href={`/mapas/${mapId}/#spots`}>{spots[0].map_name}</a></h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Spot</th><th>Coordenadas</th><th class="num">Nível</th><th>Monstros</th></tr></thead>
+          <tbody>
+            {spots.map((s) => (
+              <tr data-min={s.level_min ?? ""} data-max={s.level_max ?? ""}>
+                <td>{s.id}</td>
+                <td>{s.x}, {s.y}<span class="muted"> ({s.x_min},{s.y_min})–({s.x_max},{s.y_max})</span></td>
+                <td class="num">{levelText(s)}</td>
+                <td>{s.monsters.map((m, i) => <>{i > 0 && ", "}<a href={`/monstros/${m.monster_id}/`}>{m.name}</a> ×{m.count}</>)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  ))}
+</Base>
+
+<style>
+  .spot-filter { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; margin: 1rem 0 .25rem; }
+  .spot-filter label { display: flex; flex-direction: column; gap: .2rem; font-size: .85rem; color: var(--muted); }
+  .spot-filter input { font: inherit; width: 7rem; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: .4rem; padding: .4rem .6rem; }
+  td .muted { font-size: .8rem; }
+</style>
+
+<script>
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const rows = [...document.querySelectorAll<HTMLTableRowElement>("tr[data-min]")];
+  const sections = [...document.querySelectorAll<HTMLElement>("[data-map]")];
+  const count = document.getElementById("spot-count") as HTMLElement;
+  const total = rows.length;
+
+  function apply() {
+    const level = Number($("char-level").value);
+    const below = Math.max(0, Number($("below").value) || 0);
+    const above = Math.max(0, Number($("above").value) || 0);
+    let shown = 0;
+    for (const row of rows) {
+      const min = Number(row.dataset.min), max = Number(row.dataset.max);
+      // Spot serve se algum monstro dele está na faixa [nível - abaixo, nível + acima].
+      const ok = !level || (row.dataset.min !== "" && max >= level - below && min <= level + above);
+      row.hidden = !ok;
+      if (ok) shown++;
+    }
+    for (const section of sections) section.hidden = !section.querySelector("tr[data-min]:not([hidden])");
+    count.textContent = level ? `${shown.toLocaleString("pt-BR")} de ${total.toLocaleString("pt-BR")} spots para o nível ${level}` : `${total.toLocaleString("pt-BR")} spots`;
+  }
+  for (const id of ["char-level", "below", "above"]) $(id).addEventListener("input", apply);
+</script>

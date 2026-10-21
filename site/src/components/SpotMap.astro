@@ -1,0 +1,24 @@
+---
+// Minimapa esquemático (256 × 256 casas) com as áreas dos spots; sem imagem do jogo.
+import type { FarmSpot } from "../lib/data";
+interface Props { spots: FarmSpot[]; label: string }
+const { spots, label } = Astro.props;
+const SIZE = 256;
+---
+<svg class="spot-map" viewBox={`0 0 ${SIZE} ${SIZE}`} role="img" aria-label={label}>
+  <rect x="0" y="0" width={SIZE} height={SIZE} class="spot-map-bg" />
+  {spots.map((s, i) => (
+    <g>
+      <rect x={s.x_min} y={s.y_min} width={Math.max(2, s.x_max - s.x_min)} height={Math.max(2, s.y_max - s.y_min)} class="spot-area" />
+      <circle cx={s.x} cy={s.y} r="3" class="spot-dot" />
+      <text x={s.x + 4} y={s.y - 4} class="spot-label">{i + 1}</text>
+    </g>
+  ))}
+</svg>
+<style>
+  .spot-map { width: 100%; max-width: 22rem; height: auto; display: block; margin: .5rem 0 1rem; }
+  .spot-map-bg { fill: var(--panel); stroke: var(--line); }
+  .spot-area { fill: var(--accent); fill-opacity: .12; stroke: var(--accent); stroke-opacity: .5; stroke-width: .6; }
+  .spot-dot { fill: var(--accent); }
+  .spot-label { fill: var(--fg); font-size: 9px; font-weight: 600; }
+</style>

@@ -29,6 +29,7 @@ python -m scrapers.muemu parse                       # arquivos do MuEmu -> data
 python -m scrapers.combine                           # Fanz + MuEmu -> data/processed/combined/ + combine_report.md
 python -m scrapers.planner fetch                     # guias de classe + Stat Planner do Fanz (14 páginas, ~15 s)
 python -m scrapers.planner build                     # data/raw -> data/curated/planner.json (regras de classes)
+python -m scrapers.spots [--set combined]            # spawns -> data/processed/<conjunto>/farm_spots.json (spots de farm)
 ```
 
 `parse` nunca acessa a rede: dá para refazer o parsing quantas vezes quiser sem rebaixar nada.
@@ -75,6 +76,7 @@ scrapers/fanz/     urls.py, discover.py, parse_item.py, parse_monster.py, parse_
 scrapers/muemu/    source.py (vocabulário, fórmula de requisitos), parse.py, cli.py
 scrapers/combine.py  cruzamento Fanz + MuEmu (Fanz é a base; MuEmu só preenche campos vazios)
 scrapers/planner/  build.py: regras de classes (pontos por nível, base, evolução) -> data/curated/planner.json
+scrapers/spots.py  spots de farm: agrupa spawns por região (grade 32×32) -> farm_spots.json (não copia guias)
 data/curated/      arquivos curados por nós (hoje só planner.json), commitados
 docs/              rascunhos e notas (ex.: pedido de acesso ao muonline.us)
 schema/            JSON Schema (draft 2020-12) de cada entidade publicada
@@ -233,6 +235,8 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 - `map`: id, name, parent_id, description, quick_facts, valued_drops, monsters, special_monsters, bosses,
   npcs, connections, notes, image_url. `npc`: id, name, type, locations (map_id, x, y), description, sells
   (item, categoria, preço em Zen, detalhes). `spawn`: monster_id, map_id, kind, x, y, x2, y2, radius, count.
+  `farm_spot`: id, map_id, centro (x, y), área (x_min..y_max), monsters (id, nome, nível, quantidade), total,
+  level_min/max (gerado por `scrapers.spots`; eventos e monstros dourados ficam de fora).
   `drop`: monster_id, item_id, item_name, kind
   (normal/excellent/ancient/socket/unknown), table, category, quantity, rate (null se a fonte não informa).
   Um drop do Fanz significa "o monstro pode dropar este item"; não há taxa.
