@@ -1,0 +1,19 @@
+---
+import Base from "../layouts/Base.astro";
+import { items, monsters, maps, npcs, spawns } from "../lib/data";
+const cards = [
+  { href: "/itens/", n: items.length, label: "itens" },
+  { href: "/monstros/", n: monsters.length, label: "monstros" },
+  { href: "/mapas/", n: maps.length, label: "mapas" },
+  { href: "/npcs/", n: npcs.length, label: "NPCs" },
+].filter((c) => c.n > 0);
+---
+<Base title="MU Explorer">
+  <h1>MU Explorer</h1>
+  <p class="lead">Itens, monstros, mapas e NPCs de MU Online. Em construção: builds por classe virão depois.</p>
+  <ul class="cards">
+    {cards.map((c) => <li><a href={c.href}><strong>{c.n.toLocaleString("pt-BR")}</strong>{c.label}</a></li>)}
+  </ul>
+  <p><a href="/planner/">Planner de builds →</a> distribua pontos de atributo e confira os requisitos do equipamento.</p>
+  {spawns.length > 0 && <p class="muted">{spawns.length.toLocaleString("pt-BR")} pontos de spawn com coordenadas.</p>}
+</Base>

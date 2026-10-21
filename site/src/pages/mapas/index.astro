@@ -1,0 +1,14 @@
+---
+import Base from "../../layouts/Base.astro";
+import FilterList from "../../components/FilterList.astro";
+import { maps, spawnsByMap } from "../../lib/data";
+const rows = maps.map((m) => ({
+  href: `/mapas/${m.id}/`,
+  cells: [m.name, (new Set((spawnsByMap.get(m.id) ?? []).map((s) => s.monster_id)).size || m.monsters.length).toLocaleString("pt-BR")],
+  search: m.name.toLowerCase(),
+}));
+---
+<Base title="Mapas">
+  <h1>Mapas</h1>
+  <FilterList columns={[{ label: "Nome" }, { label: "Monstros", num: true }]} rows={rows} placeholder="Filtrar por nome" noun="mapas" />
+</Base>

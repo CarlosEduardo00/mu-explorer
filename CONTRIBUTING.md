@@ -14,7 +14,7 @@ convenções estão no [`CLAUDE.md`](CLAUDE.md): leia antes de começar. O Claud
    git checkout mu-explorer-dev
    python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
    pip install -e ".[dev]"
-   npm install            # só se for mexer no site (Node 22)
+   npm install            # só se for mexer no site (Node 22); `npm run dev` abre em http://localhost:4321
    pytest                 # deve passar tudo, sem rede
    ```
 3. Os JSON já processados estão em `data/processed/` (no git). O HTML bruto (`data/raw/`, ~180 MB) não vai
@@ -38,6 +38,9 @@ feat/minha-coisa ──PR──▶ mu-explorer-dev ──PR (release)──▶ m
    (https://mu-explorer-hml.buiu.workers.dev).
 5. De tempos em tempos, um PR de `mu-explorer-dev` para `main` leva tudo para produção
    (https://mu-explorer.buiu.workers.dev).
+
+PRs não ganham preview na Cloudflare: os builds de branches que não são de produção estão desligados nos dois
+Workers. Para ver o site de um PR antes do merge, rode `npm run dev` ou `npm run build && npm run preview`.
 
 Nunca faça commit direto na `main` nem na `mu-explorer-dev` (as regras de proteção bloqueiam).
 

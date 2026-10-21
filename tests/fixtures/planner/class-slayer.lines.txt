@@ -1,0 +1,49 @@
+Slayer
+Advertisement:
+"The slayer was originally born from Lorencia and was reincarnated through experiments in Kundun which turned her into a half-human half-bat demi-human. 1896 of Lugard's calendar, the demi-human experiment was discovered by Kundun's forces in Kanturu. To increase the power of their forces, they use the experiment to create demi-humans. The slayer is the first successful demi-human created from the experiment."
+Home - Guide - Characters || #Stats & Formulas || #Weapons || #Armor Sets || #Wings || #Basic Skills || #Special Skills || #Master Skill Tree || #Skill Enhancement Tree
+Quick Facts
+Starts in Lorencia.
+Tier 1 Class: a beginner character.
+Pay to play: requires a WCoin purchase.
+Unlocked: no prerequisites required.
++5 stat points per character level.
++6 stat points per level after Hero Status quest.
+Strength focus creates an offensive build.
+Agility focus creates an defensive build.
+Class Specialization
+Each character has unique specialization bonuses.
+Muun Bonus - starts with a Muun item.
+Agility Bonus - additional ATK DMG & DEF Rate:
+Less than 1,500 AGI: +0% ~ +10%
+1,501 ~ 2,000 AGI: +10% ~ +30%
+More than 2,001 AGI: +30% ~ +45%
+Party Set Bonus - increased EXP gain:
+Slayer
+Dark Knight
+Summoner
+Class Evolution
+All characters evolve through a series of classes after reaching a specific character level and after completing main quests.
+1st: Slayer
+Stops gaining EXP at Level 400.
+Evolves into Royal Slayer.
+2nd: Royal Slayer
+Unlocked by:
+Reaching Character Level 150.
+Completing the 2nd Class Upgrade quest.
+Stops gaining EXP at Level 400.
+Evolves into Master Slayer.
+3rd: Master Slayer
+Unlocked by:
+Reaching Character Level 400.
+Completing the 3rd Class Upgrade quest.
+Unlocks the Master Skill Tree.
+Stops gaining EXP at Level 800.
+Evolves into Slaughterer.
+4th: Slaughterer
+Unlocked by:
+Reaching Character Level 800.
+Completing the 4th Class Upgrade quest.
+Unlocks the Skill Enhancement Tree.
+Stops gaining EXP at Level 1450.
+Stats & Formulas #

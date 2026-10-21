@@ -1,0 +1,80 @@
+---
+import { sources, datasetName } from "../lib/data";
+
+interface Props { title: string; description?: string }
+const { title, description = "Itens, monstros, mapas e NPCs de MU Online." } = Astro.props;
+const nav = [
+  { href: "/itens/", label: "Itens" },
+  { href: "/monstros/", label: "Monstros" },
+  { href: "/mapas/", label: "Mapas" },
+  { href: "/npcs/", label: "NPCs" },
+  { href: "/planner/", label: "Planner" },
+];
+const path = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title === "MU Explorer" ? title : `${title} · MU Explorer`}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="data:," />
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand" href="/">MU Explorer</a>
+      <nav>
+        {nav.map((n) => <a href={n.href} aria-current={path.startsWith(n.href) ? "page" : undefined}>{n.label}</a>)}
+      </nav>
+    </header>
+    <main><slot /></main>
+    <footer>
+      <p>
+        Projeto de fãs, sem vínculo com a Webzen. MU Online é marca da Webzen Inc.
+        {sources.length > 0 && <> Dados: {sources.map((s, i) => <>{i > 0 && ", "}<a href={s.url}>{s.name}</a></>)}.</>}
+      </p>
+      {datasetName !== "muemu" && <p class="warn">Build local com conjunto “{datasetName}”: não publicar.</p>}
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #f7f6f2; --panel: #ffffff; --fg: #1d1c1a; --muted: #6b6860; --line: #e4e1d8; --accent: #8a5a00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #151412; --panel: #1e1d1a; --fg: #eceae4; --muted: #a29e94; --line: #34312b; --accent: #e0a840; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  a { color: var(--accent); }
+  main { max-width: 56rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  h1 { margin: 0 0 .25rem; font-size: 1.75rem; line-height: 1.2; }
+  h2 { margin: 2rem 0 .5rem; font-size: 1.15rem; }
+  .lead, .muted { color: var(--muted); }
+  .top { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; align-items: center; padding: .75rem 1rem; border-bottom: 1px solid var(--line); background: var(--panel); }
+  .brand { font-weight: 700; color: var(--fg); text-decoration: none; }
+  .top nav { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .top nav a { text-decoration: none; color: var(--muted); }
+  .top nav a[aria-current] { color: var(--accent); font-weight: 600; }
+  footer { max-width: 56rem; margin: 0 auto; padding: 1rem; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); }
+  .warn { color: #b3261e; font-weight: 600; }
+  table { border-collapse: collapse; width: 100%; background: var(--panel); }
+  th, td { text-align: left; padding: .4rem .6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-weight: 600; color: var(--muted); font-size: .85rem; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .table-wrap { overflow-x: auto; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: .75rem; padding: 0; list-style: none; }
+  .cards a { display: block; padding: .9rem 1rem; background: var(--panel); border: 1px solid var(--line); border-radius: .5rem; text-decoration: none; color: var(--fg); }
+  .cards strong { display: block; font-size: 1.4rem; color: var(--accent); }
+  .tags { display: flex; flex-wrap: wrap; gap: .35rem; padding: 0; list-style: none; }
+  .tags li { padding: .1rem .55rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--panel); font-size: .85rem; }
+  .filter { width: 100%; padding: .6rem .8rem; font: inherit; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: .5rem; margin: 1rem 0 .5rem; }
+  .count { color: var(--muted); font-size: .85rem; margin: 0 0 .5rem; }
+  dl.facts { display: grid; grid-template-columns: max-content 1fr; gap: .25rem 1.25rem; margin: 1rem 0; }
+  dl.facts dt { color: var(--muted); }
+  dl.facts dd { margin: 0; font-variant-numeric: tabular-nums; }
+  .crumbs { font-size: .85rem; color: var(--muted); margin-bottom: .75rem; }
+  .crumbs a { color: var(--muted); }
+</style>

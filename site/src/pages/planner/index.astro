@@ -1,0 +1,256 @@
+---
+import Base from "../../layouts/Base.astro";
+---
+<Base title="Planner de builds" description="Distribua pontos de atributo e confira os requisitos do equipamento em MU Online.">
+  <h1>Planner de builds</h1>
+  <p class="lead">
+    Distribua os pontos de atributo, escolha o equipamento e veja se os requisitos são cumpridos.
+    Os requisitos dos itens são os do item +0, sem opções ou joias. Confira no jogo antes de gastar pontos.
+  </p>
+
+  <noscript><p class="warn">O planner precisa de JavaScript.</p></noscript>
+  <p id="planner-loading" class="muted">Carregando…</p>
+
+  <div id="planner" class="planner" hidden>
+    <div class="planner-controls">
+      <label>Regras <select id="ruleset"></select></label>
+      <label>Nível <input id="level" type="number" min="1" step="1" inputmode="numeric" /></label>
+      <label>Pontos extras <input id="extra" type="number" min="0" step="1" inputmode="numeric" title="Quests, frutas e outras fontes" /></label>
+    </div>
+    <p id="ruleset-note" class="muted"></p>
+
+    <h2>Classe</h2>
+    <div id="classes" class="chips" role="radiogroup" aria-label="Classe"></div>
+    <p id="class-note" class="muted"></p>
+
+    <h2>Atributos</h2>
+    <div class="table-wrap">
+      <table id="stats">
+        <thead><tr><th>Atributo</th><th class="num">Base</th><th class="num">Adicionar</th><th class="num">Total</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p id="points-summary" class="points"></p>
+
+    <h2>Equipamento</h2>
+    <div id="gear" class="gear"></div>
+    <div id="gear-check"></div>
+
+    <p><button id="share" type="button" class="btn">Copiar link desta build</button> <span id="share-msg" class="muted" role="status"></span></p>
+    <p id="credit" class="muted"></p>
+  </div>
+</Base>
+
+<style is:global>
+  .planner-controls { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; margin: 1rem 0 .25rem; }
+  .planner-controls label { display: flex; flex-direction: column; gap: .2rem; font-size: .85rem; color: var(--muted); }
+  .planner select, .planner input[type="number"] { font: inherit; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: .4rem; padding: .4rem .6rem; }
+  .planner input[type="number"] { width: 7rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .chip { font: inherit; cursor: pointer; padding: .3rem .8rem; border-radius: 1rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
+  .chip[aria-checked="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  .btn { font: inherit; cursor: pointer; padding: .35rem .8rem; border-radius: .4rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
+  .btn.small { padding: .15rem .5rem; font-size: .8rem; }
+  .points { font-size: 1.05rem; }
+  .points strong.neg { color: #b3261e; }
+  .gear { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: .6rem 1rem; }
+  .gear label { display: flex; flex-direction: column; gap: .2rem; font-size: .85rem; color: var(--muted); }
+  .gear select { width: 100%; }
+  .ok { color: #1a7f37; }
+  .bad { color: #b3261e; font-weight: 600; }
+  #stats input[type="number"] { width: 6rem; }
+  #stats .btn { white-space: nowrap; }
+</style>
+
+<script>
+  import {
+    STATS, STAT_LABELS, SLOTS, pointsAtLevel, sumAllocation, totals, usableBy, checkItem, neededByGear,
+    pointsToWear, encodeState, decodeState, emptyAllocation,
+    type Allocation, type ClassRules, type GearItem, type PlannerState, type Ruleset, type Slot, type Stat,
+  } from "../../lib/planner";
+
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const fmt = (n: number) => n.toLocaleString("pt-BR");
+
+  const [{ rulesets }, { items }] = await Promise.all([
+    fetch("/data/planner.json").then((r) => r.json() as Promise<{ rulesets: Ruleset[] }>),
+    fetch("/data/planner-items.json").then((r) => r.json() as Promise<{ items: GearItem[] }>),
+  ]);
+  const gearById = new Map(items.map((i) => [i.id, i]));
+
+  if (rulesets.length === 0) {
+    $("planner-loading").textContent = "Sem regras de classes neste conjunto de dados.";
+  } else {
+    $("planner-loading").hidden = true;
+    $("planner").hidden = false;
+    start();
+  }
+
+  function start() {
+    const first = rulesets[0].classes[0];
+    const state: PlannerState = {
+      ruleset: rulesets[0].id, classId: first.id, level: 400, extra: 0, added: emptyAllocation(), gear: {},
+    };
+    Object.assign(state, decodeState(location.hash));
+
+    const rules = (): Ruleset => rulesets.find((r) => r.id === state.ruleset) ?? rulesets[0];
+    const cls = (): ClassRules => rules().classes.find((c) => c.id === state.classId) ?? rules().classes[0];
+
+    // conjunto de regras: da season mais nova para a mais antiga
+    const rulesetSelect = $<HTMLSelectElement>("ruleset");
+    rulesetSelect.innerHTML = rulesets.map((r) => `<option value="${r.id}">${r.name}</option>`).join("");
+
+    function normalize() {
+      state.ruleset = rules().id;
+      state.classId = cls().id;
+      const max = cls().max_level;
+      state.level = Math.min(Math.max(1, state.level || 1), max);
+      if (!cls().base.cmd) state.added.cmd = 0;
+    }
+
+    function renderClasses() {
+      $("classes").innerHTML = rules().classes
+        .map((c) => `<button type="button" role="radio" class="chip" aria-checked="${c.id === state.classId}" data-class="${c.id}">${c.name}</button>`)
+        .join("");
+    }
+
+    function renderGearSelects() {
+      const c = cls();
+      const html = SLOTS.map(({ id, label }) => {
+        const options = items
+          .filter((i) => i.slot === id && usableBy(i, c.names))
+          .sort((a, b) => a.req.level - b.req.level || a.name.localeCompare(b.name));
+        const body = options
+          .map((i) => `<option value="${i.id}" ${state.gear[id] === i.id ? "selected" : ""}>${i.name}${i.req.level ? ` · nv ${i.req.level}` : ""}</option>`)
+          .join("");
+        return `<label>${label}<select data-slot="${id}" ${options.length ? "" : "disabled"}>
+          <option value="">${options.length ? "— nenhum —" : "sem itens"}</option>${body}</select></label>`;
+      }).join("");
+      $("gear").innerHTML = html;
+    }
+
+    function renderStats() {
+      const c = cls();
+      const rows = STATS.filter((s) => s !== "cmd" || c.base.cmd > 0).map((s) => `
+        <tr>
+          <td>${STAT_LABELS[s]}</td>
+          <td class="num">${fmt(c.base[s])}</td>
+          <td class="num"><input type="number" min="0" step="1" inputmode="numeric" data-stat="${s}" value="${state.added[s]}" aria-label="Pontos em ${STAT_LABELS[s]}" /></td>
+          <td class="num" data-total="${s}"></td>
+          <td><button type="button" class="btn small" data-rest="${s}">Resto</button></td>
+        </tr>`).join("");
+      $("stats").querySelector("tbody")!.innerHTML = rows;
+    }
+
+    function update() {
+      const c = cls();
+      const r = rules();
+      const base = c.base;
+      const levelPoints = pointsAtLevel(c.points, state.level, c.max_level_points);
+      const available = levelPoints + state.extra;
+      const used = sumAllocation(state.added);
+      const left = available - used;
+      const total = totals(base, state.added);
+
+      for (const s of STATS) {
+        const cell = document.querySelector<HTMLElement>(`[data-total="${s}"]`);
+        if (cell) cell.textContent = fmt(total[s]);
+      }
+      $("points-summary").innerHTML =
+        `Pontos: <strong>${fmt(available)}</strong> (${fmt(levelPoints)} por nível${state.extra ? ` + ${fmt(state.extra)} extras` : ""}) · ` +
+        `usados <strong>${fmt(used)}</strong> · ` +
+        `${left >= 0 ? "sobram" : "faltam"} <strong class="${left < 0 ? "neg" : ""}">${fmt(Math.abs(left))}</strong>`;
+
+      const tier = c.tier === 2 ? ` Classe de 2º tier${c.unlock_level ? `: libera no nível ${c.unlock_level} de outro personagem` : ""}.` : "";
+      const evo = c.evolutions.length ? ` Evolução: ${c.evolutions.map((e) => e.name).join(" → ")}.` : "";
+      $("class-note").textContent = `${tier}${evo}`.trim();
+      $("ruleset-note").textContent = r.description;
+      $("credit").textContent = r.credit;
+      ($("level") as HTMLInputElement).max = String(c.max_level);
+
+      // equipamento
+      const equipped = SLOTS.flatMap(({ id }) => {
+        const item = state.gear[id] ? gearById.get(state.gear[id] as string) : undefined;
+        return item ? [item] : [];
+      });
+      if (equipped.length === 0) {
+        $("gear-check").innerHTML = `<p class="muted">Escolha itens para conferir os requisitos.</p>`;
+      } else {
+        const label = (stat: string) => (stat === "level" ? "Nível" : STAT_LABELS[stat as Stat]);
+        const rows = equipped.map((item) => {
+          const checks = checkItem(item, total, state.level);
+          const cells = checks.length
+            ? checks.map((k) => `<span class="${k.ok ? "ok" : "bad"}">${label(k.stat)} ${fmt(k.have)}/${fmt(k.need)} ${k.ok ? "✓" : "✗"}</span>`).join(" · ")
+            : `<span class="muted">sem requisitos</span>`;
+          const slot = SLOTS.find((x) => x.id === item.slot)?.label ?? item.slot;
+          const extra = item.def ? ` · DEF ${fmt(item.def)}` : item.dmg ? ` · dano ${item.dmg[0]}–${item.dmg[1]}` : "";
+          return `<tr><td>${slot}</td><td><a href="/itens/${item.id}/">${item.name}</a><span class="muted">${extra}</span></td><td>${cells}</td></tr>`;
+        }).join("");
+        const need = neededByGear(equipped);
+        const wear = pointsToWear(need, base);
+        const needs = STATS.filter((s) => need[s] > 0).map((s) => `${STAT_LABELS[s]} ${fmt(need[s])}`).join(", ");
+        const verdict = wear <= used
+          ? `<span class="ok">dá para vestir tudo com os pontos usados</span>`
+          : `<span class="bad">faltam ${fmt(wear - used)} pontos em relação ao mínimo</span>`;
+        $("gear-check").innerHTML = `
+          <div class="table-wrap"><table>
+            <thead><tr><th>Slot</th><th>Item</th><th>Requisitos</th></tr></thead><tbody>${rows}</tbody></table></div>
+          <p>O equipamento exige ${needs || "nenhum atributo"}${need.level ? `, nível ${fmt(need.level)}` : ""}.
+             Mínimo de pontos acima da base: <strong>${fmt(wear)}</strong> (você usou ${fmt(used)}): ${verdict}.</p>`;
+      }
+      history.replaceState(null, "", `#${encodeState(state)}`);
+    }
+
+    function fullRender() {
+      normalize();
+      rulesetSelect.value = state.ruleset;
+      ($("level") as HTMLInputElement).value = String(state.level);
+      ($("extra") as HTMLInputElement).value = String(state.extra);
+      renderClasses(); renderStats(); renderGearSelects(); update();
+    }
+
+    rulesetSelect.addEventListener("change", () => { state.ruleset = rulesetSelect.value; fullRender(); });
+    $("level").addEventListener("input", (e) => { state.level = Number((e.target as HTMLInputElement).value); normalize(); update(); });
+    $("extra").addEventListener("input", (e) => { state.extra = Math.max(0, Math.floor(Number((e.target as HTMLInputElement).value) || 0)); update(); });
+    $("classes").addEventListener("click", (e) => {
+      const button = (e.target as HTMLElement).closest<HTMLElement>("[data-class]");
+      if (!button) return;
+      state.classId = button.dataset.class as string;
+      state.added = emptyAllocation();
+      state.gear = {};
+      fullRender();
+    });
+    $("stats").addEventListener("input", (e) => {
+      const input = e.target as HTMLInputElement;
+      const stat = input.dataset.stat as Stat | undefined;
+      if (!stat) return;
+      state.added[stat] = Math.max(0, Math.floor(Number(input.value) || 0));
+      update();
+    });
+    $("stats").addEventListener("click", (e) => {
+      const button = (e.target as HTMLElement).closest<HTMLElement>("[data-rest]");
+      if (!button) return;
+      const stat = button.dataset.rest as Stat;
+      const c = cls();
+      const available = pointsAtLevel(c.points, state.level, c.max_level_points) + state.extra;
+      const others = sumAllocation(state.added) - state.added[stat];
+      state.added[stat] = Math.max(0, available - others);
+      (document.querySelector(`[data-stat="${stat}"]`) as HTMLInputElement).value = String(state.added[stat]);
+      update();
+    });
+    $("gear").addEventListener("change", (e) => {
+      const select = e.target as HTMLSelectElement;
+      const slot = select.dataset.slot as Slot | undefined;
+      if (!slot) return;
+      if (select.value) state.gear[slot] = select.value; else delete state.gear[slot];
+      update();
+    });
+    $("share").addEventListener("click", async () => {
+      const message = $("share-msg");
+      try { await navigator.clipboard.writeText(location.href); message.textContent = "Link copiado."; }
+      catch { message.textContent = "Copie o endereço da barra do navegador."; }
+    });
+
+    fullRender();
+  }
+</script>

@@ -1,0 +1,956 @@
+{
+ "version": 1,
+ "generated_at": "2026-10-21T18:17:32Z",
+ "stats": [
+  "str",
+  "agi",
+  "vit",
+  "ene",
+  "cmd"
+ ],
+ "rulesets": [
+  {
+   "id": "global-atual",
+   "name": "Global atual",
+   "description": "Regras do jogo atual, segundo os guias de classe do Fanz.",
+   "publish": false,
+   "credit": "Dados de regra (números e nomes) dos guias de classe de MU Online Fanz (muonlinefanz.com), conteúdo de IZAKTLY.",
+   "classes": [
+    {
+     "id": "gun-crusher",
+     "name": "Gun Crusher",
+     "tier": 1,
+     "unlock_level": null,
+     "base": {
+      "str": 20,
+      "agi": 18,
+      "vit": 20,
+      "ene": 25,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      },
+      {
+       "from_level": 220,
+       "per_level": 6
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 1,
+       "name": "Gun Crusher",
+       "level": null
+      },
+      {
+       "tier": 2,
+       "name": "Gun Breaker",
+       "level": 150
+      },
+      {
+       "tier": 3,
+       "name": "Master Gun Breaker",
+       "level": 400
+      },
+      {
+       "tier": 4,
+       "name": "Heist Gun Crusher",
+       "level": 800
+      }
+     ],
+     "names": [
+      "Gun Crusher",
+      "Gun Breaker",
+      "Master Gun Breaker",
+      "Heist Gun Crusher"
+     ]
+    },
+    {
+     "id": "slayer",
+     "name": "Slayer",
+     "tier": 1,
+     "unlock_level": null,
+     "base": {
+      "str": 28,
+      "agi": 30,
+      "vit": 15,
+      "ene": 10,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      },
+      {
+       "from_level": 220,
+       "per_level": 6
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 1,
+       "name": "Slayer",
+       "level": null
+      },
+      {
+       "tier": 2,
+       "name": "Royal Slayer",
+       "level": 150
+      },
+      {
+       "tier": 3,
+       "name": "Master Slayer",
+       "level": 400
+      },
+      {
+       "tier": 4,
+       "name": "Slaughterer",
+       "level": 800
+      }
+     ],
+     "names": [
+      "Slayer",
+      "Royal Slayer",
+      "Master Slayer",
+      "Slaughterer"
+     ]
+    },
+    {
+     "id": "grow-lancer",
+     "name": "Grow Lancer",
+     "tier": 2,
+     "unlock_level": 220,
+     "base": {
+      "str": 30,
+      "agi": 30,
+      "vit": 25,
+      "ene": 24,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 7
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 2,
+       "name": "Grow Lancer",
+       "level": null
+      },
+      {
+       "tier": 3,
+       "name": "Mirage Lancer",
+       "level": 400
+      },
+      {
+       "tier": 4,
+       "name": "Shining Lancer",
+       "level": 800
+      }
+     ],
+     "names": [
+      "Grow Lancer",
+      "Mirage Lancer",
+      "Shining Lancer"
+     ]
+    },
+    {
+     "id": "dark-wizard",
+     "name": "Dark Wizard",
+     "tier": 1,
+     "unlock_level": null,
+     "base": {
+      "str": 18,
+      "agi": 18,
+      "vit": 15,
+      "ene": 30,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      },
+      {
+       "from_level": 220,
+       "per_level": 6
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 1,
+       "name": "Dark Wizard",
+       "level": null
+      },
+      {
+       "tier": 2,
+       "name": "Soul Master",
+       "level": 150
+      },
+      {
+       "tier": 3,
+       "name": "Grand Master",
+       "level": 400
+      },
+      {
+       "tier": 4,
+       "name": "Soul Wizard",
+       "level": 800
+      }
+     ],
+     "names": [
+      "Dark Wizard",
+      "Soul Master",
+      "Grand Master",
+      "Soul Wizard"
+     ]
+    },
+    {
+     "id": "dark-knight",
+     "name": "Dark Knight",
+     "tier": 1,
+     "unlock_level": null,
+     "base": {
+      "str": 28,
+      "agi": 20,
+      "vit": 25,
+      "ene": 10,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      },
+      {
+       "from_level": 2,
+       "per_level": 6
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 1,
+       "name": "Dark Knight",
+       "level": null
+      },
+      {
+       "tier": 2,
+       "name": "Blade Knight",
+       "level": 150
+      },
+      {
+       "tier": 3,
+       "name": "Blade Master",
+       "level": 400
+      },
+      {
+       "tier": 4,
+       "name": "Dragon Knight",
+       "level": 800
+      }
+     ],
+     "names": [
+      "Dark Knight",
+      "Blade Knight",
+      "Blade Master",
+      "Dragon Knight"
+     ]
+    },
+    {
+     "id": "fairy-elf",
+     "name": "Fairy Elf",
+     "tier": 1,
+     "unlock_level": null,
+     "base": {
+      "str": 22,
+      "agi": 25,
+      "vit": 20,
+      "ene": 15,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      },
+      {
+       "from_level": 220,
+       "per_level": 6
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 1,
+       "name": "Fairy Elf",
+       "level": null
+      },
+      {
+       "tier": 2,
+       "name": "Muse Elf",
+       "level": 150
+      },
+      {
+       "tier": 3,
+       "name": "High Elf",
+       "level": 400
+      },
+      {
+       "tier": 4,
+       "name": "Noble Elf",
+       "level": 800
+      }
+     ],
+     "names": [
+      "Fairy Elf",
+      "Muse Elf",
+      "High Elf",
+      "Noble Elf"
+     ]
+    },
+    {
+     "id": "magic-gladiator",
+     "name": "Magic Gladiator",
+     "tier": 2,
+     "unlock_level": 220,
+     "base": {
+      "str": 26,
+      "agi": 26,
+      "vit": 26,
+      "ene": 26,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 7
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 2,
+       "name": "Magic Gladiator",
+       "level": null
+      },
+      {
+       "tier": 3,
+       "name": "Duel Master",
+       "level": 400
+      },
+      {
+       "tier": 4,
+       "name": "Magic Knight",
+       "level": 800
+      }
+     ],
+     "names": [
+      "Magic Gladiator",
+      "Duel Master",
+      "Magic Knight"
+     ]
+    },
+    {
+     "id": "dark-lord",
+     "name": "Dark Lord",
+     "tier": 2,
+     "unlock_level": 250,
+     "base": {
+      "str": 26,
+      "agi": 20,
+      "vit": 20,
+      "ene": 15,
+      "cmd": 25
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 7
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 2,
+       "name": "Dark Lord",
+       "level": null
+      },
+      {
+       "tier": 3,
+       "name": "Lord Emperor",
+       "level": 400
+      },
+      {
+       "tier": 4,
+       "name": "Empire Lord",
+       "level": 800
+      }
+     ],
+     "names": [
+      "Dark Lord",
+      "Lord Emperor",
+      "Empire Lord"
+     ]
+    },
+    {
+     "id": "summoner",
+     "name": "Summoner",
+     "tier": 1,
+     "unlock_level": null,
+     "base": {
+      "str": 21,
+      "agi": 21,
+      "vit": 18,
+      "ene": 23,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      },
+      {
+       "from_level": 220,
+       "per_level": 6
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 1,
+       "name": "Summoner",
+       "level": null
+      },
+      {
+       "tier": 2,
+       "name": "Bloody Summoner",
+       "level": 150
+      },
+      {
+       "tier": 3,
+       "name": "Dimension Master",
+       "level": 400
+      },
+      {
+       "tier": 4,
+       "name": "Dimension Summoner",
+       "level": 800
+      }
+     ],
+     "names": [
+      "Summoner",
+      "Bloody Summoner",
+      "Dimension Master",
+      "Dimension Summoner"
+     ]
+    },
+    {
+     "id": "rage-fighter",
+     "name": "Rage Fighter",
+     "tier": 2,
+     "unlock_level": 200,
+     "base": {
+      "str": 32,
+      "agi": 27,
+      "vit": 25,
+      "ene": 20,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 7
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 2,
+       "name": "Rage Fighter",
+       "level": null
+      },
+      {
+       "tier": 3,
+       "name": "Fist Master",
+       "level": 400
+      },
+      {
+       "tier": 4,
+       "name": "Fist Blazer",
+       "level": 800
+      }
+     ],
+     "names": [
+      "Rage Fighter",
+      "Fist Master",
+      "Fist Blazer"
+     ]
+    },
+    {
+     "id": "rune-mage",
+     "name": "Rune Mage",
+     "tier": 1,
+     "unlock_level": null,
+     "base": {
+      "str": 13,
+      "agi": 18,
+      "vit": 14,
+      "ene": 40,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      },
+      {
+       "from_level": 220,
+       "per_level": 6
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 1,
+       "name": "Rune Mage",
+       "level": null
+      },
+      {
+       "tier": 2,
+       "name": "Rune Spell Master",
+       "level": 150
+      },
+      {
+       "tier": 3,
+       "name": "Rune Grand Master",
+       "level": 400
+      },
+      {
+       "tier": 4,
+       "name": "Rune Wizard",
+       "level": 800
+      }
+     ],
+     "names": [
+      "Rune Mage",
+      "Rune Wizard",
+      "Rune Spell Master",
+      "Rune Grand Master"
+     ]
+    },
+    {
+     "id": "white-wizard",
+     "name": "White Wizard",
+     "tier": 1,
+     "unlock_level": null,
+     "base": {
+      "str": 19,
+      "agi": 19,
+      "vit": 15,
+      "ene": 30,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      },
+      {
+       "from_level": 220,
+       "per_level": 6
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 1,
+       "name": "White Wizard",
+       "level": null
+      },
+      {
+       "tier": 2,
+       "name": "Light Master",
+       "level": 150
+      },
+      {
+       "tier": 3,
+       "name": "Shine Wizard",
+       "level": 400
+      },
+      {
+       "tier": 4,
+       "name": "Shine Master",
+       "level": 800
+      }
+     ],
+     "names": [
+      "White Wizard",
+      "Light Master",
+      "Shine Wizard",
+      "Shine Master"
+     ]
+    },
+    {
+     "id": "mage",
+     "name": "Mage",
+     "tier": 1,
+     "unlock_level": null,
+     "base": {
+      "str": 18,
+      "agi": 18,
+      "vit": 19,
+      "ene": 30,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      },
+      {
+       "from_level": 220,
+       "per_level": 6
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 1450,
+     "evolutions": [
+      {
+       "tier": 1,
+       "name": "Mage",
+       "level": null
+      },
+      {
+       "tier": 2,
+       "name": "Wo Mage",
+       "level": 150
+      },
+      {
+       "tier": 3,
+       "name": "Arch Mage",
+       "level": 400
+      },
+      {
+       "tier": 4,
+       "name": "Mystic Mage",
+       "level": 800
+      }
+     ],
+     "names": [
+      "Mage",
+      "Wo Mage",
+      "Arch Mage",
+      "Mystic Mage"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "classico",
+   "name": "Clássico (emulador MuEmu)",
+   "description": "Regras de um servidor clássico, segundo o emulador MuEmu (5 pontos por nível; 7 para MG e DL).",
+   "publish": true,
+   "credit": "Characters.xml e código do MuEmu (github.com/deep-thought-42/MuEmu), licença MIT.",
+   "classes": [
+    {
+     "id": "gun-crusher",
+     "name": "Gun Crusher",
+     "tier": null,
+     "unlock_level": null,
+     "base": {
+      "str": 20,
+      "agi": 18,
+      "vit": 20,
+      "ene": 25,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 400,
+     "evolutions": [],
+     "names": [
+      "Gun Crusher"
+     ]
+    },
+    {
+     "id": "slayer",
+     "name": "Slayer",
+     "tier": null,
+     "unlock_level": null,
+     "base": {
+      "str": 28,
+      "agi": 30,
+      "vit": 15,
+      "ene": 10,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 400,
+     "evolutions": [],
+     "names": [
+      "Slayer"
+     ]
+    },
+    {
+     "id": "grow-lancer",
+     "name": "Grow Lancer",
+     "tier": null,
+     "unlock_level": null,
+     "base": {
+      "str": 30,
+      "agi": 30,
+      "vit": 25,
+      "ene": 24,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 400,
+     "evolutions": [],
+     "names": [
+      "Grow Lancer"
+     ]
+    },
+    {
+     "id": "dark-wizard",
+     "name": "Dark Wizard",
+     "tier": null,
+     "unlock_level": null,
+     "base": {
+      "str": 18,
+      "agi": 18,
+      "vit": 15,
+      "ene": 30,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 400,
+     "evolutions": [],
+     "names": [
+      "Dark Wizard"
+     ]
+    },
+    {
+     "id": "dark-knight",
+     "name": "Dark Knight",
+     "tier": null,
+     "unlock_level": null,
+     "base": {
+      "str": 28,
+      "agi": 20,
+      "vit": 25,
+      "ene": 10,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 400,
+     "evolutions": [],
+     "names": [
+      "Dark Knight"
+     ]
+    },
+    {
+     "id": "fairy-elf",
+     "name": "Fairy Elf",
+     "tier": null,
+     "unlock_level": null,
+     "base": {
+      "str": 22,
+      "agi": 25,
+      "vit": 20,
+      "ene": 15,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 400,
+     "evolutions": [],
+     "names": [
+      "Fairy Elf"
+     ]
+    },
+    {
+     "id": "magic-gladiator",
+     "name": "Magic Gladiator",
+     "tier": null,
+     "unlock_level": null,
+     "base": {
+      "str": 26,
+      "agi": 26,
+      "vit": 26,
+      "ene": 26,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 7
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 400,
+     "evolutions": [],
+     "names": [
+      "Magic Gladiator"
+     ]
+    },
+    {
+     "id": "dark-lord",
+     "name": "Dark Lord",
+     "tier": null,
+     "unlock_level": null,
+     "base": {
+      "str": 26,
+      "agi": 20,
+      "vit": 20,
+      "ene": 15,
+      "cmd": 25
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 7
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 400,
+     "evolutions": [],
+     "names": [
+      "Dark Lord"
+     ]
+    },
+    {
+     "id": "summoner",
+     "name": "Summoner",
+     "tier": null,
+     "unlock_level": null,
+     "base": {
+      "str": 18,
+      "agi": 18,
+      "vit": 15,
+      "ene": 30,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 400,
+     "evolutions": [],
+     "names": [
+      "Summoner"
+     ]
+    },
+    {
+     "id": "rage-fighter",
+     "name": "Rage Fighter",
+     "tier": null,
+     "unlock_level": null,
+     "base": {
+      "str": 32,
+      "agi": 27,
+      "vit": 25,
+      "ene": 20,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 400,
+     "evolutions": [],
+     "names": [
+      "Rage Fighter"
+     ]
+    },
+    {
+     "id": "rune-mage",
+     "name": "Rune Mage",
+     "tier": null,
+     "unlock_level": null,
+     "base": {
+      "str": 13,
+      "agi": 18,
+      "vit": 14,
+      "ene": 40,
+      "cmd": 0
+     },
+     "points": [
+      {
+       "from_level": 2,
+       "per_level": 5
+      }
+     ],
+     "max_level_points": 400,
+     "max_level": 400,
+     "evolutions": [],
+     "names": [
+      "Rune Mage",
+      "Rune Wizard"
+     ]
+    }
+   ]
+  }
+ ]
+}

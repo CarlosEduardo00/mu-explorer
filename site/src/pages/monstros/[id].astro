@@ -1,0 +1,61 @@
+---
+import Base from "../../layouts/Base.astro";
+import { monsters, spawnsByMonster, mapById, dropsByMonster, itemById, fmt } from "../../lib/data";
+
+export function getStaticPaths() {
+  return monsters.map((monster) => ({ params: { id: monster.id }, props: { monster } }));
+}
+const { monster } = Astro.props;
+const spawnList = spawnsByMonster.get(monster.id) ?? [];
+const mapIds = [...new Set(spawnList.map((s) => s.map_id))];
+const spots = (mapId: string) => spawnList.filter((s) => s.map_id === mapId && s.x != null);
+const drops = dropsByMonster.get(monster.id) ?? [];
+const tables = [...new Set(drops.map((d) => d.table ?? d.kind))];
+const respawn = monster.respawn_seconds != null
+  ? (monster.respawn_seconds >= 3600 ? `${monster.respawn_seconds / 3600} h` : `${monster.respawn_seconds} s`)
+  : monster.respawn_raw;
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+---
+<Base title={monster.name} description={`${monster.name}: atributos, onde aparece e drops em MU Online.`}>
+  <p class="crumbs"><a href="/monstros/">Monstros</a></p>
+  <h1>{monster.name}</h1>
+  <p class="muted">{monster.number != null && <>Nº {monster.number} · </>}{monster.difficulty != null && <>dificuldade {monster.difficulty}</>}</p>
+
+  <h2>Atributos</h2>
+  <dl class="facts">
+    <dt>Nível</dt><dd>{fmt(monster.level)}</dd>
+    <dt>HP</dt><dd>{fmt(monster.hp)}</dd>
+    <dt>Dano</dt><dd>{monster.atk_min != null ? `${fmt(monster.atk_min)} ~ ${fmt(monster.atk_max)}` : "—"}</dd>
+    <dt>Taxa de ataque</dt><dd>{fmt(monster.atk_rate)}</dd>
+    <dt>Defesa</dt><dd>{fmt(monster.def)}</dd>
+    <dt>Taxa de defesa</dt><dd>{fmt(monster.def_rate)}</dd>
+    {respawn && <><dt>Respawn</dt><dd>{respawn}</dd></>}
+  </dl>
+
+  {mapIds.length > 0 && (
+    <>
+      <h2>Onde aparece</h2>
+      <ul>
+        {mapIds.map((id) => {
+          const map = mapById.get(id);
+          const n = spots(id).length;
+          return <li>{map ? <a href={`/mapas/${id}/`}>{map.name}</a> : id}{n > 0 && <span class="muted"> · {plural(n, "ponto de spawn", "pontos de spawn")}</span>}</li>;
+        })}
+      </ul>
+    </>
+  )}
+
+  {tables.map((table) => (
+    <>
+      <h2>{table}</h2>
+      <ul class="tags">
+        {drops.filter((d) => (d.table ?? d.kind) === table).map((d) => {
+          const item = itemById.get(d.item_id);
+          return <li>{item ? <a href={`/itens/${item.id}/`}>{d.item_name}</a> : d.item_name}</li>;
+        })}
+      </ul>
+    </>
+  ))}
+  {monster.notes.map((n) => <p class="muted">{n}</p>)}
+  <p class="muted">Fonte: <a href={monster.source_url}>{monster.source}</a></p>
+</Base>

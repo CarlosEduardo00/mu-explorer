@@ -1,0 +1,39 @@
+---
+// Lista com filtro por texto, feito no navegador (JS mínimo, sem framework).
+interface Row { href: string; cells: (string | number | null)[]; search: string }
+interface Props { columns: { label: string; num?: boolean }[]; rows: Row[]; placeholder: string; noun: string }
+const { columns, rows, placeholder, noun } = Astro.props;
+---
+<input class="filter" type="search" placeholder={placeholder} aria-label={placeholder} data-filter />
+<p class="count" data-count>{rows.length.toLocaleString("pt-BR")} {noun}</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr>{columns.map((c) => <th class={c.num ? "num" : undefined}>{c.label}</th>)}</tr></thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr data-search={r.search}>
+          {r.cells.map((cell, i) => (
+            <td class={columns[i].num ? "num" : undefined}>
+              {i === 0 ? <a href={r.href}>{cell}</a> : (cell ?? "—")}
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<script define:vars={{ noun }}>
+  const input = document.querySelector("[data-filter]");
+  const rows = [...document.querySelectorAll("tbody tr")];
+  const count = document.querySelector("[data-count]");
+  input.addEventListener("input", () => {
+    const q = input.value.trim().toLowerCase();
+    let shown = 0;
+    for (const row of rows) {
+      const match = !q || row.dataset.search.includes(q);
+      row.hidden = !match;
+      if (match) shown++;
+    }
+    count.textContent = `${shown.toLocaleString("pt-BR")} de ${rows.length.toLocaleString("pt-BR")} ${noun}`;
+  });
+</script>

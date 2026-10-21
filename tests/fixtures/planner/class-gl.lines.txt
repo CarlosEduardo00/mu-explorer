@@ -1,0 +1,47 @@
+Grow Lancer
+Advertisement:
+"The Grow Lancer utilizes a one handed lance and shield to freely execute both defensive and offensive skills. Specialized for melee combat, they have high defense and are more resistant to elemental damage. Additionally, they are able to amplify their damage to extreme levels."
+Home - Guide - Characters || #Stats & Formulas || #Weapons || #Shields || #Armor Sets || #Capes || #Basic Skills || #Special Skills || #Master Skill Tree || #Skill Enhancement Tree
+Quick Facts
+Starts in Lorencia.
+Tier 2 Class: an advanced character.
+Pay to play: requires a WCoin purchase.
+Locked: unlocked after reaching level 220.
++7 stat points per character level.
+Strength focus creates an offensive build.
+Agility focus creates a defensive build.
+Class Specialization
+Each character has unique specialization bonuses.
+Strength Bonus - additional ATK Power:
+Less than STR 1,500: +0% ~ +10%
+STR 1,501 ~ 2,000: +10% ~ +30%
+More than STR 2,001: +30% ~ +45%
+Agility Bonus - additional DEF:
+Less than AGI 1,500: +0% ~ +10%
+AGI 1,501 ~ 2,000: +10% ~ +30%
+More than AGI 2,001: +30% ~ +45%
+Party Set Bonus - increased EXP gain:
+Grow Lancer
+Fairy Elf
+Dark Wizard
+Class Evolution
+All characters evolve through a series of classes after reaching a specific character level and after completing main quests.
+2nd: Grow Lancer
+This character begins as a tier 2 class.
+Stops gaining EXP at Level 400.
+Evolves into Mirage Lancer.
+3rd: Mirage Lancer
+Unlocked by:
+Reaching Character Level 400.
+Completing the 3rd Class Upgrade quest.
+Unlocks the Master Skill Tree.
+Stops gaining EXP at Level 800.
+Evolves into Shining Lancer.
+4th: Shining Lancer
+Unlocked by:
+Reaching Character Level 800.
+Completing the 4th Class Upgrade quest.
+Unlocks the Skill Enhancement Tree.
+Stops gaining EXP at Level 1450.
+Advertisement:
+Stats & Formulas #

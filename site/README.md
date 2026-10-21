@@ -1,17 +1,19 @@
 # site/
 
-Site do MU Explorer, publicado no **Cloudflare Workers com Static Assets** (`wrangler.jsonc` na raiz).
+Site do MU Explorer em **Astro**, publicado no **Cloudflare Workers com Static Assets** (`wrangler.jsonc` na raiz).
 
-- `public/`: tudo o que é publicado. `index.html` é uma página "em construção"; `404.html` é usada
-  para qualquer rota inexistente; `_headers` define cabeçalhos HTTP (não é publicado como arquivo).
-- `public/data/` (ainda não existe): JSON gerado a partir de `data/processed/`, servido como API
-  estática em `/data/...`, com CORS liberado e cache de 1 h.
+- `src/pages/`: início, e para itens, monstros, mapas e NPCs uma lista com filtro (`index.astro`) e uma
+  página por registro (`[id].astro`, gerada de `data/processed/<conjunto>/*.json`).
+- `src/lib/data.ts`: leitura dos JSON em tempo de build. `SITE_DATA=muemu` (padrão, é o que vai para
+  hml/prod) ou `combined` (com dados do Fanz: só local).
+- `public/`: `_headers` (cabeçalhos HTTP) e `404.html`, copiados para a saída.
+- `dist/`: saída do build (fora do git).
 
 ```bash
-npm install && npm run dev     # http://localhost:8787
-npm run check                  # valida a configuração sem publicar
+npm install && npm run dev     # http://localhost:4321
+npm run build                  # ~3.500 páginas em ~8 s
+npm run check                  # dry run do deploy (hml e prod)
 ```
 
-O deploy acontece pelo Git (Workers Builds): push em `mu-explorer-dev` publica em **hml**
-(Worker `mu-explorer-hml`) e push em `main` publica em **prod** (Worker `mu-explorer`).
-A stack do frontend ainda é decisão em aberto (ver `CLAUDE.md`).
+Deploy pelo Git: push em `mu-explorer-dev` publica em **hml** (Worker `mu-explorer-hml`), push em `main`
+publica em **prod** (Worker `mu-explorer`). O Wrangler roda o build sozinho (`build.command`).

@@ -1,0 +1,19 @@
+---
+import Base from "../../layouts/Base.astro";
+import FilterList from "../../components/FilterList.astro";
+import { items, fmt } from "../../lib/data";
+const rows = items.map((i) => ({
+  href: `/itens/${i.id}/`,
+  cells: [i.name, i.category, i.requirements.level, i.classes.length ? i.classes.join(", ") : null],
+  search: `${i.name} ${i.category ?? ""} ${i.classes.join(" ")}`.toLowerCase(),
+}));
+---
+<Base title="Itens">
+  <h1>Itens</h1>
+  <FilterList
+    columns={[{ label: "Nome" }, { label: "Categoria" }, { label: "Nível", num: true }, { label: "Classes" }]}
+    rows={rows.map((r) => ({ ...r, cells: r.cells.map((c, idx) => (idx === 2 ? fmt(c as number | null) : c)) }))}
+    placeholder="Filtrar por nome, categoria ou classe"
+    noun="itens"
+  />
+</Base>

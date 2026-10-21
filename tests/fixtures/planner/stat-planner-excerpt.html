@@ -1,0 +1,299 @@
+<html><body>
+<script type="text/javascript">
+    var totalStats_gl = 2963;
+    var fruitPoints_gl = 127;
+    var STRbase_gl = 30;
+    var AGIbase_gl = 30;
+    var STAbase_gl = 25;
+    var ENEbase_gl = 24;
+    
+    //BUILD 1
+    var STRfactor1_gl = 0.55;
+    var AGIfactor1_gl = 0.25;
+    var STAfactor1_gl = 0.15;
+    var ENEfactor1_gl = 0.05;
+    
+    //BUILD 2
+    var STRfactor2_gl = 0.35;
+    var AGIfactor2_gl = 0.50;
+    var STAfactor2_gl = 0.10;
+    var ENEfactor2_gl = 0.05;
+    
+    function setLevel_gl(){
+        var temp_gl = totalStats_gl;
+        var levelInput = document.getElementById("levelInput_gl").value;
+        if (
+            (levelInput > 0) &&
+            (levelInput < 2)
+            ){
+            temp_gl = 0;
+        }
+        else if (
+            (levelInput > 1) &&
+            (levelInput < 400)
+            ){
+            temp_gl = (levelInput * 7);
+        }
+        else if (
+            (levelInput > 399) &&
+            (levelInput < 800)
+            ){
+            temp_gl = (totalStats_gl - 100);
+        }
+        
+        updateData_gl(temp_gl);
+    }
+    
+    function updateData_gl(tempstats){
+        //1ST BUILD
+        //STRENGTH
+        var temp1_gl = tempstats;
+        var str1 = (Math.round(temp1_gl * STRfactor1_gl));
+        str1 = (str1 + STRbase_gl);
+        document.getElementById("str1_gl").innerHTML=str1;
+        document.getElementById("str1_factor_gl").innerHTML=(Math.round(STRfactor1_gl * 100));
+        document.getElementById("str1_fruitPoints_gl").innerHTML=(Math.round(STRfactor1_gl * fruitPoints_gl));
+        //AGILITY
+        var agi1 = (Math.round(temp1_gl * AGIfactor1_gl));
+        agi1 = (agi1 + AGIbase_gl);
+        document.getElementById("agi1_gl").innerHTML=agi1;
+        document.getElementById("agi1_factor_gl").innerHTML=(Math.round(AGIfactor1_gl * 100));
+        document.getElementById("agi1_fruitPoints_gl").innerHTML=(Math.round(AGIfactor1_gl * fruitPoints_gl));
+        //STAMINA
+        var sta1 = (Math.round(temp1_gl * STAfactor1_gl));
+        sta1 = (sta1 + STAbase_gl);
+        document.getElementById("sta1_gl").innerHTML=sta1;
+        document.getElementById("sta1_factor_gl").innerHTML=(Math.round(STAfactor1_gl * 100));
+        document.getElementById("sta1_fruitPoints_gl").innerHTML=(Math.round(STAfactor1_gl * fruitPoints_gl));
+        //ENERGY
+        var ene1 = (Math.round(temp1_gl * ENEfactor1_gl));
+        ene1 = (ene1 + ENEbase_gl);
+        document.getElementById("ene1_gl").innerHTML=ene1;
+        document.getElementById("ene1_factor_gl").innerHTML=(Math.round(ENEfactor1_gl * 100));
+        document.getElementById("ene1_fruitPoints_gl").innerHTML=(Math.round(ENEfactor1_gl * fruitPoints_gl));
+
+        //2ND BUILD
+        //STRENGTH
+        var temp2_gl = tempstats;
+        var str2 = (Math.round(temp2_gl * STRfactor2_gl));
+        str2 = (str2 + STRbase_gl);
+        document.getElementById("str2_gl").innerHTML=str2;
+        document.getElementById("str2_factor_gl").innerHTML=(Math.round(STRfactor2_gl * 100));
+        document.getElementById("str2_fruitPoints_gl").innerHTML=(Math.round(STRfactor2_gl * fruitPoints_gl));
+        //AGILITY
+        var agi2 = (Math.round(temp2_gl * AGIfactor2_gl));
+        agi2 = (agi2 + AGIbase_gl);
+        document.getElementById("agi2_gl").innerHTML=agi2;
+        document.getElementById("agi2_factor_gl").innerHTML=(Math.round(AGIfactor2_gl * 100));
+        document.getElementById("agi2_fruitPoints_gl").innerHTML=(Math.round(AGIfactor2_gl * fruitPoints_gl));
+        //STAMINA
+        var sta2 = (Math.round(temp2_gl * STAfactor2_gl));
+        sta2 = (sta2 + STAbase_gl);
+        document.getElementById("sta2_gl").innerHTML=sta2;
+        document.getElementById("sta2_factor_gl").innerHTML=(Math.round(STAfactor2_gl * 100));
+        document.getElementById("sta2_fruitPoints_gl").innerHTML=(Math.round(STAfactor2_gl * fruitPoints_gl));
+        //ENERGY
+        var ene2 = (Math.round(temp2_gl * ENEfactor2_gl));
+        ene2 = (ene2 + ENEbase_gl);
+        document.getElementById("ene2_gl").innerHTML=ene2;
+        document.getElementById("ene2_factor_gl").innerHTML=(Math.round(ENEfactor2_gl * 100));
+        document.getElementById("ene2_fruitPoints_gl").innerHTML=(Math.round(ENEfactor2_gl * fruitPoints_gl));
+
+    }
+    </script>
+<script type="text/javascript">
+    var totalStats_slayer = 2365;
+    var fruitPoints_slayer = 127;
+    var STRbase_slayer = 28;
+    var AGIbase_slayer = 30;
+    var STAbase_slayer = 15;
+    var ENEbase_slayer = 10;
+    
+    //BUILD 1
+    var STRfactor1_slayer = 0.25;
+    var AGIfactor1_slayer = 0.50;
+    var STAfactor1_slayer = 0.15;
+    var ENEfactor1_slayer = 0.10;
+    
+    //BUILD 2
+    var STRfactor2_slayer = 0.50;
+    var AGIfactor2_slayer = 0.30;
+    var STAfactor2_slayer = 0.15;
+    var ENEfactor2_slayer = 0.05;
+    
+    function setLevel_slayer(){
+        var temp_slayer = totalStats_slayer;
+        var levelInput = document.getElementById("levelInput_slayer").value;
+        if (
+            (levelInput > 0) &&
+            (levelInput < 2)
+            ){
+            temp_slayer = 0;
+        }
+        else if (
+            (levelInput > 1) &&
+            (levelInput < 150)
+            ){
+            temp_slayer = (levelInput * 5);
+        }
+        else if (
+            (levelInput > 149) &&
+            (levelInput < 220)
+            ){
+            temp_slayer = ((levelInput * 5) + 20);
+        }
+        else if (
+            (levelInput > 219) &&
+            (levelInput < 400)
+            ){
+            temp_slayer = ((219 * 5) + ((levelInput - 219) * 6) + 20);
+        }
+        else if (
+            (levelInput > 399) &&
+            (levelInput < 800)
+            ){
+            temp_slayer = (totalStats_slayer - 100);
+        }
+        
+        updateData_slayer(temp_slayer);
+    }
+    
+    function updateData_slayer(tempstats){
+        //1ST BUILD
+        //STRENGTH
+        var temp1_slayer = tempstats;
+        var str1 = (Math.round(temp1_slayer * STRfactor1_slayer));
+        str1 = (str1 + STRbase_slayer);
+        document.getElementById("str1_slayer").innerHTML=str1;
+        document.getElementById("str1_factor_slayer").innerHTML=(Math.round(STRfactor1_slayer * 100));
+        document.getElementById("str1_fruitPoints_slayer").innerHTML=(Math.round(STRfactor1_slayer * fruitPoints_slayer));
+        //AGILITY
+        var agi1 = (Math.round(temp1_slayer * AGIfactor1_slayer));
+        agi1 = (agi1 + AGIbase_slayer);
+        document.getElementById("agi1_slayer").innerHTML=agi1;
+        document.getElementById("agi1_factor_slayer").innerHTML=(Math.round(AGIfactor1_slayer * 100));
+        document.getElementById("agi1_fruitPoints_slayer").innerHTML=(Math.round(AGIfactor1_slayer * fruitPoints_slayer));
+        //STAMINA
+        var sta1 = (Math.round(temp1_slayer * STAfactor1_slayer));
+        sta1 = (sta1 + STAbase_slayer);
+        document.getElementById("sta1_slayer").innerHTML=sta1;
+        document.getElementById("sta1_factor_slayer").innerHTML=(Math.round(STAfactor1_slayer * 100));
+        document.getElementById("sta1_fruitPoints_slayer").innerHTML=(Math.round(STAfactor1_slayer * fruitPoints_slayer));
+        //ENERGY
+        var ene1 = (Math.round(temp1_slayer * ENEfactor1_slayer));
+        ene1 = (ene1 + ENEbase_slayer);
+        document.getElementById("ene1_slayer").innerHTML=ene1;
+        document.getElementById("ene1_factor_slayer").innerHTML=(Math.round(ENEfactor1_slayer * 100));
+        document.getElementById("ene1_fruitPoints_slayer").innerHTML=(Math.round(ENEfactor1_slayer * fruitPoints_slayer));
+
+        //2ND BUILD
+        //STRENGTH
+        var temp2_slayer = tempstats;
+        var str2 = (Math.round(temp2_slayer * STRfactor2_slayer));
+        str2 = (str2 + STRbase_slayer);
+        document.getElementById("str2_slayer").innerHTML=str2;
+        document.getElementById("str2_factor_slayer").innerHTML=(Math.round(STRfactor2_slayer * 100));
+        document.getElementById("str2_fruitPoints_slayer").innerHTML=(Math.round(STRfactor2_slayer * fruitPoints_slayer));
+        //AGILITY
+        var agi2 = (Math.round(temp2_slayer * AGIfactor2_slayer));
+        agi2 = (agi2 + AGIbase_slayer);
+        document.getElementById("agi2_slayer").innerHTML=agi2;
+        document.getElementById("agi2_factor_slayer").innerHTML=(Math.round(AGIfactor2_slayer * 100));
+        document.getElementById("agi2_fruitPoints_slayer").innerHTML=(Math.round(AGIfactor2_slayer * fruitPoints_slayer));
+        //STAMINA
+        var sta2 = (Math.round(temp2_slayer * STAfactor2_slayer));
+        sta2 = (sta2 + STAbase_slayer);
+        document.getElementById("sta2_slayer").innerHTML=sta2;
+        document.getElementById("sta2_factor_slayer").innerHTML=(Math.round(STAfactor2_slayer * 100));
+        document.getElementById("sta2_fruitPoints_slayer").innerHTML=(Math.round(STAfactor2_slayer * fruitPoints_slayer));
+        //ENERGY
+        var ene2 = (Math.round(temp2_slayer * ENEfactor2_slayer));
+        ene2 = (ene2 + ENEbase_slayer);
+        document.getElementById("ene2_slayer").innerHTML=ene2;
+        document.getElementById("ene2_factor_slayer").innerHTML=(Math.round(ENEfactor2_slayer * 100));
+        document.getElementById("ene2_fruitPoints_slayer").innerHTML=(Math.round(ENEfactor2_slayer * fruitPoints_slayer));
+
+    }
+    </script>
+<script type="text/javascript">
+    var totalStats_gun = 2365;
+    var fruitPoints_gun = 127;
+    var STRbase_gun = 20;
+    var AGIbase_gun = 18;
+    var STAbase_gun = 20;
+    var ENEbase_gun = 25;
+    
+    //BUILD 1
+    var STRfactor1_gun = 0.15;
+    var AGIfactor1_gun = 0.25;
+    var STAfactor1_gun = 0.05;
+    var ENEfactor1_gun = 0.55;
+    
+    function setLevel_gun(){
+        var temp_gun = totalStats_gun;
+        var levelInput = document.getElementById("levelInput_gun").value;
+        if (
+            (levelInput > 0) &&
+            (levelInput < 2)
+            ){
+            temp_gun = 0;
+        }
+        else if (
+            (levelInput > 1) &&
+            (levelInput < 150)
+            ){
+            temp_gun = (levelInput * 5);
+        }
+        else if (
+            (levelInput > 149) &&
+            (levelInput < 220)
+            ){
+            temp_gun = ((levelInput * 5) + 20);
+        }
+        else if (
+            (levelInput > 219) &&
+            (levelInput < 400)
+            ){
+            temp_gun = ((219 * 5) + ((levelInput - 219) * 6) + 20);
+        }
+        else if (
+            (levelInput > 399) &&
+            (levelInput < 800)
+            ){
+            temp_gun = (totalStats_gun - 100);
+        }
+        
+        updateData_gun(temp_gun);
+    }
+    
+    function updateData_gun(tempstats){
+        //1ST BUILD
+        //STRENGTH
+        var temp1_gun = tempstats;
+        var str1 = (Math.round(temp1_gun * STRfactor1_gun));
+        str1 = (str1 + STRbase_gun);
+        document.getElementById("str1_gun").innerHTML=str1;
+        document.getElementById("str1_factor_gun").innerHTML=(Math.round(STRfactor1_gun * 100));
+        document.getElementById("str1_fruitPoints_gun").innerHTML=(Math.round(STRfactor1_gun * fruitPoints_gun));
+        //AGILITY
+        var agi1 = (Math.round(temp1_gun * AGIfactor1_gun));
+        agi1 = (agi1 + AGIbase_gun);
+        document.getElementById("agi1_gun").innerHTML=agi1;
+        document.getElementById("agi1_factor_gun").innerHTML=(Math.round(AGIfactor1_gun * 100));
+        document.getElementById("agi1_fruitPoints_gun").innerHTML=(Math.round(AGIfactor1_gun * fruitPoints_gun));
+        //STAMINA
+        var sta1 = (Math.round(temp1_gun * STAfactor1_gun));
+        sta1 = (sta1 + STAbase_gun);
+        document.getElementById("sta1_gun").innerHTML=sta1;
+        document.getElementById("sta1_factor_gun").innerHTML=(Math.round(STAfactor1_gun * 100));
+        document.getElementById("sta1_fruitPoints_gun").innerHTML=(Math.round(STAfactor1_gun * fruitPoints_gun));
+        //ENERGY
+        var ene1 = (Math.round(temp1_gun * ENEfactor1_gun));
+        ene1 = (ene1 + ENEbase_gun);
+        document.getElementById("ene1_gun").innerHTML=ene1;
+        document.getElementById("ene1_factor_gun").innerHTML=(Math.round(ENEfactor1_gun * 100));
+        document.getElementById("ene1_fruitPoints_gun").innerHTML=(Math.round(ENEfactor1_gun * fruitPoints_gun));
+
+    }
+    </script>
+</body></html>

@@ -33,6 +33,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run check
+      - run: npm run test:site   # lógica do planner
+      - run: npm run check   # o Wrangler roda o build do Astro e valida o deploy dos dois ambientes
         env:
           WRANGLER_SEND_METRICS: "false"
