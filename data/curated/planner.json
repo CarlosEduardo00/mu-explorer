@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generated_at": "2026-10-21T21:21:59Z",
+ "generated_at": "2026-10-21T21:53:28Z",
  "stats": [
   "str",
   "agi",
@@ -13,7 +13,7 @@
    "id": "global-atual",
    "name": "Global atual",
    "description": "Regras do jogo atual, segundo os guias de classe do Fanz; Illusion Knight, Alchemist e Crusader (que o Fanz não cobre) e a 5ª classe, segundo os guias do Global MU Online e as fontes citadas em cada classe.",
-   "publish": false,
+   "publish": true,
    "credit": "Dados de regra (números e nomes) dos guias de classe de MU Online Fanz (muonlinefanz.com), conteúdo de IZAKTLY. Imagens, 5ª classe e Illusion Knight, Alchemist e Crusader: guias do Global MU Online e guias citados em cada classe.",
    "classes": [
     {

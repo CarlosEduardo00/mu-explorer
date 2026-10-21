@@ -45,14 +45,15 @@ npm run build        # gera ~3.500 páginas estáticas em site/dist (~8 s)
 npm run test:site    # testes da lógica do planner e da API (node --test, sem dependências)
 npm run check        # dry run do deploy dos dois ambientes (o Wrangler roda o build sozinho)
 npm run deploy:hml   # publicação manual (precisa de `npx wrangler login`); normalmente quem publica é o Git
-SITE_DATA=combined npm run dev    # usa Fanz + MuEmu (SÓ LOCAL: ver "Dados no site" abaixo)
+SITE_DATA=muemu npm run dev       # build só com dados de licença aberta (MuEmu); o padrão é combined
 ```
 
 **Dados no site:** o site lê `data/processed/<conjunto>/*.json` em tempo de build (`site/src/lib/data.ts`).
-O padrão é `muemu` (emulador open source, MIT), que é o que hml e prod publicam. O conjunto `combined` (com
-dados do Fanz) é só para desenvolvimento local, **não pode ser publicado** até haver autorização do autor do
-Fanz. O rodapé avisa quando o build é local com outro conjunto. O `wrangler.jsonc` tem `build.command`, então
-o "Build command" do painel da Cloudflare pode ficar vazio.
+O padrão é `combined` (Fanz + MuEmu + Global MU Online), que é o que hml e prod publicam: **o dono do projeto
+obteve autorização para publicar o conteúdo do Fanz e do GMO (out/2026)**. Dar sempre crédito às fontes (rodapé,
+`/api/`, campo `credit` de `sources.json`). As imagens são carregadas direto das fontes (hotlink). `SITE_DATA=muemu`
+gera um build só com dados de licença aberta. O `wrangler.jsonc` tem `build.command`, então o "Build command" do
+painel da Cloudflare pode ficar vazio.
 
 ## Ambientes e branches
 
@@ -187,7 +188,7 @@ wrangler.jsonc     Workers (env prod = mu-explorer, env hml = mu-explorer-hml; a
   `@(?, ?)` ou `@(various)`), descrição e lista de venda com preço em Zen (e linha de opções `[+3] [+Luck]`).
   Receitas de crafting (Chaos Goblin Machine etc.) ainda não são extraídas.
 - O rodapé diz que é recurso de fã operado com permissão da Webzen; o conteúdo é do autor
-  (IZAKTLY). Dar crédito e, se o site for público, pedir autorização.
+  (IZAKTLY). Publicação autorizada (out/2026); dar crédito.
 
 ### 2. muonline.us (toplist de servidores privados) — fonte secundária de drops por mapa
 
@@ -229,7 +230,7 @@ o que foi mapeado antes do bloqueio.
   "Full stat table" (Lv, HP, Damage, Def, Atk rate, Block, Respawn, On map), marcadores `button.lmM t-spot|t-gate|...`
   (t-spot = spot marcado no minimapa do jogo) e FAQ com o nível do warp. Resultado: 54 mapas, 312 monstros
   (248 com imagem), 991 zonas, 695 marcadores.
-- Sem licença aberta: como o Fanz, **só build local** (entra no `combined`). No cruzamento: preenche imagens,
+- Sem licença aberta; publicado com autorização (out/2026), no `combined`. No cruzamento: preenche imagens,
   traz monstros/mapas novos, e nos mapas que cobre os spawns dele substituem os do MuEmu (S21, sem duplicar
   spots). Grafias diferentes viram o id do Fanz (`GMO_MAP_ALIASES`); andares numerados ganham `parent_id`.
 - Guias de classe (`/guides/<classe>/`): linha de evolução até a 5ª classe, pontos por nível, imagens `tN` e requisitos
@@ -276,7 +277,8 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 - `planner` (`data/curated/planner.json`, schema `planner.schema.json`): `rulesets` da season mais nova
   para a mais antiga; cada um com `classes` (base de atributos, pontos por nível em faixas, nível de
   desbloqueio, evolução, nomes). Hoje: `global-atual` (guias e Stat Planner do Fanz; 13 classes) e
-  `classico` (MuEmu; 11 classes). `publish: false` = regras tiradas do Fanz, só em build local.
+  `classico` (MuEmu; 11 classes). Os dois são públicos (`publish: true`); `publish: false` tiraria o conjunto do
+  build `SITE_DATA=muemu`.
   `global-atual` tem 16 classes: as 13 dos guias do Fanz + Illusion Knight, Alchemist e Crusader (o Fanz não tem
   guia delas: base de guias citados em `sources`, evolução e pontos dos guias de classe do GMO). Do GMO vêm também a
   5ª classe (S21, nível null) e `image_url` da classe e de cada evolução.
@@ -313,7 +315,6 @@ justamente em Gun Crusher e Slayer; precisam de outra fonte ou de conferência n
       prod (ver "Ambientes e branches"). `site/public/_headers` define CORS e cache de `/data/*`, a API estática.
 - [x] Stack do frontend: Astro (páginas estáticas geradas dos JSON; interatividade pontual com JS mínimo ou
       ilhas Svelte/React quando houver o planner de builds).
-- [ ] Publicar dados do Fanz no site só depois da decisão acima sobre autorização (hoje o build público usa
-      só o conjunto `muemu`).
+- [x] Publicar dados do Fanz e do GMO: autorizado (out/2026). hml e prod usam o conjunto `combined`, com crédito.
 - [ ] Seasons do planner: só há duas fontes de regras (jogo atual pelo Fanz, clássico pelo MuEmu). Regras
       por season (S19, S20, S21...) precisam de fonte; a estrutura `rulesets` já comporta.

@@ -10,8 +10,8 @@ Fontes (todas já em data/raw/, baixadas pelos outros scrapers):
 Só fatos de regra entram no arquivo (números e nomes de classe). As distribuições de pontos sugeridas pelo
 Stat Planner do Fanz são curadoria do autor e NÃO são copiadas.
 
-`publish`: o conjunto "global-atual" vem dos guias do Fanz; segue o mesmo bloqueio de publicação dos demais
-dados do Fanz (ver CLAUDE.md) e só aparece no site em build local (SITE_DATA=combined).
+`publish`: o conjunto "global-atual" vem dos guias do Fanz e do GMO, publicados com autorização (out/2026); só fica de fora
+do build com dados abertos (SITE_DATA=muemu).
 """
 from __future__ import annotations
 
@@ -277,7 +277,7 @@ def build(raw_dir: Path) -> tuple[dict, list[str]]:
         "stats": list(STATS),
         "rulesets": [  # da mais nova para a mais antiga
             {"id": "global-atual", "name": "Global atual", "description": "Regras do jogo atual, segundo os guias de classe do Fanz; Illusion Knight, Alchemist e Crusader (que o Fanz não cobre) e a 5ª classe, segundo os guias do Global MU Online e as fontes citadas em cada classe.",
-             "publish": False, "credit": FANZ_CREDIT + " Imagens, 5ª classe e Illusion Knight, Alchemist e Crusader: guias do Global MU Online e guias citados em cada classe.",
+             "publish": True, "credit": FANZ_CREDIT + " Imagens, 5ª classe e Illusion Knight, Alchemist e Crusader: guias do Global MU Online e guias citados em cada classe.",
              "classes": current},
             {"id": "classico", "name": "Clássico (emulador MuEmu)", "description": "Regras de um servidor clássico, segundo o emulador MuEmu (5 pontos por nível; 7 para MG e DL).",
              "publish": True, "credit": MUEMU_CREDIT, "classes": classic},
