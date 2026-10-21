@@ -9,7 +9,8 @@
     "typecheck": "astro check",
     "check": "wrangler deploy --dry-run --env prod && wrangler deploy --dry-run --env hml",
     "deploy:prod": "npm run build && wrangler deploy --env prod",
-    "deploy:hml": "npm run build && wrangler deploy --env hml"
+    "deploy:hml": "npm run build && wrangler deploy --env hml",
+    "test:site": "node --test site/src/lib/planner.test.ts"
   },
   "devDependencies": {
     "astro": "^7.3.6",

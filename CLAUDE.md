@@ -27,6 +27,8 @@ python -m scrapers.fanz qa --previous-git origin/main   # QA: contagens, schema,
 python -m scrapers.muemu fetch                       # git clone do MuEmu em data/raw/muemu/repo (+ meta.json)
 python -m scrapers.muemu parse                       # arquivos do MuEmu -> data/processed/muemu/*.json
 python -m scrapers.combine                           # Fanz + MuEmu -> data/processed/combined/ + combine_report.md
+python -m scrapers.planner fetch                     # guias de classe + Stat Planner do Fanz (14 páginas, ~15 s)
+python -m scrapers.planner build                     # data/raw -> data/curated/planner.json (regras de classes)
 ```
 
 `parse` nunca acessa a rede: dá para refazer o parsing quantas vezes quiser sem rebaixar nada.
@@ -37,6 +39,7 @@ Site (Astro, Node 22, publicado no Cloudflare Workers com Static Assets; saída 
 npm install          # Astro e Wrangler (versões fixas em package.json)
 npm run dev          # servidor local em http://localhost:4321 (hot reload)
 npm run build        # gera ~3.500 páginas estáticas em site/dist (~8 s)
+npm run test:site    # testes da lógica do planner (node --test, sem dependências)
 npm run check        # dry run do deploy dos dois ambientes (o Wrangler roda o build sozinho)
 npm run deploy:hml   # publicação manual (precisa de `npx wrangler login`); normalmente quem publica é o Git
 SITE_DATA=combined npm run dev    # usa Fanz + MuEmu (SÓ LOCAL: ver "Dados no site" abaixo)
@@ -69,13 +72,16 @@ scrapers/fanz/     urls.py, discover.py, parse_item.py, parse_monster.py, parse_
                    pipeline.py, report.py, cli.py
 scrapers/muemu/    source.py (vocabulário, fórmula de requisitos), parse.py, cli.py
 scrapers/combine.py  cruzamento Fanz + MuEmu (Fanz é a base; MuEmu só preenche campos vazios)
+scrapers/planner/  build.py: regras de classes (pontos por nível, base, evolução) -> data/curated/planner.json
+data/curated/      arquivos curados por nós (hoje só planner.json), commitados
 docs/              rascunhos e notas (ex.: pedido de acesso ao muonline.us)
 schema/            JSON Schema (draft 2020-12) de cada entidade publicada
 data/raw/          HTML bruto + .meta.json por página (fora do git)
 data/processed/    JSON normalizado por fonte + poc_report.md
 tests/             testes; tests/fixtures/<fonte>/ guarda HTML real usado como fixture
-site/src/          Astro: layouts/Base, components/FilterList, lib/data.ts (leitura dos JSON), pages/ (início, itens,
-                   monstros, mapas, npcs: lista com filtro + página por registro)
+site/src/          Astro: layouts/Base, components/FilterList, lib/data.ts (leitura dos JSON), lib/planner.ts (lógica
+                   pura do planner + testes), pages/ (início, itens, monstros, mapas, npcs: lista com filtro +
+                   página por registro; planner/; data/ = JSON estático para o planner)
 site/public/       arquivos fixos copiados para a saída (_headers, 404.html)
 site/dist/         saída do build (fora do git); é o que o Cloudflare publica
 astro.config.mjs   Astro com srcDir=site/src e outDir=site/dist
@@ -230,7 +236,20 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
   Um drop do Fanz significa "o monstro pode dropar este item"; não há taxa.
 - `source`: id, name, url, scraped_at, credit.
 - Builds **não existem como dado** nas fontes: serão curadoria nossa (referência: guias por
-  classe e Stat Planner do Fanz).
+  classe e Stat Planner do Fanz). As distribuições de pontos sugeridas pelo Fanz são curadoria do autor e
+  **não são copiadas**.
+- `planner` (`data/curated/planner.json`, schema `planner.schema.json`): `rulesets` da season mais nova
+  para a mais antiga; cada um com `classes` (base de atributos, pontos por nível em faixas, nível de
+  desbloqueio, evolução, nomes). Hoje: `global-atual` (guias e Stat Planner do Fanz; 13 classes) e
+  `classico` (MuEmu; 11 classes). `publish: false` = regras tiradas do Fanz, só em build local.
+
+**Planner de builds (`/planner/`):** escolhe regras, classe (Gun Crusher, Slayer e Grow Lancer primeiro),
+nível e pontos extras; distribui pontos de atributo; escolhe equipamento (itens de `planner-items.json`, por
+classe e slot) e confere requisitos; o estado vai no endereço (`#...`) para compartilhar a build. Pontos por
+nível = soma das faixas de cada nível de 2 até `max_level_points` (400); tier 1: 5, e 6 a partir do nível 220
+(quest Hero Status); tier 2 (MG, DL, RF, GL): 7. Requisitos dos itens são os do item +0. **Ainda não
+calcula** HP/Mana/AG/SD nem dano: as fórmulas dos guias do Fanz têm lacunas ("+? AG", "every ? Agility")
+justamente em Gun Crusher e Slayer; precisam de outra fonte ou de conferência no jogo.
 
 ## Fases
 
@@ -255,3 +274,5 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
       ilhas Svelte/React quando houver o planner de builds).
 - [ ] Publicar dados do Fanz no site só depois da decisão acima sobre autorização (hoje o build público usa
       só o conjunto `muemu`).
+- [ ] Seasons do planner: só há duas fontes de regras (jogo atual pelo Fanz, clássico pelo MuEmu). Regras
+      por season (S19, S20, S21...) precisam de fonte; a estrutura `rulesets` já comporta.
