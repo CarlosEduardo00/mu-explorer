@@ -1,0 +1,83 @@
+---
+import Base from "../../layouts/Base.astro";
+import { ENTITIES, API_BASE } from "../../lib/api";
+import { manifest } from "../../lib/api-data";
+import { fmt } from "../../lib/data";
+
+const example = `${API_BASE}/monsters/${"{id}"}.json`;
+---
+<Base title="API" description="API estática do MU Explorer: JSON e SQLite com itens, monstros, mapas, spawns e drops.">
+  <h1>API</h1>
+  <p class="lead">
+    Os dados do site em JSON e SQLite, arquivos estáticos que qualquer site ou script pode ler (CORS liberado,
+    cache de 1 hora). Formato <strong>{manifest.api_version}</strong>; conjunto de dados{" "}
+    <strong>{manifest.dataset}</strong>{manifest.seasons.length > 0 && <>, season {manifest.seasons.join(", ")}</>}.
+  </p>
+
+  <h2>Manifesto</h2>
+  <p>
+    <a href={`${API_BASE}/index.json`}><code>{API_BASE}/index.json</code></a>: versão, fontes (com a revisão exata),
+    contagens e endereços. Gerado em {manifest.generated_at}.
+  </p>
+
+  <h2>Endereços</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>entidade</th><th class="num">registros</th><th>lista</th><th>por registro</th></tr></thead>
+      <tbody>
+        {ENTITIES.map((e) => (
+          <tr>
+            <td>{e.label}</td>
+            <td class="num">{fmt(manifest.counts[e.key])}</td>
+            <td><a href={`${API_BASE}/${e.key}.json`}><code>{e.key}.json</code></a></td>
+            <td>{e.detail ? <code>{e.key}/{"{id}"}.json</code> : "—"}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="muted">
+    O <code>id</code> é o mesmo do endereço das páginas do site (ex.: <code>/monstros/spider/</code> →{" "}
+    <code>{example.replace("{id}", "spider")}</code>). O registro de monstro traz <code>spawns</code> (mapa e coordenadas)
+    e <code>drops</code>; o de item traz <code>dropped_by</code>; o de mapa traz <code>spawns</code>.
+  </p>
+
+  <h2>SQLite</h2>
+  <p>
+    <a href={manifest.sqlite} download><code>{manifest.sqlite}</code></a>: uma tabela por entidade e a tabela{" "}
+    <code>meta</code> com o manifesto. Listas e objetos ficam como texto JSON; <code>requirements</code> vira colunas{" "}
+    <code>requirements_strength</code>, <code>requirements_agility</code>…
+  </p>
+  <pre><code>{`sqlite3 mu-explorer.sqlite
+SELECT m.name, s.x, s.y, s.count
+  FROM spawns s JOIN monsters m ON m.id = s.monster_id
+ WHERE s.map_id = 'lorencia' ORDER BY m.level;
+
+SELECT name, requirements_strength, json_extract(stats, '$.defense') AS defense
+  FROM items WHERE category = 'armor' ORDER BY defense DESC LIMIT 10;`}</code></pre>
+
+  <h2>Exemplo</h2>
+  <pre><code>{`const res = await fetch("${Astro.site?.origin ?? ""}${API_BASE}/monsters/spider.json");
+const spider = await res.json();
+console.log(spider.level, spider.spawns.map((s) => s.map_name));`}</code></pre>
+
+  <h2>Regras</h2>
+  <ul>
+    {manifest.notes.map((n) => <li>{n}</li>)}
+    <li>Mudança incompatível no formato vira <code>/api/v2/</code>; <code>v1</code> continua com o mesmo formato.</li>
+  </ul>
+
+  <h2>Fontes</h2>
+  <ul>
+    {manifest.sources.map((s) => (
+      <li>
+        <a href={s.url}>{s.name}</a>{s.revision && <> (revisão <code>{s.revision.slice(0, 10)}</code>)</>}{s.credit && <>: {s.credit}</>}
+      </li>
+    ))}
+  </ul>
+</Base>
+
+<style>
+  pre { overflow-x: auto; padding: .75rem 1rem; background: var(--panel); border: 1px solid var(--line); border-radius: .5rem; font-size: .85rem; }
+  code { font-size: .9em; }
+</style>

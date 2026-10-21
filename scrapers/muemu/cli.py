@@ -60,6 +60,7 @@ def build(meta: dict, texts: dict[str, str]) -> tuple[dict[str, list[dict]], lis
     sources = [{
         "id": source.SOURCE_ID, "name": source.SOURCE_NAME, "url": source.REPO_URL, "credit": source.CREDIT,
         "pages": len(source.FILES), "first_scraped_at": meta["fetched_at"], "last_scraped_at": meta["fetched_at"],
+        "revision": meta.get("commit"),
     }]
     data = {"item": items, "monster": monsters, "map": maps, "spawn": spawns, "drop": [], "source": sources}
     return data, warnings + more + even_more
