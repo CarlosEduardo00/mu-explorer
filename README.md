@@ -31,7 +31,8 @@ python -m scrapers.fanz fixtures --golden           # vira fixture de teste (rev
 - [x] MuEmu + cruzamento: grupo/índice em 1.863 itens, respawn em 158 monstros, 1.717 spots com coordenadas.
 - [x] Hosting no Cloudflare Workers (Static Assets) e site em Astro com páginas de itens, monstros, mapas e NPCs (`site/`); hml/prod usam só os dados do MuEmu.
 - [x] Planner de builds (`/planner/`): pontos por nível, atributos e checagem de requisitos do equipamento; regras do jogo atual (só local, dados do Fanz) e clássicas (MuEmu).
-- [ ] muonline.us, publicação dos dados, builds curadas, fórmulas de HP/Mana/dano.
+- [x] API estática (`/api/`): JSON por entidade e por registro em `/api/v1/` e um SQLite com tudo, gerados no build.
+- [ ] muonline.us, builds curadas, fórmulas de HP/Mana/dano.
 
 ## Créditos
 

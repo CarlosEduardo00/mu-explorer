@@ -51,6 +51,14 @@
         "null"
       ],
       "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+    },
+    "revision": {
+      "description": "Versão exata da fonte (ex.: commit do repositório), quando houver.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
     }
   }
 }
