@@ -66,7 +66,7 @@ def test_planner_json_valido(planner):
 def test_planner_json_ordem_e_publicacao(planner):
     assert [r["id"] for r in planner["rulesets"]] == ["global-atual", "classico"]  # mais nova primeiro
     atual, classico = planner["rulesets"]
-    assert atual["publish"] is False and classico["publish"] is True  # Fanz só em build local
+    assert atual["publish"] is True and classico["publish"] is True  # publicação autorizada (out/2026)
     assert [c["id"] for c in atual["classes"][:3]] == ["gun-crusher", "slayer", "grow-lancer"]
     assert len(atual["classes"]) == 16 and len(classico["classes"]) == 11
 

@@ -32,11 +32,15 @@ const path = Astro.url.pathname;
     </header>
     <main><slot /></main>
     <footer>
-      <p>
-        Projeto de fãs, sem vínculo com a Webzen. MU Online é marca da Webzen Inc.
-        {sources.length > 0 && <> Dados: {sources.map((s, i) => <>{i > 0 && ", "}<a href={s.url}>{s.name}</a></>)}.</>}
-      </p>
-      {datasetName !== "muemu" && <p class="warn">Build local com conjunto “{datasetName}”: não publicar.</p>}
+      <p>Projeto de fãs, sem vínculo com a Webzen. MU Online é marca da Webzen Inc.</p>
+      {sources.length > 0 && (
+        <p class="credits">
+          Dados e imagens:{" "}
+          {sources.map((s, i) => <>{i > 0 && " · "}<a href={s.url}>{s.name}</a></>)}.
+          Publicados com autorização; o conteúdo continua sendo dos autores de cada fonte.
+          {datasetName !== "combined" && <> Conjunto “{datasetName}”.</>}
+        </p>
+      )}
     </footer>
   </body>
 </html>
@@ -62,6 +66,7 @@ const path = Astro.url.pathname;
   .top nav a[aria-current] { color: var(--accent); font-weight: 600; }
   footer { max-width: 56rem; margin: 0 auto; padding: 1rem; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); }
   .warn { color: #b3261e; font-weight: 600; }
+  .credits { font-size: .8rem; }
   table { border-collapse: collapse; width: 100%; background: var(--panel); }
   th, td { text-align: left; padding: .4rem .6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
   th { font-weight: 600; color: var(--muted); font-size: .85rem; }
