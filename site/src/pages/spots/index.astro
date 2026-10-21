@@ -1,6 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { farmSpots, sources, mapById, monsterById, fmt } from "../../lib/data";
+import { farmSpots, mapById, monsterById, fmt } from "../../lib/data";
 
 // Mapas em ordem do spot de menor nível; dentro do mapa, spots por nível.
 const byMap = new Map<string, typeof farmSpots>();
@@ -11,7 +11,6 @@ for (const s of [...farmSpots].sort((a, b) => (a.level_min ?? 0) - (b.level_min 
 }
 const levelText = (s: (typeof farmSpots)[number]) =>
   s.level_min == null ? "—" : s.level_min === s.level_max ? fmt(s.level_min) : `${fmt(s.level_min)}–${fmt(s.level_max)}`;
-const source = sources.find((s) => s.id === "muemu") ?? sources[0];
 const recommended = (mapId: string) => {
   const m = mapById.get(mapId);
   if (!m || m.level_recommended_min == null) return null;
@@ -21,8 +20,8 @@ const recommended = (mapId: string) => {
 <Base title="Spots de farm" description="Onde upar em MU Online: grupos de monstros por mapa, com coordenadas e faixa de nível.">
   <h1>Spots de farm</h1>
   <p class="lead">
-    Grupos de monstros por região do mapa (grade de 32 × 32 casas), com coordenadas e faixa de nível dos monstros.
-    Gerados a partir dos spawns{source && <> do <a href={source.url}>{source.name}</a></>}; eventos ficam de fora.
+    Grupos de monstros próximos em cada mapa (hot spots), com coordenadas, volume e faixa de nível dos monstros.
+    Eventos ficam de fora.
     Spot de farm bom depende também da classe, do equipamento e das taxas do servidor.
   </p>
 
@@ -43,7 +42,7 @@ const recommended = (mapId: string) => {
           <tbody>
             {spots.map((s) => (
               <tr data-min={s.level_min ?? ""} data-max={s.level_max ?? ""}>
-                <td>{s.id}</td>
+                <td><a href={`/mapas/${mapId}/#spot-${s.id.split("-").pop()}`}>{s.id}</a> <span class={`heat-tag heat-${s.heat ?? "mid"}`}>x{s.total}</span></td>
                 <td>{s.x}, {s.y}<span class="muted"> ({s.x_min},{s.y_min})–({s.x_max},{s.y_max})</span></td>
                 <td class="num">{levelText(s)}</td>
                 <td>{s.monsters.map((m, i) => <>{i > 0 && ", "}<a href={`/monstros/${m.monster_id}/`} class="name-cell">{monsterById.get(m.monster_id)?.image_url && <img class="thumb" src={monsterById.get(m.monster_id)?.image_url} alt="" loading="lazy" referrerpolicy="no-referrer" />}{m.name}</a> ×{m.count}</>)}</td>

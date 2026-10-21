@@ -38,6 +38,7 @@ SPAWN_KINDS = {"Spot": "spot", "Normal": "normal", "Golden": "golden", "BloodCas
 MAP_ALIASES = {
     "Dugeon": "Dungeon", "Davias": "Devias", "Kantru": "Kanturu", "Vulcan": "Vulcanus",
     "Stadium": "Arena", "SantaTown": "Santa's Village", "ValleyofLoren": "Valley of Loren",
+    "Elbeland": "Elveland",  # grafia do Fanz (base do projeto)
 }
 
 

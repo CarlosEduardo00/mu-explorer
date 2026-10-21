@@ -96,5 +96,4 @@ const related = item.related_items.map((id) => itemById.get(id)).filter((i) => i
     </>
   )}
   {item.notes.length > 0 && (<><h2>Notas</h2>{item.notes.map((n) => <p>{n}</p>)}</>)}
-  <p class="muted">Fonte: <a href={item.source_url}>{item.source}</a></p>
 </Base>

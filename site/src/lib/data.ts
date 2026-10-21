@@ -45,6 +45,7 @@ export interface FarmSpot {
   id: string; map_id: string; map_name: string; x: number; y: number; x_min: number; y_min: number; x_max: number; y_max: number;
   monsters: { monster_id: string; name: string; level: number | null; count: number }[];
   total: number; level_min: number | null; level_max: number | null; source: string | null; source_url: string | null;
+  heat?: "hot" | "mid" | "low" | "boss";
 }
 export interface MapMarker { map_id: string; kind: string; name: string; x: number | null; y: number | null; description: string | null }
 export interface Source { id: string; name: string; url: string; credit: string | null }
@@ -57,11 +58,27 @@ function load<T>(file: string): T[] {
   return existsSync(path) ? (JSON.parse(readFileSync(path, "utf-8")) as T[]) : [];
 }
 
+/**
+ * Imagens copiadas para o nosso hospedeiro (data/media.json, gerado por `python -m scrapers.media fetch`): o site
+ * mostra a cópia em /media/... quando ela existe; sem cópia, usa a URL da fonte. Os registros da API (source*)
+ * mantêm a URL original como procedência.
+ */
+const mediaPath = resolve(process.cwd(), "data", "media.json");
+const mediaManifest: Record<string, { path: string }> = existsSync(mediaPath) ? JSON.parse(readFileSync(mediaPath, "utf-8")) : {};
+export const localImage = (url: string | null | undefined): string | null => (url ? mediaManifest[url]?.path ?? url : null);
+function withLocalImages<T extends { image_url?: string | null; minimap_url?: string | null }>(rows: T[]): T[] {
+  return rows.map((r) => ({ ...r, image_url: localImage(r.image_url), ...("minimap_url" in r ? { minimap_url: localImage(r.minimap_url) } : {}) }));
+}
+
 export const datasetName = dataset;
-export const items = load<Item>("items.json");
-export const monsters = load<Monster>("monsters.json");
-export const maps = load<GameMap>("maps.json");
-export const npcs = load<Npc>("npcs.json");
+export const sourceItems = load<Item>("items.json");
+export const sourceMonsters = load<Monster>("monsters.json");
+export const sourceMaps = load<GameMap>("maps.json");
+export const sourceNpcs = load<Npc>("npcs.json");
+export const items = withLocalImages(sourceItems);
+export const monsters = withLocalImages(sourceMonsters);
+export const maps = withLocalImages(sourceMaps);
+export const npcs = withLocalImages(sourceNpcs);
 export const spawns = load<Spawn>("spawns.json");
 export const drops = load<Drop>("drops.json");
 export const sources = load<Source>("sources.json");
@@ -75,11 +92,23 @@ export const mapMarkers = load<MapMarker>("map_markers.json");
 interface PlannerFile { rulesets: Ruleset[] }
 const plannerPath = resolve(process.cwd(), "data", "curated", "planner.json");
 const plannerFile: PlannerFile = existsSync(plannerPath) ? JSON.parse(readFileSync(plannerPath, "utf-8")) : { rulesets: [] };
-export const rulesets: Ruleset[] = plannerFile.rulesets.filter((r) => r.publish || dataset !== "muemu");
+export const rulesets: Ruleset[] = plannerFile.rulesets.filter((r) => r.publish || dataset !== "muemu").map((r) => ({
+  ...r,
+  classes: r.classes.map((c) => ({
+    ...c, image_url: localImage(c.image_url),
+    evolutions: c.evolutions.map((e) => ({ ...e, image_url: localImage(e.image_url) })),
+  })),
+}));
 
 /** Builds prontas (data/curated/builds.json): curadoria nossa, regras de distribuição por fase de nível. */
 const buildsPath = resolve(process.cwd(), "data", "curated", "builds.json");
 export const builds: BuildTemplate[] = existsSync(buildsPath) ? JSON.parse(readFileSync(buildsPath, "utf-8")).builds : [];
+
+/** Mapas vetoriais próprios (scrapers.terrain): caminhos SVG de terreno, chão andável e zona segura por mapa. */
+export interface Terrain { land: string; walk: string; safe: string }
+const terrainPath = resolve(process.cwd(), "data", "processed", "terrain", "terrains.json");
+export const terrainByMap: Map<string, Terrain> = new Map(
+  Object.entries(existsSync(terrainPath) ? JSON.parse(readFileSync(terrainPath, "utf-8")).maps : {}) as [string, Terrain][]);
 
 export const itemById = new Map(items.map((i) => [i.id, i]));
 export const monsterById = new Map(monsters.map((m) => [m.id, m]));

@@ -32,8 +32,26 @@ def test_agrupa_por_regiao_soma_quantidades_e_faixa_de_nivel():
 
 
 def test_ignora_eventos_e_grupos_pequenos_e_junta_areas_grandes_iguais():
-    spawns = [spawn("gate", 14, 75, "event") for _ in range(10)] + [spawn("lich", 100, 100) for _ in range(3)] + [
+    spawns = [spawn("gate", 14, 75, "event") for _ in range(10)] + [spawn("lich", 100, 100) for _ in range(2)] + [
         spawn("budge", 135, 20, "spot", 240, 88, 30), spawn("budge", 135, 20, "spot", 240, 88, 30)]
     spots = build_spots(spawns, MONSTERS, MAPS)
     assert len(spots) == 1
     assert spots[0]["total"] == 60 and spots[0]["monsters"][0]["monster_id"] == "budge"
+
+
+def test_heat_por_volume_e_boss():
+    from scrapers.spots import classify_heat
+    spots = [{"total": t, "monsters": [{"monster_id": "x"}]} for t in (3, 9, 10, 12, 30)]
+    spots.append({"total": 3, "monsters": [{"monster_id": "chefe"}]})
+    classify_heat(spots, {"chefe"})   # mediana 10
+    assert [s["heat"] for s in spots] == ["low", "mid", "mid", "mid", "hot", "boss"]
+    iguais = [{"total": 9, "monsters": [{"monster_id": "x"}]} for _ in range(4)]
+    classify_heat(iguais, set())
+    assert {s["heat"] for s in iguais} == {"mid"}
+
+
+def test_zonas_vizinhas_em_lados_de_uma_linha_da_grade_ficam_juntas():
+    spawns = [spawn("lich", 45, 37, "spot", 50, 42, 3), spawn("lich", 47, 38, "spot", 51, 43, 3),
+              spawn("lich", 120, 120, "spot", 125, 125, 3)]
+    spots = build_spots(spawns, MONSTERS, MAPS)
+    assert [s["total"] for s in spots] == [6, 3]

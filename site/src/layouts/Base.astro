@@ -88,5 +88,9 @@ const path = Astro.url.pathname;
   .thumb { width: 28px; height: 28px; object-fit: contain; vertical-align: middle; margin-right: .5rem; background: #12131a; border-radius: .3rem; }
   .name-cell { display: inline-flex; align-items: center; }
   .hero-img { display: block; max-width: 12rem; max-height: 12rem; object-fit: contain; margin: .5rem 0 1rem; background: #12131a; border-radius: .5rem; padding: .4rem; }
+  /* Etiquetas de intensidade dos hot spots (MapExplorer, /spots/, páginas de mapa). */
+  .heat-tag { display: inline-block; padding: 0 .45rem; border-radius: .3rem; color: #111; }
+  .heat-tag.heat-hot { background: #ef4444; color: #fff; } .heat-tag.heat-mid { background: #facc15; }
+  .heat-tag.heat-low { background: #e2e8f0; } .heat-tag.heat-boss { background: #f59e0b; }
   .map-img { display: block; width: 100%; max-height: 20rem; object-fit: cover; border-radius: .5rem; margin: .5rem 0 1rem; }
 </style>

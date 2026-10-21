@@ -1,6 +1,6 @@
 import type { APIRoute, GetStaticPaths } from "astro";
 import { json } from "../../../../lib/api-data";
-import { npcs } from "../../../../lib/data";
+import { sourceNpcs as npcs } from "../../../../lib/data";
 
 // Um NPC (localizações e o que vende).
 export const getStaticPaths: GetStaticPaths = () => npcs.map((npc) => ({ params: { id: npc.id }, props: { npc } }));

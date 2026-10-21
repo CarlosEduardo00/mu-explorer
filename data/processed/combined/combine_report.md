@@ -6,7 +6,7 @@ Base: Fanz. O MuEmu só preenche campos vazios; os valores do Fanz nunca são so
 
 - Itens: 1863 de 3074 casados ({'nome': 835, 'item base do ancient': 416, 'item base do excellent': 612}); 243 com mais de um candidato no MuEmu (usado o de menor grupo/índice).
 - Monstros: 158 de 291 casados ({'nome e nível': 136, 'nome (nível diferente)': 22}).
-- Spawns com coordenadas vindos do MuEmu: 1269.
+- Spawns com coordenadas vindos do MuEmu: 1265.
 
 ## Campos preenchidos (antes → depois)
 
@@ -19,8 +19,8 @@ Base: Fanz. O MuEmu só preenche campos vazios; os valores do Fanz nunca são so
 
 ## Mapas
 
-- Só no Fanz: atlans-abyss, balgass-barracks, balgass-resting-place, barracks-of-balgass, crimson-flame-s-icarus, crywolf, cubera-mine, debenter, deep-dungeon, devil-square-mini-game, elveland, event-square, ferea, kalima, kanturu-or-raklion, kanturu-relics, kanturu-ruins, karutan, land-of-trials, loren-market, lorencia-dungeon, lorencia-noria-devias-or-lost-tower, lorencia-noria-elveland-devias, lorencia-noria-or-devias, lost-tower-icarus-kalima-5-adia, nars, nixies-lake, raklion-swamp-of-peace-kanturu-ruins-kalima-7, scorched-canyon, swamp-of-darkness, swamp-of-peace, uruk-mountain, valley-of-loren
-- Só no MuEmu: blood-castle-2, blood-castle-3, blood-castle-4, blood-castle-5, blood-castle-6, blood-castle-7, blood-castle-8, chaos-castle-2, chaos-castle-3, chaos-castle-4, chaos-castle-5, chaos-castle-6, chaos-castle-7, devil-square, devil-square-2, elbeland, illusion-temple-1, illusion-temple-2, illusion-temple-3, illusion-temple-4, illusion-temple-5, illusion-temple-6, kalima-2, kalima-3, kalima-4, kalima-5, kalima-6, kalima-7, kanturu-1, kanturu-2, selupan
+- Só no Fanz: atlans-abyss, balgass-barracks, balgass-resting-place, barracks-of-balgass, crimson-flame-s-icarus, crywolf, cubera-mine, debenter, deep-dungeon, devil-square-mini-game, event-square, ferea, kalima, kanturu-or-raklion, kanturu-relics, kanturu-ruins, karutan, land-of-trials, loren-market, lorencia-dungeon, lorencia-noria-devias-or-lost-tower, lorencia-noria-elveland-devias, lorencia-noria-or-devias, lost-tower-icarus-kalima-5-adia, nars, nixies-lake, raklion-swamp-of-peace-kanturu-ruins-kalima-7, scorched-canyon, swamp-of-darkness, swamp-of-peace, uruk-mountain, valley-of-loren
+- Só no MuEmu: blood-castle-2, blood-castle-3, blood-castle-4, blood-castle-5, blood-castle-6, blood-castle-7, blood-castle-8, chaos-castle-2, chaos-castle-3, chaos-castle-4, chaos-castle-5, chaos-castle-6, chaos-castle-7, devil-square, devil-square-2, illusion-temple-1, illusion-temple-2, illusion-temple-3, illusion-temple-4, illusion-temple-5, illusion-temple-6, kalima-2, kalima-3, kalima-4, kalima-5, kalima-6, kalima-7, kanturu-1, kanturu-2, selupan
 
 ## Itens do Fanz sem par no MuEmu (1211)
 
@@ -190,6 +190,6 @@ servidor privado; o Fanz acompanha o global. Diferença aqui não é erro de par
 ## Global MU Online (S21, só local)
 
 - monstros novos: 115
-- spawns do MuEmu trocados: 1439
+- spawns do MuEmu trocados: 1443
 - spawns do GMO: 991
 - mapas novos: 24
