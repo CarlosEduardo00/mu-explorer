@@ -60,6 +60,8 @@ o "Build command" do painel da Cloudflare pode ficar vazio.
 
 Fluxo: branch curta a partir de `mu-explorer-dev` → PR para `mu-explorer-dev` (publica em
 hml para testar) → PR de `mu-explorer-dev` para `main` (publica em prod). Nunca commitar direto na `main`.
+Cada Worker só builda a própria branch; os builds de branches que não são de produção (previews de PR) estão
+desligados no painel (Settings → Build → Branch control), então PR não ganha preview na Cloudflare.
 
 ## Estrutura
 
