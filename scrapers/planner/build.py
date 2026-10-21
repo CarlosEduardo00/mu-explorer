@@ -88,10 +88,13 @@ def parse_guide(lines: list[str]) -> dict:
     tier = next((int(m.group(1)) for x in head if (m := re.match(r"^Tier (\d) Class", x))), None)
     unlock = next((int(m.group(1)) for x in head if (m := re.search(r"unlocked after reaching level (\d+)", x, re.I))), None)
     rates = []
-    for x in head:
+    for i, x in enumerate(head):
         m = re.search(r"\+(\d+) stat points? per (?:character )?level( after Hero Status quest)?", x, re.I)
         if m:
-            rates.append((int(m.group(1)), bool(m.group(2))))
+            # Guia do DK: a faixa vem na linha seguinte ("From level 220 ~ 400.") em vez de "after Hero Status".
+            span = re.match(r"From level (\d+)", head[i + 1], re.I) if i + 1 < len(head) else None
+            after_hero = bool(m.group(2)) or bool(span and int(span.group(1)) >= HERO_STATUS_LEVEL)
+            rates.append((int(m.group(1)), after_hero))
     evolutions: list[dict] = []
     start = next((i for i, x in enumerate(lines) if x.startswith("Class Evolution")), None)
     if start is not None:

@@ -94,8 +94,29 @@ def parse_map(html: str, meta: dict) -> ParseResult:
     for key in ("monsters", "special_monsters", "bosses", "npcs", "connections"):
         record[key] = list(dict.fromkeys(record[key]))
     record["image_url"] = find_image(doc, MAP_IMAGE_PREFIX)
+    record.update(map_levels(record["quick_facts"]))
     return ParseResult(kind="map", record=record, source_file=meta.get("file", ""), warnings=warnings,
                        unmapped=unmapped, headings=doc.headings)
+
+
+_REQUIRES = re.compile(r"^Requires character level ([\d,]+) to enter", re.IGNORECASE)
+_RECOMMENDED = re.compile(r"^Recommended for characters level ([\d,]+) ~ ([\d,]+|\?)", re.IGNORECASE)
+_LESS_THAN = re.compile(r"^Recommended for characters less than level ([\d,]+)", re.IGNORECASE)
+
+
+def map_levels(quick_facts: list[str]) -> dict:
+    """Nível para entrar e faixa recomendada, das frases principais dos Quick Facts (andares e sub-mapas ficam no texto)."""
+    out = {"level_required": None, "level_recommended_min": None, "level_recommended_max": None}
+    num = lambda s: int(s.replace(",", ""))
+    for fact in quick_facts:
+        if out["level_required"] is None and (m := _REQUIRES.match(fact)):
+            out["level_required"] = num(m.group(1))
+        elif out["level_recommended_min"] is None and (m := _RECOMMENDED.match(fact)):
+            out["level_recommended_min"] = num(m.group(1))
+            out["level_recommended_max"] = None if m.group(2) == "?" else num(m.group(2))
+        elif out["level_recommended_min"] is None and (m := _LESS_THAN.match(fact)):
+            out["level_recommended_min"], out["level_recommended_max"] = 1, num(m.group(1)) - 1
+    return out
 
 
 def _connections(lines: list[Line]) -> list[str]:

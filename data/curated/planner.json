@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generated_at": "2026-10-21T18:17:32Z",
+ "generated_at": "2026-10-21T20:03:30Z",
  "stats": [
   "str",
   "agi",
@@ -236,7 +236,7 @@
        "per_level": 5
       },
       {
-       "from_level": 2,
+       "from_level": 220,
        "per_level": 6
       }
      ],

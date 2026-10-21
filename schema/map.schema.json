@@ -151,6 +151,30 @@
         "null"
       ],
       "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "level_required": {
+      "description": "Nível para entrar no mapa (quando a fonte informa).",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "level_recommended_min": {
+      "description": "Faixa de nível recomendada pela fonte (mínimo).",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "level_recommended_max": {
+      "description": "Faixa de nível recomendada pela fonte (máximo; null se aberta).",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
     }
   }
 }

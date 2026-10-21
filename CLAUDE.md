@@ -29,6 +29,7 @@ python -m scrapers.muemu parse                       # arquivos do MuEmu -> data
 python -m scrapers.combine                           # Fanz + MuEmu -> data/processed/combined/ + combine_report.md
 python -m scrapers.planner fetch                     # guias de classe + Stat Planner do Fanz (14 páginas, ~15 s)
 python -m scrapers.planner build                     # data/raw -> data/curated/planner.json (regras de classes)
+python -m scrapers.spots [--set combined]            # spawns -> data/processed/<conjunto>/farm_spots.json (spots de farm)
 ```
 
 `parse` nunca acessa a rede: dá para refazer o parsing quantas vezes quiser sem rebaixar nada.
@@ -75,6 +76,7 @@ scrapers/fanz/     urls.py, discover.py, parse_item.py, parse_monster.py, parse_
 scrapers/muemu/    source.py (vocabulário, fórmula de requisitos), parse.py, cli.py
 scrapers/combine.py  cruzamento Fanz + MuEmu (Fanz é a base; MuEmu só preenche campos vazios)
 scrapers/planner/  build.py: regras de classes (pontos por nível, base, evolução) -> data/curated/planner.json
+scrapers/spots.py  spots de farm: agrupa spawns por região (grade 32×32) -> farm_spots.json (não copia guias)
 data/curated/      arquivos curados por nós (hoje só planner.json), commitados
 docs/              rascunhos e notas (ex.: pedido de acesso ao muonline.us)
 schema/            JSON Schema (draft 2020-12) de cada entidade publicada
@@ -234,6 +236,8 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 - `map`: id, name, parent_id, description, quick_facts, valued_drops, monsters, special_monsters, bosses,
   npcs, connections, notes, image_url. `npc`: id, name, type, locations (map_id, x, y), description, sells
   (item, categoria, preço em Zen, detalhes). `spawn`: monster_id, map_id, kind, x, y, x2, y2, radius, count.
+  `farm_spot`: id, map_id, centro (x, y), área (x_min..y_max), monsters (id, nome, nível, quantidade), total,
+  level_min/max (gerado por `scrapers.spots`; eventos e monstros dourados ficam de fora).
   `drop`: monster_id, item_id, item_name, kind
   (normal/excellent/ancient/socket/unknown), table, category, quantity, rate (null se a fonte não informa).
   Um drop do Fanz significa "o monstro pode dropar este item"; não há taxa.
@@ -241,6 +245,10 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 - Builds **não existem como dado** nas fontes: serão curadoria nossa (referência: guias por
   classe e Stat Planner do Fanz). As distribuições de pontos sugeridas pelo Fanz são curadoria do autor e
   **não são copiadas**.
+- `builds` (`data/curated/builds.json`, schema `builds.schema.json`): builds prontas por classe, curadoria nossa em
+  regras (fases por nível; metas: número, `gear` = requisito do equipamento escolhido, ou `{per_level}`; resto
+  dividido por `split`). Pisos de skill são fatos do jogo; cada build cita referências. 29 builds, 13 classes.
+- `map`: também `level_required`, `level_recommended_min/max` (Quick Facts do Fanz).
 - `planner` (`data/curated/planner.json`, schema `planner.schema.json`): `rulesets` da season mais nova
   para a mais antiga; cada um com `classes` (base de atributos, pontos por nível em faixas, nível de
   desbloqueio, evolução, nomes). Hoje: `global-atual` (guias e Stat Planner do Fanz; 13 classes) e
@@ -250,7 +258,8 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 nível e pontos extras; distribui pontos de atributo; escolhe equipamento (itens de `planner-items.json`, por
 classe e slot) e confere requisitos; o estado vai no endereço (`#...`) para compartilhar a build. Pontos por
 nível = soma das faixas de cada nível de 2 até `max_level_points` (400); tier 1: 5, e 6 a partir do nível 220
-(quest Hero Status); tier 2 (MG, DL, RF, GL): 7. Requisitos dos itens são os do item +0. **Ainda não
+(quest Hero Status); tier 2 (MG, DL, RF, GL): 7. Requisitos dos itens são os do item +0. Com uma build pronta,
+o planner simula nível a nível (`simulateBuild`) e mostra a curva de atributos. **Ainda não
 calcula** HP/Mana/AG/SD nem dano: as fórmulas dos guias do Fanz têm lacunas ("+? AG", "every ? Agility")
 justamente em Gun Crusher e Slayer; precisam de outra fonte ou de conferência no jogo.
 
