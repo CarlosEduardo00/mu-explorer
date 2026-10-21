@@ -4,6 +4,7 @@ import FilterList from "../../components/FilterList.astro";
 import { items, fmt } from "../../lib/data";
 const rows = items.map((i) => ({
   href: `/itens/${i.id}/`,
+  image: i.image_url,
   cells: [i.name, i.category, i.requirements.level, i.classes.length ? i.classes.join(", ") : null],
   search: `${i.name} ${i.category ?? ""} ${i.classes.join(" ")}`.toLowerCase(),
 }));

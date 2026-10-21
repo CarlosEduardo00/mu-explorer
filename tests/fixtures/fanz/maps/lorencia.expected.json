@@ -99,7 +99,8 @@
     "page_updated_at": null,
     "level_required": 10,
     "level_recommended_min": 1,
-    "level_recommended_max": 19
+    "level_recommended_max": 19,
+    "minimap_url": "https://muonlinefanz.com/tools/maps/data/graphics/Lorencia/map.jpg"
   },
   "related": {}
 }

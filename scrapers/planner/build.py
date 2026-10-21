@@ -54,6 +54,33 @@ CLASSES = [
 DK_EVOLUTIONS = [(1, "Dark Knight", None), (2, "Blade Knight", 150), (3, "Blade Master", 400), (4, "Dragon Knight", 800)]
 # Nomes com que o MuEmu e o Fanz escrevem a classe-base nos itens ("Rune Wizard" no MuEmu = Rune Mage).
 ALIASES = {"rune-mage": ["Rune Wizard"]}
+# Guias de classe do Global MU Online (data/raw/gmo/guides/<chave>.html, baixados por `python -m scrapers.gmo fetch`):
+# linha de evolução até a 5ª classe (S21), pontos por nível e imagens de cada evolução.
+GMO_KEYS = {
+    "gun-crusher": "gun-crusher", "slayer": "slayer", "grow-lancer": "grow-lancer", "dark-wizard": "dark-wizard",
+    "dark-knight": "dark-knight", "fairy-elf": "fairy-elf", "magic-gladiator": "magic-gladiator",
+    "dark-lord": "dark-lord", "summoner": "summoner", "rage-fighter": "rage-fighter", "rune-mage": "rune-wizard",
+    "white-wizard": "white-wizard-class", "mage": "lemuria-mage", "illusion-knight": "illusion-knight",
+    "alchemist": "alchemist", "crusader": "crusader",
+}
+GMO_BASE = "https://globalmuonline.com"
+# Classes que o Fanz não cobre (S18, S20, S21). Atributos base: guias citados (nenhum valor inventado);
+# evolução e pontos por nível: guias de classe do GMO.
+NEW_CLASSES = [
+    {"id": "illusion-knight", "name": "Illusion Knight", "base": {"str": 25, "agi": 28, "vit": 15, "ene": 10, "cmd": 0},
+     "sources": [("Guide MU Online: Illusion Knight", "https://guidemuonline.com/characters/illusion-knight"),
+                 ("muonline.eu: Illusion Knight (S18)", "https://muonline.eu/index.php?/topic/27-illusion-knight-mu-online-season-18/"),
+                 ("Global MU Online: guia do Illusion Knight", "https://globalmuonline.com/guides/illusion-knight/")],
+     "notes": ["Base 25/28/15/10 em três guias; um post de lançamento cita Energia 15."]},
+    {"id": "alchemist", "name": "Alchemist", "base": {"str": 15, "agi": 20, "vit": 23, "ene": 25, "cmd": 0},
+     "sources": [("Webzen: guia do Alchemist", "https://muonline.webzen.com/en/gameinfo/guide/detail/365"),
+                 ("Global MU Online: guia do Alchemist", "https://globalmuonline.com/guides/alchemist/")],
+     "notes": []},
+    {"id": "crusader", "name": "Crusader", "base": {"str": 26, "agi": 18, "vit": 19, "ene": 20, "cmd": 0},
+     "sources": [("muonline.eu: Crusader (S21)", "https://muonline.eu/index.php?/topic/72-crusader-mu-online-season-21/"),
+                 ("Global MU Online: guia do Crusader", "https://globalmuonline.com/guides/crusader/")],
+     "notes": ["Atributos base de uma única fonte (muonline.eu); confira no jogo."]},
+]
 FANZ_CREDIT = "Dados de regra (números e nomes) dos guias de classe de MU Online Fanz (muonlinefanz.com), conteúdo de IZAKTLY."
 MUEMU_CREDIT = "Characters.xml e código do MuEmu (github.com/deep-thought-42/MuEmu), licença MIT."
 
@@ -111,6 +138,45 @@ def parse_guide(lines: list[str]) -> dict:
     max_level = max((int(m.group(1)) for x in lines[:200] if (m := re.search(r"Stops gaining EXP at Level (\d+)", x))), default=None)
     return {"name": lines[0] if lines and lines[0] != "Advertisement:" else None, "tier": tier,
             "unlock_level": unlock, "rates": rates, "evolutions": evolutions, "max_level": max_level}
+
+
+def parse_gmo_class(html: str) -> dict:
+    """Guia de classe do GMO: {'line': [(tier, nome)], 'points': int|None, 'images': {tier: url}}."""
+    from selectolax.lexbor import LexborHTMLParser
+    tree = LexborHTMLParser(html)
+    root = tree.css_first(".guideContent") or tree.body
+    lines = [x.strip() for x in root.text(separator="\n").splitlines() if x.strip() and "{" not in x]
+    line = []
+    for i, text in enumerate(lines[:-1]):
+        m = re.match(r"^(\d)(?:st|nd|rd|th) class$", text)
+        if m:
+            line.append((int(m.group(1)), lines[i + 1]))
+    points = next((int(lines[i + 1]) for i, x in enumerate(lines[:-1]) if x == "Stat points per level" and lines[i + 1].isdigit()), None)
+    images = {}
+    for img in root.css("img"):
+        src = img.attributes.get("src") or ""
+        m = re.search(r"/guides/classes/img/[a-z-]+-t(\d)\.webp$", src)
+        if m:
+            images.setdefault(int(m.group(1)), GMO_BASE + src)
+    return {"line": line, "points": points, "images": images}
+
+
+def add_gmo_class_info(cls: dict, gmo: dict | None) -> None:
+    """Imagem da classe e de cada evolução, e as evoluções que faltam (5ª classe da S21, nível desconhecido)."""
+    if not gmo:
+        return
+    cls["image_url"] = gmo["images"].get(1)
+    known = {e["tier"] for e in cls["evolutions"]}
+    for tier, name in gmo["line"]:
+        if tier not in known:
+            cls["evolutions"].append({"tier": tier, "name": name, "level": None})
+    cls["evolutions"].sort(key=lambda e: e["tier"])
+    for i, e in enumerate(cls["evolutions"]):
+        # Classes de 2º tier começam na evolução 2, mas a imagem "t1" do GMO é a da primeira forma.
+        image = gmo["images"].get(e["tier"]) or (gmo["images"].get(1) if i == 0 else None)
+        if image:
+            e["image_url"] = image
+    cls["names"] = list(dict.fromkeys([*cls["names"], *[e["name"] for e in cls["evolutions"]]]))
 
 
 def rates_to_steps(rates: list[tuple[int, bool]]) -> list[dict]:
@@ -178,13 +244,41 @@ def build(raw_dir: Path) -> tuple[dict, list[str]]:
                 "max_level_points": 400, "max_level": 400, "evolutions": [], "names": list(dict.fromkeys([name, *ALIASES.get(class_id, [])])),
             })
 
+    gmo_dir = raw_dir / "gmo" / "guides"
+    gmo = {}
+    for class_id, key in GMO_KEYS.items():
+        path = gmo_dir / f"{key}.html"
+        if path.exists():
+            gmo[class_id] = parse_gmo_class(path.read_text(encoding="utf-8", errors="replace"))
+    if not gmo:
+        notes.append("guias de classe do GMO ausentes (python -m scrapers.gmo fetch): sem imagens nem classes novas")
+    for cls in current:
+        add_gmo_class_info(cls, gmo.get(cls["id"]))
+    for extra in NEW_CLASSES:
+        info = gmo.get(extra["id"])
+        if not info or not info["line"] or not info["points"]:
+            notes.append(f"{extra['id']}: guia do GMO ausente ou incompleto; classe não incluída")
+            continue
+        cls = {
+            "id": extra["id"], "name": extra["name"], "tier": 1, "unlock_level": None, "base": dict(extra["base"]),
+            # O GMO e os guias citam só "5 pontos por nível"; sem fonte para a mudança no Hero Status.
+            "points": [{"from_level": 2, "per_level": info["points"]}], "max_level_points": 400, "max_level": 1450,
+            "evolutions": [{"tier": t, "name": n, "level": None} for t, n in info["line"]],
+            "names": [extra["name"]],
+            "sources": [{"name": n, "url": u} for n, u in extra["sources"]],
+            "notes": [*extra["notes"], "Pontos por nível: 5 (guia do GMO); sem fonte para o bônus da quest Hero Status."],
+        }
+        add_gmo_class_info(cls, info)
+        current.append(cls)
+
     data = {
         "version": 1,
         "generated_at": utc_now(),
         "stats": list(STATS),
         "rulesets": [  # da mais nova para a mais antiga
-            {"id": "global-atual", "name": "Global atual", "description": "Regras do jogo atual, segundo os guias de classe do Fanz.",
-             "publish": False, "credit": FANZ_CREDIT, "classes": current},
+            {"id": "global-atual", "name": "Global atual", "description": "Regras do jogo atual, segundo os guias de classe do Fanz; Illusion Knight, Alchemist e Crusader (que o Fanz não cobre) e a 5ª classe, segundo os guias do Global MU Online e as fontes citadas em cada classe.",
+             "publish": False, "credit": FANZ_CREDIT + " Imagens, 5ª classe e Illusion Knight, Alchemist e Crusader: guias do Global MU Online e guias citados em cada classe.",
+             "classes": current},
             {"id": "classico", "name": "Clássico (emulador MuEmu)", "description": "Regras de um servidor clássico, segundo o emulador MuEmu (5 pontos por nível; 7 para MG e DL).",
              "publish": True, "credit": MUEMU_CREDIT, "classes": classic},
         ],

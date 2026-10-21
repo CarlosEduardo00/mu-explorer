@@ -175,6 +175,13 @@
         "null"
       ],
       "minimum": 1
+    },
+    "minimap_url": {
+      "description": "Minimapa do jogo (Fanz: 1024×1024, 4 px por casa; eixo horizontal = y, vertical = x).",
+      "type": [
+        "string",
+        "null"
+      ]
     }
   }
 }

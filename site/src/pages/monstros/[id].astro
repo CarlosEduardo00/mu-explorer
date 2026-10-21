@@ -1,6 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { monsters, spawnsByMonster, mapById, dropsByMonster, itemById, fmt } from "../../lib/data";
+import { monsters, spawnsByMonster, mapById, dropsByMonster, itemById, spotRefsByMonster, fmt } from "../../lib/data";
 
 export function getStaticPaths() {
   return monsters.map((monster) => ({ params: { id: monster.id }, props: { monster } }));
@@ -19,7 +19,7 @@ const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one :
 <Base title={monster.name} description={`${monster.name}: atributos, onde aparece e drops em MU Online.`}>
   <p class="crumbs"><a href="/monstros/">Monstros</a></p>
   <h1>{monster.name}</h1>
-  {monster.image_url && <img class="mob-img" src={monster.image_url} alt={monster.name} loading="lazy" referrerpolicy="no-referrer" />}
+  {monster.image_url && <img class="hero-img" src={monster.image_url} alt={monster.name} loading="lazy" referrerpolicy="no-referrer" />}
   <p class="muted">{monster.number != null && <>Nº {monster.number} · </>}{monster.difficulty != null && <>dificuldade {monster.difficulty}</>}</p>
 
   <h2>Atributos</h2>
@@ -40,19 +40,22 @@ const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one :
         {mapIds.map((id) => {
           const map = mapById.get(id);
           const n = spots(id).length;
-          return <li>{map ? <a href={`/mapas/${id}/`}>{map.name}</a> : id}{n > 0 && <span class="muted"> · {plural(n, "ponto de spawn", "pontos de spawn")}</span>}</li>;
+          const refs = (spotRefsByMonster.get(monster.id) ?? []).filter((r) => r.map_id === id);
+          return <li>{map ? <a href={`/mapas/${id}/`}>{map.name}</a> : id}{n > 0 && <span class="muted"> · {plural(n, "ponto de spawn", "pontos de spawn")}</span>}
+            {refs.length > 0 && <span class="muted"> · spots {refs.map((r, i) => <>{i > 0 && ", "}<a href={`/mapas/${id}/#spot-${r.n}`}>{r.n}</a></>)}</span>}</li>;
         })}
       </ul>
     </>
   )}
 
+  {tables.length > 0 && <span id="drops"></span>}
   {tables.map((table) => (
     <>
       <h2>{table}</h2>
       <ul class="tags">
         {drops.filter((d) => (d.table ?? d.kind) === table).map((d) => {
           const item = itemById.get(d.item_id);
-          return <li>{item ? <a href={`/itens/${item.id}/`}>{d.item_name}</a> : d.item_name}</li>;
+          return <li>{item ? <a href={`/itens/${item.id}/`} class="name-cell">{item.image_url && <img class="thumb" src={item.image_url} alt="" loading="lazy" referrerpolicy="no-referrer" />}{d.item_name}</a> : d.item_name}</li>;
         })}
       </ul>
     </>
@@ -61,6 +64,3 @@ const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one :
   <p class="muted">Fonte: <a href={monster.source_url}>{monster.source}</a></p>
 </Base>
 
-<style>
-  .mob-img { display: block; max-width: 10rem; max-height: 10rem; object-fit: contain; margin: .5rem 0; background: #12131a; border-radius: .5rem; padding: .4rem; }
-</style>

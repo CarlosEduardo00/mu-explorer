@@ -4,6 +4,7 @@ import FilterList from "../../components/FilterList.astro";
 import { npcs } from "../../lib/data";
 const rows = npcs.map((n) => ({
   href: `/npcs/${n.id}/`,
+  image: n.image_url,
   cells: [n.name, n.type, n.locations.map((l) => l.map_name).join(", ") || null],
   search: `${n.name} ${n.type ?? ""} ${n.locations.map((l) => l.map_name).join(" ")}`.toLowerCase(),
 }));

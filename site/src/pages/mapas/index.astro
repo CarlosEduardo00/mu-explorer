@@ -4,6 +4,7 @@ import FilterList from "../../components/FilterList.astro";
 import { maps, spawnsByMap } from "../../lib/data";
 const rows = maps.map((m) => ({
   href: `/mapas/${m.id}/`,
+  image: m.image_url,
   cells: [m.name, (new Set((spawnsByMap.get(m.id) ?? []).map((s) => s.monster_id)).size || m.monsters.length).toLocaleString("pt-BR")],
   search: m.name.toLowerCase(),
 }));

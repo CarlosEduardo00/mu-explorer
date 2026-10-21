@@ -86,7 +86,8 @@ schema/            JSON Schema (draft 2020-12) de cada entidade publicada
 data/raw/          HTML bruto + .meta.json por página (fora do git)
 data/processed/    JSON normalizado por fonte + poc_report.md
 tests/             testes; tests/fixtures/<fonte>/ guarda HTML real usado como fixture
-site/src/          Astro: layouts/Base, components/FilterList, lib/data.ts (leitura dos JSON), lib/planner.ts (lógica
+site/src/          Astro: layouts/Base, components/FilterList, components/MapExplorer (mapa interativo: spots sobre o
+                   minimapa, painel com monstros, atributos e drops, camadas de hot spots e portais), lib/data.ts (leitura dos JSON), lib/planner.ts (lógica
                    pura do planner + testes), pages/ (início, itens, monstros, mapas, npcs: lista com filtro +
                    página por registro; planner/; data/ = JSON estático para o planner; api/ = API estática)
                    lib/api.ts + lib/sqlite.ts: manifesto, registros com relações e SQLite (node:sqlite)
@@ -231,7 +232,9 @@ o que foi mapeado antes do bloqueio.
 - Sem licença aberta: como o Fanz, **só build local** (entra no `combined`). No cruzamento: preenche imagens,
   traz monstros/mapas novos, e nos mapas que cobre os spawns dele substituem os do MuEmu (S21, sem duplicar
   spots). Grafias diferentes viram o id do Fanz (`GMO_MAP_ALIASES`); andares numerados ganham `parent_id`.
-- Classes, builds e drops (`/drop/location`) do GMO ainda não são extraídos.
+- Guias de classe (`/guides/<classe>/`): linha de evolução até a 5ª classe, pontos por nível, imagens `tN` e requisitos
+  de skill; usados pelo `scrapers.planner build`. A zona de spawn traz a quantidade como "N here" ou "N per spot".
+- Drops (`/drop/location`) do GMO ainda não são extraídos.
 - muonline.fandom.com responde com desafio anti-bot da Cloudflare: não coletamos.
 
 ### 5. Outras (referência, não prioritárias)
@@ -264,13 +267,19 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
   **não são copiadas**.
 - `builds` (`data/curated/builds.json`, schema `builds.schema.json`): builds prontas por classe, curadoria nossa em
   regras (fases por nível; metas: número, `gear` = requisito do equipamento escolhido, ou `{per_level}`; resto
-  dividido por `split`). Pisos de skill são fatos do jogo; cada build cita referências. 29 builds, 13 classes.
-- `map`: também `level_required`, `level_recommended_min/max` (Quick Facts do Fanz; nível do warp no GMO).
+  dividido por `split`). Pisos de skill são fatos do jogo; cada build cita referências. 35 builds, 16 classes. Os pontos
+  de atributo acabam no nível 400: degraus finais começam antes (250/300) para fechar até lá (há teste).
+- `map`: também `level_required`, `level_recommended_min/max` (Quick Facts do Fanz; nível do warp no GMO) e
+  `minimap_url` (Fanz `graphics/<Mapa>/map.jpg`, 1024×1024 = 4 px por casa; **horizontal = y, vertical = x**, conferido
+  com os NPCs de Devias/Lorencia). Os pontos dos Hot Spots do Fanz ficam no php bloqueado: não coletamos.
 - `map_marker` (`map_markers.json`): map_id, kind (spot/hot_spot/gate/warp/npc/shop/quest/event), name, x, y.
 - `planner` (`data/curated/planner.json`, schema `planner.schema.json`): `rulesets` da season mais nova
   para a mais antiga; cada um com `classes` (base de atributos, pontos por nível em faixas, nível de
   desbloqueio, evolução, nomes). Hoje: `global-atual` (guias e Stat Planner do Fanz; 13 classes) e
   `classico` (MuEmu; 11 classes). `publish: false` = regras tiradas do Fanz, só em build local.
+  `global-atual` tem 16 classes: as 13 dos guias do Fanz + Illusion Knight, Alchemist e Crusader (o Fanz não tem
+  guia delas: base de guias citados em `sources`, evolução e pontos dos guias de classe do GMO). Do GMO vêm também a
+  5ª classe (S21, nível null) e `image_url` da classe e de cada evolução.
 
 **Planner de builds (`/planner/`):** escolhe regras, classe (Gun Crusher, Slayer e Grow Lancer primeiro),
 nível e pontos extras; distribui pontos de atributo; escolhe equipamento (itens de `planner-items.json`, por

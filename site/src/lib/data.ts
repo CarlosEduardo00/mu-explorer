@@ -31,6 +31,7 @@ export interface GameMap {
   valued_drops: Record<string, string[]>; monsters: string[]; special_monsters: string[]; bosses: string[];
   npcs: string[]; connections: string[]; notes: string[]; image_url: string | null; source: string; source_url: string;
   level_required?: number | null; level_recommended_min?: number | null; level_recommended_max?: number | null;
+  minimap_url?: string | null;
 }
 export interface Npc {
   id: string; name: string; type: string | null; description: string | null; image_url: string | null;
@@ -91,6 +92,19 @@ export const dropsByMonster = groupBy(drops, (d) => d.monster_id);
 export const dropsByItem = groupBy(drops, (d) => d.item_id);
 export const spotsByMap = groupBy(farmSpots, (s) => s.map_id);
 export const markersByMap = groupBy(mapMarkers, (m) => m.map_id);
+
+/** Spots onde o monstro aparece: mapa e número do spot (o mesmo da página do mapa, /mapas/<id>/#spot-<n>). */
+export interface SpotRef { map_id: string; map_name: string; n: number; count: number; level_min: number | null; level_max: number | null }
+export const spotRefsByMonster = new Map<string, SpotRef[]>();
+for (const [mapId, list] of spotsByMap) {
+  list.forEach((s, i) => {
+    for (const m of s.monsters) {
+      const refs = spotRefsByMonster.get(m.monster_id) ?? [];
+      refs.push({ map_id: mapId, map_name: s.map_name, n: i + 1, count: m.count, level_min: s.level_min, level_max: s.level_max });
+      spotRefsByMonster.set(m.monster_id, refs);
+    }
+  });
+}
 
 function groupBy<T>(rows: T[], key: (row: T) => string): Map<string, T[]> {
   const out = new Map<string, T[]>();

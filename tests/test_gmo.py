@@ -4,7 +4,7 @@ from pathlib import Path
 
 from scrapers.common.model import validate
 from scrapers.gmo.cli import guide_key, guide_urls
-from scrapers.gmo.parse import merge_monsters, parse_map_guide
+from scrapers.gmo.parse import merge_monsters, parse_map_guide, zone_count
 
 FIX = Path(__file__).parent / "fixtures" / "gmo"
 
@@ -58,3 +58,9 @@ def test_mesmo_monstro_em_varios_mapas_vira_um_registro():
     a = {"id": "x", "image_url": None, "number": None, "level": 1, "hp": 1, "respawn_seconds": None}
     b = {"id": "x", "image_url": "u", "number": 7, "level": 2, "hp": 2, "respawn_seconds": 5}
     assert merge_monsters([a, b]) == [{"id": "x", "image_url": "u", "number": 7, "level": 1, "hp": 1, "respawn_seconds": 5}]
+
+
+def test_quantidade_da_zona_nas_duas_grafias():
+    assert zone_count("Lv 66 · 14,000 HP · 420–460 dmg · 9 here") == 9
+    assert zone_count("Lv 2 · 60 HP · 8–14 dmg · 30 per spot") == 30
+    assert zone_count("Lv 2 · 60 HP") is None

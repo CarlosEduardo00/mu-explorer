@@ -141,3 +141,22 @@ test("Comando só recebe pontos em quem tem Comando", () => {
   assert.equal(r.added.cmd, 0);
   assert.equal(resolveTarget({ per_level: 1.5 }, 101, {}, "agi"), 151);
 });
+
+test("builds reais: metas fixas da última fase cumpridas no nível máximo de pontos, sem pontos parados", async () => {
+  const { readFileSync } = await import("node:fs");
+  const root = new URL("../../../", import.meta.url);
+  const { rulesets } = JSON.parse(readFileSync(new URL("data/curated/planner.json", root), "utf-8"));
+  const { builds } = JSON.parse(readFileSync(new URL("data/curated/builds.json", root), "utf-8"));
+  for (const ruleset of rulesets) for (const b of builds as BuildTemplate[]) {
+    const cls = ruleset.classes.find((c: ClassRules) => c.id === b.class_id);
+    if (!cls) continue;
+    const r = simulateBuild(cls, b, cls.max_level_points);
+    const total = r.curve.at(-1)!.total;
+    assert.equal(r.unspent, 0, `${ruleset.id}/${b.id}: pontos parados`);
+    const last = b.phases[b.phases.length - 1];
+    for (const rule of last.fill) {
+      if (typeof rule.to !== "number" || (rule.stat === "cmd" && !cls.base.cmd)) continue;
+      assert.ok(total[rule.stat] >= rule.to, `${ruleset.id}/${b.id}: ${rule.stat} ${total[rule.stat]} < ${rule.to}`);
+    }
+  }
+});
