@@ -1,0 +1,378 @@
+[
+ {
+  "id": "lorencia",
+  "name": "Lorencia",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "noria",
+  "name": "Noria",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "devias",
+  "name": "Devias",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "elbeland",
+  "name": "Elbeland",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "kanturu-1",
+  "name": "Kanturu 1",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "arena",
+  "name": "Arena",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "devil-square",
+  "name": "Devil Square",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "devil-square-2",
+  "name": "Devil Square 2",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "aida",
+  "name": "Aida",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "illusion-temple-1",
+  "name": "Illusion Temple 1",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "illusion-temple-2",
+  "name": "Illusion Temple 2",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "illusion-temple-3",
+  "name": "Illusion Temple 3",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "illusion-temple-4",
+  "name": "Illusion Temple 4",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "illusion-temple-5",
+  "name": "Illusion Temple 5",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "illusion-temple-6",
+  "name": "Illusion Temple 6",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "atlans",
+  "name": "Atlans",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "raklion",
+  "name": "Raklion",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "vulcanus",
+  "name": "Vulcanus",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "acheron",
+  "name": "Acheron",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "dungeon",
+  "name": "Dungeon",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "lost-tower",
+  "name": "Lost Tower",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "tarkan",
+  "name": "Tarkan",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "icarus",
+  "name": "Icarus",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "kalima-1",
+  "name": "Kalima 1",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "kalima-2",
+  "name": "Kalima 2",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "kalima-3",
+  "name": "Kalima 3",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "kalima-4",
+  "name": "Kalima 4",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "kalima-5",
+  "name": "Kalima 5",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "kalima-6",
+  "name": "Kalima 6",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "kalima-7",
+  "name": "Kalima 7",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "kanturu-2",
+  "name": "Kanturu 2",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "selupan",
+  "name": "Selupan",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "blood-castle-1",
+  "name": "Blood Castle 1",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "blood-castle-2",
+  "name": "Blood Castle 2",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "blood-castle-3",
+  "name": "Blood Castle 3",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "blood-castle-4",
+  "name": "Blood Castle 4",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "blood-castle-5",
+  "name": "Blood Castle 5",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "blood-castle-6",
+  "name": "Blood Castle 6",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "blood-castle-7",
+  "name": "Blood Castle 7",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "blood-castle-8",
+  "name": "Blood Castle 8",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "chaos-castle-1",
+  "name": "Chaos Castle 1",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "chaos-castle-2",
+  "name": "Chaos Castle 2",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "chaos-castle-3",
+  "name": "Chaos Castle 3",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "chaos-castle-4",
+  "name": "Chaos Castle 4",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "chaos-castle-5",
+  "name": "Chaos Castle 5",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "chaos-castle-6",
+  "name": "Chaos Castle 6",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ },
+ {
+  "id": "chaos-castle-7",
+  "name": "Chaos Castle 7",
+  "season": null,
+  "source": "muemu",
+  "source_url": "https://github.com/deep-thought-42/MuEmu/blob/659dccb962bea6e071d6241ef439cce61a7e3bd1/Data/Monsters/MonsterSetBase.xml",
+  "scraped_at": "2026-10-21T13:25:11Z"
+ }
+]
