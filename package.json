@@ -1,0 +1,13 @@
+{
+  "name": "mu-explorer",
+  "private": true,
+  "description": "Site do MU Explorer (Cloudflare Workers com Static Assets). Os scrapers ficam em Python, em scrapers/.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "check": "wrangler deploy --dry-run"
+  },
+  "devDependencies": {
+    "wrangler": "4.145.0"
+  }
+}

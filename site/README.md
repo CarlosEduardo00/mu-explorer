@@ -1,5 +1,16 @@
 # site/
 
-Frontend do MU Explorer (páginas de itens, monstros, spots e builds). Ainda não iniciado:
-a stack é uma decisão em aberto (ver `CLAUDE.md`). Vai consumir o JSON publicado a partir
-de `data/processed/`.
+Site do MU Explorer, publicado no **Cloudflare Workers com Static Assets** (`wrangler.jsonc` na raiz).
+
+- `public/`: tudo o que é publicado. `index.html` é uma página "em construção"; `404.html` é usada
+  para qualquer rota inexistente; `_headers` define cabeçalhos HTTP (não é publicado como arquivo).
+- `public/data/` (ainda não existe): JSON gerado a partir de `data/processed/`, servido como API
+  estática em `/data/...`, com CORS liberado e cache de 1 h.
+
+```bash
+npm install && npm run dev     # http://localhost:8787
+npm run check                  # valida a configuração sem publicar
+```
+
+O deploy de produção acontece pelo Git (Workers Builds): cada push na branch de produção publica.
+A stack do frontend ainda é decisão em aberto (ver `CLAUDE.md`).

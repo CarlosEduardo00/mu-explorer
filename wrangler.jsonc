@@ -1,0 +1,11 @@
+// Cloudflare Workers com Static Assets: publica o conteúdo de site/public.
+// Sem "main": por enquanto é só site estático, sem código no servidor.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mu-explorer",
+  "compatibility_date": "2026-09-30",
+  "assets": {
+    "directory": "./site/public",
+    "not_found_handling": "404-page"
+  }
+}

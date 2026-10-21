@@ -23,7 +23,8 @@ python -m scrapers.fanz fixtures --golden           # vira fixture de teste (rev
 - [x] Prova de conceito rodada no site real: 20 itens + 20 monstros, 0 erros de schema.
       Resultado em `data/processed/fanz/` e `poc_report.md`; fixtures em `tests/fixtures/fanz/`.
 - [ ] Coleta completa do Fanz (3.090 itens + ~290 monstros, ~55 min a 1 req/s), mapas e NPCs.
-- [ ] muonline.us, validação cruzada, publicação, site.
+- [x] Hosting no Cloudflare Workers (Static Assets) com página inicial "em construção" (`site/public/`).
+- [ ] muonline.us, validação cruzada, publicação dos dados, site.
 
 ## Créditos
 
