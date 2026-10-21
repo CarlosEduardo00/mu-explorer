@@ -1,0 +1,19 @@
+---
+import Base from "../../layouts/Base.astro";
+import FilterList from "../../components/FilterList.astro";
+import { monsters, fmt } from "../../lib/data";
+const rows = monsters.map((m) => ({
+  href: `/monstros/${m.id}/`,
+  cells: [m.name, fmt(m.level), fmt(m.hp), m.atk_min != null ? `${fmt(m.atk_min)} ~ ${fmt(m.atk_max)}` : "—", fmt(m.def)],
+  search: m.name.toLowerCase(),
+}));
+---
+<Base title="Monstros">
+  <h1>Monstros</h1>
+  <FilterList
+    columns={[{ label: "Nome" }, { label: "Nível", num: true }, { label: "HP", num: true }, { label: "Dano", num: true }, { label: "DEF", num: true }]}
+    rows={rows}
+    placeholder="Filtrar por nome"
+    noun="monstros"
+  />
+</Base>

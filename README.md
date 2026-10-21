@@ -29,7 +29,7 @@ python -m scrapers.fanz fixtures --golden           # vira fixture de teste (rev
       Resultado em `data/processed/fanz/` e `poc_report.md`; fixtures em `tests/fixtures/fanz/`.
 - [x] Coleta completa do Fanz: 3.074 itens, 291 monstros, 23.759 drops (QA: 0 erros). Mapas (36 + variantes) e NPCs (57, com 545 itens à venda) também.
 - [x] MuEmu + cruzamento: grupo/índice em 1.863 itens, respawn em 158 monstros, 1.717 spots com coordenadas.
-- [x] Hosting no Cloudflare Workers (Static Assets) com página inicial "em construção" (`site/public/`).
+- [x] Hosting no Cloudflare Workers (Static Assets) e site em Astro com páginas de itens, monstros, mapas e NPCs (`site/`); hml/prod usam só os dados do MuEmu.
 - [ ] muonline.us, validação cruzada, publicação dos dados, site.
 
 ## Créditos

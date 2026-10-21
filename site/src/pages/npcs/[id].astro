@@ -1,0 +1,41 @@
+---
+import Base from "../../layouts/Base.astro";
+import { npcs, itemById, fmt } from "../../lib/data";
+
+export function getStaticPaths() {
+  return npcs.map((npc) => ({ params: { id: npc.id }, props: { npc } }));
+}
+const { npc } = Astro.props;
+const categories = [...new Set(npc.sells.map((s) => s.category ?? "Itens"))];
+---
+<Base title={npc.name} description={npc.description ?? `${npc.name}: localização e itens à venda em MU Online.`}>
+  <p class="crumbs"><a href="/npcs/">NPCs</a>{npc.type && <> › {npc.type}</>}</p>
+  <h1>{npc.name}</h1>
+  {npc.description && <p class="lead">{npc.description}</p>}
+  {npc.locations.length > 0 && (
+    <>
+      <h2>Onde fica</h2>
+      <ul>{npc.locations.map((l) => <li><a href={`/mapas/${l.map_id}/`}>{l.map_name}</a>{l.x != null && <span class="muted"> · ({l.x}, {l.y})</span>}</li>)}</ul>
+    </>
+  )}
+  {categories.map((category) => (
+    <>
+      <h2>À venda: {category}</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Item</th><th>Detalhes</th><th class="num">Preço (Zen)</th></tr></thead>
+          <tbody>
+            {npc.sells.filter((s) => (s.category ?? "Itens") === category).map((s) => (
+              <tr>
+                <td>{itemById.has(s.item_id) ? <a href={`/itens/${s.item_id}/`}>{s.item_name}</a> : s.item_name}</td>
+                <td>{s.details ?? "—"}</td>
+                <td class="num">{fmt(s.price_zen)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  ))}
+  <p class="muted">Fonte: <a href={npc.source_url}>{npc.source}</a></p>
+</Base>

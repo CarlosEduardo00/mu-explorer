@@ -14,7 +14,7 @@ convenções estão no [`CLAUDE.md`](CLAUDE.md): leia antes de começar. O Claud
    git checkout mu-explorer-dev
    python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
    pip install -e ".[dev]"
-   npm install            # só se for mexer no site (Node 22)
+   npm install            # só se for mexer no site (Node 22); `npm run dev` abre em http://localhost:4321
    pytest                 # deve passar tudo, sem rede
    ```
 3. Os JSON já processados estão em `data/processed/` (no git). O HTML bruto (`data/raw/`, ~180 MB) não vai

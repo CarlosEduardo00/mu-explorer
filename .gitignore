@@ -26,3 +26,7 @@ data/raw/*
 node_modules/
 .wrangler/
 .dev.vars*
+
+# Astro
+site/dist/
+.astro/
