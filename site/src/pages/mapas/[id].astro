@@ -1,7 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import SpotMap from "../../components/SpotMap.astro";
-import { maps, mapById, monsterById, npcById, spawnsByMap, spotsByMap, fmt } from "../../lib/data";
+import { maps, mapById, monsterById, npcById, spawnsByMap, spotsByMap, markersByMap, fmt } from "../../lib/data";
 
 export function getStaticPaths() {
   return maps.map((map) => ({ params: { id: map.id }, props: { map } }));
@@ -16,6 +16,7 @@ const spotsOf = (id: string) => spawnList.filter((s) => s.monster_id === id);
 const connections = map.connections.map((id) => mapById.get(id)).filter((m) => m !== undefined);
 const parent = map.parent_id ? mapById.get(map.parent_id) : undefined;
 const spots = spotsByMap.get(map.id) ?? [];
+const markers = markersByMap.get(map.id) ?? [];
 ---
 <Base title={map.name} description={map.description ?? `${map.name}: monstros e NPCs em MU Online.`}>
   <p class="crumbs"><a href="/mapas/">Mapas</a>{parent && <> › <a href={`/mapas/${parent.id}/`}>{parent.name}</a></>}</p>
@@ -47,7 +48,7 @@ const spots = spotsByMap.get(map.id) ?? [];
   {spots.length > 0 && (
     <>
       <h2 id="spots">Spots de farm</h2>
-      <SpotMap spots={spots} label={`Spots de farm em ${map.name}`} />
+      <SpotMap spots={spots} markers={markers} label={`Spots de farm em ${map.name}`} />
       <div class="table-wrap">
         <table>
           <thead><tr><th class="num">#</th><th>Coordenadas</th><th class="num">Nível</th><th>Monstros</th></tr></thead>
