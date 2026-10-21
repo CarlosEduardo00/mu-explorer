@@ -244,6 +244,10 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 - Builds **não existem como dado** nas fontes: serão curadoria nossa (referência: guias por
   classe e Stat Planner do Fanz). As distribuições de pontos sugeridas pelo Fanz são curadoria do autor e
   **não são copiadas**.
+- `builds` (`data/curated/builds.json`, schema `builds.schema.json`): builds prontas por classe, curadoria nossa em
+  regras (fases por nível; metas: número, `gear` = requisito do equipamento escolhido, ou `{per_level}`; resto
+  dividido por `split`). Pisos de skill são fatos do jogo; cada build cita referências. 29 builds, 13 classes.
+- `map`: também `level_required`, `level_recommended_min/max` (Quick Facts do Fanz).
 - `planner` (`data/curated/planner.json`, schema `planner.schema.json`): `rulesets` da season mais nova
   para a mais antiga; cada um com `classes` (base de atributos, pontos por nível em faixas, nível de
   desbloqueio, evolução, nomes). Hoje: `global-atual` (guias e Stat Planner do Fanz; 13 classes) e
@@ -253,7 +257,8 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 nível e pontos extras; distribui pontos de atributo; escolhe equipamento (itens de `planner-items.json`, por
 classe e slot) e confere requisitos; o estado vai no endereço (`#...`) para compartilhar a build. Pontos por
 nível = soma das faixas de cada nível de 2 até `max_level_points` (400); tier 1: 5, e 6 a partir do nível 220
-(quest Hero Status); tier 2 (MG, DL, RF, GL): 7. Requisitos dos itens são os do item +0. **Ainda não
+(quest Hero Status); tier 2 (MG, DL, RF, GL): 7. Requisitos dos itens são os do item +0. Com uma build pronta,
+o planner simula nível a nível (`simulateBuild`) e mostra a curva de atributos. **Ainda não
 calcula** HP/Mana/AG/SD nem dano: as fórmulas dos guias do Fanz têm lacunas ("+? AG", "every ? Agility")
 justamente em Gun Crusher e Slayer; precisam de outra fonte ou de conferência no jogo.
 

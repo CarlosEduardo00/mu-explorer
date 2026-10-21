@@ -134,7 +134,10 @@
     "source": "fanz",
     "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Kalima.php",
     "scraped_at": "2026-10-21T14:10:42Z",
-    "page_updated_at": null
+    "page_updated_at": null,
+    "level_required": null,
+    "level_recommended_min": 40,
+    "level_recommended_max": 450
   },
   "related": {}
 }

@@ -96,7 +96,10 @@
     "source": "fanz",
     "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Lorencia.php",
     "scraped_at": "2026-10-21T14:10:48Z",
-    "page_updated_at": null
+    "page_updated_at": null,
+    "level_required": 10,
+    "level_recommended_min": 1,
+    "level_recommended_max": 19
   },
   "related": {}
 }

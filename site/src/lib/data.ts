@@ -30,6 +30,7 @@ export interface GameMap {
   id: string; name: string; parent_id: string | null; description: string | null; quick_facts: string[];
   valued_drops: Record<string, string[]>; monsters: string[]; special_monsters: string[]; bosses: string[];
   npcs: string[]; connections: string[]; notes: string[]; image_url: string | null; source: string; source_url: string;
+  level_required?: number | null; level_recommended_min?: number | null; level_recommended_max?: number | null;
 }
 export interface Npc {
   id: string; name: string; type: string | null; description: string | null; image_url: string | null;

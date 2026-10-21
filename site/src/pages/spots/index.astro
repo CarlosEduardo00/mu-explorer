@@ -1,6 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { farmSpots, sources, fmt } from "../../lib/data";
+import { farmSpots, sources, mapById, fmt } from "../../lib/data";
 
 // Mapas em ordem do spot de menor nível; dentro do mapa, spots por nível.
 const byMap = new Map<string, typeof farmSpots>();
@@ -11,7 +11,12 @@ for (const s of [...farmSpots].sort((a, b) => (a.level_min ?? 0) - (b.level_min 
 }
 const levelText = (s: (typeof farmSpots)[number]) =>
   s.level_min == null ? "—" : s.level_min === s.level_max ? fmt(s.level_min) : `${fmt(s.level_min)}–${fmt(s.level_max)}`;
-const source = sources[0];
+const source = sources.find((s) => s.id === "muemu") ?? sources[0];
+const recommended = (mapId: string) => {
+  const m = mapById.get(mapId);
+  if (!m || m.level_recommended_min == null) return null;
+  return `recomendado nv ${fmt(m.level_recommended_min)}${m.level_recommended_max != null ? `–${fmt(m.level_recommended_max)}` : "+"}`;
+};
 ---
 <Base title="Spots de farm" description="Onde upar em MU Online: grupos de monstros por mapa, com coordenadas e faixa de nível.">
   <h1>Spots de farm</h1>
@@ -30,7 +35,7 @@ const source = sources[0];
 
   {[...byMap.entries()].map(([mapId, spots]) => (
     <section class="spot-map-section" data-map>
-      <h2><a href={`/mapas/${mapId}/#spots`}>{spots[0].map_name}</a></h2>
+      <h2><a href={`/mapas/${mapId}/#spots`}>{spots[0].map_name}</a>{recommended(mapId) && <span class="rec"> · {recommended(mapId)}</span>}</h2>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Spot</th><th>Coordenadas</th><th class="num">Nível</th><th>Monstros</th></tr></thead>
@@ -55,6 +60,7 @@ const source = sources[0];
   .spot-filter label { display: flex; flex-direction: column; gap: .2rem; font-size: .85rem; color: var(--muted); }
   .spot-filter input { font: inherit; width: 7rem; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: .4rem; padding: .4rem .6rem; }
   td .muted { font-size: .8rem; }
+  .rec { font-size: .85rem; font-weight: 400; color: var(--muted); }
 </style>
 
 <script>

@@ -270,3 +270,13 @@ def test_variante_de_mapa_ganha_mapa_pai_e_mapa_lista_monstros():
     assert dataset.schema_errors == []
     # Aegis já está em kalima-1 pela página do monstro: a página de Kalima não duplica o spawn.
     assert [(s["monster_id"], s["map_id"]) for s in dataset.spawns] == [("aegis", "kalima-1")]
+
+
+def test_niveis_do_mapa_nos_quick_facts():
+    from scrapers.fanz.parse_map import map_levels
+    assert map_levels(["Requires character level 300 to enter.", "Recommended for characters level 300 ~ 440."]) == {
+        "level_required": 300, "level_recommended_min": 300, "level_recommended_max": 440}
+    assert map_levels(["Requires character level 1,000 to warp.", "Recommended for characters level 980 ~ ?."]) == {
+        "level_required": None, "level_recommended_min": 980, "level_recommended_max": None}
+    assert map_levels(["Recommended for characters less than level 20."])["level_recommended_max"] == 19
+    assert map_levels([]) == {"level_required": None, "level_recommended_min": None, "level_recommended_max": None}
