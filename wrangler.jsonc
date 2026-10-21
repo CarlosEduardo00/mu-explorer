@@ -5,9 +5,9 @@
 //   prod -> Worker "mu-explorer"      branch main              `npx wrangler deploy --env prod`
 //   hml  -> Worker "mu-explorer-hml"  branch mu-explorer-dev   `npx wrangler deploy --env hml`
 // O bloco de fora (sem env) é o que `npm run dev` usa localmente.
-// Builds do Git (Workers Builds): em branches que não são de produção, o comando do painel deve ser
-// `npx wrangler versions upload --env prod` (no Worker mu-explorer) ou `--env hml` (no mu-explorer-hml);
-// sem --env o Wrangler avisa que há vários ambientes definidos.
+// Builds do Git (Workers Builds): cada Worker só builda a própria branch de produção (main -> mu-explorer,
+// mu-explorer-dev -> mu-explorer-hml). Os builds de branches que não são de produção (previews de PR) ficam
+// desligados no painel (Settings -> Build -> Branch control): PRs são testados no hml depois do merge.
 // workers_dev: true mantém o endereço <nome>.buiu.workers.dev ligado a cada deploy.
 {
   "$schema": "node_modules/wrangler/config-schema.json",

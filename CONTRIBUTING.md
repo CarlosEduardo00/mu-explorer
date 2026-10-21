@@ -39,6 +39,9 @@ feat/minha-coisa ──PR──▶ mu-explorer-dev ──PR (release)──▶ m
 5. De tempos em tempos, um PR de `mu-explorer-dev` para `main` leva tudo para produção
    (https://mu-explorer.buiu.workers.dev).
 
+PRs não ganham preview na Cloudflare: os builds de branches que não são de produção estão desligados nos dois
+Workers. Para ver o site de um PR antes do merge, rode `npm run dev` ou `npm run build && npm run preview`.
+
 Nunca faça commit direto na `main` nem na `mu-explorer-dev` (as regras de proteção bloqueiam).
 
 ## Como dividir o trabalho sem conflito
