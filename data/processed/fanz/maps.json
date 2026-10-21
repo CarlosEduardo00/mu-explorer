@@ -1,130 +1,43 @@
 [
-  {
-    "id": "acheron",
-    "name": "Acheron",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Acheron.php",
-    "scraped_at": "2026-10-21T12:04:32Z"
-  },
-  {
-    "id": "blood-castle-mini-game-1",
-    "name": "Blood Castle Mini-game 1",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Giant%20Ogre.php",
-    "scraped_at": "2026-10-21T12:04:27Z"
-  },
-  {
-    "id": "crimson-flame-s-icarus",
-    "name": "Crimson Flame's Icarus",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Crimson%20Flame's%20Icarus.php",
-    "scraped_at": "2026-10-21T12:04:22Z"
-  },
-  {
-    "id": "crywolf",
-    "name": "Crywolf",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Crywolf.php",
-    "scraped_at": "2026-10-21T12:04:20Z"
-  },
-  {
-    "id": "deep-dungeon",
-    "name": "Deep Dungeon",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Deep%20Dungeon.php",
-    "scraped_at": "2026-10-21T12:04:25Z"
-  },
-  {
-    "id": "dungeon",
-    "name": "Dungeon",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Dungeon.php",
-    "scraped_at": "2026-10-21T12:04:23Z"
-  },
-  {
-    "id": "ferea",
-    "name": "Ferea",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Ferea.php",
-    "scraped_at": "2026-10-21T12:04:31Z"
-  },
-  {
-    "id": "kalima",
-    "name": "Kalima",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Kalima.php",
-    "scraped_at": "2026-10-21T12:04:18Z"
-  },
-  {
-    "id": "kanturu-relics",
-    "name": "Kanturu Relics",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Kanturu%20Relics.php",
-    "scraped_at": "2026-10-21T12:04:29Z"
-  },
-  {
-    "id": "land-of-trials",
-    "name": "Land of Trials",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Land%20of%20Trials.php",
-    "scraped_at": "2026-10-21T12:04:26Z"
-  },
-  {
-    "id": "lost-tower",
-    "name": "Lost Tower",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Lost%20Tower.php",
-    "scraped_at": "2026-10-21T12:04:33Z"
-  },
-  {
-    "id": "nixies-lake",
-    "name": "Nixies Lake",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Nixies%20Lake.php",
-    "scraped_at": "2026-10-21T12:04:19Z"
-  },
-  {
-    "id": "raklion",
-    "name": "Raklion",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Raklion.php",
-    "scraped_at": "2026-10-21T12:04:30Z"
-  },
-  {
-    "id": "swamp-of-darkness",
-    "name": "Swamp of Darkness",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Swamp%20of%20Darkness.php",
-    "scraped_at": "2026-10-21T12:04:36Z"
-  },
-  {
-    "id": "swamp-of-peace",
-    "name": "Swamp of Peace",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Swamp%20of%20Peace.php",
-    "scraped_at": "2026-10-21T12:04:28Z"
-  },
-  {
-    "id": "vulcanus",
-    "name": "Vulcanus",
-    "season": null,
-    "source": "fanz",
-    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Vulcanus.php",
-    "scraped_at": "2026-10-21T12:04:38Z"
-  }
+{"id":"acheron","name":"Acheron","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Acheron.php","scraped_at":"2026-10-21T13:44:37Z"},
+{"id":"aida","name":"Aida","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Aida.php","scraped_at":"2026-10-21T13:44:18Z"},
+{"id":"atlans","name":"Atlans","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Atlans.php","scraped_at":"2026-10-21T13:44:03Z"},
+{"id":"atlans-abyss","name":"Atlans (Abyss)","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Atlans%20(Abyss).php","scraped_at":"2026-10-21T13:44:04Z"},
+{"id":"balgass-resting-place","name":"Balgass' Resting Place","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/mobs/data/mobdb/Dark%20Elf%20(Trainee%20Soldier).php","scraped_at":"2026-10-21T13:44:52Z"},
+{"id":"barracks-of-balgass","name":"Barracks of Balgass","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/mobs/data/mobdb/Balram%20(Trainee%20Soldier).php","scraped_at":"2026-10-21T13:44:08Z"},
+{"id":"blood-castle-1","name":"Blood Castle 1","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/mobs/data/mobdb/Dark%20Skull%20Soldier.php","scraped_at":"2026-10-21T13:44:57Z"},
+{"id":"chaos-castle-1","name":"Chaos Castle 1","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/mobs/data/mobdb/Chaos%20Castle%20Archer.php","scraped_at":"2026-10-21T13:44:31Z"},
+{"id":"crimson-flame-s-icarus","name":"Crimson Flame's Icarus","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Crimson%20Flame's%20Icarus.php","scraped_at":"2026-10-21T13:44:39Z"},
+{"id":"crywolf","name":"Crywolf","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Crywolf.php","scraped_at":"2026-10-21T13:44:05Z"},
+{"id":"cubera-mine","name":"Cubera Mine","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Cubera%20Mine.php","scraped_at":"2026-10-21T13:44:58Z"},
+{"id":"deep-dungeon","name":"Deep Dungeon","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Deep%20Dungeon.php","scraped_at":"2026-10-21T13:45:17Z"},
+{"id":"devias","name":"Devias","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Devias.php","scraped_at":"2026-10-21T13:44:00Z"},
+{"id":"devil-square-mini-game","name":"Devil Square Mini-game","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/mobs/data/mobdb/Elite%20Orc.php","scraped_at":"2026-10-21T13:45:40Z"},
+{"id":"dungeon","name":"Dungeon","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Dungeon.php","scraped_at":"2026-10-21T13:44:34Z"},
+{"id":"elveland","name":"Elveland","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Elveland.php","scraped_at":"2026-10-21T13:44:29Z"},
+{"id":"ferea","name":"Ferea","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Ferea.php","scraped_at":"2026-10-21T13:45:42Z"},
+{"id":"icarus","name":"Icarus","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Icarus.php","scraped_at":"2026-10-21T13:43:56Z"},
+{"id":"kalima","name":"Kalima","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Kalima.php","scraped_at":"2026-10-21T13:46:50Z"},
+{"id":"kalima-1","name":"Kalima 1","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Kalima.php","scraped_at":"2026-10-21T12:04:18Z"},
+{"id":"kanturu-or-raklion","name":"Kanturu or Raklion","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/mobs/data/mobdb/Great%20Golden%20Dragon.php","scraped_at":"2026-10-21T13:46:25Z"},
+{"id":"kanturu-relics","name":"Kanturu Relics","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Kanturu%20Relics.php","scraped_at":"2026-10-21T13:46:17Z"},
+{"id":"kanturu-ruins","name":"Kanturu Ruins","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Kanturu%20Ruins.php","scraped_at":"2026-10-21T13:44:13Z"},
+{"id":"karutan","name":"Karutan","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Karutan.php","scraped_at":"2026-10-21T13:44:25Z"},
+{"id":"land-of-trials","name":"Land of Trials","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Land%20of%20Trials.php","scraped_at":"2026-10-21T13:44:01Z"},
+{"id":"lorencia","name":"Lorencia","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Lorencia.php","scraped_at":"2026-10-21T13:44:26Z"},
+{"id":"lorencia-dungeon","name":"Lorencia & Dungeon","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/mobs/data/mobdb/Skeleton.php","scraped_at":"2026-10-21T13:48:01Z"},
+{"id":"lorencia-noria-devias-or-lost-tower","name":"Lorencia, Noria, Devias, or Lost Tower","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/mobs/data/mobdb/Golden%20Derkon.php","scraped_at":"2026-10-21T13:46:05Z"},
+{"id":"lorencia-noria-elveland-devias","name":"Lorencia, Noria, Elveland, & Devias","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/mobs/data/mobdb/Moon%20Rabbit.php","scraped_at":"2026-10-21T13:47:08Z"},
+{"id":"lorencia-noria-or-devias","name":"Lorencia, Noria, or Devias","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/mobs/data/mobdb/Destructive%20Ogre%20Archer.php","scraped_at":"2026-10-21T13:45:30Z"},
+{"id":"lost-tower","name":"Lost Tower","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Lost%20Tower.php","scraped_at":"2026-10-21T13:44:09Z"},
+{"id":"lost-tower-icarus-kalima-5-adia","name":"Lost Tower, Icarus, Kalima 5, & Adia","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/mobs/data/mobdb/Pouch%20of%20Blessing.php","scraped_at":"2026-10-21T13:47:30Z"},
+{"id":"nixies-lake","name":"Nixies Lake","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Nixies%20Lake.php","scraped_at":"2026-10-21T12:04:19Z"},
+{"id":"noria","name":"Noria","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Noria.php","scraped_at":"2026-10-21T13:43:55Z"},
+{"id":"raklion","name":"Raklion","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Raklion.php","scraped_at":"2026-10-21T13:44:36Z"},
+{"id":"raklion-swamp-of-peace-kanturu-ruins-kalima-7","name":"Raklion, Swamp of Peace, Kanturu Ruins, & Kalima 7","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/mobs/data/mobdb/Fire%20Flame%20Ghost.php","scraped_at":"2026-10-21T13:45:47Z"},
+{"id":"scorched-canyon","name":"Scorched Canyon","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Scorched%20Canyon.php","scraped_at":"2026-10-21T13:47:47Z"},
+{"id":"swamp-of-darkness","name":"Swamp of Darkness","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Swamp%20of%20Darkness.php","scraped_at":"2026-10-21T13:46:01Z"},
+{"id":"swamp-of-peace","name":"Swamp of Peace","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Swamp%20of%20Peace.php","scraped_at":"2026-10-21T13:44:15Z"},
+{"id":"tarkan","name":"Tarkan","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Tarkan.php","scraped_at":"2026-10-21T13:44:10Z"},
+{"id":"vulcanus","name":"Vulcanus","season":null,"source":"fanz","source_url":"https://muonlinefanz.com/tools/maps/data/mapdb/Vulcanus.php","scraped_at":"2026-10-21T13:43:59Z"}
 ]

@@ -51,6 +51,22 @@ def cmd_fetch(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_fetch_linked(args: argparse.Namespace) -> int:
+    """Baixa itens que aparecem em drops mas não na listagem (rode depois de `parse`, e `parse` de novo)."""
+    page_urls = pipeline.linked_item_urls(args.data_dir / "processed" / pipeline.SOURCE)
+    log.info("%d itens linkados por drops e ausentes da coleta", len(page_urls))
+    session = pipeline.make_session(min_interval=args.interval)
+    try:
+        stats = pipeline.fetch_urls(session, RawStore(args.data_dir / "raw"), "item", page_urls, args.refresh)
+    except RobotsUnavailable as exc:
+        log.error("robots.txt indisponível, coleta abortada: %s", exc)
+        return 2
+    log.info("baixadas: %d · já em disco: %d · falhas: %d", stats.downloaded, stats.cached, len(stats.failed))
+    for line in stats.failed:
+        log.warning("falha: %s", line)
+    return 0
+
+
 def cmd_parse(args: argparse.Namespace) -> int:
     store = RawStore(args.data_dir / "raw")
     dataset = pipeline.parse_store(store)
@@ -107,8 +123,10 @@ def cmd_qa(args: argparse.Namespace) -> int:
     """Verificações da fase 3 sobre data/processed/fanz; grava qa_report.md e sai com 1 se houver erro."""
     out_dir = args.data_dir / "processed" / pipeline.SOURCE
     data = qa.load(out_dir)
-    expected, notes = pipeline.expected_counts(RawStore(args.data_dir / "raw"))
-    checks = qa.check_counts(data, expected) + qa.check_schema(data) + qa.check_required(data) + qa.check_integrity(data)
+    store = RawStore(args.data_dir / "raw")
+    expected, notes = pipeline.expected_counts(store)
+    checks = (qa.check_counts(data, expected) + qa.check_schema(data) + qa.check_required(data)
+              + qa.check_integrity(data, pipeline.dead_item_ids(store)))
     checks += [qa.Check("contagem esperada", "aviso", note) for note in notes]
     previous = _previous_snapshot(args, out_dir)
     if previous is not None:
@@ -145,6 +163,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("-v", "--verbose", action="store_true")
     sub = parser.add_subparsers(dest="command", required=True)
     _add_fetch_args(sub.add_parser("fetch", help="baixa o HTML bruto (sitemap -> amostra -> data/raw/fanz)"))
+    linked = sub.add_parser("fetch-linked", help="baixa itens dropados por monstros que não estão na listagem")
+    linked.add_argument("--refresh", action="store_true")
+    linked.add_argument("--interval", type=float, default=1.0)
     sub.add_parser("parse", help="HTML bruto -> data/processed/fanz/*.json + poc_report.md (offline)")
     _add_fetch_args(sub.add_parser("poc", help="fetch + parse"))
     fixtures = sub.add_parser("fixtures", help="copia o HTML bruto para tests/fixtures/fanz")
@@ -156,5 +177,6 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO,
                         format="%(levelname)s %(message)s", stream=sys.stderr)
-    commands = {"fetch": cmd_fetch, "parse": cmd_parse, "poc": cmd_poc, "fixtures": cmd_fixtures, "qa": cmd_qa}
+    commands = {"fetch": cmd_fetch, "fetch-linked": cmd_fetch_linked, "parse": cmd_parse, "poc": cmd_poc,
+                "fixtures": cmd_fixtures, "qa": cmd_qa}
     return commands[args.command](args)

@@ -14,6 +14,7 @@ from pathlib import Path
 
 from scrapers.common.http import utc_now
 from scrapers.common.model import REPO_ROOT, validate
+from scrapers.common.storage import dump_records
 from scrapers.muemu import parse, source
 
 log = logging.getLogger("scrapers.muemu")
@@ -76,7 +77,7 @@ def cmd_parse(args: argparse.Namespace) -> int:
     out = args.data_dir / "processed" / source.SOURCE_ID
     out.mkdir(parents=True, exist_ok=True)
     for entity, filename in OUTPUT.items():
-        (out / filename).write_text(json.dumps(data[entity], ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        dump_records(out / filename, data[entity])
     for warning in warnings:
         log.warning(warning)
     for error in errors[:20]:

@@ -80,3 +80,13 @@ def test_monstros_casam_por_nome_e_nivel_e_trazem_respawn_e_spots():
     assert spawns == {("dark-knight", "dungeon", None), ("dark-knight", "dungeon", "normal"),
                       ("aegis", "kalima-2", "normal")}  # spawn do rabbit (sem par) fica de fora
     assert [m["id"] for m in data["map"]] == ["dungeon", "kalima-2"]  # só mapas usados
+
+
+def test_par_com_nivel_muito_diferente_e_descartado():
+    fanz, muemu = dataset()
+    fanz["monster"].append(mon("death-king", "Death King", 67))
+    muemu["monster"].append(mon("death-king", "Death King", 30, number=55, respawn_seconds=10))
+    data, matches, diffs = combine(fanz, muemu)
+    assert "death-king" not in {m["fanz_id"] for m in matches["monster"]}
+    assert {m["id"]: m for m in data["monster"]}["death-king"]["respawn_seconds"] is None
+    assert "monstro death-king: par descartado, nível Fanz=67 MuEmu=30" in diffs

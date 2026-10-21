@@ -1,112 +1,169 @@
 # Relatório da coleta — MU Online Fanz
 
-Gerado em 2026-10-21T12:12:13Z.
+Gerado em 2026-10-21T13:56:27Z.
 
 ## Resumo
 
-- Páginas parseadas: 40 (falhas: 0)
-- Itens: 20 · Monstros: 20 · Mapas: 16 · Spawns: 20 · Drops: 1918
-- Drops que apontam para itens fora do conjunto coletado: 1904 (esperado na amostra; na coleta completa deve ser 0)
+- Páginas parseadas: 3365 (falhas: 52)
+- Itens: 3074 · Monstros: 291 · Mapas: 41 · Spawns: 290 · Drops: 23759
+- Drops que apontam para itens fora do conjunto coletado: 397 (esperado na amostra; na coleta completa deve ser 0)
 - Erros de schema: 0 · IDs duplicados: 0
 
 ## Campos não extraídos
 
-- Itens: `category`, `requirements.vitality`, `requirements.command`, `durability`, `page_updated_at`
-- Monstros: `respawn_seconds`, `respawn_raw`
+- Itens: `category`, `durability`, `page_updated_at`
+- Monstros: `number`
 
 ## Preenchimento por campo
 
-### Itens (20)
+### Itens (3074)
 
 | campo | preenchido | % | obs. |
 |---|---:|---:|---|
-| `id` | 20 | 100% |  |
-| `name` | 20 | 100% |  |
+| `id` | 3074 | 100% |  |
+| `name` | 3074 | 100% |  |
 | `category` | 0 | 0% |  |
 | `group` | 0 | 0% | Fanz não tem grupo/índice do MU; virá do muonline.us |
 | `index` | 0 | 0% | Fanz não tem grupo/índice do MU; virá do muonline.us |
-| `classes` | 17 | 85% |  |
-| `requirements.level` | 12 | 60% |  |
-| `requirements.strength` | 13 | 65% |  |
-| `requirements.agility` | 15 | 75% |  |
-| `requirements.vitality` | 0 | 0% |  |
-| `requirements.energy` | 5 | 25% |  |
-| `requirements.command` | 0 | 0% |  |
-| `stats` | 17 | 85% |  |
+| `classes` | 2673 | 86% |  |
+| `requirements.level` | 1505 | 48% |  |
+| `requirements.strength` | 2306 | 75% |  |
+| `requirements.agility` | 2497 | 81% |  |
+| `requirements.vitality` | 12 | 0% |  |
+| `requirements.energy` | 635 | 20% |  |
+| `requirements.command` | 5 | 0% |  |
+| `stats` | 2663 | 86% |  |
+| `stats.hands` | 420 | 13% |  |
+| `stats.damage_min` | 420 | 13% |  |
+| `stats.damage_max` | 420 | 13% |  |
+| `stats.attack_speed` | 434 | 14% |  |
+| `stats.wiz_dmg_raise_pct` | 137 | 4% |  |
 | `durability` | 0 | 0% |  |
-| `grade` | 14 | 70% |  |
-| `options` | 16 | 80% |  |
-| `option_groups` | 12 | 60% |  |
-| `related_items` | 20 | 100% |  |
-| `notes` | 20 | 100% |  |
-| `image_url` | 17 | 85% |  |
+| `grade` | 2619 | 85% |  |
+| `options` | 2595 | 84% |  |
+| `option_groups` | 2038 | 66% |  |
+| `related_items` | 2990 | 97% |  |
+| `notes` | 3074 | 100% |  |
+| `image_url` | 2400 | 78% |  |
 | `season` | 0 | 0% | season alvo ainda é decisão em aberto |
-| `source` | 20 | 100% |  |
-| `source_url` | 20 | 100% |  |
-| `scraped_at` | 20 | 100% |  |
+| `source` | 3074 | 100% |  |
+| `source_url` | 3074 | 100% |  |
+| `scraped_at` | 3074 | 100% |  |
 | `page_updated_at` | 0 | 0% |  |
-| `stats.defense` | 14 | 70% |  |
-| `stats.elemental_dmg_min` | 1 | 5% |  |
-| `stats.elemental_dmg_max` | 1 | 5% |  |
-| `stats.elemental_def` | 1 | 5% |  |
-| `stats.hands` | 2 | 10% |  |
-| `stats.damage_min` | 2 | 10% |  |
-| `stats.damage_max` | 2 | 10% |  |
-| `stats.attack_speed` | 2 | 10% |  |
-| `stats.wiz_dmg_raise_pct` | 1 | 5% |  |
-| `stats.damage` | 1 | 5% |  |
-| `stats.dmg_pct` | 2 | 10% |  |
-| `stats.absorb_dmg_pct` | 2 | 10% |  |
-| `stats.wiz_curse_dmg` | 1 | 5% |  |
+| `stats.defense` | 2142 | 69% |  |
+| `stats.defense_rate` | 69 | 2% |  |
+| `stats.resistance` | 4 | 0% |  |
+| `stats.durability` | 27 | 0% |  |
+| `stats.elemental_dmg_min` | 20 | 0% |  |
+| `stats.elemental_dmg_max` | 20 | 0% |  |
+| `stats.elemental_def` | 26 | 0% |  |
+| `stats.ice_resistance` | 5 | 0% |  |
+| `stats.pet_dmg_raise_pct` | 24 | 0% |  |
+| `stats.curse_dmg_raise_pct` | 13 | 0% |  |
+| `stats.dmg_pct` | 43 | 1% |  |
+| `stats.absorb_dmg_pct` | 44 | 1% |  |
+| `stats.damage` | 8 | 0% |  |
+| `stats.dark_horse_lv` | 1 | 0% |  |
+| `stats.hp` | 17 | 0% |  |
+| `stats.dark_raven_lv` | 1 | 0% |  |
+| `stats.minimum_dmg` | 1 | 0% |  |
+| `stats.max_dmg` | 1 | 0% |  |
+| `stats.atk_rate` | 1 | 0% |  |
+| `stats.atk_wiz_curse_dmg_min` | 6 | 0% |  |
+| `stats.atk_wiz_curse_dmg_max` | 6 | 0% |  |
+| `stats.lightning_resistance` | 3 | 0% |  |
+| `stats.wind_resistance` | 4 | 0% |  |
+| `stats.ignore_def_resistance_chance_pct` | 2 | 0% |  |
+| `stats.fire_resistance` | 4 | 0% |  |
+| `stats.water_resistance` | 3 | 0% |  |
+| `stats.ignore_sd_resistance_chance_pct` | 2 | 0% |  |
+| `stats.ignore_critical_dmg_chance_pct` | 1 | 0% |  |
+| `stats.excellent_dmg_chance_pct` | 1 | 0% |  |
+| `stats.earth_resistance` | 1 | 0% |  |
+| `stats.poison_resistance` | 1 | 0% |  |
+| `stats.ignore_double_dmg_chance_pct` | 1 | 0% |  |
+| `stats.seed_sphere_earth_lv` | 1 | 0% |  |
+| `stats.seed_sphere_fire_lv` | 1 | 0% |  |
+| `stats.seed_sphere_ice_lv` | 1 | 0% |  |
+| `stats.seed_sphere_lightning_lv` | 1 | 0% |  |
+| `stats.seed_sphere_water_lv` | 1 | 0% |  |
+| `stats.seed_sphere_wind_lv` | 1 | 0% |  |
+| `stats.atk_wiz_dmg` | 1 | 0% |  |
+| `stats.wiz_dmg` | 2 | 0% |  |
+| `stats.wiz_curse_dmg` | 1 | 0% |  |
 
-### Monstros (20)
+### Monstros (291)
 
 | campo | preenchido | % | obs. |
 |---|---:|---:|---|
-| `id` | 20 | 100% |  |
-| `name` | 20 | 100% |  |
-| `level` | 20 | 100% |  |
-| `difficulty` | 2 | 10% |  |
-| `hp` | 19 | 95% |  |
-| `atk_min` | 18 | 90% |  |
-| `atk_max` | 18 | 90% |  |
-| `atk_rate` | 13 | 65% |  |
-| `def` | 19 | 95% |  |
-| `def_rate` | 17 | 85% |  |
-| `elemental_def` | 7 | 35% |  |
-| `elemental_dmg_min` | 6 | 30% |  |
-| `elemental_dmg_max` | 6 | 30% |  |
-| `respawn_seconds` | 0 | 0% |  |
-| `respawn_raw` | 0 | 0% |  |
-| `drops_normal_items` | 20 | 100% |  |
-| `notes` | 6 | 30% |  |
-| `image_url` | 20 | 100% |  |
+| `id` | 291 | 100% |  |
+| `name` | 291 | 100% |  |
+| `number` | 0 | 0% |  |
+| `level` | 291 | 100% |  |
+| `difficulty` | 17 | 5% |  |
+| `hp` | 282 | 96% |  |
+| `atk_min` | 280 | 96% |  |
+| `atk_max` | 280 | 96% |  |
+| `atk_rate` | 224 | 76% |  |
+| `def` | 282 | 96% |  |
+| `def_rate` | 261 | 89% |  |
+| `elemental_def` | 61 | 20% |  |
+| `elemental_dmg_min` | 49 | 16% |  |
+| `elemental_dmg_max` | 49 | 16% |  |
+| `respawn_seconds` | 6 | 2% |  |
+| `respawn_raw` | 12 | 4% |  |
+| `drops_normal_items` | 290 | 99% |  |
+| `notes` | 79 | 27% |  |
+| `image_url` | 291 | 100% |  |
 | `season` | 0 | 0% | season alvo ainda é decisão em aberto |
-| `source` | 20 | 100% |  |
-| `source_url` | 20 | 100% |  |
-| `scraped_at` | 20 | 100% |  |
-| `page_updated_at` | 20 | 100% |  |
+| `source` | 291 | 100% |  |
+| `source_url` | 291 | 100% |  |
+| `scraped_at` | 291 | 100% |  |
+| `page_updated_at` | 290 | 99% |  |
 
 ## Linhas não aproveitadas — itens
 
-Nenhuma.
+| linha | páginas |
+|---|---:|
+| Item details: Durability: ?/? | 7 |
+| Requirements: This item doesn't drop by any monster... | 6 |
+| Requirements: OR | 6 |
+| Requirements: Character Level ? | 5 |
+| Requirements: Energy: ? | 2 |
+| Item details: Pet DMG Raise: +?% | 1 |
+| Requirements: Strength: ? | 1 |
+| Requirements: Agility: ? | 1 |
 
 ## Seções vistas — itens
 
-- Related items (20)
-- Notes & links (20)
-- Requirements (17)
-- Possible additional options (17)
-- Item details (14)
-- Excellent option (8)
-- Additional option (3)
-- Item usage (2)
-- Base option (2)
-- Elemental option (2)
-- Set option (1)
-- Errtel bonus (1)
-- Item Details (1)
-- Prerequisites (1)
+- Notes & links (3074)
+- Related items (3073)
+- Possible additional options (2689)
+- Requirements (2689)
+- Item details (2533)
+- Excellent option (1122)
+- Additional option (856)
+- Set option (752)
+- Item usage (286)
+- Prerequisites (93)
+- Item Details (57)
+- The item level cannot be increased (49)
+- +Siege option (40)
+- Possible rewards (28)
+- Errtel bonus (15)
+- Elemental option (12)
+- Base option (12)
+- Set bonus (6)
+- Armor items (5)
+- Weapon items (5)
+- Wizardry items (5)
+- Other items (5)
+- Shield items (5)
+- Accessory items (4)
+- *can toggle the New Year character skin (2)
+- *can toggle the Christmas character skin (1)
+- *can toggle the Jack Olantern character skin (1)
+- *can toggle the Snowman character skin (1)
 
 ## Linhas não aproveitadas — monstros
 
@@ -114,64 +171,208 @@ Nenhuma.
 
 ## Seções vistas — monstros
 
-- General Drop Table (20)
-- Monster details (20)
-- Excellent Drop Table (14)
-- Excellent Holyangel Drop Table (2)
-- Ancient Drop Table (2)
-- Excellent Silver Heart Drop Table (1)
-- Excellent Bloodangel Drop Table (1)
-- Excellent Soul Drop Table (1)
+- Monster details (291)
+- General Drop Table (283)
+- Excellent Drop Table (198)
+- Socket Drop Table (11)
+- Excellent Blue Eye Drop Table (11)
+- Ancient Drop Table (9)
+- Excellent Silver Heart Drop Table (8)
+- Excellent Soul Drop Table (7)
+- Bloodangel Drop Table (6)
+- Excellent Holyangel Drop Table (3)
+- [Kanturu Ruins] Excellent Drop Table (3)
+- Excellent Darkangel Drop Table (3)
+- Excellent Bloodangel Drop Table (3)
+- [Lorencia] Excellent Drop Table (1)
 
 ## Avisos por página
 
+- `bill-of-balrog.html`
+  - o site não lista as classes ('Can be equipped by Classes')
+- `excellent-battle-axe.html`
+  - o site não lista as classes ('Can be equipped by Classes')
+- `excellent-bill-of-balrog.html`
+  - o site não lista as classes ('Can be equipped by Classes')
+- `excellent-great-dragon-armor.html`
+  - o site não lista as classes ('Can be equipped by Classes')
+- `excellent-manticore-orb.html`
+  - título da página ('Excellent Manitcore Orb') não bate com o nome da URL ('Excellent Manticore Orb')
+- `excellent-manticore-sword.html`
+  - título da página ('Excellent Manticore Short Sword') não bate com o nome da URL ('Excellent Manticore Sword')
+- `balram-trainee-soldier.html`
+  - mapa sem link: 'Barracks of Balgass'
+- `chaos-castle-archer.html`
+  - mapa sem link: 'Chaos Castle 1'
+- `chaos-castle-guardsman.html`
+  - mapa sem link: 'Chaos Castle 1'
+- `chaos-castle-wizard.html`
+  - mapa sem link: 'Chaos Castle 1'
+- `dark-elf-trainee-soldier.html`
+  - mapa sem link: "Balgass' Resting Place"
+- `dark-skull-soldier.html`
+  - mapa sem link: 'Blood Castle 1'
+- `death-spirit-trainee-soldier.html`
+  - mapa sem link: 'Barracks of Balgass'
+- `destructive-ogre-archer.html`
+  - mapa sem link: 'Lorencia, Noria, or Devias'
+- `destructive-ogre-soldier.html`
+  - mapa sem link: 'Lorencia, Noria, or Devias'
+- `elite-orc.html`
+  - mapa sem link: 'Devil Square Mini-game'
+- `fire-flame-ghost.html`
+  - mapa sem link: 'Raklion, Swamp of Peace, Kanturu Ruins, & Kalima 7'
 - `giant-ogre.html`
-  - mapa sem link: 'Blood Castle Mini-game 1'
+  - mapa sem link: 'Blood Castle 1'
+- `golden-derkon.html`
+  - mapa sem link: 'Lorencia, Noria, Devias, or Lost Tower'
+- `great-golden-dragon.html`
+  - mapa sem link: 'Kanturu or Raklion'
+- `magic-skeleton.html`
+  - mapa sem link: 'Blood Castle 1'
+- `metal-balrog.html`
+  - mapa sem link: 'Devil Square Mini-game'
+- `moon-rabbit.html`
+  - mapa sem link: 'Lorencia, Noria, Elveland, & Devias'
+- `orc-archer.html`
+  - mapa sem link: 'Blood Castle 1'
+- `orc-warrior.html`
+  - mapa sem link: 'Blood Castle 1'
+- `pouch-of-blessing.html`
+  - mapa sem link: 'Lost Tower, Icarus, Kalima 5, & Adia'
+- `red-dragon.html`
+  - mapa sem link: 'Lorencia, Noria, or Devias'
+- `red-skeleton-knight.html`
+  - mapa sem link: 'Blood Castle 1'
+- `skeleton.html`
+  - mapa sem link: 'Lorencia & Dungeon'
+- `soram-trainee-soldier.html`
+  - mapa sem link: 'Barracks of Balgass'
+- `white-wizard.html`
+  - mapa sem link: 'Lorencia, Noria, or Devias'
+
+## Falhas
+
+- `aileen-bow.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `beuroba.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `blessed-divine-orb-of-archangel.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `bloodangel-gun-crusher-armor.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `bloodangel-gun-crusher-boots.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `bloodangel-gun-crusher-gloves.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `bloodangel-gun-crusher-helm.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `bloodangel-gun-crusher-pants.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `bloodangel-slayer-armor.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `bloodangel-slayer-boots.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `bloodangel-slayer-gloves.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `bloodangel-slayer-helm.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `bloodangel-slayer-pants.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `bloodangel-soul.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `chromatic-staff.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `condor-s-magic-bubble.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `dark-master-helm.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `divine-orb-of-archangel.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `excellent-adamantine-helm.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `excellent-divine-crossbow-of-archangel.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `excellent-divine-scepter-of-archangel.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `excellent-divine-staff-of-archangel.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `excellent-divine-stick-of-archangel.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `excellent-divine-sword-of-archangel.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `excellent-lords-scepter.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `excellent-piercing-groove-armor.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `excellent-piercing-groove-boots.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `excellent-piercing-groove-helm.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `excellent-piercing-groove-pants.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `excellent-thunder-blade.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `frigg-pendant-of-water.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `garuda-s-flame.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `great-reign-scepter.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `grippus.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `gru-gill-boots.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `gru-gill-gloves.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `honor-s-bloodangel-summoner-boots.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `iron-shield-of-lorencia-knights.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `light-plate-helm.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `loch-s-magic-bubble.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `mithril-fragment.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `moonstone-pendant.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `pawn.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `rave-stick.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `repen.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `striker-scepter.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `thunder-blade.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `vegas-sacred-fire-armor.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `vegas-sacred-fire-helm.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `vegas-sacred-fire-pants.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `vegas-sacred-glove.html`: página vazia ou '404 - Page not found' com HTTP 200
+- `zen.html`: página vazia ou '404 - Page not found' com HTTP 200
 
 ## Exemplo de item
 
 ```json
 {
-  "id": "agi-fruit",
-  "name": "AGI Fruit",
+  "id": "absolute-scepter",
+  "name": "Absolute Scepter",
   "category": null,
   "group": null,
   "index": null,
-  "classes": [],
+  "classes": [
+    "Dark Lord"
+  ],
   "requirements": {
-    "level": null,
-    "strength": null,
-    "agility": null,
+    "level": 380,
+    "strength": 501,
+    "agility": 117,
     "vitality": null,
     "energy": null,
     "command": null
   },
-  "stats": {},
+  "stats": {
+    "hands": 1,
+    "damage_min": 114,
+    "damage_max": 132,
+    "attack_speed": 40,
+    "wiz_dmg_raise_pct": 36
+  },
   "durability": null,
-  "grade": null,
-  "options": [],
+  "grade": "socket",
+  "options": [
+    "Socket",
+    "Jewel of Life",
+    "Jewel of Harmony",
+    "Luck"
+  ],
   "option_groups": [],
   "related_items": [
-    "str-fruit",
-    "sta-fruit",
-    "eng-fruit",
-    "com-fruit",
-    "jewel-of-creation",
-    "jewel-of-chaos"
+    "flameberge",
+    "sonic-blade",
+    "sword-breaker",
+    "blast-break",
+    "paring-short-sword",
+    "novakura-short-sword",
+    "asura",
+    "rune-bastard-sword",
+    "angelic-bow",
+    "dark-stinger-bow",
+    "soulbringer",
+    "eternal-wing-stick",
+    "miracle-staff",
+    "inberial-staff",
+    "thunderbolt",
+    "devast-claws",
+    "pantera-claws",
+    "rectuus-lance",
+    "russell-light-lance",
+    "socket-upgrade-note"
   ],
   "notes": [
-    "It is used to create additional stat points, or reassign existing stat points.",
-    "Most characters can create up to x127 additional stat points.",
-    "This item can be crafted from a Jewel of Creation and a Jewel of Chaos through NPC Chaos Goblin Machine.",
-    "When using this item, you can choose to either add or reassign stat points. Sometimes there is a chance to fail adding or reassigning stat points. The success rate is displayed in the character menu, towards the top of the menu. The success rate will decrease as you add or reassign stat points from your character.",
-    "You must remove all equipment before using the item.",
-    "Occasionally, there will be a promotional event which will reset the count of how many stat points you've reassigned. This will allow you to use more stat fruits in order to reassign additional stat points again as part of a promotional free-to-play event."
+    "This item is a 'socket' grade item; socket items are special because you can add Seed Spheres onto them in order to add additional options to the item. You can learn more about socket items and their possible additional options in the socket items guide. You can learn more about all item grades and their possible additional options in the combat items guide.",
+    "This item can be transformed into a Thunderbolt through NPC Seed Master."
   ],
-  "image_url": "https://muonlinefanz.com/tools/items/data/graphics/AGI%20Fruit.jpg",
+  "image_url": "https://muonlinefanz.com/tools/items/data/graphics/Absolute%20Scepter.jpg",
   "season": null,
   "source": "fanz",
-  "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/AGI%20Fruit.php",
-  "scraped_at": "2026-10-21T12:03:57Z",
+  "source_url": "https://muonlinefanz.com/tools/items/data/itemdb/Absolute%20Scepter.php",
+  "scraped_at": "2026-10-21T12:38:05Z",
   "page_updated_at": null
 }
 ```
@@ -182,6 +383,7 @@ Nenhuma.
 {
   "id": "aegis",
   "name": "Aegis",
+  "number": null,
   "level": 17,
   "difficulty": 1,
   "hp": 440,

@@ -80,17 +80,24 @@ def _suggest(missing: list[str], names_by_id: dict[str, str]) -> list[str]:
     return out
 
 
-def check_integrity(data: dict[str, list[dict]]) -> list[Check]:
+def check_integrity(data: dict[str, list[dict]], dead_items: set[str] | None = None) -> list[Check]:
+    """dead_items: ids de itens cuja página existe no link da fonte, mas está quebrada no próprio site."""
     items = {i["id"]: i["name"] for i in data["item"]}
     monsters = {m["id"] for m in data["monster"]}
     maps = {m["id"] for m in data["map"]}
+    dead_items = dead_items or set()
     checks = []
 
-    broken_items = sorted({d["item_id"] for d in data["drop"] if d["item_id"] not in items})
-    broken_drops = sum(1 for d in data["drop"] if d["item_id"] not in items)
+    missing = [d["item_id"] for d in data["drop"] if d["item_id"] not in items]
+    broken_items = sorted(set(missing) - dead_items)
+    dead = sorted(set(missing) & dead_items)
     checks.append(Check("drops -> itens", "erro" if broken_items else "ok",
-                        f"{broken_drops} de {len(data['drop'])} drops apontam para {len(broken_items)} itens inexistentes",
-                        _suggest(broken_items[:15], items)))
+                        f"{sum(1 for i in missing if i not in dead_items)} de {len(data['drop'])} drops apontam para "
+                        f"{len(broken_items)} itens nunca vistos", _suggest(broken_items[:15], items)))
+    if dead:
+        checks.append(Check("drops -> itens com página quebrada na fonte", "aviso",
+                            f"{sum(1 for i in missing if i in dead_items)} drops apontam para {len(dead)} itens cuja "
+                            f"página responde '404' com HTTP 200 no site", dead[:15]))
     orphan = sorted({d["monster_id"] for d in data["drop"] if d["monster_id"] not in monsters})
     checks.append(Check("drops -> monstros", "erro" if orphan else "ok",
                         f"{len(orphan)} monstros inexistentes", orphan[:10]))

@@ -35,7 +35,7 @@ REQUIREMENT_KEYS = {
     "agility": "agility", "agi": "agility",
     "vitality": "vitality", "stamina": "vitality", "vit": "vitality", "sta": "vitality",
     "energy": "energy", "ene": "energy", "eng": "energy",
-    "command": "command", "com": "command", "leadership": "command",
+    "command": "command", "com": "command", "com level": "command", "leadership": "command",
 }
 STAT_ALIASES = {
     "def": "defense", "def rate": "defense_rate", "defense rate": "defense_rate",
@@ -72,9 +72,7 @@ def parse_item(html: str, meta: dict) -> ParseResult:
     unmapped: list[str] = []
     if not doc.trimmed:
         warnings.append("marcador '|||' do menu não encontrado: conteúdo não recortado")
-    name, _ = page_title(lines, url_name)
-    if name == url_name and not any(line.text == url_name for line in lines[:12]):
-        warnings.append(f"título da página não bate com o nome da URL ({url_name!r})")
+    name, _ = page_title(lines, url_name, warnings)
 
     sections = _split_sections(lines)
     requirements, classes = _requirements(sections, warnings, unmapped)
@@ -143,7 +141,10 @@ def _requirements(sections: list[Section], warnings: list[str],
         for line in lines:
             text = line.text
             if (match := CLASS_LINE.match(text)):
-                classes.extend(split_classes(match["classes"]))
+                if match["classes"].strip().lower() == "classes":
+                    warnings.append("o site não lista as classes ('Can be equipped by Classes')")
+                else:
+                    classes.extend(split_classes(match["classes"]))
                 continue
             pair = COLON_PAIR.match(text) or BARE_PAIR.match(text)
             key = REQUIREMENT_KEYS.get(re.sub(r"[^a-z ]", "", pair["label"].lower()).strip()) if pair else None

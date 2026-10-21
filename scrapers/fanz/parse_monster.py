@@ -22,7 +22,7 @@ import re
 from scrapers.common.html import Line, clean
 from scrapers.common.ids import slugify
 from scrapers.common.model import ParseResult
-from scrapers.common.parsing import find_updated_date, parse_int, parse_range
+from scrapers.common.parsing import find_updated_date, parse_duration_seconds, parse_int, parse_range
 from scrapers.fanz import urls
 from scrapers.fanz.parse_common import content_lines, find_image, open_document, page_title
 
@@ -32,6 +32,9 @@ _SUBSECTION = re.compile(r"^(?P<label>[A-Za-z][A-Za-z ()-]{2,40}):$")
 _SPAWNS = re.compile(r"^Spawns in\s+(?P<where>.+?)\.?$", re.IGNORECASE)
 _QUANTITY = re.compile(r"\s*\(x(?P<n>\d+)\)\s*$", re.IGNORECASE)
 _UPDATED = re.compile(r"^Data updated", re.IGNORECASE)
+_RESPAWN = re.compile(r"^Respawns after\s*(?P<rest>.*)$", re.IGNORECASE)
+_UTC_TIME = re.compile(r"^\d{1,2}:\d{2} \(UTC\)$")
+_NO_NORMAL = re.compile(r"does not drop 'normal grade' items", re.IGNORECASE)
 COLON_PAIR = re.compile(r"^(?P<label>[^:]{1,40}):\s*(?P<value>.+)$")
 
 DETAIL_LABELS = {
@@ -62,15 +65,14 @@ def parse_monster(html: str, meta: dict) -> ParseResult:
     unmapped: list[str] = []
     if not doc.trimmed:
         warnings.append("marcador '|||' do menu não encontrado: conteúdo não recortado")
-    name, difficulty = page_title(lines, url_name)
-    if name == url_name and not any(line.text.startswith(url_name) for line in lines[:12]):
-        warnings.append(f"título da página não bate com o nome da URL ({url_name!r})")
+    name, difficulty = page_title(lines, url_name, warnings)
     monster_id = slugify(name)
     provenance = {"season": None, "source": urls.SOURCE_ID, "source_url": url, "scraped_at": meta["fetched_at"]}
 
     details, tables = _split(lines)
     notes: list[str] = []
     stats = _details(details, unmapped, notes, warnings)
+    respawn_seconds, respawn_raw = _respawn(details)
     maps = _maps(details, provenance, warnings)
     drops, table_names = _drops(tables, monster_id, provenance, notes, warnings)
 
@@ -91,9 +93,10 @@ def parse_monster(html: str, meta: dict) -> ParseResult:
         "elemental_def": stats.get("elemental_def"),
         "elemental_dmg_min": el_min,
         "elemental_dmg_max": el_max,
-        "respawn_seconds": None,
-        "respawn_raw": None,
-        "drops_normal_items": any(d["kind"] == "normal" for d in drops) or None,
+        "respawn_seconds": respawn_seconds,
+        "respawn_raw": respawn_raw,
+        "drops_normal_items": False if any(_NO_NORMAL.search(n) for n in notes)
+        else (any(d["kind"] == "normal" for d in drops) or None),
         "notes": notes,
         "image_url": find_image(doc, urls.MOB_IMAGE_PREFIX),
         **provenance,
@@ -132,7 +135,7 @@ def _details(details: list[Line], unmapped: list[str], notes: list[str], warning
     stats: dict = {}
     for line in details:
         text = line.text
-        if _UPDATED.match(text) or _SPAWNS.match(text):
+        if _UPDATED.match(text) or _SPAWNS.match(text) or _RESPAWN.match(text) or _UTC_TIME.match(text):
             continue
         pair = COLON_PAIR.match(text)
         if not pair:
@@ -153,6 +156,22 @@ def _details(details: list[Line], unmapped: list[str], notes: list[str], warning
         else:
             stats[key] = value
     return stats
+
+
+def _respawn(details: list[Line]) -> tuple[int | None, str | None]:
+    """'Respawns after 24 Hours' -> (86400, '24 Hours'). Bosses com horário fixo trazem a lista de horários
+    ('Respawns after 18:11 (UTC)' + linhas '22:00 (UTC)'): vira texto em respawn_raw, sem segundos."""
+    for i, line in enumerate(details):
+        match = _RESPAWN.match(line.text)
+        if not match:
+            continue
+        rest = match["rest"].strip()
+        times = ([rest] if _UTC_TIME.match(rest) else []) + [
+            d.text for d in details[i + 1:] if _UTC_TIME.match(d.text)]
+        if times:
+            return None, "UTC: " + ", ".join(t.replace(" (UTC)", "") for t in times)
+        return (parse_duration_seconds(rest), rest) if rest else (None, None)
+    return None, None
 
 
 def _maps(details: list[Line], provenance: dict, warnings: list[str]) -> list[dict]:
@@ -200,6 +219,10 @@ def _drops(tables: list[tuple[str, list[Line]]], monster_id: str, provenance: di
     drops: dict[tuple, dict] = {}
     for title, lines in tables:
         kind = _table_kind(title)
+        if kind == "unknown":
+            # "Bloodangel Drop Table" + "This monster can drop any normal Bloodangel armor item."
+            first = next((line.text for line in lines if not line.links), "")
+            kind = _table_kind(first.replace("normal", "general")) if "can drop any" in first else "unknown"
         if kind == "unknown":
             warnings.append(f"tabela de drop de tipo desconhecido: {title!r}")
         category: str | None = None

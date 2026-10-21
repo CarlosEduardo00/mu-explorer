@@ -16,6 +16,7 @@ pytest                             # testes (offline, usam fixtures de HTML)
 
 python -m scrapers.fanz fetch --items 20 --mobs 20   # baixa HTML bruto para data/raw/fanz/ (~1 min, 1 req/s)
 python -m scrapers.fanz parse                        # HTML bruto -> data/processed/fanz/*.json + poc_report.md
+python -m scrapers.fanz fetch-linked                 # baixa itens dropados que não estão na listagem (depois: parse)
 python -m scrapers.fanz poc                          # fetch + parse
 python -m scrapers.fanz fixtures --golden --only dark-knight,aegis   # copia páginas p/ tests/fixtures/fanz/
                                                      # (+ <slug>.expected.json; revise o diff antes de commitar)
@@ -131,9 +132,20 @@ wrangler.jsonc     configuração dos Workers (env prod = mu-explorer, env hml =
   `Excellent Drop Table`, `Excellent <Set> Drop Table`, `Ancient Drop Table`. Algumas tabelas são só uma
   frase ("This monster can drop any Excellent Holyangel armor item.") e vão para `notes`.
   Alguns monstros têm seletor de dificuldade (POST); a PoC guarda só a dificuldade padrão (`difficulty` = 1).
-- **O Fanz NÃO publica**: respawn, durabilidade, categoria do item, data de atualização dos itens, taxa de
-  drop, grupo/índice do MU, season. Esses campos ficam `null` (os dois primeiros virão de outras fontes).
-  Algumas páginas não têm imagem do item (só o ícone de ajuda) e alguns monstros não têm HP/ATK na página.
+- **O Fanz NÃO publica**: durabilidade, categoria do item, data de atualização dos itens, taxa de drop,
+  grupo/índice do MU, season, e respawn de monstros comuns. Esses campos ficam `null` no Fanz (o MuEmu
+  completa no cruzamento). Algumas páginas não têm imagem do item e alguns monstros não têm HP/ATK.
+
+**Coleta completa (out/2026):** 3.089 itens e 291 monstros na listagem, 1 req/s, ~1h. Achados:
+- 15 itens da listagem e 37 itens linkados nos drops respondem **HTTP 200 com "404 - Page not found"** ou
+  corpo vazio (links quebrados no próprio site). Viram falha no parse e aviso no QA, não registro.
+- Bosses têm respawn: "Respawns after 24 Hours" (-> `respawn_seconds`) ou horários fixos em UTC
+  (-> `respawn_raw` = "UTC: 18:11, 22:00..."). "This monster does not drop 'normal grade' items." ->
+  `drops_normal_items = false`.
+- Tabelas como "Bloodangel Drop Table" têm o tipo na primeira frase ("can drop any normal ... item").
+- Monstros em vários mapas têm uma tabela de drop por mapa, escolhida num seletor; só a do mapa padrão vem
+  na página.
+- Títulos com sufixo "[Lv: 1]" ou "[+0]"; 4 itens com "Can be equipped by Classes" (sem a lista, bug do site).
 - O rodapé diz que é recurso de fã operado com permissão da Webzen; o conteúdo é do autor
   (IZAKTLY). Dar crédito e, se o site for público, pedir autorização.
 

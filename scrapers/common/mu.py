@@ -20,13 +20,16 @@ KNOWN_CLASSES = [
     "Rune Wizard", "Rune Mage", "Rune Spell Master", "Grand Rune Master", "Rune Grand Master", "Majestic Rune Wizard",
     "Slayer", "Royal Slayer", "Master Slayer", "Slaughterer",
     "Gun Crusher", "Gun Breaker", "Master Gun Breaker", "Heist Gun Crasher", "Heist Gun Crusher",
-    "Light Wizard", "White Wizard", "Lemuria Mage", "Illusion Knight", "Alchemist", "Crusader",
+    "Light Wizard", "White Wizard", "Shine Wizard", "Light Master",
+    "Mage", "Lemuria Mage", "War Mage", "Wo Mage", "Arch Mage", "Mystic Mage",
+    "Illusion Knight", "Alchemist", "Crusader", "Soul Lancer", "Emperor Lord",
+    "All Classes",  # o Fanz usa para itens sem restrição de classe
 ]
 ABBREVIATIONS = {
     "DW": "Dark Wizard", "SM": "Soul Master", "GM": "Grand Master", "GRM": "Grand Master",
     "DK": "Dark Knight", "BK": "Blade Knight", "BM": "Blade Master",
     "FE": "Fairy Elf", "ELF": "Fairy Elf", "ME": "Muse Elf", "HE": "High Elf",
-    "MG": "Magic Gladiator", "DL": "Dark Lord", "LE": "Lord Emperor",
+    "MG": "Magic Gladiator", "DUM": "Duel Master", "DM": "Duel Master", "DL": "Dark Lord", "LE": "Lord Emperor",
     "SUM": "Summoner", "BS": "Bloody Summoner", "DIM": "Dimension Master", "RF": "Rage Fighter", "FM": "Fist Master",
     "GL": "Grow Lancer", "ML": "Mirage Lancer", "RW": "Rune Wizard", "SL": "Slayer", "GC": "Gun Crusher",
 }
@@ -36,7 +39,7 @@ _CLASS_RE = re.compile(
     r"\b(" + "|".join(re.escape(n) for n in sorted(KNOWN_CLASSES, key=len, reverse=True)) + r")\b",
     re.IGNORECASE,
 )
-_SPLIT_RE = re.compile(r"\s*(?:,|/|;|\||&|\band\b)\s*", re.IGNORECASE)
+_SPLIT_RE = re.compile(r"\s*(?:,|/|;|\||&|\band\b|\.\s)\s*", re.IGNORECASE)  # "MG. RF"
 
 
 def is_known_class(name: str) -> bool:

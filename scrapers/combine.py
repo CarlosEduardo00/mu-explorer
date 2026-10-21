@@ -22,6 +22,7 @@ from pathlib import Path
 from scrapers.common import qa
 from scrapers.common.ids import slugify
 from scrapers.common.model import REPO_ROOT
+from scrapers.common.storage import dump_records
 
 log = logging.getLogger("scrapers.combine")
 OUTPUT = {"item": "items.json", "monster": "monsters.json", "map": "maps.json", "spawn": "spawns.json",
@@ -89,6 +90,11 @@ def _item_diffs(fanz: dict, muemu: dict) -> list[str]:
     return diffs
 
 
+# Diferença de nível aceita num par só por nome: até ~10 níveis é rebalanceamento entre seasons; bem mais
+# que isso costuma ser outra criatura com o mesmo nome (ex.: Death King boss 67 x invasão dourada 30).
+MAX_LEVEL_GAP = 20
+
+
 def match_monsters(fanz: list[dict], muemu: list[dict]) -> tuple[list[dict], list[dict], list[str]]:
     by_name = _index(muemu)
     out, matches, diffs = [], [], []
@@ -102,6 +108,11 @@ def match_monsters(fanz: list[dict], muemu: list[dict]) -> tuple[list[dict], lis
                 base, method = same[0], "nome e nível"
             else:
                 base = min(candidates, key=lambda c: abs((c.get("level") or 0) - (level or 0)))
+                gap = abs((base.get("level") or 0) - (level or 0))
+                if gap > MAX_LEVEL_GAP:
+                    diffs.append(f"monstro {monster['id']}: par descartado, nível Fanz={level} MuEmu={base.get('level')}")
+                    out.append(monster)
+                    continue
                 method = "nome (nível diferente)"
                 diffs.append(f"monstro {monster['id']}: nível Fanz={level} MuEmu={base.get('level')}")
             matches.append({"fanz_id": monster["id"], "muemu_id": base["id"], "method": method,
@@ -184,7 +195,7 @@ def build_report(data: dict, matches: dict, diffs: list[str], fanz: dict, muemu:
     ]
     out += [f"- {d}" for d in diffs[:150]]
     if len(diffs) > 150:
-        out.append(f"- ... e mais {len(diffs) - 150}")
+        out.append(f"- ... e mais {len(diffs) - 150} (lista completa em divergences.json)")
     return "\n".join(out) + "\n"
 
 
@@ -199,12 +210,15 @@ def main(argv: list[str] | None = None) -> int:
     out = processed / "combined"
     out.mkdir(parents=True, exist_ok=True)
     for entity, filename in OUTPUT.items():
-        (out / filename).write_text(json.dumps(data[entity], ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        dump_records(out / filename, data[entity])
     for entity in ("item", "monster"):
-        (out / f"{entity}_matches.json").write_text(
-            json.dumps(matches[entity], ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        dump_records(out / f"{entity}_matches.json", matches[entity])
     (out / "combine_report.md").write_text(build_report(data, matches, diffs, fanz, muemu), encoding="utf-8")
-    checks = qa.check_schema({k: v for k, v in data.items() if k != "source"}) + qa.check_integrity(data)
+    from scrapers.common.storage import RawStore
+    from scrapers.fanz.pipeline import dead_item_ids
+    dead = dead_item_ids(RawStore(args.data_dir / "raw"))
+    checks = qa.check_schema({k: v for k, v in data.items() if k != "source"}) + qa.check_integrity(data, dead)
+    dump_records(out / "divergences.json", diffs)
     errors = [c for c in checks if c.severity == "erro"]
     for check in checks:
         if check.severity != "ok":

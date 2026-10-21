@@ -111,3 +111,10 @@ class RawStore:
         if not meta_path.exists():
             return None
         return json.loads(meta_path.read_text(encoding="utf-8"))
+
+
+def dump_records(path: Path, rows: list) -> None:
+    """JSON válido com um registro por linha: compacto e com diff legível no git."""
+    import json as _json
+    body = ",\n".join(_json.dumps(row, ensure_ascii=False, separators=(",", ":")) for row in rows)
+    path.write_text(f"[\n{body}\n]\n" if rows else "[]\n", encoding="utf-8")

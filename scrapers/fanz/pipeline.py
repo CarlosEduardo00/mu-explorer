@@ -10,8 +10,9 @@ import requests
 
 from scrapers.common.http import BlockedByRobots, PoliteSession
 from scrapers.common.model import ParseResult, validate
-from scrapers.common.storage import RawStore
+from scrapers.common.storage import RawStore, dump_records
 from scrapers.fanz import discover, urls
+from scrapers.fanz.parse_common import SOFT_404
 from scrapers.fanz.parse_item import parse_item
 from scrapers.fanz.parse_monster import parse_monster
 
@@ -92,7 +93,7 @@ def fetch(session: PoliteSession, store: RawStore, *, items: int = 20, mobs: int
         log.info("%d URLs de %s descobertas; amostra de %d (%s)", len(grouped[kind]), kind, n, mode)
         for url in discover.sample(grouped[kind], n, mode):
             name = urls.name_from_url(url)
-            if not refresh and store.exists(SOURCE, KIND_DIRS[kind], name, url):
+            if not refresh and _cached_ok(store, KIND_DIRS[kind], name, url):
                 stats.cached += 1
                 continue
             try:
@@ -104,11 +105,50 @@ def fetch(session: PoliteSession, store: RawStore, *, items: int = 20, mobs: int
                 stats.failed.append(f"{url}: {exc}")
                 continue
             store.save(SOURCE, KIND_DIRS[kind], name, result)
-            if result.ok:
+            if result.ok and not SOFT_404.match(result.text):
                 stats.downloaded += 1
                 log.info("ok  %s", url)
             else:
-                stats.failed.append(f"{url}: HTTP {result.status}")
+                stats.failed.append(f"{url}: HTTP {result.status}" + (" (página vazia/404 do site)" if result.ok else ""))
+    return stats
+
+
+def _cached_ok(store: RawStore, kind_dir: str, name: str, url: str) -> bool:
+    """Já baixada com sucesso e com conteúdo (falsos 200 do site são tentados de novo)."""
+    page = store.load(SOURCE, kind_dir, name, url)
+    return page is not None and 200 <= page.meta.get("status", 0) < 300 and not SOFT_404.match(page.html)
+
+
+def linked_item_urls(processed: Path) -> list[str]:
+    """URLs de itens que os monstros dropam, mas que não estão no conjunto de itens (não aparecem na listagem)."""
+    items = {i["id"] for i in json.loads((processed / "items.json").read_text(encoding="utf-8"))}
+    drops = json.loads((processed / "drops.json").read_text(encoding="utf-8"))
+    names = sorted({d["item_name"] for d in drops if d["item_id"] not in items})
+    return [urls.page_url("item", name) for name in names]
+
+
+def fetch_urls(session: PoliteSession, store: RawStore, kind: str, page_urls: list[str], refresh: bool = False) -> FetchStats:
+    """Baixa uma lista explícita de páginas (ex.: itens linkados fora da listagem)."""
+    stats = FetchStats(discovered={kind: len(page_urls)})
+    for url in page_urls:
+        name = urls.name_from_url(url)
+        if not refresh and _cached_ok(store, KIND_DIRS[kind], name, url):
+            stats.cached += 1
+            continue
+        try:
+            result = session.get(url)
+        except BlockedByRobots:
+            stats.blocked.append(url)
+            continue
+        except requests.RequestException as exc:
+            stats.failed.append(f"{url}: {exc}")
+            continue
+        store.save(SOURCE, KIND_DIRS[kind], name, result)
+        if result.ok and not SOFT_404.match(result.text):
+            stats.downloaded += 1
+            log.info("ok  %s", url)
+        else:
+            stats.failed.append(f"{url}: HTTP {result.status}" + (" (página vazia/404 do site)" if result.ok else ""))
     return stats
 
 
@@ -136,6 +176,9 @@ def parse_store(store: RawStore) -> Dataset:
             status = page.meta.get("status", 0)
             if not 200 <= status < 300:
                 failures.append((page.meta["file"], f"HTTP {status}"))
+                continue
+            if SOFT_404.match(page.html):
+                failures.append((page.meta["file"], "página vazia ou '404 - Page not found' com HTTP 200"))
                 continue
             try:
                 results.append(PARSERS[kind](page.html, page.meta))
@@ -220,7 +263,7 @@ def write_dataset(dataset: Dataset, out_dir: Path) -> list[Path]:
     written = []
     for filename, attr in OUTPUT_FILES.items():
         path = out_dir / filename
-        path.write_text(json.dumps(getattr(dataset, attr), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        dump_records(path, getattr(dataset, attr))
         written.append(path)
     return written
 
@@ -245,3 +288,10 @@ def expected_counts(store: RawStore) -> tuple[dict[str, int], list[str]]:
         links = {link for page in have for link in discover.links_from_list_page(page.html, list_url, kind)}
         counts[kind] = len(links)
     return counts, notes
+
+
+def dead_item_ids(store: RawStore) -> set[str]:
+    """Itens cuja página o site responde com HTTP 200 mas vazia ou '404 - Page not found'."""
+    from scrapers.common.ids import slugify
+    return {slugify(page.meta.get("key") or page.path.stem) for page in store.iter(SOURCE, KIND_DIRS["item"])
+            if 200 <= page.meta.get("status", 0) < 300 and SOFT_404.match(page.html)}

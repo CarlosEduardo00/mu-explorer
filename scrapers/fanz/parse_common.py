@@ -21,6 +21,8 @@ NOISE = re.compile(
     re.IGNORECASE,
 )
 _DIFFICULTY = re.compile(r"\s*\[Difficulty:?\s*(\d+)\]\s*$", re.IGNORECASE)
+_LEVEL_SUFFIX = re.compile(r"\s*\[(?:Lv:?\s*\d+|\+\d+)\]\s*$", re.IGNORECASE)  # "[Lv: 1]", "[+0]"
+SOFT_404 = re.compile(r"^\s*(?:404 - Page not found\.?)?\s*$", re.IGNORECASE)
 
 
 def open_document(html: str, url: str, heading) -> Document:
@@ -31,15 +33,18 @@ def content_lines(doc: Document) -> list[Line]:
     return [line for line in doc.lines if line.text and not NOISE.match(line.text)]
 
 
-def page_title(lines: list[Line], url_name: str) -> tuple[str, int | None]:
-    """Título visível da página (linha que, sem '[Difficulty: N]', bate com o nome da URL)."""
+def page_title(lines: list[Line], url_name: str, warnings: list[str]) -> tuple[str, int | None]:
+    """Título visível da página (linha que, sem '[Difficulty: N]', '[Lv: N]' ou '[+N]', bate com o nome da
+    URL). Se nenhuma bate, usa o nome da URL e avisa."""
     target = norm_label(url_name)
     for line in lines[:12]:
         text = line.text
         difficulty = _DIFFICULTY.search(text)
-        bare = _DIFFICULTY.sub("", text)
+        bare = _LEVEL_SUFFIX.sub("", _DIFFICULTY.sub("", text))
         if norm_label(bare) == target:
             return bare, int(difficulty.group(1)) if difficulty else None
+    title = next((line.text for line in lines[:3] if not line.text.lower().startswith("home - tools")), None)
+    warnings.append(f"título da página ({title!r}) não bate com o nome da URL ({url_name!r})")
     return url_name, None
 
 
