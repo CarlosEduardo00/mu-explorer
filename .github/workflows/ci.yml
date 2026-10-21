@@ -1,0 +1,38 @@
+# Roda em todo PR e em push nas branches de ambiente. Os dois jobs são os checks exigidos
+# pelas regras de proteção da main e da mu-explorer-dev.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, mu-explorer-dev]
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Testes (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+
+  site:
+    name: Configuração do site (Wrangler)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+        env:
+          WRANGLER_SEND_METRICS: "false"
