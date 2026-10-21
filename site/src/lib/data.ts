@@ -8,7 +8,7 @@
  */
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
-import type { Ruleset } from "./planner";
+import type { Ruleset, BuildTemplate } from "./planner";
 
 export type Requirements = Record<"level" | "strength" | "agility" | "vitality" | "energy" | "command", number | null>;
 
@@ -66,6 +66,10 @@ interface PlannerFile { rulesets: Ruleset[] }
 const plannerPath = resolve(process.cwd(), "data", "curated", "planner.json");
 const plannerFile: PlannerFile = existsSync(plannerPath) ? JSON.parse(readFileSync(plannerPath, "utf-8")) : { rulesets: [] };
 export const rulesets: Ruleset[] = plannerFile.rulesets.filter((r) => r.publish || dataset !== "muemu");
+
+/** Builds prontas (data/curated/builds.json): curadoria nossa, regras de distribuição por fase de nível. */
+const buildsPath = resolve(process.cwd(), "data", "curated", "builds.json");
+export const builds: BuildTemplate[] = existsSync(buildsPath) ? JSON.parse(readFileSync(buildsPath, "utf-8")).builds : [];
 
 export const itemById = new Map(items.map((i) => [i.id, i]));
 export const monsterById = new Map(monsters.map((m) => [m.id, m]));

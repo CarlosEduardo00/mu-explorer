@@ -2,7 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   pointsAtLevel, totals, usableBy, checkItem, neededByGear, pointsToWear, encodeState, decodeState,
-  emptyAllocation, sumAllocation, type GearItem, type PlannerState,
+  emptyAllocation, sumAllocation, simulateBuild, rateAt, resolveTarget,
+  type GearItem, type PlannerState, type ClassRules, type BuildTemplate,
 } from "./planner.ts";
 
 const TIER1 = [{ from_level: 2, per_level: 5 }, { from_level: 220, per_level: 6 }];
@@ -78,4 +79,65 @@ test("endereço inválido é ignorado, não quebra", () => {
 test("soma e alocação vazia", () => {
   assert.equal(sumAllocation(emptyAllocation()), 0);
   assert.equal(sumAllocation({ str: 1, agi: 2, vit: 3, ene: 4, cmd: 5 }), 15);
+});
+
+// --- builds prontas -------------------------------------------------------------------------------------------
+
+const KNIGHT: ClassRules = {
+  id: "dark-knight", name: "Dark Knight", tier: 1, unlock_level: null,
+  base: { str: 28, agi: 20, vit: 25, ene: 10, cmd: 0 }, points: TIER1, max_level_points: 400, max_level: 400,
+  evolutions: [], names: ["Dark Knight"],
+};
+const build = (over: Partial<BuildTemplate>): BuildTemplate => ({
+  id: "t", class_id: "dark-knight", name: "T", role: "pvm", summary: "", notes: [], sources: [],
+  phases: [{ from_level: 1, fill: [], split: { str: 1 } }], ...over,
+});
+
+test("rateAt bate com a diferença de pointsAtLevel em todos os níveis", () => {
+  for (let l = 1; l <= 410; l++) {
+    assert.equal(rateAt(TIER1, l, 400), pointsAtLevel(TIER1, l, 400) - pointsAtLevel(TIER1, l - 1, 400));
+  }
+});
+
+test("build gasta exatamente os pontos do nível, sem sobra quando há split", () => {
+  const r = simulateBuild(KNIGHT, build({}), 300, 20);
+  assert.equal(sumAllocation(r.added), pointsAtLevel(TIER1, 300, 400) + 20);
+  assert.equal(r.unspent, 0);
+  assert.equal(r.curve.at(-1)!.level, 300);
+});
+
+test("metas vêm antes do split, na ordem; meta proporcional ao nível acompanha o leveling", () => {
+  const b = build({ phases: [{ from_level: 1, fill: [{ stat: "agi", to: { per_level: 1 } }, { stat: "vit", to: 100 }], split: { ene: 3, str: 1 } }] });
+  const r = simulateBuild(KNIGHT, b, 200);
+  const total = { ...r.curve.at(-1)!.total };
+  assert.equal(total.agi, 200);            // 1 × nível
+  assert.equal(total.vit, 100);
+  const split = (total.ene - 10) / (total.str - 28);
+  assert.ok(Math.abs(split - 3) < 0.05, `proporção ${split}`);
+});
+
+test("meta 'gear' usa o que o equipamento exige; sem split, o que sobra fica guardado", () => {
+  const b = build({ phases: [{ from_level: 1, fill: [{ stat: "str", to: "gear" }], split: {} }] });
+  const r = simulateBuild(KNIGHT, b, 100, 0, { str: 300 });
+  assert.equal(r.added.str, 300 - 28);
+  assert.equal(r.unspent, pointsAtLevel(TIER1, 100, 400) - (300 - 28));
+});
+
+test("fases trocam a regra a partir do nível, sem tirar pontos já gastos", () => {
+  const b = build({ phases: [
+    { from_level: 1, fill: [], split: { agi: 1 } },
+    { from_level: 150, fill: [], split: { ene: 1 } },
+  ] });
+  const r = simulateBuild(KNIGHT, b, 300);
+  assert.equal(r.added.agi, pointsAtLevel(TIER1, 149, 400));
+  assert.equal(r.added.ene, pointsAtLevel(TIER1, 300, 400) - pointsAtLevel(TIER1, 149, 400));
+  const at100 = r.curve.find((p) => p.level === 100)!;
+  assert.equal(at100.total.ene, 10);
+});
+
+test("Comando só recebe pontos em quem tem Comando", () => {
+  const b = build({ phases: [{ from_level: 1, fill: [{ stat: "cmd", to: 500 }], split: { str: 1 } }] });
+  const r = simulateBuild(KNIGHT, b, 100);
+  assert.equal(r.added.cmd, 0);
+  assert.equal(resolveTarget({ per_level: 1.5 }, 101, {}, "agi"), 151);
 });
