@@ -40,7 +40,7 @@ Site (Astro, Node 22, publicado no Cloudflare Workers com Static Assets; saída 
 npm install          # Astro e Wrangler (versões fixas em package.json)
 npm run dev          # servidor local em http://localhost:4321 (hot reload)
 npm run build        # gera ~3.500 páginas estáticas em site/dist (~8 s)
-npm run test:site    # testes da lógica do planner (node --test, sem dependências)
+npm run test:site    # testes da lógica do planner e da API (node --test, sem dependências)
 npm run check        # dry run do deploy dos dois ambientes (o Wrangler roda o build sozinho)
 npm run deploy:hml   # publicação manual (precisa de `npx wrangler login`); normalmente quem publica é o Git
 SITE_DATA=combined npm run dev    # usa Fanz + MuEmu (SÓ LOCAL: ver "Dados no site" abaixo)
@@ -85,7 +85,8 @@ data/processed/    JSON normalizado por fonte + poc_report.md
 tests/             testes; tests/fixtures/<fonte>/ guarda HTML real usado como fixture
 site/src/          Astro: layouts/Base, components/FilterList, lib/data.ts (leitura dos JSON), lib/planner.ts (lógica
                    pura do planner + testes), pages/ (início, itens, monstros, mapas, npcs: lista com filtro +
-                   página por registro; planner/; data/ = JSON estático para o planner)
+                   página por registro; planner/; data/ = JSON estático para o planner; api/ = API estática)
+                   lib/api.ts + lib/sqlite.ts: manifesto, registros com relações e SQLite (node:sqlite)
 site/public/       arquivos fixos copiados para a saída (_headers, 404.html)
 site/dist/         saída do build (fora do git); é o que o Cloudflare publica
 astro.config.mjs   Astro com srcDir=site/src e outDir=site/dist
@@ -240,7 +241,7 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
   `drop`: monster_id, item_id, item_name, kind
   (normal/excellent/ancient/socket/unknown), table, category, quantity, rate (null se a fonte não informa).
   Um drop do Fanz significa "o monstro pode dropar este item"; não há taxa.
-- `source`: id, name, url, scraped_at, credit.
+- `source`: id, name, url, scraped_at, credit, revision (commit da fonte, quando houver; ex.: MuEmu).
 - Builds **não existem como dado** nas fontes: serão curadoria nossa (referência: guias por
   classe e Stat Planner do Fanz). As distribuições de pontos sugeridas pelo Fanz são curadoria do autor e
   **não são copiadas**.
@@ -272,7 +273,9 @@ justamente em Gun Crusher e Slayer; precisam de outra fonte ou de conferência n
    obrigatórios; integridade referencial (todo drop aponta para item e monstro existentes);
    normalização de nomes divergentes entre fontes ("Ax Warrior" vs "Axe Warrior"); relatório de
    divergências; alerta quando um re-scrape mudar muito o resultado.
-4. Publicação: SQLite + JSON estático versionado por season (GitHub Pages/CDN) como API.
+4. Publicação: SQLite + JSON estático como API, gerados no build do site em `/api/v1/` (página `/api/`).
+   `v1` é a versão do formato; a versão dos dados (conjunto, season, revisão de cada fonte) fica no manifesto
+   `/api/v1/index.json` e na tabela `meta` do SQLite. Mudança incompatível de formato vira `/api/v2/`.
 5. Site: páginas de itens, mobs e spots; builds com curadoria manual.
 
 ## Decisões em aberto (resolver antes da coleta completa)

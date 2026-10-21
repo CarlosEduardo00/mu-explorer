@@ -6,6 +6,8 @@ Site do MU Explorer em **Astro**, publicado no **Cloudflare Workers com Static A
   página por registro (`[id].astro`, gerada de `data/processed/<conjunto>/*.json`).
 - `src/lib/data.ts`: leitura dos JSON em tempo de build. `SITE_DATA=muemu` (padrão, é o que vai para
   hml/prod) ou `combined` (com dados do Fanz: só local).
+- `src/pages/api/`: API estática (`/api/v1/index.json`, `<entidade>.json`, `<entidade>/<id>.json`,
+  `mu-explorer.sqlite`) e a página de documentação `/api/`; lógica em `src/lib/api.ts` e `src/lib/sqlite.ts`.
 - `public/`: `_headers` (cabeçalhos HTTP) e `404.html`, copiados para a saída.
 - `dist/`: saída do build (fora do git).
 
