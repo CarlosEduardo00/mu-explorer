@@ -5,6 +5,11 @@ Os dados vêm de scraping educado de fontes de fãs, são normalizados, validado
 JSON Schema e publicados como API estática. Contexto completo, regras de coleta e
 convenções em [`CLAUDE.md`](CLAUDE.md).
 
+## Endereços
+
+- Produção: https://mu-explorer.korok-friends.workers.dev (branch `main`)
+- Homologação: https://mu-explorer-hml.korok-friends.workers.dev (branch `mu-explorer-dev`)
+
 ## Uso
 
 ```bash

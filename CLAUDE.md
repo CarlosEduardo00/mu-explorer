@@ -40,10 +40,10 @@ npm run deploy:hml   # publicação manual (precisa de `npx wrangler login`); no
 
 ## Ambientes e branches
 
-| ambiente | Worker (Cloudflare) | branch            | deploy command                   |
-|----------|---------------------|-------------------|----------------------------------|
-| hml      | `mu-explorer-hml`   | `mu-explorer-dev` | `npx wrangler deploy --env hml`  |
-| prod     | `mu-explorer`       | `main`            | `npx wrangler deploy --env prod` |
+| ambiente | Worker (Cloudflare) | branch            | deploy command                   | endereço                                         |
+|----------|---------------------|-------------------|----------------------------------|--------------------------------------------------|
+| hml      | `mu-explorer-hml`   | `mu-explorer-dev` | `npx wrangler deploy --env hml`  | https://mu-explorer-hml.korok-friends.workers.dev |
+| prod     | `mu-explorer`       | `main`            | `npx wrangler deploy --env prod` | https://mu-explorer.korok-friends.workers.dev     |
 
 Fluxo: branch curta a partir de `mu-explorer-dev` → PR para `mu-explorer-dev` (publica em
 hml para testar) → PR de `mu-explorer-dev` para `main` (publica em prod). Nunca commitar direto na `main`.

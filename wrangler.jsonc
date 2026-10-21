@@ -5,6 +5,7 @@
 //   prod -> Worker "mu-explorer"      branch main              `npx wrangler deploy --env prod`
 //   hml  -> Worker "mu-explorer-hml"  branch mu-explorer-dev   `npx wrangler deploy --env hml`
 // O bloco de fora (sem env) é o que `npm run dev` usa localmente.
+// workers_dev: true mantém o endereço <nome>.korok-friends.workers.dev ligado a cada deploy.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "mu-explorer",
@@ -16,6 +17,7 @@
   "env": {
     "prod": {
       "name": "mu-explorer",
+      "workers_dev": true,
       "assets": {
         "directory": "./site/public",
         "not_found_handling": "404-page"
@@ -23,6 +25,7 @@
     },
     "hml": {
       "name": "mu-explorer-hml",
+      "workers_dev": true,
       "assets": {
         "directory": "./site/public",
         "not_found_handling": "404-page"
