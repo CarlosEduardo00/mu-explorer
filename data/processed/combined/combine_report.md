@@ -6,7 +6,7 @@ Base: Fanz. O MuEmu só preenche campos vazios; os valores do Fanz nunca são so
 
 - Itens: 1863 de 3074 casados ({'nome': 835, 'item base do ancient': 416, 'item base do excellent': 612}); 243 com mais de um candidato no MuEmu (usado o de menor grupo/índice).
 - Monstros: 158 de 291 casados ({'nome e nível': 136, 'nome (nível diferente)': 22}).
-- Spawns com coordenadas vindos do MuEmu: 1717.
+- Spawns com coordenadas vindos do MuEmu: 1269.
 
 ## Campos preenchidos (antes → depois)
 
@@ -14,8 +14,8 @@ Base: Fanz. O MuEmu só preenche campos vazios; os valores do Fanz nunca são so
 - item.index: 0 → 1863 de 3074
 - item.durability: 0 → 1678 de 3074
 - item.category: 0 → 1861 de 3074
-- monster.respawn_seconds: 6 → 159 de 291
-- monster.number: 0 → 158 de 291
+- monster.respawn_seconds: 6 → 273 de 406
+- monster.number: 0 → 181 de 406
 
 ## Mapas
 
@@ -186,3 +186,10 @@ servidor privado; o Fanz acompanha o global. Diferença aqui não é erro de par
 - monstro golden-goblin: atk_min Fanz=125 MuEmu=300
 - monstro golden-goblin: atk_max Fanz=130 MuEmu=260
 - ... e mais 82 (lista completa em divergences.json)
+
+## Global MU Online (S21, só local)
+
+- monstros novos: 115
+- spawns do MuEmu trocados: 1439
+- spawns do GMO: 991
+- mapas novos: 24

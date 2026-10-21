@@ -30,6 +30,8 @@ python -m scrapers.combine                           # Fanz + MuEmu -> data/proc
 python -m scrapers.planner fetch                     # guias de classe + Stat Planner do Fanz (14 páginas, ~15 s)
 python -m scrapers.planner build                     # data/raw -> data/curated/planner.json (regras de classes)
 python -m scrapers.spots [--set combined]            # spawns -> data/processed/<conjunto>/farm_spots.json (spots de farm)
+python -m scrapers.gmo fetch                         # guias do Global MU Online (sitemap, 210 páginas, ~4 min)
+python -m scrapers.gmo parse                         # -> data/processed/gmo/ (mapas, monstros c/ imagem, spawns, marcadores)
 ```
 
 `parse` nunca acessa a rede: dá para refazer o parsing quantas vezes quiser sem rebaixar nada.
@@ -76,6 +78,7 @@ scrapers/fanz/     urls.py, discover.py, parse_item.py, parse_monster.py, parse_
 scrapers/muemu/    source.py (vocabulário, fórmula de requisitos), parse.py, cli.py
 scrapers/combine.py  cruzamento Fanz + MuEmu (Fanz é a base; MuEmu só preenche campos vazios)
 scrapers/planner/  build.py: regras de classes (pontos por nível, base, evolução) -> data/curated/planner.json
+scrapers/gmo/      cli.py (fetch pelo sitemap), parse.py (guias de mapa: zonas de spawn, cards, marcadores)
 scrapers/spots.py  spots de farm: agrupa spawns por região (grade 32×32) -> farm_spots.json (não copia guias)
 data/curated/      arquivos curados por nós (hoje só planner.json), commitados
 docs/              rascunhos e notas (ex.: pedido de acesso ao muonline.us)
@@ -217,7 +220,21 @@ o que foi mapeado antes do bloqueio.
   `-g<grupo>-i<índice>` no id. Monstros com o mesmo nome são variantes de nível (Aegis em Kalima 1..7).
 - No cruzamento, excellent/ancient do Fanz casam com o item base (no MU têm o mesmo grupo/índice).
 
-### 4. Outras (referência, não prioritárias)
+### 4. Global MU Online (globalmuonline.com) — imagens de monstros, spawns e spots da S21
+- Servidor **privado** Season 21 (com reset), não é o oficial. robots.txt só bloqueia conta/admin; sitemap com
+  ~330 URLs, das quais usamos 210 guias (ficam de fora os conjuntos de itens ancient/mastery/legendary).
+- Guia de mapa (`/guides/<mapa>/`): zonas de spawn em `<polygon class="lmZone" data-m=<nº do monstro>
+  data-c="x1,y1 – x2,y2" data-d="Lv · HP · dmg · N here" data-img>`, cards `.monCard` com imagem, tabela
+  "Full stat table" (Lv, HP, Damage, Def, Atk rate, Block, Respawn, On map), marcadores `button.lmM t-spot|t-gate|...`
+  (t-spot = spot marcado no minimapa do jogo) e FAQ com o nível do warp. Resultado: 54 mapas, 312 monstros
+  (248 com imagem), 991 zonas, 695 marcadores.
+- Sem licença aberta: como o Fanz, **só build local** (entra no `combined`). No cruzamento: preenche imagens,
+  traz monstros/mapas novos, e nos mapas que cobre os spawns dele substituem os do MuEmu (S21, sem duplicar
+  spots). Grafias diferentes viram o id do Fanz (`GMO_MAP_ALIASES`); andares numerados ganham `parent_id`.
+- Classes, builds e drops (`/drop/location`) do GMO ainda não são extraídos.
+- muonline.fandom.com responde com desafio anti-bot da Cloudflare: não coletamos.
+
+### 5. Outras (referência, não prioritárias)
 muonline.fandom.com (MediaWiki, `/api.php`, cobertura parcial), StrategyWiki (antiga),
 wiki.infinitymu.net e info.topmuonline.net (servidores privados), globalmuonline.com/drop
 (Season 19/21).
@@ -248,7 +265,8 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 - `builds` (`data/curated/builds.json`, schema `builds.schema.json`): builds prontas por classe, curadoria nossa em
   regras (fases por nível; metas: número, `gear` = requisito do equipamento escolhido, ou `{per_level}`; resto
   dividido por `split`). Pisos de skill são fatos do jogo; cada build cita referências. 29 builds, 13 classes.
-- `map`: também `level_required`, `level_recommended_min/max` (Quick Facts do Fanz).
+- `map`: também `level_required`, `level_recommended_min/max` (Quick Facts do Fanz; nível do warp no GMO).
+- `map_marker` (`map_markers.json`): map_id, kind (spot/hot_spot/gate/warp/npc/shop/quest/event), name, x, y.
 - `planner` (`data/curated/planner.json`, schema `planner.schema.json`): `rulesets` da season mais nova
   para a mais antiga; cada um com `classes` (base de atributos, pontos por nível em faixas, nível de
   desbloqueio, evolução, nomes). Hoje: `global-atual` (guias e Stat Planner do Fanz; 13 classes) e

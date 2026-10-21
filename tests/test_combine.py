@@ -90,3 +90,30 @@ def test_par_com_nivel_muito_diferente_e_descartado():
     assert "death-king" not in {m["fanz_id"] for m in matches["monster"]}
     assert {m["id"]: m for m in data["monster"]}["death-king"]["respawn_seconds"] is None
     assert "monstro death-king: par descartado, nível Fanz=67 MuEmu=30" in diffs
+
+
+def test_gmo_completa_imagem_troca_spawns_do_mapa_e_traz_novidades():
+    from scrapers.combine import add_gmo
+    data = {
+        "monster": [{"id": "bahamut", "name": "Bahamut", "level": 43, "image_url": None}],
+        "spawn": [{"monster_id": "bahamut", "map_id": "atlans", "source": "muemu"},
+                  {"monster_id": "bahamut", "map_id": "lorencia", "source": "muemu"}],
+        "map": [{"id": "atlans", "name": "Atlans", "level_required": None, "image_url": "x", "description": None}],
+        "source": [],
+    }
+    gmo = {
+        "monster": [{"id": "bahamut", "name": "Bahamut", "level": 43, "image_url": "https://g/b.webp"},
+                    {"id": "hydra-x", "name": "Hydra X", "level": 70, "image_url": None}],
+        "spawn": [{"monster_id": "bahamut", "map_id": "atlans", "source": "gmo"}],
+        "map": [{"id": "atlans", "name": "Atlans", "level_required": 50, "image_url": "y", "description": "d"},
+                {"id": "nova", "name": "Nova", "level_required": 900, "image_url": None, "description": None}],
+        "map_marker": [{"map_id": "atlans", "kind": "spot"}],
+        "source": [{"id": "gmo"}],
+    }
+    stats = add_gmo(data, gmo)
+    assert data["monster"][0]["image_url"] == "https://g/b.webp"
+    assert {m["id"] for m in data["monster"]} == {"bahamut", "hydra-x"}
+    assert [(s["map_id"], s["source"]) for s in data["spawn"]] == [("lorencia", "muemu"), ("atlans", "gmo")]
+    atlans = next(m for m in data["map"] if m["id"] == "atlans")
+    assert (atlans["level_required"], atlans["image_url"], atlans["description"]) == (50, "x", "d")
+    assert stats["mapas novos"] == 1 and stats["imagens"] == 1 and data["map_marker"] == gmo["map_marker"]

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/carloseduardo00/mu-explorer/schema/map_marker.schema.json",
+  "title": "MapMarker",
+  "description": "Ponto marcado num mapa: spot de caça marcado no minimapa do jogo, portal, NPC...",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["map_id", "kind", "name", "x", "y", "description", "source", "source_url", "scraped_at"],
+  "properties": {
+    "map_id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "kind": { "enum": ["spot", "hot_spot", "gate", "warp", "npc", "shop", "quest", "event"] },
+    "name": { "type": "string", "minLength": 1 },
+    "x": { "type": ["integer", "null"], "minimum": 0 },
+    "y": { "type": ["integer", "null"], "minimum": 0 },
+    "description": { "type": ["string", "null"] },
+    "source": { "type": "string" },
+    "source_url": { "type": "string" },
+    "scraped_at": { "type": ["string", "null"] }
+  }
+}

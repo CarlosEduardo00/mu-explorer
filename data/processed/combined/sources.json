@@ -1,4 +1,5 @@
 [
 {"id":"fanz","name":"MU Online Fanz","url":"https://muonlinefanz.com","credit":"Dados de MU Online Fanz (muonlinefanz.com), conteúdo de IZAKTLY, recurso de fã operado com permissão da Webzen.","pages":3458,"first_scraped_at":"2026-10-21T12:03:57Z","last_scraped_at":"2026-10-21T14:12:02Z"},
-{"id":"muemu","name":"MuEmu (emulador open source)","url":"https://github.com/deep-thought-42/MuEmu","credit":"Dados de arquivos do MuEmu (github.com/deep-thought-42/MuEmu, licença MIT). Dados de servidor privado.","pages":3,"first_scraped_at":"2026-10-21T13:25:11Z","last_scraped_at":"2026-10-21T13:25:11Z","revision":"659dccb962bea6e071d6241ef439cce61a7e3bd1"}
+{"id":"muemu","name":"MuEmu (emulador open source)","url":"https://github.com/deep-thought-42/MuEmu","credit":"Dados de arquivos do MuEmu (github.com/deep-thought-42/MuEmu, licença MIT). Dados de servidor privado.","pages":3,"first_scraped_at":"2026-10-21T13:25:11Z","last_scraped_at":"2026-10-21T13:25:11Z","revision":"659dccb962bea6e071d6241ef439cce61a7e3bd1"},
+{"id":"gmo","name":"Global MU Online","url":"https://globalmuonline.com","credit":"Guias de mapas do Global MU Online (globalmuonline.com), servidor privado Season 21. Uso só local até haver autorização.","pages":54,"first_scraped_at":"2026-10-21T20:18:48Z","last_scraped_at":"2026-10-21T20:22:15Z"}
 ]
