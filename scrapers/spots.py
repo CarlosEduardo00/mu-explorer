@@ -1,7 +1,10 @@
 """Spots de farm gerados a partir dos spawns com coordenadas (hoje, do MuEmu).
 
-Não copia guias de spots: agrupa os spawns do mesmo mapa por região (grade de 32 × 32 casas) e descreve cada grupo
+Não copia guias de spots: agrupa os spawns próximos do mesmo mapa (até 10 casas entre centros, spot de no máximo 24 × 24) e descreve cada grupo
 (centro, área, monstros, quantidade e faixa de nível). Eventos (Blood Castle...) e monstros dourados ficam de fora.
+
+`heat` classifica o spot como os mapas de "hot spots": boss (tem chefe: está na lista de bosses do mapa ou renasce
+em 1 h ou mais), senão hot / mid / low pelo volume de monstros comparado à mediana dos spots do mesmo mapa.
 
     python -m scrapers.spots                 # data/processed/muemu -> data/processed/muemu/farm_spots.json
     python -m scrapers.spots --set combined
@@ -20,9 +23,10 @@ from scrapers.common.storage import dump_records
 log = logging.getLogger("scrapers.spots")
 
 FARM_KINDS = {"normal", "spot"}
-CELL = 32               # grade de 32 × 32 casas (o mapa tem 256 × 256): cada célula com monstros vira um spot
+LINK = 10               # spawns a até 10 casas (centro a centro) do grupo entram nele
+MAX_SPAN = 24           # um spot não passa de 24 × 24 casas
 WIDE_AREA = 40          # área de spawn com lado maior que isso vira spot próprio
-MIN_MONSTERS = 4        # grupos menores não são "spot de farm"
+MIN_MONSTERS = 3        # grupos menores não são "spot de farm"
 
 
 def spawn_center(spawn: dict) -> tuple[float, float] | None:
@@ -53,20 +57,59 @@ def is_wide(spawn: dict) -> bool:
     return x1 - x0 > WIDE_AREA or y1 - y0 > WIDE_AREA
 
 
-def cluster(spawns: list[dict], cell: int = CELL) -> list[list[int]]:
-    """Agrupa por célula de uma grade cell × cell (pelo centro do spawn); cada área grande vira um grupo."""
-    groups: dict[tuple, list[int]] = {}
-    for i, s in enumerate(spawns):
+def cluster(spawns: list[dict], link: float = LINK, max_span: int = MAX_SPAN) -> list[list[int]]:
+    """Agrupa spawns próximos: cada spawn entra no grupo mais perto cujo centro está a até `link` casas, desde que o
+    grupo não passe de `max_span` casas de lado (evita encadear o mapa inteiro). Áreas grandes viram grupo próprio
+    (a mesma área repetida, um grupo só). Ordem determinística (pelo centro)."""
+    groups: list[dict] = []
+    wide: dict[tuple, list[int]] = {}
+    for i in sorted(range(len(spawns)), key=lambda k: spawn_center(spawns[k])):
+        s = spawns[i]
+        box = spawn_box(s)
         if is_wide(s):
-            groups.setdefault(("wide", spawn_box(s)), []).append(i)   # mesma área = mesmo spot
+            wide.setdefault(box, []).append(i)
             continue
         cx, cy = spawn_center(s)
-        groups.setdefault(("cell", int(cy // cell), int(cx // cell)), []).append(i)
-    return sorted(groups.values(), key=lambda g: min(g))
+        w = spawn_count(s)
+        best = None
+        for g in groups:
+            d = ((cx - g["cx"]) ** 2 + (cy - g["cy"]) ** 2) ** 0.5
+            nb = (min(g["box"][0], box[0]), min(g["box"][1], box[1]), max(g["box"][2], box[2]), max(g["box"][3], box[3]))
+            if d <= link and nb[2] - nb[0] <= max_span and nb[3] - nb[1] <= max_span and (best is None or d < best[0]):
+                best = (d, g, nb)
+        if best:
+            _, g, nb = best
+            total = g["w"] + w
+            g["cx"], g["cy"] = (g["cx"] * g["w"] + cx * w) / total, (g["cy"] * g["w"] + cy * w) / total
+            g["w"], g["box"] = total, nb
+            g["idx"].append(i)
+        else:
+            groups.append({"idx": [i], "cx": cx, "cy": cy, "w": w, "box": box})
+    return sorted([sorted(g["idx"]) for g in groups] + [sorted(v) for v in wide.values()], key=lambda g: min(g))
+
+
+BOSS_RESPAWN = 3600     # renasce em 1 h ou mais: chefe
+
+
+def classify_heat(spots: list[dict], bosses: set[str]) -> None:
+    """Preenche `heat` nos spots de UM mapa: boss (tem chefe); senão pelo volume comparado à mediana do mapa:
+    hot >= 1,5 × mediana, low <= 0,75 × mediana, mid no meio (volumes iguais no mapa inteiro = mid)."""
+    totals = sorted(s["total"] for s in spots if not any(m["monster_id"] in bosses for m in s["monsters"]))
+    median = totals[len(totals) // 2] if totals else 0
+    for s in spots:
+        if any(m["monster_id"] in bosses for m in s["monsters"]):
+            s["heat"] = "boss"
+        elif not median:
+            s["heat"] = "mid"
+        else:
+            s["heat"] = "hot" if s["total"] >= 1.5 * median else "low" if s["total"] <= 0.75 * median else "mid"
 
 
 def build_spots(spawns: list[dict], monsters: list[dict], maps: list[dict]) -> list[dict]:
     level = {m["id"]: m.get("level") for m in monsters}
+    boss_ids = {m["id"] for m in monsters if (m.get("respawn_seconds") or 0) >= BOSS_RESPAWN}
+    for m in maps:
+        boss_ids.update(m.get("bosses") or [])
     names = {m["id"]: m["name"] for m in monsters}
     map_names = {m["id"]: m["name"] for m in maps}
     by_map: dict[str, list[dict]] = {}
@@ -78,6 +121,7 @@ def build_spots(spawns: list[dict], monsters: list[dict], maps: list[dict]) -> l
         rows = by_map[map_id]
         groups = cluster(rows)
         numbered = 0
+        first = len(spots)
         for group in groups:
             members = [rows[i] for i in group]
             counts: dict[str, int] = {}
@@ -112,6 +156,7 @@ def build_spots(spawns: list[dict], monsters: list[dict], maps: list[dict]) -> l
                 "source_url": source.get("source_url"),
                 "scraped_at": source.get("scraped_at"),
             })
+        classify_heat(spots[first:], boss_ids)
     return spots
 
 

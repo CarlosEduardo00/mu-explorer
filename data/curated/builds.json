@@ -78,7 +78,7 @@
       "notes": [
         "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
         "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500).",
-        "As fontes divergem: a Webzen e o Fanz põem Energia como principal; alguns guias de PvP preferem Agilidade."
+        "As referências divergem: a maioria põe Energia como principal; alguns guias de PvP preferem Agilidade."
       ],
       "sources": [
         {
@@ -521,7 +521,7 @@
       ],
       "notes": [
         "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "No jogo atual o Fanz descreve a Energia do DK como defensiva (Swell Life aumenta o HP com Energia)."
+        "No jogo atual a Energia do DK conta como defensiva (Swell Life aumenta o HP com Energia)."
       ],
       "sources": [
         {
@@ -1451,7 +1451,7 @@
       "notes": [
         "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
         "Degraus: 60/29 (Divine Fall), 420/168 de Força/Agilidade e 200 de Energia (Holly Sweep, Lugard's Protection), 1.045/418 (Sacred Impact) e 420 de Agilidade (armadura Imperial).",
-        "Requisitos do servidor Global MU Online (S21); confira no seu servidor."
+        "Requisitos da Season 21; confira no seu servidor."
       ],
       "sources": [
         {
@@ -1651,7 +1651,7 @@
       "notes": [
         "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
         "Degraus de Agilidade: 80 (Charge Slash), 900 (Illusion Avatar), 1.150 (Blade Storm).",
-        "Requisitos do servidor Global MU Online (S21); confira no seu servidor."
+        "Requisitos da Season 21; confira no seu servidor."
       ],
       "sources": [
         {
@@ -1783,7 +1783,7 @@
       ],
       "notes": [
         "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "Requisitos de Energia: Angel Homunculus 70, Ignition Bomber 680, Confusion Stone 850, Countless Weapon 1.025 (GMO, S21)."
+        "Requisitos de Energia: Angel Homunculus 70, Ignition Bomber 680, Confusion Stone 850, Countless Weapon 1.025."
       ],
       "sources": [
         {

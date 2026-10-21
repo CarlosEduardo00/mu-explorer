@@ -3,11 +3,11 @@
 // spots marcados no minimapa do jogo, e portais. Coordenadas do jogo (x, y) desenhadas na orientação do minimapa:
 // horizontal = y, vertical = x (conferido com os NPCs de Devias e Lorencia sobre o minimapa do Fanz).
 // Sem imagem do minimapa (build público), o fundo é liso; sem drops/imagens na fonte, o painel mostra só o que há.
-import type { FarmSpot, MapMarker } from "../lib/data";
+import type { FarmSpot, MapMarker, Terrain } from "../lib/data";
 import { monsterById, dropsByMonster, itemById } from "../lib/data";
 
-interface Props { mapName: string; spots: FarmSpot[]; markers?: MapMarker[]; minimap?: string | null }
-const { mapName, spots, markers = [], minimap = null } = Astro.props;
+interface Props { mapName: string; spots: FarmSpot[]; markers?: MapMarker[]; minimap?: string | null; terrain?: Terrain | null }
+const { mapName, spots, markers = [], minimap = null, terrain = null } = Astro.props;
 
 const KIND_ORDER: Record<string, number> = { ancient: 0, excellent: 1, socket: 2, normal: 3, unknown: 4 };
 const MAX_DROPS = 10;
@@ -25,34 +25,36 @@ const monsters = Object.fromEntries(monsterIds.map((id) => {
 }));
 const payload = {
   map: mapName,
-  spots: spots.map((s, i) => ({ n: i + 1, x: s.x, y: s.y, box: [s.x_min, s.y_min, s.x_max, s.y_max], lv: [s.level_min, s.level_max], total: s.total,
+  spots: spots.map((s, i) => ({ n: i + 1, x: s.x, y: s.y, box: [s.x_min, s.y_min, s.x_max, s.y_max], lv: [s.level_min, s.level_max], total: s.total, heat: s.heat ?? "mid",
     monsters: s.monsters.map((m) => [m.monster_id, m.count]) })),
   monsters,
 };
 const shownMarkers = markers.filter((m) => m.x != null && m.y != null && ["spot", "hot_spot", "gate", "warp"].includes(m.kind));
-const radius = (total: number) => Math.min(7, 3.5 + Math.sqrt(total) / 3);
+const radius = (total: number) => Math.min(8, 4.5 + Math.sqrt(total) / 3);
+const HEAT_LABEL: Record<string, string> = { hot: "Hot spot", mid: "Mid spot", low: "Low spot", boss: "Boss spot" };
+const heats = (["hot", "mid", "low", "boss"] as const).filter((h) => spots.some((s) => (s.heat ?? "mid") === h));
 ---
 <div class="mx" data-mx>
   <div class="mx-layers" role="group" aria-label="Camadas do mapa">
     <label><input type="checkbox" data-layer="spots" checked /> Spots de farm ({spots.length})</label>
+    {terrain && minimap && <label><input type="checkbox" data-layer="minimap" /> Imagem do minimapa</label>}
     {shownMarkers.some((m) => m.kind === "spot" || m.kind === "hot_spot") && <label><input type="checkbox" data-layer="game" checked /> <span class="mk-spot-i">▲</span> Spots do minimapa do jogo</label>}
     {shownMarkers.some((m) => m.kind === "gate" || m.kind === "warp") && <label><input type="checkbox" data-layer="gates" checked /> <span class="mk-gate-i">■</span> Portais</label>}
   </div>
+  {heats.length > 0 && (
+    <p class="mx-heat-legend">{heats.map((h) => <span><i class={`heat-dot-i heat-${h}`}></i>{HEAT_LABEL[h]}</span>)}</p>
+  )}
   <div class="mx-body">
-    <svg class:list={["mx-svg", { "has-minimap": minimap }]} viewBox="0 0 256 256" role="img" aria-label={`Mapa de ${mapName} com spots de farm`}>
+    <svg class:list={["mx-svg", { "has-minimap": minimap || terrain, "has-terrain": terrain }]} viewBox="0 0 256 256" role="img" aria-label={`Mapa de ${mapName} com spots de farm`}>
       <rect x="0" y="0" width="256" height="256" class="mx-bg" />
-      {minimap && <image href={minimap} x="0" y="0" width="256" height="256" preserveAspectRatio="none" referrerpolicy="no-referrer" />}
-      <g data-group="spots">
-        {spots.map((s, i) => (
-          <rect class="mx-area" data-area={i + 1} x={s.y_min} y={s.x_min} width={Math.max(2, s.y_max - s.y_min)} height={Math.max(2, s.x_max - s.x_min)} />
-        ))}
-        {spots.map((s, i) => (
-          <g class="mx-spot" data-spot={i + 1} tabindex="0" role="button" aria-label={`Spot ${i + 1}: ${s.monsters.map((m) => m.name).join(", ")}`}>
-            <circle cx={s.y} cy={s.x} r={radius(s.total)} />
-            <text x={s.y} y={s.x + 2.6} text-anchor="middle">{i + 1}</text>
-          </g>
-        ))}
-      </g>
+      {terrain && (
+        <g class="mx-terrain">
+          <path class="t-land" d={terrain.land} fill-rule="evenodd" />
+          <path class="t-walk" d={terrain.walk} fill-rule="evenodd" />
+          <path class="t-safe" d={terrain.safe} fill-rule="evenodd" />
+        </g>
+      )}
+      {minimap && <g data-group="minimap" class:list={{ off: !!terrain }}><image href={minimap} x="0" y="0" width="256" height="256" preserveAspectRatio="none" referrerpolicy="no-referrer" /></g>}
       <g data-group="game">
         {shownMarkers.filter((m) => m.kind === "spot" || m.kind === "hot_spot").map((m) => (
           <path class={m.kind === "hot_spot" ? "mk-hot" : "mk-spot"} d={`M${m.y},${(m.x as number) - 4.5} L${(m.y as number) + 4},${(m.x as number) + 3.5} L${(m.y as number) - 4},${(m.x as number) + 3.5} Z`}><title>{m.name} ({m.x}, {m.y})</title></path>
@@ -61,6 +63,17 @@ const radius = (total: number) => Math.min(7, 3.5 + Math.sqrt(total) / 3);
       <g data-group="gates">
         {shownMarkers.filter((m) => m.kind === "gate" || m.kind === "warp").map((m) => (
           <rect class="mk-gate" x={(m.y as number) - 3} y={(m.x as number) - 3} width="6" height="6"><title>{m.name}{m.description ? ` — ${m.description}` : ""}</title></rect>
+        ))}
+      </g>
+      <g data-group="spots">
+        {spots.map((s, i) => (
+          <rect class="mx-area" data-area={i + 1} x={s.y_min} y={s.x_min} width={Math.max(2, s.y_max - s.y_min)} height={Math.max(2, s.x_max - s.x_min)} />
+        ))}
+        {spots.map((s, i) => (
+          <g class={`mx-spot heat-${s.heat ?? "mid"}`} data-spot={i + 1} tabindex="0" role="button" aria-label={`${HEAT_LABEL[s.heat ?? "mid"]} ${i + 1}: ${s.total} monstros (${s.monsters.map((m) => m.name).join(", ")})`}>
+            <circle cx={s.y} cy={s.x} r={radius(s.total)} />
+            <text x={s.y} y={s.x + 2.3} text-anchor="middle">x{s.total}</text>
+          </g>
         ))}
       </g>
     </svg>
@@ -74,7 +87,7 @@ const radius = (total: number) => Math.min(7, 3.5 + Math.sqrt(total) / 3);
 <script>
   type Data = {
     map: string;
-    spots: { n: number; x: number; y: number; box: number[]; lv: (number | null)[]; total: number; monsters: [string, number][] }[];
+    spots: { n: number; x: number; y: number; box: number[]; lv: (number | null)[]; total: number; heat: string; monsters: [string, number][] }[];
     monsters: Record<string, { name: string; level: number | null; hp: number | null; atk: number[] | null; def: number | null; img: string | null; page: boolean;
       drops: { id: string; name: string; kind: string; img: string | null; page: boolean }[]; dropsTotal: number }>;
   };
@@ -108,7 +121,9 @@ const radius = (total: number) => Math.min(7, 3.5 + Math.sqrt(total) / 3);
           ${drops}
         </article>`;
       }).join("");
-      panel.innerHTML = `<h3>Spot ${n} · (${s.x}, ${s.y})${lv} · ${fmt(s.total)} monstros</h3>${cards}`;
+      const heatName: Record<string, string> = { hot: "Hot spot", mid: "Mid spot", low: "Low spot", boss: "Boss spot" };
+      panel.innerHTML = `<h3><span class="heat-tag heat-${s.heat}">${heatName[s.heat] ?? "Spot"}</span> (#${n})</h3>
+        <p class="mx-sub">x${fmt(s.total)} monstros · coordenadas (${s.x}, ${s.y})${lv}</p>${cards}`;
       history.replaceState(null, "", `#spot-${n}`);
     }
 
@@ -140,16 +155,29 @@ const radius = (total: number) => Math.min(7, 3.5 + Math.sqrt(total) / 3);
   @media (max-width: 48rem) { .mx-body { grid-template-columns: 1fr; } }
   .mx-svg { width: 100%; height: auto; display: block; border-radius: .5rem; border: 1px solid var(--line); background: var(--panel); }
   .mx-bg { fill: var(--panel); }
+  .has-terrain .mx-bg { fill: #0b0d12; }
+  .t-land { fill: #2b2f3a; }
+  .t-walk { fill: #c9c3a8; }
+  .t-safe { fill: #6fa8dc; fill-opacity: .55; }
   .mx .off { display: none; }
   .mx-area { fill: #ffd166; fill-opacity: 0; stroke: none; pointer-events: none; }
   .mx-area.on { fill-opacity: .25; stroke: #ffd166; stroke-width: .8; }
   .mx-spot { cursor: pointer; outline: none; }
-  .mx-spot circle { fill: var(--accent); stroke: #fff; stroke-width: .8; }
-  .has-minimap .mx-spot circle { fill: #b45309; }
-  .mx-spot text { fill: #fff; font-size: 6.5px; font-weight: 700; pointer-events: none; }
-  .mx-spot:hover circle, .mx-spot:focus circle { stroke: #ffd166; stroke-width: 1.4; }
-  .mx-spot.on circle { fill: #ffd166; stroke: #000; }
-  .mx-spot.on text { fill: #000; }
+  /* Cores dos hot spots: hot vermelho, mid amarelo, low branco, boss laranja. */
+  .mx-spot circle { stroke: #111; stroke-width: .7; }
+  .heat-hot circle { fill: #ef4444; }
+  .heat-mid circle { fill: #facc15; }
+  .heat-low circle { fill: #f1f5f9; }
+  .heat-boss circle { fill: #f59e0b; }
+  .mx-spot text { fill: #111; font-size: 5.2px; font-weight: 800; pointer-events: none; }
+  .mx-spot.heat-hot text { fill: #fff; }
+  .mx-spot:hover circle, .mx-spot:focus circle { stroke: #fff; stroke-width: 1.4; }
+  .mx-spot.on circle { stroke: #22d3ee; stroke-width: 1.8; }
+  .mx-heat-legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem; font-size: .8rem; color: var(--muted); margin: 0 0 .4rem; }
+  .heat-dot-i { display: inline-block; width: .75rem; height: .75rem; border-radius: 50%; border: 1px solid #111; margin-right: .3rem; vertical-align: -1px; }
+  .heat-dot-i.heat-hot { background: #ef4444; } .heat-dot-i.heat-mid { background: #facc15; }
+  .heat-dot-i.heat-low { background: #f1f5f9; } .heat-dot-i.heat-boss { background: #f59e0b; }
+  .mx-sub { margin: -.25rem 0 .6rem; color: var(--muted); font-size: .9rem; }
   .mk-spot { fill: #22c55e; stroke: #000; stroke-width: .5; } .mk-hot { fill: #ef4444; stroke: #000; stroke-width: .5; }
   .mk-gate { fill: #38bdf8; stroke: #000; stroke-width: .5; }
   .mk-spot-i { color: #22c55e; } .mk-gate-i { color: #38bdf8; }

@@ -51,7 +51,6 @@ import Base from "../../layouts/Base.astro";
     </section>
 
     <p><button id="share" type="button" class="btn">Copiar link desta build</button> <span id="share-msg" class="muted" role="status"></span></p>
-    <p id="credit" class="muted"></p>
   </div>
 </Base>
 
@@ -162,11 +161,9 @@ import Base from "../../layouts/Base.astro";
         return;
       }
       const notes = build.notes.length ? `<ul>${build.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>` : "";
-      const sources = build.sources.length
-        ? `<p class="muted">Referências: ${build.sources.map((x) => `<a href="${esc(x.url)}" rel="noopener">${esc(x.name)}</a>`).join(", ")}.</p>` : "";
       box.innerHTML = `<div class="build-card">
         <p><strong>${esc(build.name)}</strong><span class="role">${esc(build.role)}</span></p>
-        <p>${esc(build.summary)}</p>${notes}${sources}
+        <p>${esc(build.summary)}</p>${notes}
         <p><button type="button" class="btn small" id="build-manual">Editar manualmente a partir daqui</button></p>
       </div>`;
     }
@@ -268,13 +265,11 @@ import Base from "../../layouts/Base.astro";
 
       const tier = c.tier === 2 ? ` Classe de 2º tier${c.unlock_level ? `: libera no nível ${c.unlock_level} de outro personagem` : ""}.` : "";
       const evo = c.evolutions.length ? ` Evolução: ${c.evolutions.map((e) => e.name).join(" → ")}.` : "";
-      const classSources = c.sources?.length ? ` Fontes: ${c.sources.map((x) => x.name).join("; ")}.` : "";
-      $("class-note").textContent = `${tier}${evo}${classSources}${c.notes?.length ? " " + c.notes.join(" ") : ""}`.trim();
+      $("class-note").textContent = `${tier}${evo}${c.notes?.length ? " " + c.notes.join(" ") : ""}`.trim();
       $("evolutions").innerHTML = c.evolutions.some((e) => e.image_url)
         ? c.evolutions.map((e) => `<figure>${e.image_url ? `<img src="${esc(e.image_url)}" alt="${esc(e.name)}" loading="lazy" referrerpolicy="no-referrer" />` : `<span class="noimg"></span>`}<figcaption>${esc(e.name)}${e.level ? `<br><small>nv ${fmt(e.level)}</small>` : ""}</figcaption></figure>`).join("")
         : "";
       $("ruleset-note").textContent = r.description;
-      $("credit").textContent = r.credit;
       ($("level") as HTMLInputElement).max = String(c.max_level);
 
       // equipamento

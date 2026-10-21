@@ -79,7 +79,7 @@ NEW_CLASSES = [
     {"id": "crusader", "name": "Crusader", "base": {"str": 26, "agi": 18, "vit": 19, "ene": 20, "cmd": 0},
      "sources": [("muonline.eu: Crusader (S21)", "https://muonline.eu/index.php?/topic/72-crusader-mu-online-season-21/"),
                  ("Global MU Online: guia do Crusader", "https://globalmuonline.com/guides/crusader/")],
-     "notes": ["Atributos base de uma única fonte (muonline.eu); confira no jogo."]},
+     "notes": ["Atributos base de uma única referência; confira no jogo."]},
 ]
 FANZ_CREDIT = "Dados de regra (números e nomes) dos guias de classe de MU Online Fanz (muonlinefanz.com), conteúdo de IZAKTLY."
 MUEMU_CREDIT = "Characters.xml e código do MuEmu (github.com/deep-thought-42/MuEmu), licença MIT."
@@ -266,7 +266,7 @@ def build(raw_dir: Path) -> tuple[dict, list[str]]:
             "evolutions": [{"tier": t, "name": n, "level": None} for t, n in info["line"]],
             "names": [extra["name"]],
             "sources": [{"name": n, "url": u} for n, u in extra["sources"]],
-            "notes": [*extra["notes"], "Pontos por nível: 5 (guia do GMO); sem fonte para o bônus da quest Hero Status."],
+            "notes": [*extra["notes"], "Pontos por nível: 5; sem referência para o bônus da quest Hero Status."],
         }
         add_gmo_class_info(cls, info)
         current.append(cls)
@@ -276,10 +276,10 @@ def build(raw_dir: Path) -> tuple[dict, list[str]]:
         "generated_at": utc_now(),
         "stats": list(STATS),
         "rulesets": [  # da mais nova para a mais antiga
-            {"id": "global-atual", "name": "Global atual", "description": "Regras do jogo atual, segundo os guias de classe do Fanz; Illusion Knight, Alchemist e Crusader (que o Fanz não cobre) e a 5ª classe, segundo os guias do Global MU Online e as fontes citadas em cada classe.",
+            {"id": "global-atual", "name": "Global atual", "description": "Regras do jogo atual (16 classes, até a 5ª evolução).",
              "publish": True, "credit": FANZ_CREDIT + " Imagens, 5ª classe e Illusion Knight, Alchemist e Crusader: guias do Global MU Online e guias citados em cada classe.",
              "classes": current},
-            {"id": "classico", "name": "Clássico (emulador MuEmu)", "description": "Regras de um servidor clássico, segundo o emulador MuEmu (5 pontos por nível; 7 para MG e DL).",
+            {"id": "classico", "name": "Clássico (emulador MuEmu)", "description": "Regras de um servidor clássico (5 pontos por nível; 7 para MG e DL).",
              "publish": True, "credit": MUEMU_CREDIT, "classes": classic},
         ],
     }

@@ -32,6 +32,8 @@ python -m scrapers.planner build                     # data/raw -> data/curated/
 python -m scrapers.spots [--set combined]            # spawns -> data/processed/<conjunto>/farm_spots.json (spots de farm)
 python -m scrapers.gmo fetch                         # guias do Global MU Online (sitemap, 210 páginas, ~4 min)
 python -m scrapers.gmo parse                         # -> data/processed/gmo/ (mapas, monstros c/ imagem, spawns, marcadores)
+python -m scrapers.terrain                           # terreno do MuEmu (.att) -> data/processed/terrain/terrains.json (mapas vetoriais)
+python -m scrapers.media list|fetch                  # imagens usadas pelo site -> site/public/media/ + data/media.json (1 req/s)
 ```
 
 `parse` nunca acessa a rede: dá para refazer o parsing quantas vezes quiser sem rebaixar nada.
@@ -51,7 +53,10 @@ SITE_DATA=muemu npm run dev       # build só com dados de licença aberta (MuEm
 **Dados no site:** o site lê `data/processed/<conjunto>/*.json` em tempo de build (`site/src/lib/data.ts`).
 O padrão é `combined` (Fanz + MuEmu + Global MU Online), que é o que hml e prod publicam: **o dono do projeto
 obteve autorização para publicar o conteúdo do Fanz e do GMO (out/2026)**. Dar sempre crédito às fontes (rodapé,
-`/api/`, campo `credit` de `sources.json`). As imagens são carregadas direto das fontes (hotlink). `SITE_DATA=muemu`
+campo `credit` de `sources.json`): **a referência às fontes fica só no rodapé do site** (páginas, planner e `/api/`
+não citam fontes; os dados guardam `source`/`source_url` como procedência). As imagens são servidas por nós: cópias
+em `site/public/media/` (`python -m scrapers.media fetch`), ligadas pela URL original em `data/media.json`;
+`lib/data.ts` troca a URL pela cópia na exibição (a API mantém a URL da fonte). `SITE_DATA=muemu`
 gera um build só com dados de licença aberta. O `wrangler.jsonc` tem `build.command`, então o "Build command" do
 painel da Cloudflare pode ficar vazio.
 
@@ -80,6 +85,8 @@ scrapers/muemu/    source.py (vocabulário, fórmula de requisitos), parse.py, c
 scrapers/combine.py  cruzamento Fanz + MuEmu (Fanz é a base; MuEmu só preenche campos vazios)
 scrapers/planner/  build.py: regras de classes (pontos por nível, base, evolução) -> data/curated/planner.json
 scrapers/gmo/      cli.py (fetch pelo sitemap), parse.py (guias de mapa: zonas de spawn, cards, marcadores)
+scrapers/terrain.py  mapas vetoriais: terreno .att do MuEmu -> contornos SVG (chão, obstáculos, zona segura)
+scrapers/media.py  cópia local das imagens do site (site/public/media + data/media.json)
 scrapers/spots.py  spots de farm: agrupa spawns por região (grade 32×32) -> farm_spots.json (não copia guias)
 data/curated/      arquivos curados por nós (hoje só planner.json), commitados
 docs/              rascunhos e notas (ex.: pedido de acesso ao muonline.us)
@@ -87,12 +94,14 @@ schema/            JSON Schema (draft 2020-12) de cada entidade publicada
 data/raw/          HTML bruto + .meta.json por página (fora do git)
 data/processed/    JSON normalizado por fonte + poc_report.md
 tests/             testes; tests/fixtures/<fonte>/ guarda HTML real usado como fixture
-site/src/          Astro: layouts/Base, components/FilterList, components/MapExplorer (mapa interativo: spots sobre o
-                   minimapa, painel com monstros, atributos e drops, camadas de hot spots e portais), lib/data.ts (leitura dos JSON), lib/planner.ts (lógica
+site/src/          Astro: layouts/Base, components/FilterList, components/MapExplorer (mapa interativo: mapa vetorial
+                   próprio, hot spots com cor e volume, painel com monstros, atributos e drops, camadas de spots do
+                   minimapa do jogo, portais e imagem do minimapa), lib/data.ts (leitura dos JSON), lib/planner.ts (lógica
                    pura do planner + testes), pages/ (início, itens, monstros, mapas, npcs: lista com filtro +
-                   página por registro; planner/; data/ = JSON estático para o planner; api/ = API estática)
+                   página por registro; spots/ = área separada: índice com filtro por nível e spots/<mapa>/ com o
+                   mapa interativo; planner/; data/ = JSON estático para o planner; api/ = API estática)
                    lib/api.ts + lib/sqlite.ts: manifesto, registros com relações e SQLite (node:sqlite)
-site/public/       arquivos fixos copiados para a saída (_headers, 404.html)
+site/public/       arquivos fixos copiados para a saída (_headers, 404.html, media/ = imagens copiadas das fontes)
 site/dist/         saída do build (fora do git); é o que o Cloudflare publica
 astro.config.mjs   Astro com srcDir=site/src e outDir=site/dist
 wrangler.jsonc     Workers (env prod = mu-explorer, env hml = mu-explorer-hml; assets em site/dist; roda o build)
@@ -258,7 +267,13 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
   npcs, connections, notes, image_url. `npc`: id, name, type, locations (map_id, x, y), description, sells
   (item, categoria, preço em Zen, detalhes). `spawn`: monster_id, map_id, kind, x, y, x2, y2, radius, count.
   `farm_spot`: id, map_id, centro (x, y), área (x_min..y_max), monsters (id, nome, nível, quantidade), total,
-  level_min/max (gerado por `scrapers.spots`; eventos e monstros dourados ficam de fora).
+  level_min/max e `heat` (gerado por `scrapers.spots`: spawns a até 10 casas viram um spot de no máximo 24×24;
+  eventos e monstros dourados ficam de fora). `heat`: boss (tem chefe: bosses do mapa ou respawn ≥ 1 h), senão
+  hot (≥ 1,5 × a mediana de monstros dos spots do mapa), low (≤ 0,75 ×) ou mid — os "hot spots" do mapa interativo.
+- Terreno (`data/processed/terrain/terrains.json`): por mapa, caminhos SVG `land`/`walk`/`safe` gerados dos .att do
+  MuEmu (grade 256×256, índice y×256+x; flags 1 = zona segura, 4 = bloqueado, 8 = fora do mapa). O pareamento arquivo →
+  mapa (`scrapers/terrain.py: FILES`) foi conferido contra os spawns (Aida e Kanturu Ruins da S21 mudaram: ficam com a
+  imagem do minimapa). É o fundo padrão do mapa interativo; a imagem do minimapa vira camada opcional.
   `drop`: monster_id, item_id, item_name, kind
   (normal/excellent/ancient/socket/unknown), table, category, quantity, rate (null se a fonte não informa).
   Um drop do Fanz significa "o monstro pode dropar este item"; não há taxa.
@@ -305,7 +320,12 @@ justamente em Gun Crusher e Slayer; precisam de outra fonte ou de conferência n
 4. Publicação: SQLite + JSON estático como API, gerados no build do site em `/api/v1/` (página `/api/`).
    `v1` é a versão do formato; a versão dos dados (conjunto, season, revisão de cada fonte) fica no manifesto
    `/api/v1/index.json` e na tabela `meta` do SQLite. Mudança incompatível de formato vira `/api/v2/`.
-5. Site: páginas de itens, mobs e spots; builds com curadoria manual.
+5. Site: páginas de itens, mobs e spots; builds com curadoria manual. Spots ficam numa área própria
+   (`/spots/<mapa>/#spot-N`); a página do mapa só leva até lá. "Onde dropa" do item mostra, para cada monstro, o
+   spot com mais dele (para farmar até dropar).
+6. **Próximo (combinado com o dono):** revisão de todo o front-end depois dos mapas refeitos: estilo de arte,
+   dinâmica, distribuição das telas, filtros de itens e nomes de categoria padronizados (hoje aparecem slugs
+   como `accessory_misc` e atributos repetidos em inglês/português, ex.: durability/durabilidade).
 
 ## Decisões em aberto (resolver antes da coleta completa)
 

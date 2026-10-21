@@ -16,7 +16,7 @@ const example = `${API_BASE}/monsters/${"{id}"}.json`;
 
   <h2>Manifesto</h2>
   <p>
-    <a href={`${API_BASE}/index.json`}><code>{API_BASE}/index.json</code></a>: versão, fontes (com a revisão exata),
+    <a href={`${API_BASE}/index.json`}><code>{API_BASE}/index.json</code></a>: versão, origem dos dados (com a revisão exata),
     contagens e endereços. Gerado em {manifest.generated_at}.
   </p>
 
@@ -67,14 +67,6 @@ console.log(spider.level, spider.spawns.map((s) => s.map_name));`}</code></pre>
     <li>Mudança incompatível no formato vira <code>/api/v2/</code>; <code>v1</code> continua com o mesmo formato.</li>
   </ul>
 
-  <h2>Fontes</h2>
-  <ul>
-    {manifest.sources.map((s) => (
-      <li>
-        <a href={s.url}>{s.name}</a>{s.revision && <> (revisão <code>{s.revision.slice(0, 10)}</code>)</>}{s.credit && <>: {s.credit}</>}
-      </li>
-    ))}
-  </ul>
 </Base>
 
 <style>

@@ -1,7 +1,7 @@
 import type { APIRoute, GetStaticPaths } from "astro";
 import { monsterDetail } from "../../../../lib/api";
 import { mapName, json } from "../../../../lib/api-data";
-import { monsters, spawnsByMonster, dropsByMonster } from "../../../../lib/data";
+import { sourceMonsters as monsters, spawnsByMonster, dropsByMonster } from "../../../../lib/data";
 
 // Um monstro, com onde aparece (spawns) e o que dropa.
 export const getStaticPaths: GetStaticPaths = () =>
