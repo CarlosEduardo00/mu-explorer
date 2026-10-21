@@ -1,7 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
-import MapExplorer from "../../components/MapExplorer.astro";
-import { maps, mapById, monsterById, npcById, spawnsByMap, spotsByMap, markersByMap, terrainByMap, fmt } from "../../lib/data";
+import { maps, mapById, monsterById, npcById, spawnsByMap, spotsByMap, spotMapIds, spotsUrl, fmt } from "../../lib/data";
 
 export function getStaticPaths() {
   return maps.map((map) => ({ params: { id: map.id }, props: { map } }));
@@ -16,8 +15,6 @@ const spotsOf = (id: string) => spawnList.filter((s) => s.monster_id === id);
 const connections = map.connections.map((id) => mapById.get(id)).filter((m) => m !== undefined);
 const parent = map.parent_id ? mapById.get(map.parent_id) : undefined;
 const spots = spotsByMap.get(map.id) ?? [];
-const markers = markersByMap.get(map.id) ?? [];
-const terrain = terrainByMap.get(map.id) ?? null;
 ---
 <Base title={map.name} description={map.description ?? `${map.name}: monstros e NPCs em MU Online.`}>
   <p class="crumbs"><a href="/mapas/">Mapas</a>{parent && <> › <a href={`/mapas/${parent.id}/`}>{parent.name}</a></>}</p>
@@ -47,32 +44,11 @@ const terrain = terrainByMap.get(map.id) ?? null;
       </div>
     </>
   )}
-  {(spots.length > 0 || terrain || map.minimap_url) && (
-    <>
-      <h2 id="spots">{spots.length > 0 ? "Mapa e spots de farm" : "Mapa"}</h2>
-      <MapExplorer mapName={map.name} spots={spots} markers={markers} minimap={map.minimap_url} terrain={terrain} />
-    </>
-  )}
-  {spots.length > 0 && (
-    <>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th class="num">#</th><th>Tipo</th><th>Coordenadas</th><th class="num">Nível</th><th>Monstros</th></tr></thead>
-          <tbody>
-            {spots.map((s, i) => (
-              <tr id={`spot-row-${i + 1}`} data-spot-row={i + 1}>
-                <td class="num">{i + 1}</td>
-                <td><span class={`heat-tag heat-${s.heat ?? "mid"}`}>{({ hot: "hot", mid: "mid", low: "low", boss: "boss" } as Record<string, string>)[s.heat ?? "mid"]}</span> x{s.total}</td>
-                <td>{s.x}, {s.y}</td>
-                <td class="num">{s.level_min == null ? "—" : s.level_min === s.level_max ? fmt(s.level_min) : `${fmt(s.level_min)}–${fmt(s.level_max)}`}</td>
-                <td>{s.monsters.map((m, j) => <>{j > 0 && ", "}<a href={`/monstros/${m.monster_id}/`} class="name-cell">{monsterById.get(m.monster_id)?.image_url && <img class="thumb" src={monsterById.get(m.monster_id)?.image_url} alt="" loading="lazy" referrerpolicy="no-referrer" />}{m.name}</a> ×{m.count}</>)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <p class="muted">Mapa desenhado a partir do terreno do jogo: chão (claro), obstáculos (escuro) e zona segura (azul). Spots: spawns próximos agrupados (até 10 casas); cor pelo volume de monstros comparado aos outros spots do mapa (hot ≥ 1,5× a mediana, low ≤ 0,75×) e boss quando há chefe. A coordenada (x, y) é a do jogo. <a href="/spots/">Todos os spots</a>.</p>
-    </>
+  {spotMapIds.includes(map.id) && (
+    <a class="spots-cta" href={spotsUrl(map.id)}>
+      <strong>{spots.length > 0 ? `${spots.length} spots de farm` : "Mapa interativo"}</strong>
+      <span>{spots.length > 0 ? "Ver no mapa onde ficam, quantos monstros e o que dropam →" : "Ver o mapa →"}</span>
+    </a>
   )}
   {npcsHere.length > 0 && (<><h2>NPCs</h2><ul class="tags">{npcsHere.map((n) => <li><a href={`/npcs/${n.id}/`}>{n.name}</a></li>)}</ul></>)}
   {connections.length > 0 && (<><h2>Ligações</h2><ul class="tags">{connections.map((c) => <li><a href={`/mapas/${c.id}/`}>{c.name}</a></li>)}</ul></>)}

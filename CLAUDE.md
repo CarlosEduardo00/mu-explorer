@@ -98,7 +98,8 @@ site/src/          Astro: layouts/Base, components/FilterList, components/MapExp
                    próprio, hot spots com cor e volume, painel com monstros, atributos e drops, camadas de spots do
                    minimapa do jogo, portais e imagem do minimapa), lib/data.ts (leitura dos JSON), lib/planner.ts (lógica
                    pura do planner + testes), pages/ (início, itens, monstros, mapas, npcs: lista com filtro +
-                   página por registro; planner/; data/ = JSON estático para o planner; api/ = API estática)
+                   página por registro; spots/ = área separada: índice com filtro por nível e spots/<mapa>/ com o
+                   mapa interativo; planner/; data/ = JSON estático para o planner; api/ = API estática)
                    lib/api.ts + lib/sqlite.ts: manifesto, registros com relações e SQLite (node:sqlite)
 site/public/       arquivos fixos copiados para a saída (_headers, 404.html, media/ = imagens copiadas das fontes)
 site/dist/         saída do build (fora do git); é o que o Cloudflare publica
@@ -319,7 +320,12 @@ justamente em Gun Crusher e Slayer; precisam de outra fonte ou de conferência n
 4. Publicação: SQLite + JSON estático como API, gerados no build do site em `/api/v1/` (página `/api/`).
    `v1` é a versão do formato; a versão dos dados (conjunto, season, revisão de cada fonte) fica no manifesto
    `/api/v1/index.json` e na tabela `meta` do SQLite. Mudança incompatível de formato vira `/api/v2/`.
-5. Site: páginas de itens, mobs e spots; builds com curadoria manual.
+5. Site: páginas de itens, mobs e spots; builds com curadoria manual. Spots ficam numa área própria
+   (`/spots/<mapa>/#spot-N`); a página do mapa só leva até lá. "Onde dropa" do item mostra, para cada monstro, o
+   spot com mais dele (para farmar até dropar).
+6. **Próximo (combinado com o dono):** revisão de todo o front-end depois dos mapas refeitos: estilo de arte,
+   dinâmica, distribuição das telas, filtros de itens e nomes de categoria padronizados (hoje aparecem slugs
+   como `accessory_misc` e atributos repetidos em inglês/português, ex.: durability/durabilidade).
 
 ## Decisões em aberto (resolver antes da coleta completa)
 

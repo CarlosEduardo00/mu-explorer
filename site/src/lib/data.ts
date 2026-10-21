@@ -122,7 +122,7 @@ export const dropsByItem = groupBy(drops, (d) => d.item_id);
 export const spotsByMap = groupBy(farmSpots, (s) => s.map_id);
 export const markersByMap = groupBy(mapMarkers, (m) => m.map_id);
 
-/** Spots onde o monstro aparece: mapa e número do spot (o mesmo da página do mapa, /mapas/<id>/#spot-<n>). */
+/** Spots onde o monstro aparece: mapa e número do spot (o mesmo da página de spots, /spots/<mapa>/#spot-<n>). */
 export interface SpotRef { map_id: string; map_name: string; n: number; count: number; level_min: number | null; level_max: number | null }
 export const spotRefsByMonster = new Map<string, SpotRef[]>();
 for (const [mapId, list] of spotsByMap) {
@@ -134,6 +134,13 @@ for (const [mapId, list] of spotsByMap) {
     }
   });
 }
+// Melhor spot primeiro: onde há mais do monstro; empate pelo spot de menor nível.
+for (const refs of spotRefsByMonster.values()) refs.sort((a, b) => b.count - a.count || (a.level_min ?? 0) - (b.level_min ?? 0));
+
+/** Endereço da página de spots de um mapa (área separada do site), opcionalmente já no spot N. */
+export const spotsUrl = (mapId: string, n?: number) => `/spots/${mapId}/${n ? `#spot-${n}` : ""}`;
+/** Mapas com página de spots: têm spots ou mapa vetorial/minimapa para mostrar. */
+export const spotMapIds = maps.filter((m) => spotsByMap.has(m.id) || terrainByMap.has(m.id) || m.minimap_url).map((m) => m.id);
 
 function groupBy<T>(rows: T[], key: (row: T) => string): Map<string, T[]> {
   const out = new Map<string, T[]>();

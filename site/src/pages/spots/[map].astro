@@ -1,0 +1,60 @@
+---
+// Spots de farm de um mapa: mapa interativo (hot spots) e a lista dos spots. Área separada da página do mapa.
+import Base from "../../layouts/Base.astro";
+import MapExplorer from "../../components/MapExplorer.astro";
+import { mapById, monsterById, spotsByMap, markersByMap, terrainByMap, spotMapIds, fmt } from "../../lib/data";
+
+export function getStaticPaths() {
+  return spotMapIds.map((id) => ({ params: { map: id } }));
+}
+const map = mapById.get(Astro.params.map as string)!;
+const spots = spotsByMap.get(map.id) ?? [];
+const markers = markersByMap.get(map.id) ?? [];
+const terrain = terrainByMap.get(map.id) ?? null;
+const levelText = (min: number | null, max: number | null) =>
+  min == null ? "—" : min === max ? fmt(min) : `${fmt(min)}–${fmt(max)}`;
+const levels = spots.flatMap((s) => [s.level_min, s.level_max]).filter((v): v is number => v != null);
+const recommended = map.level_recommended_min != null
+  ? `${fmt(map.level_recommended_min)}${map.level_recommended_max != null ? `–${fmt(map.level_recommended_max)}` : "+"}` : null;
+---
+<Base title={`Spots de ${map.name}`} description={`Hot spots de farm em ${map.name}: onde ficam, quantos monstros, nível e drops.`}>
+  <p class="crumbs"><a href="/spots/">Spots</a> › {map.name}</p>
+  <h1>Spots de {map.name}</h1>
+  <p class="lead">
+    {spots.length > 0
+      ? <>{fmt(spots.length)} spots{levels.length > 0 && <>, monstros de nível {levelText(Math.min(...levels), Math.max(...levels))}</>}.</>
+      : <>Sem spots de farm conhecidos neste mapa.</>}
+    {map.level_required != null && <> Entrada: nível {fmt(map.level_required)}.</>}
+    {recommended && <> Recomendado: nível {recommended}.</>}
+    {" "}<a href={`/mapas/${map.id}/`}>Informações do mapa</a>.
+  </p>
+
+  <MapExplorer mapName={map.name} spots={spots} markers={markers} minimap={map.minimap_url} terrain={terrain} />
+
+  {spots.length > 0 && (
+    <>
+      <h2>Todos os spots</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="num">#</th><th>Tipo</th><th>Coordenadas</th><th class="num">Nível</th><th>Monstros</th></tr></thead>
+          <tbody>
+            {spots.map((s, i) => (
+              <tr id={`spot-row-${i + 1}`} data-spot-row={i + 1}>
+                <td class="num">{i + 1}</td>
+                <td><span class={`heat-tag heat-${s.heat ?? "mid"}`}>{s.heat ?? "mid"}</span> x{s.total}</td>
+                <td>{s.x}, {s.y}</td>
+                <td class="num">{levelText(s.level_min, s.level_max)}</td>
+                <td>{s.monsters.map((m, j) => <>{j > 0 && ", "}<a href={`/monstros/${m.monster_id}/`} class="name-cell">{monsterById.get(m.monster_id)?.image_url && <img class="thumb" src={monsterById.get(m.monster_id)?.image_url} alt="" loading="lazy" />}{m.name}</a> ×{m.count}</>)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  )}
+  <p class="muted">
+    Mapa desenhado a partir do terreno do jogo: chão (claro), obstáculos (escuro) e zona segura (azul). Spots:
+    spawns próximos agrupados (até 10 casas); a cor compara o volume de monstros com os outros spots do mapa (hot ≥
+    1,5× a mediana, low ≤ 0,75×) e boss indica chefe. A coordenada (x, y) é a do jogo.
+  </p>
+</Base>

@@ -1,6 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { items, itemById, dropsByItem, monsterById, spotRefsByMonster, spawnsByMonster, mapById, fmt } from "../../lib/data";
+import { items, itemById, dropsByItem, monsterById, spotRefsByMonster, spawnsByMonster, mapById, spotsUrl, fmt } from "../../lib/data";
 
 export function getStaticPaths() {
   return items.map((item) => ({ params: { id: item.id }, props: { item } }));
@@ -18,12 +18,20 @@ const droppers = [...new Set(dropRows.map((d) => d.monster_id))]
   .sort((a, b) => (a.level ?? 0) - (b.level ?? 0));
 const dropKind = (monsterId: string) => [...new Set(dropRows.filter((d) => d.monster_id === monsterId).map((d) => d.table ?? d.kind))].join(", ");
 const whereMaps = (monsterId: string) => [...new Set((spawnsByMonster.get(monsterId) ?? []).map((s) => s.map_id))];
+// Onde farmar: para cada monstro que dropa, o spot com mais dele. Os destaques são os monstros de menor nível
+// (mais fáceis de farmar) que têm spot conhecido; empate pelo spot com mais monstros.
+const bestSpots = droppers.flatMap((m) => {
+  const r = (spotRefsByMonster.get(m.id) ?? [])[0];
+  return r ? [{ monster: m, ref: r }] : [];
+}).sort((a, b) => (a.monster.level ?? 0) - (b.monster.level ?? 0) || b.ref.count - a.ref.count).slice(0, 3);
+const levelText = (min: number | null, max: number | null) =>
+  min == null ? "" : min === max ? `nv ${fmt(min)}` : `nv ${fmt(min)}–${fmt(max)}`;
 const related = item.related_items.map((id) => itemById.get(id)).filter((i) => i !== undefined);
 ---
 <Base title={item.name} description={`${item.name}: requisitos, atributos e onde dropa em MU Online.`}>
   <p class="crumbs"><a href="/itens/">Itens</a> › {item.category ?? "item"}</p>
   <h1>{item.name}</h1>
-  {item.image_url && <img class="hero-img" src={item.image_url} alt={item.name} loading="lazy" referrerpolicy="no-referrer" />}
+  {item.image_url && <img class="hero-img" src={item.image_url} alt={item.name} loading="lazy" />}
   <p class="muted">
     {item.group != null && <>Grupo {item.group} · índice {item.index} · </>}
     {item.grade && <>{item.grade} · </>}
@@ -60,26 +68,45 @@ const related = item.related_items.map((id) => itemById.get(id)).filter((i) => i
   {droppers.length > 0 && (
     <>
       <h2 id="onde-dropa">Onde dropa</h2>
-      <p class="muted">{droppers.length} monstros podem dropar este item. Os spots levam ao mapa interativo, com os monstros de cada spot.</p>
+      <p class="muted">{droppers.length} monstros podem dropar este item. O spot é onde há mais daquele monstro: dá para ficar lá farmando até dropar.</p>
+      {bestSpots.length > 0 && (
+        <div class="farm-cards">
+          {bestSpots.map(({ monster, ref }) => (
+            <a class="farm-card" href={spotsUrl(ref.map_id, ref.n)}>
+              {monster.image_url && <img src={monster.image_url} alt="" loading="lazy" />}
+              <span>
+                <strong>{ref.map_name} · spot {ref.n}</strong>
+                <span>×{ref.count} {monster.name}{monster.level != null && <> (nv {fmt(monster.level)})</>}</span>
+                <span class="muted">{levelText(ref.level_min, ref.level_max) && <>spot {levelText(ref.level_min, ref.level_max)} · </>}ver no mapa →</span>
+              </span>
+            </a>
+          ))}
+        </div>
+      )}
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Monstro</th><th class="num">Nível</th><th>Tabela</th><th>Onde farmar</th></tr></thead>
+          <thead><tr><th>Monstro</th><th class="num">Nível</th><th>Tabela</th><th>Melhor spot</th><th>Outros spots</th></tr></thead>
           <tbody>
             {droppers.map((m) => {
               const refs = spotRefsByMonster.get(m.id) ?? [];
               const maps = whereMaps(m.id);
+              const [best, ...others] = refs;
               return (
                 <tr>
-                  <td><a href={`/monstros/${m.id}/`} class="name-cell">{m.image_url && <img class="thumb" src={m.image_url} alt="" loading="lazy" referrerpolicy="no-referrer" />}{m.name}</a></td>
+                  <td><a href={`/monstros/${m.id}/`} class="name-cell">{m.image_url && <img class="thumb" src={m.image_url} alt="" loading="lazy" />}{m.name}</a></td>
                   <td class="num">{fmt(m.level)}</td>
                   <td>{dropKind(m.id)}</td>
                   <td>
-                    {refs.length > 0
-                      ? refs.slice(0, 6).map((r, i) => <>{i > 0 && ", "}<a href={`/mapas/${r.map_id}/#spot-${r.n}`}>{r.map_name} · spot {r.n}</a></>)
+                    {best
+                      ? <><a href={spotsUrl(best.map_id, best.n)}>{best.map_name} · spot {best.n}</a> <span class="muted">×{best.count}</span></>
                       : maps.length > 0
                         ? maps.map((id, i) => <>{i > 0 && ", "}<a href={`/mapas/${id}/`}>{mapById.get(id)?.name ?? id}</a></>)
                         : <span class="muted">—</span>}
-                    {refs.length > 6 && <span class="muted"> e mais {refs.length - 6}</span>}
+                  </td>
+                  <td>
+                    {others.slice(0, 4).map((r, i) => <>{i > 0 && ", "}<a href={spotsUrl(r.map_id, r.n)}>{r.map_name} {r.n}</a> <span class="muted">×{r.count}</span></>)}
+                    {others.length > 4 && <span class="muted"> e mais {others.length - 4}</span>}
+                    {others.length === 0 && <span class="muted">—</span>}
                   </td>
                 </tr>
               );

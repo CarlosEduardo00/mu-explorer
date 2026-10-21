@@ -92,5 +92,15 @@ const path = Astro.url.pathname;
   .heat-tag { display: inline-block; padding: 0 .45rem; border-radius: .3rem; color: #111; }
   .heat-tag.heat-hot { background: #ef4444; color: #fff; } .heat-tag.heat-mid { background: #facc15; }
   .heat-tag.heat-low { background: #e2e8f0; } .heat-tag.heat-boss { background: #f59e0b; }
+  .farm-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: .6rem; margin: .75rem 0 1rem; }
+  .farm-card { display: flex; gap: .6rem; align-items: center; padding: .6rem .75rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--panel); text-decoration: none; color: var(--fg); }
+  .farm-card:hover { border-color: var(--accent); }
+  .farm-card img { width: 3rem; height: 3rem; object-fit: contain; flex: none; }
+  .farm-card > span { display: flex; flex-direction: column; gap: .1rem; min-width: 0; }
+  .farm-card strong { color: var(--accent); }
+  .farm-card .muted { font-size: .8rem; }
+  .spots-cta { display: flex; flex-direction: column; gap: .15rem; margin: 1.25rem 0; padding: .9rem 1rem; border: 1px solid var(--accent); border-radius: .5rem; background: var(--panel); text-decoration: none; color: var(--fg); }
+  .spots-cta strong { color: var(--accent); font-size: 1.1rem; }
+  .spots-cta span { color: var(--muted); }
   .map-img { display: block; width: 100%; max-height: 20rem; object-fit: cover; border-radius: .5rem; margin: .5rem 0 1rem; }
 </style>

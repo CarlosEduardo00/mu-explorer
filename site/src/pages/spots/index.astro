@@ -1,6 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { farmSpots, mapById, monsterById, fmt } from "../../lib/data";
+import { farmSpots, mapById, monsterById, spotsByMap, spotsUrl, fmt } from "../../lib/data";
 
 // Mapas em ordem do spot de menor nível; dentro do mapa, spots por nível.
 const byMap = new Map<string, typeof farmSpots>();
@@ -9,6 +9,8 @@ for (const s of [...farmSpots].sort((a, b) => (a.level_min ?? 0) - (b.level_min 
   list.push(s);
   byMap.set(s.map_id, list);
 }
+// Número do spot na página do mapa (mesma ordem de spotsByMap).
+const spotNumber = (s: (typeof farmSpots)[number]) => (spotsByMap.get(s.map_id) ?? []).indexOf(s) + 1;
 const levelText = (s: (typeof farmSpots)[number]) =>
   s.level_min == null ? "—" : s.level_min === s.level_max ? fmt(s.level_min) : `${fmt(s.level_min)}–${fmt(s.level_max)}`;
 const recommended = (mapId: string) => {
@@ -34,18 +36,18 @@ const recommended = (mapId: string) => {
 
   {[...byMap.entries()].map(([mapId, spots]) => (
     <section class="spot-map-section" data-map>
-      {mapById.get(mapId)?.image_url && <img class="spot-map-thumb" src={mapById.get(mapId)?.image_url} alt="" loading="lazy" referrerpolicy="no-referrer" />}
-      <h2><a href={`/mapas/${mapId}/#spots`}>{spots[0].map_name}</a>{recommended(mapId) && <span class="rec"> · {recommended(mapId)}</span>}</h2>
+      {mapById.get(mapId)?.image_url && <img class="spot-map-thumb" src={mapById.get(mapId)?.image_url} alt="" loading="lazy" />}
+      <h2><a href={spotsUrl(mapId)}>{spots[0].map_name}</a>{recommended(mapId) && <span class="rec"> · {recommended(mapId)}</span>}</h2>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Spot</th><th>Coordenadas</th><th class="num">Nível</th><th>Monstros</th></tr></thead>
           <tbody>
             {spots.map((s) => (
               <tr data-min={s.level_min ?? ""} data-max={s.level_max ?? ""}>
-                <td><a href={`/mapas/${mapId}/#spot-${s.id.split("-").pop()}`}>{s.id}</a> <span class={`heat-tag heat-${s.heat ?? "mid"}`}>x{s.total}</span></td>
+                <td><a href={spotsUrl(mapId, spotNumber(s))}>spot {spotNumber(s)}</a> <span class={`heat-tag heat-${s.heat ?? "mid"}`}>x{s.total}</span></td>
                 <td>{s.x}, {s.y}<span class="muted"> ({s.x_min},{s.y_min})–({s.x_max},{s.y_max})</span></td>
                 <td class="num">{levelText(s)}</td>
-                <td>{s.monsters.map((m, i) => <>{i > 0 && ", "}<a href={`/monstros/${m.monster_id}/`} class="name-cell">{monsterById.get(m.monster_id)?.image_url && <img class="thumb" src={monsterById.get(m.monster_id)?.image_url} alt="" loading="lazy" referrerpolicy="no-referrer" />}{m.name}</a> ×{m.count}</>)}</td>
+                <td>{s.monsters.map((m, i) => <>{i > 0 && ", "}<a href={`/monstros/${m.monster_id}/`} class="name-cell">{monsterById.get(m.monster_id)?.image_url && <img class="thumb" src={monsterById.get(m.monster_id)?.image_url} alt="" loading="lazy" />}{m.name}</a> ×{m.count}</>)}</td>
               </tr>
             ))}
           </tbody>
