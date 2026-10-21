@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "npcs",
+  "key": "Shadow Phantom Soldier",
+  "file": "shadow-phantom-soldier.html",
+  "url": "https://muonlinefanz.com/tools/npc/data/npcdb/Shadow%20Phantom%20Soldier.php",
+  "final_url": "https://muonlinefanz.com/tools/npc/data/npcdb/Shadow%20Phantom%20Soldier.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T14:11:50Z",
+  "bytes": 43177,
+  "sha256": "5ad39a6d4df912a8c02e463b37a0103e45beb6ac40ff3936403962a64af91951"
+}

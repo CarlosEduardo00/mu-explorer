@@ -1,0 +1,102 @@
+{
+  "record": {
+    "id": "lorencia",
+    "name": "Lorencia",
+    "parent_id": null,
+    "description": "Lorencia is well established city. It is well guarded by the travelers of MU, and several members of the Church of Devias protect the area. A handful of merchants have set up their shops here, offering a variety of basic items for travelers. Lorencia is a wide plain, located in the center of the MU continent. The heavy rainfall here causes tall trees and grasses to grow in abundance.",
+    "quick_facts": [
+      "Requires character level 10 to enter or warp.",
+      "Recommended for characters less than level 20.",
+      "Characters can be buffed by NPC Shadow Phantom Soldier.",
+      "The Shadow Phantom Soldier buff is strong enough for characters to be able kill any monster in this map with ease."
+    ],
+    "valued_drops": {
+      "monster": [
+        "Skill items",
+        "Jewel of Chaos",
+        "Excellent Sword of Assassin (Hound)",
+        "Excellent Berdysh (Elite Bull Fighter)",
+        "Excellent Serpent Staff (Lich)",
+        "Excellent Double Axe (Giant)",
+        "Excellent Gladius (Skeleton)"
+      ],
+      "special": [
+        "Wizard's Ring",
+        "Jewel of Bless",
+        "Box of Luck",
+        "Box of Kundun",
+        "Skill item drops:",
+        "Scroll of Fire Ball",
+        "Scroll of Power Wave",
+        "Scroll of Lightning",
+        "Scroll of Teleport",
+        "Scroll of Meteorite",
+        "Scroll of Ice",
+        "Fire Burst Scroll",
+        "Harsh Strike Scroll",
+        "Spin Step Scroll"
+      ]
+    },
+    "monsters": [
+      "spider",
+      "budge-dragon",
+      "bull-fighter",
+      "hound",
+      "elite-bull-fighter",
+      "lich",
+      "giant",
+      "skeleton"
+    ],
+    "special_monsters": [
+      "moon-rabbit",
+      "golden-budge-dragon",
+      "golden-derkon",
+      "destructive-ogre-soldier",
+      "destructive-ogre-archer",
+      "white-wizard"
+    ],
+    "bosses": [
+      "death-bone"
+    ],
+    "npcs": [
+      "shadow-phantom-soldier",
+      "hanzo-the-blacksmith",
+      "pasi-the-mage",
+      "wandering-merchant-alex",
+      "wandering-merchant-herald",
+      "lumen-the-barmaid",
+      "potion-girl-amy",
+      "trainer",
+      "marlon",
+      "wandering-merchant-zyro",
+      "sent",
+      "sir-lesnar",
+      "julia",
+      "gens-duprian-steward",
+      "guard",
+      "safety-guardian"
+    ],
+    "connections": [
+      "noria",
+      "devias",
+      "dungeon",
+      "valley-of-loren",
+      "deep-dungeon"
+    ],
+    "notes": [
+      "This map has entrances to/from:",
+      "Noria",
+      "Devias",
+      "Dungeon",
+      "Valley of Loren",
+      "Deep Dungeon"
+    ],
+    "image_url": "https://muonlinefanz.com/tools/maps/data/graphics/Lorencia/img01.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Lorencia.php",
+    "scraped_at": "2026-10-21T14:10:48Z",
+    "page_updated_at": null
+  },
+  "related": {}
+}

@@ -13,12 +13,13 @@ from pathlib import Path
 from scrapers.common.ids import slugify
 from scrapers.common.model import validate
 
-FILES = {"item": "items.json", "monster": "monsters.json", "map": "maps.json",
+FILES = {"item": "items.json", "monster": "monsters.json", "map": "maps.json", "npc": "npcs.json",
          "spawn": "spawns.json", "drop": "drops.json"}
 REQUIRED = {
     "item": ["id", "name", "source_url", "scraped_at"],
     "monster": ["id", "name", "level", "source_url", "scraped_at"],
     "map": ["id", "name"],
+    "npc": ["id", "name"],
 }
 # Campos que mudam a cada coleta e não indicam mudança de conteúdo.
 VOLATILE = {"scraped_at"}
@@ -40,14 +41,20 @@ def load(directory: Path) -> dict[str, list[dict]]:
     return data
 
 
-def check_counts(data: dict[str, list[dict]], expected: dict[str, int], tolerance: float = 0.01) -> list[Check]:
+def check_counts(data: dict[str, list[dict]], expected: dict[str, int], tolerance: float = 0.01,
+                 broken: dict[str, int] | None = None) -> list[Check]:
+    """broken: quantas páginas da listagem o próprio site devolve quebradas (não contam como falta nossa)."""
     checks = []
+    broken = broken or {}
     for entity, wanted in expected.items():
         got = len(data.get(entity, []))
         missing = wanted - got
-        severity = "ok" if missing <= wanted * tolerance else "erro"
-        checks.append(Check(f"contagem de {entity}", severity,
-                            f"{got} de {wanted} esperados ({missing:+d} faltando)" if missing else f"{got} de {wanted}"))
+        known = broken.get(entity, 0)
+        severity = "ok" if missing - known <= wanted * tolerance else "erro"
+        detail = f"{got} de {wanted}"
+        if missing:
+            detail += f" ({missing} faltando" + (f"; {known} com página quebrada no site)" if known else ")")
+        checks.append(Check(f"contagem de {entity}", severity, detail))
     return checks
 
 
@@ -112,10 +119,29 @@ def check_integrity(data: dict[str, list[dict]], dead_items: set[str] | None = N
     without_spawn = sorted(monsters - {s["monster_id"] for s in data["spawn"]})
     checks.append(Check("monstros sem mapa", "aviso" if without_spawn else "ok",
                         f"{len(without_spawn)} de {len(monsters)}", without_spawn[:10]))
+    if data.get("npc") or any(m.get("monsters") for m in data["map"]):
+        checks += _map_npc_integrity(data, monsters, maps)
     dup_names = _duplicates(data["item"])
     checks.append(Check("itens com o mesmo nome normalizado", "aviso" if dup_names else "ok",
                         f"{len(dup_names)} grupos", dup_names[:10]))
     return checks
+
+
+def _map_npc_integrity(data: dict[str, list[dict]], monsters: set[str], maps: set[str]) -> list[Check]:
+    npcs = {n["id"] for n in data.get("npc", [])}
+    listed = sorted({f"{m['id']}:{x}" for m in data["map"] for key in ("monsters", "special_monsters", "bosses")
+                     for x in m.get(key, []) if x not in monsters})
+    map_npcs = sorted({f"{m['id']}:{x}" for m in data["map"] for x in m.get("npcs", []) if x not in npcs})
+    npc_maps = sorted({f"{n['id']}:{loc['map_id']}" for n in data.get("npc", []) for loc in n["locations"]
+                       if loc["map_id"] not in maps})
+    parents = sorted({f"{m['id']}->{m['parent_id']}" for m in data["map"]
+                      if m.get("parent_id") and m["parent_id"] not in maps})
+    return [
+        Check("mapas -> monstros listados", "aviso" if listed else "ok", f"{len(listed)} sem registro", listed[:10]),
+        Check("mapas -> NPCs listados", "aviso" if map_npcs else "ok", f"{len(map_npcs)} sem registro", map_npcs[:10]),
+        Check("NPCs -> mapas", "aviso" if npc_maps else "ok", f"{len(npc_maps)} sem registro", npc_maps[:10]),
+        Check("mapas -> mapa pai", "erro" if parents else "ok", f"{len(parents)} quebrados", parents[:10]),
+    ]
 
 
 def _duplicates(rows: list[dict]) -> list[str]:

@@ -1,25 +1,33 @@
 # QA — fanz (3074 itens, 291 monstros)
 
-0 erros · 3 avisos · 17 verificações
+0 erros · 3 avisos · 25 verificações
 
 | | verificação | resultado |
 |---|---|---|
-| ✅ | contagem de item | 3074 de 3089 esperados (+15 faltando) |
+| ✅ | contagem de item | 3074 de 3089 (15 faltando; 15 com página quebrada no site) |
 | ✅ | contagem de monster | 291 de 291 |
+| ✅ | contagem de map | 49 de 36 (-13 faltando) |
+| ✅ | contagem de npc | 57 de 58 (1 faltando; 1 com página quebrada no site) |
 | ✅ | schema de item | 0 erros em 3074 registros |
 | ✅ | schema de monster | 0 erros em 291 registros |
-| ✅ | schema de map | 0 erros em 41 registros |
-| ✅ | schema de spawn | 0 erros em 290 registros |
+| ✅ | schema de map | 0 erros em 49 registros |
+| ✅ | schema de npc | 0 erros em 57 registros |
+| ✅ | schema de spawn | 0 erros em 341 registros |
 | ✅ | schema de drop | 0 erros em 23759 registros |
 | ✅ | campos obrigatórios de item (id, name, source_url, scraped_at) | 0 de 3074 sem algum campo |
 | ✅ | campos obrigatórios de monster (id, name, level, source_url, scraped_at) | 0 de 291 sem algum campo |
-| ✅ | campos obrigatórios de map (id, name) | 0 de 41 sem algum campo |
+| ✅ | campos obrigatórios de map (id, name) | 0 de 49 sem algum campo |
+| ✅ | campos obrigatórios de npc (id, name) | 0 de 57 sem algum campo |
 | ✅ | drops -> itens | 0 de 23759 drops apontam para 0 itens nunca vistos |
 | ⚠️ | drops -> itens com página quebrada na fonte | 397 drops apontam para 39 itens cuja página responde '404' com HTTP 200 no site |
 | ✅ | drops -> monstros | 0 monstros inexistentes |
 | ✅ | spawns -> mapas/monstros | 0 spawns quebrados |
 | ⚠️ | itens relacionados -> itens | 617 ids de itens relacionados sem registro |
-| ⚠️ | monstros sem mapa | 1 de 291 |
+| ✅ | monstros sem mapa | 0 de 291 |
+| ✅ | mapas -> monstros listados | 0 sem registro |
+| ⚠️ | mapas -> NPCs listados | 11 sem registro |
+| ✅ | NPCs -> mapas | 0 sem registro |
+| ✅ | mapas -> mapa pai | 0 quebrados |
 | ✅ | itens com o mesmo nome normalizado | 0 grupos |
 
 ## Exemplos
@@ -60,7 +68,16 @@
 - `apollo-rune-padded-pants`
 - `argo-holy-spirit-armor -> frigg-holy-spirit-armor?`
 
-**monstros sem mapa**
+**mapas -> NPCs listados**
 
-- `ferea-general`
+- `balgass-barracks:gatekeeper`
+- `event-square:julia`
+- `event-square:mirage`
+- `event-square:rugard`
+- `land-of-trials:gatekeeper`
+- `loren-market:christine-the-merchant`
+- `loren-market:jeweler-rual`
+- `loren-market:julia`
+- `loren-market:mirage`
+- `loren-market:rugard`
 

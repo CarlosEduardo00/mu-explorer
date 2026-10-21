@@ -8,10 +8,22 @@
   "required": [
     "id",
     "name",
+    "parent_id",
+    "description",
+    "quick_facts",
+    "valued_drops",
+    "monsters",
+    "special_monsters",
+    "bosses",
+    "npcs",
+    "connections",
+    "notes",
+    "image_url",
     "season",
     "source",
     "source_url",
-    "scraped_at"
+    "scraped_at",
+    "page_updated_at"
   ],
   "properties": {
     "id": {
@@ -21,6 +33,98 @@
     "name": {
       "type": "string",
       "minLength": 1
+    },
+    "parent_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Mapa 'pai' quando este é um nível/variante (kalima-1 -> kalima)."
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "description": "Texto de apresentação do mapa."
+    },
+    "quick_facts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Requisitos de entrada, nível recomendado etc. (texto original)."
+    },
+    "valued_drops": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "description": "Drops valiosos por grupo (monster, special, boss, elite), em texto original."
+    },
+    "monsters": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      },
+      "uniqueItems": true,
+      "description": "Monstros comuns do mapa (ids)."
+    },
+    "special_monsters": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      },
+      "uniqueItems": true
+    },
+    "bosses": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      },
+      "uniqueItems": true
+    },
+    "npcs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      },
+      "uniqueItems": true,
+      "description": "NPCs no mapa (ids)."
+    },
+    "connections": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      },
+      "uniqueItems": true,
+      "description": "Mapas com entrada/saída a partir deste (ids)."
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "image_url": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^https?://"
     },
     "season": {
       "type": [
@@ -40,6 +144,13 @@
     "scraped_at": {
       "type": "string",
       "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+    },
+    "page_updated_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
     }
   }
 }

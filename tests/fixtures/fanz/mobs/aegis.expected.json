@@ -30,10 +30,22 @@
       {
         "id": "kalima-1",
         "name": "Kalima 1",
+        "parent_id": null,
+        "description": null,
+        "quick_facts": [],
+        "valued_drops": {},
+        "monsters": [],
+        "special_monsters": [],
+        "bosses": [],
+        "npcs": [],
+        "connections": [],
+        "notes": [],
+        "image_url": null,
         "season": null,
         "source": "fanz",
         "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Kalima.php",
-        "scraped_at": "2026-10-21T12:04:18Z"
+        "scraped_at": "2026-10-21T12:04:18Z",
+        "page_updated_at": null
       }
     ],
     "spawns": [

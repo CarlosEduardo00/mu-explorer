@@ -89,8 +89,10 @@ def build_report(dataset: Dataset) -> str:
         "",
         *_fill_table("Itens", items),
         *_fill_table("Monstros", monsters),
+        *_fill_table("Mapas", dataset.maps),
+        *_fill_table("NPCs", dataset.npcs),
     ]
-    for kind, title in (("item", "itens"), ("monster", "monstros")):
+    for kind, title in (("item", "itens"), ("monster", "monstros"), ("map", "mapas"), ("npc", "NPCs")):
         results = [r for r in dataset.results if r.kind == kind]
         lines: Counter[str] = Counter()
         headings: Counter[str] = Counter()

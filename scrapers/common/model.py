@@ -10,7 +10,7 @@ from jsonschema import Draft202012Validator
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_DIR = REPO_ROOT / "schema"
-ENTITIES = ("item", "monster", "map", "spawn", "drop", "source")
+ENTITIES = ("item", "monster", "map", "npc", "spawn", "drop", "source")
 
 
 @dataclass
@@ -35,3 +35,12 @@ def validate(entity: str, record: dict) -> list[str]:
     """Lista de erros legíveis (vazia se o registro é válido)."""
     errors = sorted(validator(entity).iter_errors(record), key=lambda e: list(e.path))
     return [f"{'/'.join(str(p) for p in e.path) or '<raiz>'}: {e.message}" for e in errors]
+
+
+def empty_map(map_id: str, name: str, provenance: dict, parent_id: str | None = None) -> dict:
+    """Registro de mapa só com identificação (quando a fonte só cita o mapa, sem página própria)."""
+    return {
+        "id": map_id, "name": name, "parent_id": parent_id, "description": None, "quick_facts": [],
+        "valued_drops": {}, "monsters": [], "special_monsters": [], "bosses": [], "npcs": [],
+        "connections": [], "notes": [], "image_url": None, **provenance, "page_updated_at": None,
+    }

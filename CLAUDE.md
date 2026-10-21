@@ -16,6 +16,7 @@ pytest                             # testes (offline, usam fixtures de HTML)
 
 python -m scrapers.fanz fetch --items 20 --mobs 20   # baixa HTML bruto para data/raw/fanz/ (~1 min, 1 req/s)
 python -m scrapers.fanz parse                        # HTML bruto -> data/processed/fanz/*.json + poc_report.md
+python -m scrapers.fanz fetch --items 0 --mobs 0 --maps 1000 --npcs 1000   # mapas (36) e NPCs (58), ~2 min
 python -m scrapers.fanz fetch-linked                 # baixa itens dropados que não estão na listagem (depois: parse)
 python -m scrapers.fanz poc                          # fetch + parse
 python -m scrapers.fanz fixtures --golden --only dark-knight,aegis   # copia páginas p/ tests/fixtures/fanz/
@@ -56,7 +57,8 @@ scrapers/common/   http.py (cliente educado: robots, 1 req/s, retries), storage.
                    html.py (extração por rótulo/seção), parsing.py (números, faixas, datas),
                    ids.py (slugs), mu.py (classes do jogo), model.py (ParseResult, validação de schema),
                    qa.py (verificações da fase 3, independentes da fonte)
-scrapers/fanz/     urls.py, discover.py, parse_item.py, parse_monster.py, pipeline.py, report.py, cli.py
+scrapers/fanz/     urls.py, discover.py, parse_item.py, parse_monster.py, parse_map.py, parse_npc.py,
+                   pipeline.py, report.py, cli.py
 scrapers/muemu/    source.py (vocabulário, fórmula de requisitos), parse.py, cli.py
 scrapers/combine.py  cruzamento Fanz + MuEmu (Fanz é a base; MuEmu só preenche campos vazios)
 docs/              rascunhos e notas (ex.: pedido de acesso ao muonline.us)
@@ -146,6 +148,17 @@ wrangler.jsonc     configuração dos Workers (env prod = mu-explorer, env hml =
 - Monstros em vários mapas têm uma tabela de drop por mapa, escolhida num seletor; só a do mapa padrão vem
   na página.
 - Títulos com sufixo "[Lv: 1]" ou "[+0]"; 4 itens com "Can be equipped by Classes" (sem a lista, bug do site).
+
+**Mapas e NPCs (`/tools/maps/`: 36 mapas; `/tools/npc/`: 58 NPCs, 1 quebrado):**
+- Mapa: descrição, Quick Facts (requisito de entrada, nível recomendado), drops valiosos por grupo, listas de
+  monstros/especiais/bosses (links), NPCs, Notes & Tips com "This map has entrances to/from:" (-> `connections`).
+- Os **Hot Spots** do mapa ficam num iframe em `/tools/maps/data/php/...`, **bloqueado no robots.txt**: não
+  coletamos. Coordenadas de spots vêm do MuEmu.
+- Mapas citados só em páginas de monstro ("Spawns in Kalima 1." com link para Kalima.php) viram variantes
+  com `parent_id` (kalima-1 -> kalima).
+- NPC: tipo (Merchant/Quest/Crafting/Miscellaneous/Mini-game/Event), localização `Mapa @(x, y)` (pode ser
+  `@(?, ?)` ou `@(various)`), descrição e lista de venda com preço em Zen (e linha de opções `[+3] [+Luck]`).
+  Receitas de crafting (Chaos Goblin Machine etc.) ainda não são extraídas.
 - O rodapé diz que é recurso de fã operado com permissão da Webzen; o conteúdo é do autor
   (IZAKTLY). Dar crédito e, se o site for público, pedir autorização.
 
@@ -197,7 +210,10 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 - `monster`: id, name, level, difficulty, hp, atk_min, atk_max, atk_rate, def, def_rate, elemental_def,
   elemental_dmg_min/max, respawn_seconds, respawn_raw, drops_normal_items, notes, image_url, season,
   source, source_url, scraped_at, page_updated_at.
-- `map`: id, name. `spawn`: monster_id, map_id. `drop`: monster_id, item_id, item_name, kind
+- `map`: id, name, parent_id, description, quick_facts, valued_drops, monsters, special_monsters, bosses,
+  npcs, connections, notes, image_url. `npc`: id, name, type, locations (map_id, x, y), description, sells
+  (item, categoria, preço em Zen, detalhes). `spawn`: monster_id, map_id, kind, x, y, x2, y2, radius, count.
+  `drop`: monster_id, item_id, item_name, kind
   (normal/excellent/ancient/socket/unknown), table, category, quantity, rate (null se a fonte não informa).
   Um drop do Fanz significa "o monstro pode dropar este item"; não há taxa.
 - `source`: id, name, url, scraped_at, credit.

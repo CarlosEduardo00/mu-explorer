@@ -30,10 +30,22 @@
       {
         "id": "blood-castle-1",
         "name": "Blood Castle 1",
+        "parent_id": null,
+        "description": null,
+        "quick_facts": [],
+        "valued_drops": {},
+        "monsters": [],
+        "special_monsters": [],
+        "bosses": [],
+        "npcs": [],
+        "connections": [],
+        "notes": [],
+        "image_url": null,
         "season": null,
         "source": "fanz",
         "source_url": "https://muonlinefanz.com/tools/mobs/data/mobdb/Giant%20Ogre.php",
-        "scraped_at": "2026-10-21T12:04:27Z"
+        "scraped_at": "2026-10-21T12:04:27Z",
+        "page_updated_at": null
       }
     ],
     "spawns": [

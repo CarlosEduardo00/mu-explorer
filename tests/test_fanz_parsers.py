@@ -12,7 +12,10 @@ import pytest
 from scrapers.common.model import validate
 from scrapers.common.storage import decode_html
 from scrapers.fanz.parse_item import parse_item
+from scrapers.fanz.parse_map import parse_map
 from scrapers.fanz.parse_monster import parse_monster
+from scrapers.fanz.parse_npc import parse_npc
+from scrapers.fanz.pipeline import build_dataset
 
 FIXTURES = Path(__file__).parent / "fixtures" / "fanz"
 
@@ -133,10 +136,10 @@ def test_monstro_basico():
     assert r["respawn_seconds"] is None and r["respawn_raw"] is None  # o site não publica respawn
     assert r["difficulty"] is None and r["drops_normal_items"] is True
     assert r["image_url"] == "https://muonlinefanz.com/tools/mobs/data/graphics/Dark%20Knight.jpg"
-    assert result.related["maps"] == [{
-        "id": "dungeon", "name": "Dungeon", "season": None, "source": "fanz",
-        "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Dungeon.php",
-        "scraped_at": r["scraped_at"]}]
+    [dungeon] = result.related["maps"]
+    assert (dungeon["id"], dungeon["name"], dungeon["source_url"]) == (
+        "dungeon", "Dungeon", "https://muonlinefanz.com/tools/maps/data/mapdb/Dungeon.php")
+    assert dungeon["parent_id"] is None and dungeon["monsters"] == []  # detalhes vêm da página do mapa
     assert [(s["monster_id"], s["map_id"]) for s in result.related["spawns"]] == [("dark-knight", "dungeon")]
     assert result.warnings == [] and result.unmapped == []
 
@@ -206,3 +209,64 @@ def test_pagina_sem_estrutura_conhecida_gera_aviso_e_nao_quebra(parser, html):
     result = parser(html, meta)
     assert any("não encontrado" in w for w in result.warnings)
     assert result.record["name"] == "X"
+
+
+# --- mapas e NPCs --------------------------------------------------------------------------
+
+
+def test_mapa_lorencia():
+    result = parse_map(*load("maps", "lorencia"))
+    m = result.record
+    assert validate("map", m) == []
+    assert (m["id"], m["name"], m["parent_id"]) == ("lorencia", "Lorencia", None)
+    assert m["description"].startswith("Lorencia is well established city.")
+    assert m["quick_facts"][0] == "Requires character level 10 to enter or warp."
+    assert set(m["valued_drops"]) == {"monster", "special"} and "Jewel of Chaos" in m["valued_drops"]["monster"]
+    assert len(m["monsters"]) == 8 and len(m["special_monsters"]) == 6 and len(m["bosses"]) == 1
+    assert m["npcs"][:3] == ["shadow-phantom-soldier", "hanzo-the-blacksmith", "pasi-the-mage"]
+    assert m["connections"] == ["noria", "devias", "dungeon", "valley-of-loren", "deep-dungeon"]
+    assert m["image_url"].startswith("https://muonlinefanz.com/tools/maps/data/graphics/Lorencia/")
+    assert result.unmapped == []
+
+
+def test_mapa_com_ligacoes_e_npc():
+    m = parse_map(*load("maps", "balgass-barracks")).record
+    assert m["connections"] == ["crywolf", "balgass-resting-place"] and m["npcs"] == ["gatekeeper"]
+    assert m["quick_facts"][0].startswith("Requires completing the Evidence of Strength quest")
+
+
+def test_npc_mercador_com_precos():
+    n = parse_npc(*load("npcs", "arena-guard")).record
+    assert validate("npc", n) == []
+    assert (n["id"], n["type"]) == ("arena-guard", "Merchant NPC")
+    assert n["locations"] == [{"map_id": "arena", "map_name": "Arena", "x": 72, "y": 164}]
+    assert len(n["sells"]) == 27
+    assert n["sells"][0] == {"item_id": "apple", "item_name": "Apple", "category": "Recovery Items",
+                             "price_zen": 20, "details": None}
+    assert all(s["price_zen"] is not None for s in n["sells"])
+
+
+def test_npc_com_opcoes_do_item_e_varios_mapas():
+    n = parse_npc(*load("npcs", "hanzo-the-blacksmith")).record
+    assert [loc["map_id"] for loc in n["locations"]] == ["lorencia", "crywolf"]
+    first = n["sells"][0]
+    assert (first["item_name"], first["details"], first["price_zen"], first["category"]) == (
+        "Small Shield", "[+0] [+5 DEF Rate] [+Luck]", 230, "Shield Items")
+
+
+def test_npc_sem_coordenada_e_de_crafting():
+    soldier = parse_npc(*load("npcs", "shadow-phantom-soldier")).record
+    assert soldier["type"] == "Quest NPC"
+    assert soldier["locations"][0] == {"map_id": "lorencia", "map_name": "Lorencia", "x": None, "y": None}  # @(various)
+    machine = parse_npc(*load("npcs", "chaos-goblin-machine"))
+    assert machine.record["type"] == "Crafting NPC" and machine.record["sells"] == []
+    assert machine.unmapped  # receitas de crafting ainda não são extraídas: vão para o relatório
+
+
+def test_variante_de_mapa_ganha_mapa_pai_e_mapa_lista_monstros():
+    dataset = build_dataset([mob("aegis"), parse_map(*load("maps", "kalima"))])
+    maps = {m["id"]: m for m in dataset.maps}
+    assert maps["kalima-1"]["parent_id"] == "kalima" and maps["kalima"]["parent_id"] is None
+    assert dataset.schema_errors == []
+    # Aegis já está em kalima-1 pela página do monstro: a página de Kalima não duplica o spawn.
+    assert [(s["monster_id"], s["map_id"]) for s in dataset.spawns] == [("aegis", "kalima-1")]

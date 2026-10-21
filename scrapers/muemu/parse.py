@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 from collections import Counter
 
 from scrapers.common.ids import slugify
+from scrapers.common.model import empty_map
 from scrapers.muemu import source
 
 _REQUIREMENT_COLUMNS = {"strength": "ReqStr", "agility": "ReqDex", "energy": "ReqEne",
@@ -165,7 +166,7 @@ def parse_spawns(text: str, monsters: list[dict], meta: dict) -> tuple[list[dict
             continue
         name = source.map_name(element.get("Map") or "")
         map_id = slugify(name)
-        maps.setdefault(map_id, {"id": map_id, "name": name, **_provenance(meta, path)})
+        maps.setdefault(map_id, empty_map(map_id, name, _provenance(meta, path)))
         spawns.append({
             "monster_id": monster["id"],
             "map_id": map_id,

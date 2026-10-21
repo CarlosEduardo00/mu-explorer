@@ -24,6 +24,8 @@ FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures" / "fanz"
 def _add_fetch_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--items", type=int, default=20, help="quantos itens baixar (padrão: 20)")
     parser.add_argument("--mobs", type=int, default=20, help="quantos monstros baixar (padrão: 20)")
+    parser.add_argument("--maps", type=int, default=0, help="quantos mapas baixar (padrão: 0)")
+    parser.add_argument("--npcs", type=int, default=0, help="quantos NPCs baixar (padrão: 0)")
     parser.add_argument("--sample", choices=("spread", "first"), default="spread",
                         help="spread: espaçados ao longo da lista; first: os primeiros")
     parser.add_argument("--list-pages", type=int, default=5,
@@ -36,7 +38,7 @@ def cmd_fetch(args: argparse.Namespace) -> int:
     session = pipeline.make_session(min_interval=args.interval)
     store = RawStore(args.data_dir / "raw")
     try:
-        stats = pipeline.fetch(session, store, items=args.items, mobs=args.mobs,
+        stats = pipeline.fetch(session, store, items=args.items, mobs=args.mobs, maps=args.maps, npcs=args.npcs,
                                mode=args.sample, refresh=args.refresh, list_pages=args.list_pages)
     except RobotsUnavailable as exc:
         log.error("robots.txt indisponível, coleta abortada: %s", exc)
@@ -112,7 +114,7 @@ def cmd_fixtures(args: argparse.Namespace) -> int:
     index_target = FIXTURES_DIR / "index"
     index_target.mkdir(parents=True, exist_ok=True)
     for page in store.iter(pipeline.SOURCE, "index"):
-        if page.path.stem in ("sitemap", "item-list-p1", "monster-list-p1"):
+        if page.path.stem in ("sitemap", "item-list-p1", "monster-list-p1", "map-list-p1", "npc-list-p1"):
             shutil.copy2(page.path, index_target / page.path.name)
             shutil.copy2(store.meta_path(page.path), index_target / store.meta_path(page.path).name)
     log.info("%d páginas copiadas para %s%s", copied, FIXTURES_DIR, " (com golden)" if args.golden else "")
@@ -125,7 +127,8 @@ def cmd_qa(args: argparse.Namespace) -> int:
     data = qa.load(out_dir)
     store = RawStore(args.data_dir / "raw")
     expected, notes = pipeline.expected_counts(store)
-    checks = (qa.check_counts(data, expected) + qa.check_schema(data) + qa.check_required(data)
+    checks = (qa.check_counts(data, expected, broken=pipeline.broken_listed(store)) + qa.check_schema(data)
+              + qa.check_required(data)
               + qa.check_integrity(data, pipeline.dead_item_ids(store)))
     checks += [qa.Check("contagem esperada", "aviso", note) for note in notes]
     previous = _previous_snapshot(args, out_dir)

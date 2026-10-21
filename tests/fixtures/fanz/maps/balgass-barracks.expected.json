@@ -1,0 +1,63 @@
+{
+  "record": {
+    "id": "balgass-barracks",
+    "name": "Balgass Barracks",
+    "parent_id": null,
+    "description": "Kundun commanded Lemuria, the Queen of Sorcery, to dispatch troops to Crywolf in attempt to overcome guardians of the continent. Lemuria assigned Balgass, a great warlord, to build an army and attack the city relentlessly. Quickly, Balgass established a training ground for monsters, called Balgass' Barracks, in the eastern caves of Crywolf. Its here that his army is continuously training and preparing for their attacks on the city.",
+    "quick_facts": [
+      "Requires completing the Evidence of Strength quest to enter.",
+      "Not a recommended map for EXP gain."
+    ],
+    "valued_drops": {
+      "monster": [
+        "Condor Flame",
+        "Bless / Soul / Life / Creation",
+        "Excellent items"
+      ],
+      "boss": [
+        "Siege weapons",
+        "Bless / Soul / Life / Creation",
+        "Excellent items",
+        "Balgass Resting Place",
+        "You can enter Balgass Resting Place from this map.",
+        "Balgass Resting Place is entered during the Into The Realm of 'Darkness' quest.",
+        "This map can only be entered the quest is active.",
+        "The boss monster, Dark Elf (Trainee Soldier), is located inside Balgass Resting Place.",
+        "After completing the quest you cannot enter Balgass Resting Place again."
+      ]
+    },
+    "monsters": [
+      "balram-trainee-soldier",
+      "death-spirit-trainee-soldier",
+      "soram-trainee-soldier"
+    ],
+    "special_monsters": [],
+    "bosses": [
+      "dark-elf-trainee-soldier"
+    ],
+    "npcs": [
+      "gatekeeper"
+    ],
+    "connections": [
+      "crywolf",
+      "balgass-resting-place"
+    ],
+    "notes": [
+      "You cannot warp to this map.",
+      "This map can be entered via:",
+      "NPC Werewolf Guardsman (costs Zen x3,000,000)",
+      "This map has entrances to/from:",
+      "Crywolf",
+      "Balgass Resting Place",
+      "You can only exit this map via warp.",
+      "Disconnecting and changing servers will move your character to Crywolf's safe-zone."
+    ],
+    "image_url": "https://muonlinefanz.com/tools/maps/data/graphics/Balgass%20Barracks/img01.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/maps/data/mapdb/Balgass%20Barracks.php",
+    "scraped_at": "2026-10-21T14:09:06Z",
+    "page_updated_at": null
+  },
+  "related": {}
+}

@@ -1,0 +1,42 @@
+{
+  "record": {
+    "id": "shadow-phantom-soldier",
+    "name": "Shadow Phantom Soldier",
+    "type": "Quest NPC",
+    "locations": [
+      {
+        "map_id": "lorencia",
+        "map_name": "Lorencia",
+        "x": null,
+        "y": null
+      },
+      {
+        "map_id": "noria",
+        "map_name": "Noria",
+        "x": null,
+        "y": null
+      },
+      {
+        "map_id": "elveland",
+        "map_name": "Elveland",
+        "x": null,
+        "y": null
+      },
+      {
+        "map_id": "devias",
+        "map_name": "Devias",
+        "x": null,
+        "y": null
+      }
+    ],
+    "description": "Shadow Phantom Soldiers are located throughout the continent. These soldiers have been trying to hold off the evil monsters being summoned by Kundun. Shadow Phantom Soldiers, for the last 2 years, have successfully maintained a few cities. Unfortunately, their now diminished forces are not strong enough to do it alone. They are recruiting almost anyone left on the continent to help fight off Kundun's evil. By completing their Quests, the Shadow Phantom Soldiers will guide you to become a great and knowledgable warrior; they will also grant handsome rewards!",
+    "sells": [],
+    "image_url": "https://muonlinefanz.com/tools/npc/data/graphics/Shadow%20Phantom%20Soldier/Shadow%20Phantom%20Soldier.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/npc/data/npcdb/Shadow%20Phantom%20Soldier.php",
+    "scraped_at": "2026-10-21T14:11:50Z",
+    "page_updated_at": null
+  },
+  "related": {}
+}

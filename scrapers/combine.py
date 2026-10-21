@@ -25,8 +25,8 @@ from scrapers.common.model import REPO_ROOT
 from scrapers.common.storage import dump_records
 
 log = logging.getLogger("scrapers.combine")
-OUTPUT = {"item": "items.json", "monster": "monsters.json", "map": "maps.json", "spawn": "spawns.json",
-          "drop": "drops.json", "source": "sources.json"}
+OUTPUT = {"item": "items.json", "monster": "monsters.json", "map": "maps.json", "npc": "npcs.json",
+          "spawn": "spawns.json", "drop": "drops.json", "source": "sources.json"}
 
 
 def _load(directory: Path) -> dict[str, list[dict]]:
@@ -148,7 +148,8 @@ def combine(fanz: dict[str, list[dict]], muemu: dict[str, list[dict]]) -> tuple[
         if m["id"] in used_maps:
             maps.setdefault(m["id"], m)
     data = {
-        "item": items, "monster": monsters, "map": [maps[k] for k in sorted(maps)], "spawn": spawns,
+        "item": items, "monster": monsters, "map": [maps[k] for k in sorted(maps)], "npc": fanz.get("npc", []),
+        "spawn": spawns,
         "drop": fanz["drop"], "source": fanz.get("source", []) + muemu.get("source", []),
     }
     matches = {"item": item_matches, "monster": monster_matches}

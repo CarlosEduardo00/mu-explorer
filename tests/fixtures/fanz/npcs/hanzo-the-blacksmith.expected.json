@@ -1,0 +1,192 @@
+{
+  "record": {
+    "id": "hanzo-the-blacksmith",
+    "name": "Hanzo The Blacksmith",
+    "type": "Merchant NPC",
+    "locations": [
+      {
+        "map_id": "lorencia",
+        "map_name": "Lorencia",
+        "x": 117,
+        "y": 144
+      },
+      {
+        "map_id": "crywolf",
+        "map_name": "Crywolf",
+        "x": 144,
+        "y": 12
+      }
+    ],
+    "description": "Hanzo The Blacksmith sells shields and weapons. He is located in Lorencia, but you can also find him in Crywolf. Of course, he will only appear in Crywolf if the server successfully defended the Crywolf Invasion.",
+    "sells": [
+      {
+        "item_id": "small-shield",
+        "item_name": "Small Shield",
+        "category": "Shield Items",
+        "price_zen": 230,
+        "details": "[+0] [+5 DEF Rate] [+Luck]"
+      },
+      {
+        "item_id": "buckler",
+        "item_name": "Buckler",
+        "category": "Shield Items",
+        "price_zen": 2300,
+        "details": "[+1] [+5 DEF Rate] [+Luck]"
+      },
+      {
+        "item_id": "horned-shield",
+        "item_name": "Horned Shield",
+        "category": "Shield Items",
+        "price_zen": 2600,
+        "details": "[+2] [+5 DEF Rate] [+Luck]"
+      },
+      {
+        "item_id": "kite-shield",
+        "item_name": "Kite Shield",
+        "category": "Shield Items",
+        "price_zen": 5500,
+        "details": "[+3] [+5 DEF Rate] [+Luck]"
+      },
+      {
+        "item_id": "large-round-shield",
+        "item_name": "Large Round Shield",
+        "category": "Shield Items",
+        "price_zen": 18800,
+        "details": "[+3] [+5 DEF Rate] [+Luck]"
+      },
+      {
+        "item_id": "plate-shield",
+        "item_name": "Plate Shield",
+        "category": "Shield Items",
+        "price_zen": 24800,
+        "details": "[+3] [+5 DEF Rate] [+Luck]"
+      },
+      {
+        "item_id": "spiked-shield",
+        "item_name": "Spiked Shield",
+        "category": "Shield Items",
+        "price_zen": 43100,
+        "details": "[+3] [+5 DEF Rate] [+Luck]"
+      },
+      {
+        "item_id": "dragon-slayer-shield",
+        "item_name": "Dragon Slayer Shield",
+        "category": "Shield Items",
+        "price_zen": 60400,
+        "details": "[+3] [+5 DEF Rate] [+Luck]"
+      },
+      {
+        "item_id": "tower-shield",
+        "item_name": "Tower Shield",
+        "category": "Shield Items",
+        "price_zen": 81700,
+        "details": "[+3] [+5 DEF Rate] [+Luck]"
+      },
+      {
+        "item_id": "serpent-shield",
+        "item_name": "Serpent Shield",
+        "category": "Shield Items",
+        "price_zen": 107200,
+        "details": "[+3] [+5 DEF Rate] [+Luck]"
+      },
+      {
+        "item_id": "short-sword",
+        "item_name": "Short Sword",
+        "category": "Weapon Items",
+        "price_zen": 230,
+        "details": "[+0] [+4 DMG] [+Skill] [+Luck]"
+      },
+      {
+        "item_id": "hand-axe",
+        "item_name": "Hand Axe",
+        "category": "Weapon Items",
+        "price_zen": 610,
+        "details": "[+1] [+4 DMG] [+Skill] [+Luck]"
+      },
+      {
+        "item_id": "mace",
+        "item_name": "Mace",
+        "category": "Weapon Items",
+        "price_zen": 1900,
+        "details": "[+2] [+4 DMG] [+Skill] [+Luck]"
+      },
+      {
+        "item_id": "rapier",
+        "item_name": "Rapier",
+        "category": "Weapon Items",
+        "price_zen": 2600,
+        "details": "[+2] [+4 DMG] [+Skill] [+Luck]"
+      },
+      {
+        "item_id": "double-axe",
+        "item_name": "Double Axe",
+        "category": "Weapon Items",
+        "price_zen": 12400,
+        "details": "[+2] [+4 DMG] [+Skill] [+Luck]"
+      },
+      {
+        "item_id": "sword-of-assassin",
+        "item_name": "Sword of Assassin",
+        "category": "Weapon Items",
+        "price_zen": 13800,
+        "details": "[+3] [+4 DMG] [+Skill] [+Luck]"
+      },
+      {
+        "item_id": "morning-star",
+        "item_name": "Morning Star",
+        "category": "Weapon Items",
+        "price_zen": 15400,
+        "details": "[+3] [+4 DMG] [+Skill] [+Luck]"
+      },
+      {
+        "item_id": "tomahawk",
+        "item_name": "Tomahawk",
+        "category": "Weapon Items",
+        "price_zen": 24800,
+        "details": "[+3] [+4 DMG] [+Skill] [+Luck]"
+      },
+      {
+        "item_id": "kris",
+        "item_name": "Kris",
+        "category": "Weapon Items",
+        "price_zen": 1600,
+        "details": "[+2] [+4 DMG] [+Skill] [+Luck]"
+      },
+      {
+        "item_id": "gladius",
+        "item_name": "Gladius",
+        "category": "Weapon Items",
+        "price_zen": 29400,
+        "details": "[+3] [+4 DMG] [+Skill] [+Luck]"
+      },
+      {
+        "item_id": "falchion",
+        "item_name": "Falchion",
+        "category": "Weapon Items",
+        "price_zen": 40100,
+        "details": "[+3] [+4 DMG] [+Skill] [+Luck]"
+      },
+      {
+        "item_id": "serpent-sword",
+        "item_name": "Serpent Sword",
+        "category": "Weapon Items",
+        "price_zen": 60400,
+        "details": "[+3] [+4 DMG] [+Skill] [+Luck]"
+      },
+      {
+        "item_id": "blade",
+        "item_name": "Blade",
+        "category": "Weapon Items",
+        "price_zen": 86400,
+        "details": "[+3] [+4 DMG] [+Skill] [+Luck]"
+      }
+    ],
+    "image_url": "https://muonlinefanz.com/tools/npc/data/graphics/Hanzo%20The%20Blacksmith/Hanzo%20The%20Blacksmith.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/npc/data/npcdb/Hanzo%20The%20Blacksmith.php",
+    "scraped_at": "2026-10-21T14:11:22Z",
+    "page_updated_at": null
+  },
+  "related": {}
+}

@@ -14,13 +14,15 @@ from scrapers.common.storage import RawStore, dump_records
 from scrapers.fanz import discover, urls
 from scrapers.fanz.parse_common import SOFT_404
 from scrapers.fanz.parse_item import parse_item
+from scrapers.fanz.parse_map import parse_map
 from scrapers.fanz.parse_monster import parse_monster
+from scrapers.fanz.parse_npc import parse_npc
 
 log = logging.getLogger(__name__)
 
 SOURCE = urls.SOURCE_ID
-KIND_DIRS = {"item": "items", "monster": "mobs"}
-PARSERS = {"item": parse_item, "monster": parse_monster}
+KIND_DIRS = {"item": "items", "monster": "mobs", "map": "maps", "npc": "npcs"}
+PARSERS = {"item": parse_item, "monster": parse_monster, "map": parse_map, "npc": parse_npc}
 
 
 def make_session(**kwargs) -> PoliteSession:
@@ -54,18 +56,19 @@ def _get_text(session: PoliteSession, store: RawStore, kind_dir: str, key: str, 
 
 
 def discover_urls(session: PoliteSession, store: RawStore, refresh: bool = False,
-                  list_pages: int = 5) -> dict[str, list[str]]:
+                  list_pages: int = 5, kinds: tuple[str, ...] = ("item", "monster")) -> dict[str, list[str]]:
     """Sitemap primeiro. O sitemap do Fanz só lista guias, então na prática cai na listagem:
     página 1 por GET e mais algumas páginas espaçadas por POST (botão de página do site)."""
-    grouped: dict[str, list[str]] = {"item": [], "monster": []}
+    grouped: dict[str, list[str]] = {kind: [] for kind in kinds}
     try:
         text = _get_text(session, store, "index", "sitemap", urls.SITEMAP_URL, ".txt", refresh)
         if text:
             found = discover.group_by_kind(discover.urls_from_sitemap(text))
-            grouped = {"item": found["item"], "monster": found["monster"]}
+            grouped = {kind: found.get(kind, []) for kind in kinds}
     except (requests.RequestException, BlockedByRobots) as exc:
         log.warning("sitemap indisponível (%s); usando páginas de listagem", exc)
-    for kind, list_url in (("item", urls.ITEM_LIST_URL), ("monster", urls.MOB_LIST_URL)):
+    for kind in kinds:
+        list_url = urls.LIST_URLS[kind]
         if grouped[kind]:
             continue
         log.info("sem URLs de %s no sitemap; usando a listagem %s", kind, list_url)
@@ -85,11 +88,12 @@ def discover_urls(session: PoliteSession, store: RawStore, refresh: bool = False
     return grouped
 
 
-def fetch(session: PoliteSession, store: RawStore, *, items: int = 20, mobs: int = 20,
-          mode: str = "spread", refresh: bool = False, list_pages: int = 5) -> FetchStats:
-    grouped = discover_urls(session, store, refresh, list_pages)
+def fetch(session: PoliteSession, store: RawStore, *, items: int = 20, mobs: int = 20, maps: int = 0,
+          npcs: int = 0, mode: str = "spread", refresh: bool = False, list_pages: int = 5) -> FetchStats:
+    wanted = {kind: n for kind, n in (("item", items), ("monster", mobs), ("map", maps), ("npc", npcs)) if n > 0}
+    grouped = discover_urls(session, store, refresh, list_pages, tuple(wanted))
     stats = FetchStats(discovered={kind: len(found) for kind, found in grouped.items()})
-    for kind, n in (("item", items), ("monster", mobs)):
+    for kind, n in wanted.items():
         log.info("%d URLs de %s descobertas; amostra de %d (%s)", len(grouped[kind]), kind, n, mode)
         for url in discover.sample(grouped[kind], n, mode):
             name = urls.name_from_url(url)
@@ -159,6 +163,7 @@ class Dataset:
     items: list[dict]
     monsters: list[dict]
     maps: list[dict]
+    npcs: list[dict]
     spawns: list[dict]
     drops: list[dict]
     sources: list[dict]
@@ -191,12 +196,15 @@ def parse_store(store: RawStore) -> Dataset:
 def build_dataset(results: list[ParseResult], failures: list[tuple[str, str]] | None = None) -> Dataset:
     items: dict[str, dict] = {}
     monsters: dict[str, dict] = {}
+    page_maps: dict[str, dict] = {}
+    npcs: dict[str, dict] = {}
     maps: dict[str, dict] = {}
     spawns: dict[tuple, dict] = {}
     drops: dict[tuple, dict] = {}
     duplicates: list[str] = []
+    targets = {"item": items, "monster": monsters, "map": page_maps, "npc": npcs}
     for result in results:
-        target = items if result.kind == "item" else monsters
+        target = targets[result.kind]
         record_id = result.record["id"]
         if record_id in target:
             duplicates.append(f"{result.kind} {record_id}: {target[record_id]['source_url']} e {result.record['source_url']}")
@@ -208,6 +216,9 @@ def build_dataset(results: list[ParseResult], failures: list[tuple[str, str]] | 
             spawns.setdefault((s["monster_id"], s["map_id"]), s)
         for d in result.related.get("drops", []):
             drops.setdefault((d["monster_id"], d["item_id"], d["kind"], d["category"]), d)
+
+    maps = _merge_maps(page_maps, maps)
+    _add_map_page_spawns(page_maps, maps, monsters, spawns)
 
     scraped = sorted(r.record["scraped_at"] for r in results)
     sources = [{
@@ -223,6 +234,7 @@ def build_dataset(results: list[ParseResult], failures: list[tuple[str, str]] | 
         items=[items[k] for k in sorted(items)],
         monsters=[monsters[k] for k in sorted(monsters)],
         maps=[maps[k] for k in sorted(maps)],
+        npcs=[npcs[k] for k in sorted(npcs)],
         spawns=[spawns[k] for k in sorted(spawns)],
         drops=[drops[k] for k in sorted(drops, key=lambda k: tuple(str(x) for x in k))],
         sources=sources,
@@ -233,6 +245,38 @@ def build_dataset(results: list[ParseResult], failures: list[tuple[str, str]] | 
     )
     dataset.schema_errors = validate_dataset(dataset)
     return dataset
+
+
+def _merge_maps(page_maps: dict[str, dict], cited: dict[str, dict]) -> dict[str, dict]:
+    """Mapas com página própria são os registros oficiais. Mapas só citados em páginas de monstro entram
+    como variantes: 'Kalima 1' (link para Kalima.php) ganha parent_id = 'kalima'."""
+    merged = dict(page_maps)
+    by_url = {m["source_url"]: m["id"] for m in page_maps.values()}
+    for map_id, record in cited.items():
+        if map_id in merged:
+            continue
+        parent = by_url.get(record["source_url"])
+        merged[map_id] = {**record, "parent_id": parent if parent != map_id else None}
+    return merged
+
+
+def _add_map_page_spawns(page_maps: dict[str, dict], maps: dict[str, dict], monsters: dict[str, dict],
+                         spawns: dict[tuple, dict]) -> None:
+    """Monstros listados na página do mapa viram spawns, se a página do monstro ainda não os ligou ao mapa
+    (nem a uma variante dele, como kalima-1 para kalima)."""
+    children: dict[str, set[str]] = {}
+    for record in maps.values():
+        if record.get("parent_id"):
+            children.setdefault(record["parent_id"], set()).add(record["id"])
+    for record in page_maps.values():
+        family = {record["id"]} | children.get(record["id"], set())
+        provenance = {k: record[k] for k in ("season", "source", "source_url", "scraped_at")}
+        for monster_id in record["monsters"] + record["special_monsters"] + record["bosses"]:
+            if monster_id not in monsters or any((monster_id, m) in spawns for m in family):
+                continue
+            spawns[(monster_id, record["id"])] = {
+                "monster_id": monster_id, "map_id": record["id"], "kind": None, "x": None, "y": None,
+                "x2": None, "y2": None, "radius": None, "count": None, **provenance}
 
 
 def _label(entity: str, row: dict) -> str:
@@ -246,6 +290,7 @@ def _label(entity: str, row: dict) -> str:
 def validate_dataset(dataset: Dataset) -> list[str]:
     errors = []
     for entity, rows in (("item", dataset.items), ("monster", dataset.monsters), ("map", dataset.maps),
+                         ("npc", dataset.npcs),
                          ("spawn", dataset.spawns), ("drop", dataset.drops), ("source", dataset.sources)):
         for row in rows:
             errors.extend(f"{_label(entity, row)}: {error}" for error in validate(entity, row))
@@ -253,7 +298,7 @@ def validate_dataset(dataset: Dataset) -> list[str]:
 
 
 OUTPUT_FILES = {
-    "items.json": "items", "monsters.json": "monsters", "maps.json": "maps",
+    "items.json": "items", "monsters.json": "monsters", "maps.json": "maps", "npcs.json": "npcs",
     "spawns.json": "spawns", "drops.json": "drops", "sources.json": "sources",
 }
 
@@ -275,7 +320,7 @@ def expected_counts(store: RawStore) -> tuple[dict[str, int], list[str]]:
     notes: list[str] = []
     pages = {page.path.stem: page for page in store.iter(SOURCE, "index")
              if 200 <= page.meta.get("status", 0) < 300}
-    for kind, list_url in (("item", urls.ITEM_LIST_URL), ("monster", urls.MOB_LIST_URL)):
+    for kind, list_url in urls.LIST_URLS.items():
         first = pages.get(f"{kind}-list-p1")
         if first is None:
             notes.append(f"{kind}: página 1 da listagem não está em disco")
@@ -295,3 +340,17 @@ def dead_item_ids(store: RawStore) -> set[str]:
     from scrapers.common.ids import slugify
     return {slugify(page.meta.get("key") or page.path.stem) for page in store.iter(SOURCE, KIND_DIRS["item"])
             if 200 <= page.meta.get("status", 0) < 300 and SOFT_404.match(page.html)}
+
+
+def broken_listed(store: RawStore) -> dict[str, int]:
+    """Por tipo, quantas páginas listadas no site respondem vazias/'404' com HTTP 200."""
+    pages = {page.path.stem: page for page in store.iter(SOURCE, "index") if 200 <= page.meta.get("status", 0) < 300}
+    out: dict[str, int] = {}
+    for kind, list_url in urls.LIST_URLS.items():
+        listed = {link for stem, page in pages.items() if stem.startswith(f"{kind}-list-p")
+                  for link in discover.links_from_list_page(page.html, list_url, kind)}
+        broken = {page.meta["url"] for page in store.iter(SOURCE, KIND_DIRS[kind])
+                  if 200 <= page.meta.get("status", 0) < 300 and SOFT_404.match(page.html)}
+        if listed & broken:
+            out[kind] = len(listed & broken)
+    return out

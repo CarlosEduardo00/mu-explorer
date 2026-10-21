@@ -21,7 +21,7 @@ import re
 
 from scrapers.common.html import Line, clean
 from scrapers.common.ids import slugify
-from scrapers.common.model import ParseResult
+from scrapers.common.model import ParseResult, empty_map
 from scrapers.common.parsing import find_updated_date, parse_duration_seconds, parse_int, parse_range
 from scrapers.fanz import urls
 from scrapers.fanz.parse_common import content_lines, find_image, open_document, page_title
@@ -192,10 +192,8 @@ def _maps(details: list[Line], provenance: dict, warnings: list[str]) -> list[di
         else:
             warnings.append(f"mapa sem link: {where!r}")
             found.setdefault(slugify(where), {"name": where, "url": None})
-    return [
-        {"id": map_id, "name": m["name"], **provenance, "source_url": m["url"] or provenance["source_url"]}
-        for map_id, m in found.items() if map_id
-    ]
+    return [empty_map(map_id, m["name"], {**provenance, "source_url": m["url"] or provenance["source_url"]})
+            for map_id, m in found.items() if map_id]
 
 
 def _map_name(text: str) -> str:

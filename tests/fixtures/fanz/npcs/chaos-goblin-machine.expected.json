@@ -1,0 +1,24 @@
+{
+  "record": {
+    "id": "chaos-goblin-machine",
+    "name": "Chaos Goblin Machine",
+    "type": "Crafting NPC",
+    "locations": [
+      {
+        "map_id": "noria",
+        "map_name": "Noria",
+        "x": 180,
+        "y": 102
+      }
+    ],
+    "description": "Located in Noria, the Chaos Goblin Machine is used for crafting and upgrading items! The machine, which is managed by Goblins, is entirely powered with Jewels of Chaos. The machine is an ancient construction which converts jewels in order to manipulate, combine, and craft entirely new items! However, the technology isn't necessarily stable, and therefore it can occasionally destroy items during a combination. Either way, it will be one of the most useful NPCs in the game!",
+    "sells": [],
+    "image_url": "https://muonlinefanz.com/tools/npc/data/graphics/Chaos%20Goblin%20Machine/Chaos%20Goblin%20Machine.jpg",
+    "season": null,
+    "source": "fanz",
+    "source_url": "https://muonlinefanz.com/tools/npc/data/npcdb/Chaos%20Goblin%20Machine.php",
+    "scraped_at": "2026-10-21T14:11:02Z",
+    "page_updated_at": null
+  },
+  "related": {}
+}

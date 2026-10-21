@@ -83,4 +83,11 @@ def test_contagem_esperada_so_com_listagem_completa(tmp_path):
         (target / f"{kind}-list-p1.meta.json").write_text((FIX / f"{kind}-list-p1.meta.json").read_text())
     counts, notes = pipeline.expected_counts(store)
     assert counts == {}  # fixtures só têm a página 1 de cada listagem
-    assert notes == ["item: só 1 de 52 páginas da listagem em disco", "monster: só 1 de 5 páginas da listagem em disco"]
+    assert notes[:2] == ["item: só 1 de 52 páginas da listagem em disco", "monster: só 1 de 5 páginas da listagem em disco"]
+
+
+def test_contagem_desconta_paginas_quebradas_no_site():
+    data = {"npc": [{"id": f"n{i}"} for i in range(57)]}
+    assert qa.check_counts(data, {"npc": 58})[0].severity == "erro"
+    check = qa.check_counts(data, {"npc": 58}, broken={"npc": 1})[0]
+    assert check.severity == "ok" and "1 com página quebrada no site" in check.detail

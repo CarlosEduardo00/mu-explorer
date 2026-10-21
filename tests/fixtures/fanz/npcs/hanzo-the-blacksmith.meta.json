@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "npcs",
+  "key": "Hanzo The Blacksmith",
+  "file": "hanzo-the-blacksmith.html",
+  "url": "https://muonlinefanz.com/tools/npc/data/npcdb/Hanzo%20The%20Blacksmith.php",
+  "final_url": "https://muonlinefanz.com/tools/npc/data/npcdb/Hanzo%20The%20Blacksmith.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T14:11:22Z",
+  "bytes": 51129,
+  "sha256": "97dfe26452bd636e4cd94aafbfbfec4bef6b508a7a5fc0b939ec0adfe689e87e"
+}

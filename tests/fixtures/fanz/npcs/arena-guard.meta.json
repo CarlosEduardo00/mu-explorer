@@ -1,0 +1,14 @@
+{
+  "source": "fanz",
+  "kind": "npcs",
+  "key": "Arena Guard",
+  "file": "arena-guard.html",
+  "url": "https://muonlinefanz.com/tools/npc/data/npcdb/Arena%20Guard.php",
+  "final_url": "https://muonlinefanz.com/tools/npc/data/npcdb/Arena%20Guard.php",
+  "status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "encoding": "utf-8",
+  "fetched_at": "2026-10-21T14:09:27Z",
+  "bytes": 50999,
+  "sha256": "4b8a38c4068f68106974d089cc07424e54ed41c4957543ab95e113277b38201b"
+}
