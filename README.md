@@ -7,8 +7,8 @@ convenções em [`CLAUDE.md`](CLAUDE.md).
 
 ## Endereços
 
-- Produção: https://mu-explorer.korok-friends.workers.dev (branch `main`)
-- Homologação: https://mu-explorer-hml.korok-friends.workers.dev (branch `mu-explorer-dev`)
+- Produção: https://mu-explorer.buiu.workers.dev (branch `main`)
+- Homologação: https://mu-explorer-hml.buiu.workers.dev (branch `mu-explorer-dev`)
 
 ## Uso
 
