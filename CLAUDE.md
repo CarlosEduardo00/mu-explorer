@@ -35,13 +35,13 @@ npm run deploy:hml   # publicação manual (precisa de `npx wrangler login`); no
 
 ## Ambientes e branches
 
-| ambiente | Worker (Cloudflare)  | branch                   | deploy command                  |
-|----------|----------------------|--------------------------|---------------------------------|
-| hml      | `mu-explorer-hml`    | `claude/mu-explorer-dev` | `npx wrangler deploy --env hml`  |
-| prod     | `mu-explorer`        | `main`                   | `npx wrangler deploy --env prod` |
+| ambiente | Worker (Cloudflare) | branch            | deploy command                   |
+|----------|---------------------|-------------------|----------------------------------|
+| hml      | `mu-explorer-hml`   | `mu-explorer-dev` | `npx wrangler deploy --env hml`  |
+| prod     | `mu-explorer`       | `main`            | `npx wrangler deploy --env prod` |
 
-Fluxo: branch curta a partir de `claude/mu-explorer-dev` → PR para `claude/mu-explorer-dev` (publica em
-hml para testar) → PR de `claude/mu-explorer-dev` para `main` (publica em prod). Nunca commitar direto na `main`.
+Fluxo: branch curta a partir de `mu-explorer-dev` → PR para `mu-explorer-dev` (publica em
+hml para testar) → PR de `mu-explorer-dev` para `main` (publica em prod). Nunca commitar direto na `main`.
 
 ## Estrutura
 
@@ -70,7 +70,7 @@ wrangler.jsonc     configuração dos Workers (env prod = mu-explorer, env hml =
   (`scrapers/common/html.py`) e mapeiam rótulos por regex. Rótulo não mapeado vai para o
   relatório (`unmapped`), não para o registro.
 - Todo scraper novo vem com testes de parse usando HTML salvo como fixture.
-- Branches curtas e PRs pequenos, sempre para `claude/mu-explorer-dev` (ver "Ambientes e branches").
+- Branches curtas e PRs pequenos, sempre para `mu-explorer-dev` (ver "Ambientes e branches").
   Dividir trabalho por fonte/fase para evitar conflito.
 - Nunca commitar credenciais.
 

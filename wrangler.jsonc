@@ -2,8 +2,8 @@
 // Sem "main": por enquanto é só site estático, sem código no servidor.
 //
 // Ambientes (cada um é um Worker separado no painel da Cloudflare):
-//   prod -> Worker "mu-explorer"      branch main                     `npx wrangler deploy --env prod`
-//   hml  -> Worker "mu-explorer-hml"  branch claude/mu-explorer-dev   `npx wrangler deploy --env hml`
+//   prod -> Worker "mu-explorer"      branch main              `npx wrangler deploy --env prod`
+//   hml  -> Worker "mu-explorer-hml"  branch mu-explorer-dev   `npx wrangler deploy --env hml`
 // O bloco de fora (sem env) é o que `npm run dev` usa localmente.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
