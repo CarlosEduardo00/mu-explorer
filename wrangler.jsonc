@@ -1,5 +1,10 @@
 // Cloudflare Workers com Static Assets: publica o conteúdo de site/public.
 // Sem "main": por enquanto é só site estático, sem código no servidor.
+//
+// Ambientes (cada um é um Worker separado no painel da Cloudflare):
+//   prod -> Worker "mu-explorer"      branch main              `npx wrangler deploy --env prod`
+//   hml  -> Worker "mu-explorer-hml"  branch mu-explorer-dev   `npx wrangler deploy --env hml`
+// O bloco de fora (sem env) é o que `npm run dev` usa localmente.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "mu-explorer",
@@ -7,5 +12,21 @@
   "assets": {
     "directory": "./site/public",
     "not_found_handling": "404-page"
+  },
+  "env": {
+    "prod": {
+      "name": "mu-explorer",
+      "assets": {
+        "directory": "./site/public",
+        "not_found_handling": "404-page"
+      }
+    },
+    "hml": {
+      "name": "mu-explorer-hml",
+      "assets": {
+        "directory": "./site/public",
+        "not_found_handling": "404-page"
+      }
+    }
   }
 }

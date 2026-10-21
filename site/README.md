@@ -12,5 +12,6 @@ npm install && npm run dev     # http://localhost:8787
 npm run check                  # valida a configuração sem publicar
 ```
 
-O deploy de produção acontece pelo Git (Workers Builds): cada push na branch de produção publica.
+O deploy acontece pelo Git (Workers Builds): push em `mu-explorer-dev` publica em **hml**
+(Worker `mu-explorer-hml`) e push em `main` publica em **prod** (Worker `mu-explorer`).
 A stack do frontend ainda é decisão em aberto (ver `CLAUDE.md`).
