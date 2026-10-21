@@ -6,7 +6,9 @@
 As imagens vêm dos registros de data/processed/combined (image_url, minimap_url) e de data/curated/planner.json
 (imagens de classes e evoluções). Cada arquivo fica em site/public/media/<host>/<caminho da URL> e o manifesto
 data/media.json liga a URL original ao caminho local. O site (lib/data.ts) troca a URL pela cópia quando ela existe;
-o campo image_url dos dados continua apontando para a fonte (procedência).
+o campo image_url dos dados continua apontando para a fonte (procedência). URL que responde sem imagem (o Fanz devolve
+a página "404 - Page not found" com HTTP 200) fica no manifesto com "path": null: o site não mostra imagem quebrada e
+o fetch não tenta de novo (só com --refresh).
 """
 from __future__ import annotations
 
@@ -84,6 +86,8 @@ def cmd_fetch(args: argparse.Namespace) -> int:
         ctype = (result.content_type or "").split(";")[0].strip().lower()
         if not result.ok or ctype not in IMAGE_TYPES or not result.content:
             log.warning("ignorada %s (HTTP %s, %s)", url, result.status, ctype)
+            if result.status < 500:  # resposta definitiva da fonte: não há imagem nessa URL
+                manifest[url] = {"path": None, "status": result.status, "type": ctype, "fetched_at": result.fetched_at}
             failed += 1
             continue
         rel = local_path(url)
@@ -104,7 +108,9 @@ def cmd_list(args: argparse.Namespace) -> int:
     manifest = load_manifest()
     urls = image_urls(args.data_dir)
     missing = [u for u in urls if u not in manifest]
-    print(f"{len(urls)} imagens usadas pelo site · {len(urls) - len(missing)} copiadas · {len(missing)} faltando")
+    broken = [u for u in urls if u in manifest and not manifest[u].get("path")]
+    print(f"{len(urls)} imagens usadas pelo site · {len(urls) - len(missing) - len(broken)} copiadas · "
+          f"{len(broken)} sem imagem na fonte · {len(missing)} faltando")
     return 0
 
 

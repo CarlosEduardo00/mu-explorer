@@ -2,7 +2,7 @@
 // Spots de farm de um mapa: mapa interativo (hot spots) e a lista dos spots. Área separada da página do mapa.
 import Base from "../../layouts/Base.astro";
 import MapExplorer from "../../components/MapExplorer.astro";
-import { mapById, monsterById, spotsByMap, markersByMap, terrainByMap, spotMapIds, fmt } from "../../lib/data";
+import { maps, mapById, monsterById, spotsByMap, markersByMap, terrainByMap, spotMapIds, spotsUrl, fmt } from "../../lib/data";
 
 export function getStaticPaths() {
   return spotMapIds.map((id) => ({ params: { map: id } }));
@@ -11,14 +11,16 @@ const map = mapById.get(Astro.params.map as string)!;
 const spots = spotsByMap.get(map.id) ?? [];
 const markers = markersByMap.get(map.id) ?? [];
 const terrain = terrainByMap.get(map.id) ?? null;
+const parent = map.parent_id && spotMapIds.includes(map.parent_id) ? mapById.get(map.parent_id) : undefined;
+const floors = maps.filter((m) => m.parent_id === map.id && spotMapIds.includes(m.id));
 const levelText = (min: number | null, max: number | null) =>
   min == null ? "—" : min === max ? fmt(min) : `${fmt(min)}–${fmt(max)}`;
 const levels = spots.flatMap((s) => [s.level_min, s.level_max]).filter((v): v is number => v != null);
 const recommended = map.level_recommended_min != null
   ? `${fmt(map.level_recommended_min)}${map.level_recommended_max != null ? `–${fmt(map.level_recommended_max)}` : "+"}` : null;
 ---
-<Base title={`Spots de ${map.name}`} description={`Hot spots de farm em ${map.name}: onde ficam, quantos monstros, nível e drops.`}>
-  <p class="crumbs"><a href="/spots/">Spots</a> › {map.name}</p>
+<Base title={`Spots de ${map.name}`} description={`Hot spots de farm em ${map.name}: onde ficam, quantos monstros, nível e drops.`} wide>
+  <nav class="crumbs" aria-label="Trilha"><a href="/spots/">Spots</a>{parent && <a href={spotsUrl(parent.id)}>{parent.name}</a>}<span>{map.name}</span></nav>
   <h1>Spots de {map.name}</h1>
   <p class="lead">
     {spots.length > 0
@@ -28,6 +30,8 @@ const recommended = map.level_recommended_min != null
     {recommended && <> Recomendado: nível {recommended}.</>}
     {" "}<a href={`/mapas/${map.id}/`}>Informações do mapa</a>.
   </p>
+
+  {floors.length > 0 && <ul class="chips floors">{floors.map((f) => <li><a class="chip" href={spotsUrl(f.id)}>{f.name}</a></li>)}</ul>}
 
   <MapExplorer mapName={map.name} spots={spots} markers={markers} minimap={map.minimap_url} terrain={terrain} />
 
@@ -58,3 +62,6 @@ const recommended = map.level_recommended_min != null
     1,5× a mediana, low ≤ 0,75×) e boss indica chefe. A coordenada (x, y) é a do jogo.
   </p>
 </Base>
+<style>
+  .floors { margin: -.25rem 0 1rem; }
+</style>

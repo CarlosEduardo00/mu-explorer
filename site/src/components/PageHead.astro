@@ -1,0 +1,22 @@
+---
+// Cabeçalho padrão das páginas de registro: trilha, imagem, título (com a cor da qualidade) e etiquetas.
+interface Crumb { href?: string; label: string }
+interface Props { crumbs: Crumb[]; title: string; image?: string | null; wideImage?: boolean; titleClass?: string; lead?: string | null }
+const { crumbs, title, image, wideImage = false, titleClass, lead } = Astro.props;
+---
+<nav class="crumbs" aria-label="Trilha">
+  {crumbs.map((c) => (c.href ? <a href={c.href}>{c.label}</a> : <span>{c.label}</span>))}
+</nav>
+<div class="phead">
+  {image !== undefined && (
+    <div class:list={["phead-img", { wide: wideImage }]}>
+      {image ? <img src={image} alt={title} /> : <span class="ph"></span>}
+    </div>
+  )}
+  <div>
+    <h1 class={titleClass}>{title}</h1>
+    <slot />
+    {lead && lead.length <= 220 && <p class="lead">{lead}</p>}
+  </div>
+</div>
+{lead && lead.length > 220 && <p class="lead long-lead">{lead}</p>}

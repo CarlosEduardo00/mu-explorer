@@ -151,8 +151,9 @@ const heats = (["hot", "mid", "low", "boss"] as const).filter((h) => spots.some(
 <style is:global>
   .mx { margin: .5rem 0 1.25rem; }
   .mx-layers { display: flex; flex-wrap: wrap; gap: .25rem 1rem; font-size: .85rem; color: var(--muted); margin-bottom: .4rem; }
-  .mx-body { display: grid; grid-template-columns: minmax(0, 26rem) minmax(0, 1fr); gap: 1rem; align-items: start; }
-  @media (max-width: 48rem) { .mx-body { grid-template-columns: 1fr; } }
+  .mx-body { display: grid; grid-template-columns: minmax(0, 40rem) minmax(0, 1fr); gap: 1.25rem; align-items: start; }
+  .mx-panel { position: sticky; top: 4.5rem; max-height: calc(100vh - 5.5rem); overflow: auto; scrollbar-width: thin; }
+  @media (max-width: 56rem) { .mx-body { grid-template-columns: minmax(0, 1fr); } .mx-panel { position: static; max-height: none; } }
   .mx-svg { width: 100%; height: auto; display: block; border-radius: .5rem; border: 1px solid var(--line); background: var(--panel); }
   .mx-bg { fill: var(--panel); }
   .has-terrain .mx-bg { fill: #0b0d12; }

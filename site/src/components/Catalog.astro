@@ -1,0 +1,228 @@
+---
+/**
+ * Lista com busca, filtros (facetas), faixa de nível e ordenação, feita no navegador (JS mínimo, sem framework).
+ * Os cartões vêm no slot, já renderizados, cada um com:
+ *   data-cat            marca o cartão
+ *   data-q              texto de busca (minúsculo, sem acento)
+ *   data-f              "faceta:valor faceta:valor ..." (ex.: "group:weapons kind:bow grade:excellent class:dark-knight")
+ *   data-level, data-name e outros data-* usados na ordenação (sorts[].attr)
+ * O estado vai no endereço (?q=&group=&kind=&min=&max=&sort=) para compartilhar a busca.
+ */
+export interface FacetOption { value: string; label: string; parent?: string }
+export interface Facet { key: string; label: string; options: FacetOption[]; dependsOn?: string }
+export interface Sort { value: string; label: string; attr: string; dir: 1 | -1; numeric?: boolean }
+interface Props { facets: Facet[]; sorts: Sort[]; noun: string; placeholder: string; levelLabel?: string | null; page?: number }
+const { facets, sorts, noun, placeholder, levelLabel = "Nível", page = 60 } = Astro.props;
+---
+<div class="catalog" data-catalog data-noun={noun} data-page={page}>
+  <aside class="cat-side">
+    <details class="cat-filters" open>
+      <summary>Filtros <span class="cat-active" data-active></span></summary>
+      {facets.map((f) => (
+        <fieldset class="facet" data-facet={f.key} data-depends={f.dependsOn ?? ""}>
+          <legend>{f.label}</legend>
+          <div class="facet-opts">
+            {f.options.map((o) => (
+              <button type="button" class="fopt" data-value={o.value} data-parent={o.parent ?? ""} aria-pressed="false">
+                {o.label} <span class="fcount" data-count></span>
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      ))}
+      {levelLabel && (
+        <fieldset class="facet">
+          <legend>{levelLabel}</legend>
+          <div class="range">
+            <input type="number" min="0" step="1" inputmode="numeric" placeholder="de" aria-label={`${levelLabel} mínimo`} data-min />
+            <span>a</span>
+            <input type="number" min="0" step="1" inputmode="numeric" placeholder="até" aria-label={`${levelLabel} máximo`} data-max />
+          </div>
+        </fieldset>
+      )}
+      <button type="button" class="btn ghost cat-clear" data-clear>Limpar filtros</button>
+    </details>
+  </aside>
+  <section class="cat-main">
+    <div class="cat-bar">
+      <input type="search" placeholder={placeholder} aria-label={placeholder} data-search />
+      <select aria-label="Ordenar" data-sort>
+        <option value="">Ordem padrão</option>
+        {sorts.map((s) => <option value={s.value}>{s.label}</option>)}
+      </select>
+    </div>
+    <p class="count" data-total aria-live="polite"></p>
+    <div class="grid cat-grid" data-results><slot /></div>
+    <p class="cat-more"><button type="button" class="btn ghost" data-more hidden>Mostrar mais</button></p>
+    <p class="muted cat-empty" data-empty hidden>Nada encontrado com esses filtros.</p>
+  </section>
+</div>
+<script is:inline type="application/json" data-sorts set:html={JSON.stringify(sorts)} />
+
+<script>
+  interface Sort { value: string; label: string; attr: string; dir: 1 | -1; numeric?: boolean }
+  const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  for (const root of document.querySelectorAll<HTMLElement>("[data-catalog]")) {
+    const sorts: Sort[] = JSON.parse(root.nextElementSibling?.textContent || "[]");
+    const page = Number(root.dataset.page) || 60;
+    const noun = root.dataset.noun ?? "";
+    const results = root.querySelector<HTMLElement>("[data-results]")!;
+    const cards = [...results.querySelectorAll<HTMLElement>("[data-cat]")].map((el, i) => ({
+      el, i, q: el.dataset.q ?? "", tokens: new Set((el.dataset.f ?? "").split(" ").filter(Boolean)),
+      level: el.dataset.level ? Number(el.dataset.level) : null,
+    }));
+    const facets = [...root.querySelectorAll<HTMLElement>("[data-facet]")].map((el) => ({
+      el, key: el.dataset.facet!, depends: el.dataset.depends || "",
+      opts: [...el.querySelectorAll<HTMLButtonElement>(".fopt")],
+    }));
+    const search = root.querySelector<HTMLInputElement>("[data-search]")!;
+    const sortSel = root.querySelector<HTMLSelectElement>("[data-sort]")!;
+    const minIn = root.querySelector<HTMLInputElement>("[data-min]");
+    const maxIn = root.querySelector<HTMLInputElement>("[data-max]");
+    const more = root.querySelector<HTMLButtonElement>("[data-more]")!;
+    const total = root.querySelector<HTMLElement>("[data-total]")!;
+    const empty = root.querySelector<HTMLElement>("[data-empty]")!;
+    const activeBadge = root.querySelector<HTMLElement>("[data-active]")!;
+    const selected = new Map<string, Set<string>>(facets.map((f) => [f.key, new Set()]));
+    let limit = page;
+
+    // Estado inicial a partir do endereço.
+    const params = new URLSearchParams(location.search);
+    search.value = params.get("q") ?? "";
+    for (const f of facets) for (const v of (params.get(f.key) ?? "").split(",").filter(Boolean)) selected.get(f.key)!.add(v);
+    if (minIn) minIn.value = params.get("min") ?? "";
+    if (maxIn) maxIn.value = params.get("max") ?? "";
+    if (sorts.some((s) => s.value === params.get("sort"))) sortSel.value = params.get("sort")!;
+    // Em telas pequenas os filtros começam fechados.
+    if (matchMedia("(max-width: 52rem)").matches) root.querySelector("details")!.open = false;
+
+    const fmt = (n: number) => n.toLocaleString("pt-BR");
+    function matches(card: (typeof cards)[number], skip?: string) {
+      for (const [key, set] of selected) {
+        if (key === skip || set.size === 0) continue;
+        let ok = false;
+        for (const v of set) if (card.tokens.has(`${key}:${v}`)) { ok = true; break; }
+        if (!ok) return false;
+      }
+      const min = minIn?.value ? Number(minIn.value) : null;
+      const max = maxIn?.value ? Number(maxIn.value) : null;
+      if ((min != null || max != null) && card.level == null) return false;
+      if (min != null && card.level! < min) return false;
+      if (max != null && card.level! > max) return false;
+      const q = norm(search.value.trim());
+      return !q || card.q.includes(q);
+    }
+
+    function apply(resetLimit = true) {
+      if (resetLimit) limit = page;
+      // Faceta dependente (ex.: tipo depende do grupo): mostra só as opções dos grupos escolhidos.
+      for (const f of facets) {
+        if (!f.depends) continue;
+        const parents = selected.get(f.depends)!;
+        f.el.hidden = parents.size === 0;
+        for (const o of f.opts) {
+          const visible = parents.size === 0 || parents.has(o.dataset.parent ?? "");
+          o.hidden = !visible;
+          if (!visible) selected.get(f.key)!.delete(o.dataset.value!);
+        }
+      }
+      // Contagens de cada opção considerando os outros filtros.
+      for (const f of facets) {
+        const counts = new Map<string, number>();
+        for (const c of cards) if (matches(c, f.key)) for (const t of c.tokens) if (t.startsWith(f.key + ":")) counts.set(t, (counts.get(t) ?? 0) + 1);
+        for (const o of f.opts) {
+          const n = counts.get(`${f.key}:${o.dataset.value}`) ?? 0;
+          o.querySelector("[data-count]")!.textContent = fmt(n);
+          o.setAttribute("aria-pressed", String(selected.get(f.key)!.has(o.dataset.value!)));
+          o.classList.toggle("zero", n === 0);
+        }
+      }
+      const list = cards.filter((c) => matches(c));
+      const sort = sorts.find((s) => s.value === sortSel.value);
+      if (sort) {
+        const key = (c: (typeof cards)[number]) => c.el.dataset[sort.attr] ?? "";
+        list.sort((a, b) => {
+          const va = key(a), vb = key(b);
+          if (sort.numeric) {
+            const na = va === "" ? null : Number(va), nb = vb === "" ? null : Number(vb);
+            if (na == null || nb == null) return na == null && nb == null ? a.i - b.i : na == null ? 1 : -1;
+            return (na - nb) * sort.dir || a.i - b.i;
+          }
+          return va.localeCompare(vb, "pt-BR") * sort.dir || a.i - b.i;
+        });
+      } else list.sort((a, b) => a.i - b.i);
+      const show = new Set(list.slice(0, limit).map((c) => c.el));
+      for (const c of cards) c.el.hidden = !show.has(c.el);
+      results.append(...list.map((c) => c.el));
+      total.textContent = list.length === cards.length ? `${fmt(cards.length)} ${noun}` : `${fmt(list.length)} de ${fmt(cards.length)} ${noun}`;
+      more.hidden = list.length <= limit;
+      more.textContent = `Mostrar mais (${fmt(Math.min(page, list.length - limit))})`;
+      empty.hidden = list.length > 0;
+      const active = [...selected.values()].reduce((n, s) => n + s.size, 0) + (minIn?.value ? 1 : 0) + (maxIn?.value ? 1 : 0);
+      activeBadge.textContent = active ? `(${active})` : "";
+      // Endereço compartilhável.
+      const p = new URLSearchParams();
+      if (search.value.trim()) p.set("q", search.value.trim());
+      for (const [key, set] of selected) if (set.size) p.set(key, [...set].join(","));
+      if (minIn?.value) p.set("min", minIn.value);
+      if (maxIn?.value) p.set("max", maxIn.value);
+      if (sortSel.value) p.set("sort", sortSel.value);
+      const qs = p.toString();
+      history.replaceState(null, "", qs ? `?${qs}${location.hash}` : location.pathname + location.hash);
+    }
+
+    for (const f of facets) {
+      for (const o of f.opts) {
+        o.addEventListener("click", () => {
+          const set = selected.get(f.key)!;
+          const v = o.dataset.value!;
+          if (set.has(v)) set.delete(v); else set.add(v);
+          apply();
+        });
+      }
+    }
+    let timer: number | undefined;
+    search.addEventListener("input", () => { clearTimeout(timer); timer = window.setTimeout(() => apply(), 120); });
+    sortSel.addEventListener("change", () => apply());
+    minIn?.addEventListener("input", () => apply());
+    maxIn?.addEventListener("input", () => apply());
+    more.addEventListener("click", () => { limit += page; apply(false); });
+    root.querySelector("[data-clear]")!.addEventListener("click", () => {
+      for (const set of selected.values()) set.clear();
+      search.value = ""; if (minIn) minIn.value = ""; if (maxIn) maxIn.value = ""; sortSel.value = "";
+      apply();
+    });
+    apply();
+  }
+</script>
+
+<style is:global>
+  .catalog { display: grid; grid-template-columns: 15.5rem minmax(0, 1fr); gap: 1.25rem; align-items: start; margin-top: 1rem; }
+  .cat-side { position: sticky; top: 4.5rem; max-height: calc(100vh - 5.5rem); overflow: auto; scrollbar-width: thin; }
+  .cat-filters { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: .4rem .8rem .8rem; }
+  .cat-filters summary { cursor: pointer; font-family: var(--display); font-weight: 700; padding: .35rem 0; color: var(--accent-2); }
+  .cat-active { color: var(--muted); font-family: system-ui, sans-serif; font-weight: 400; font-size: .85rem; }
+  .facet { border: 0; padding: 0; margin: .6rem 0 0; min-width: 0; }
+  .facet[hidden] { display: none; }
+  .facet legend { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; padding: 0; margin-bottom: .3rem; }
+  .facet-opts { display: flex; flex-wrap: wrap; gap: .3rem; }
+  .fopt { display: inline-flex; align-items: center; gap: .3rem; padding: .15rem .55rem; border-radius: 1rem; border: 1px solid var(--line-2); background: var(--bg-2); color: var(--fg); font-size: .8rem; cursor: pointer; }
+  .fopt:hover { border-color: var(--accent); }
+  .fopt[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #1a1407; font-weight: 600; }
+  .fopt[aria-pressed="true"] .fcount { color: #3a2c0c; }
+  .fopt.zero:not([aria-pressed="true"]) { opacity: .45; }
+  .fopt[hidden] { display: none; }
+  .fcount { color: var(--muted); font-size: .72rem; font-variant-numeric: tabular-nums; }
+  .range { display: flex; align-items: center; gap: .4rem; }
+  .range input { width: 5.5rem; }
+  .cat-clear { margin-top: .9rem; width: 100%; justify-content: center; font-size: .85rem; padding: .3rem .6rem; }
+  .cat-bar { display: flex; gap: .5rem; margin-bottom: .5rem; }
+  .cat-bar input { flex: 1; min-width: 0; }
+  .cat-grid { grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr)); }
+  .cat-grid > [hidden] { display: none; }
+  .cat-more { text-align: center; margin: 1rem 0 0; }
+  @media (max-width: 52rem) {
+    .catalog { grid-template-columns: minmax(0, 1fr); }
+    .cat-side { position: static; max-height: none; }
+  }
+</style>

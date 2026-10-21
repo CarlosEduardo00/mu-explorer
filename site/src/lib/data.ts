@@ -64,8 +64,13 @@ function load<T>(file: string): T[] {
  * mantêm a URL original como procedência.
  */
 const mediaPath = resolve(process.cwd(), "data", "media.json");
-const mediaManifest: Record<string, { path: string }> = existsSync(mediaPath) ? JSON.parse(readFileSync(mediaPath, "utf-8")) : {};
-export const localImage = (url: string | null | undefined): string | null => (url ? mediaManifest[url]?.path ?? url : null);
+const mediaManifest: Record<string, { path: string | null }> = existsSync(mediaPath) ? JSON.parse(readFileSync(mediaPath, "utf-8")) : {};
+/** Cópia local da imagem; URL sem imagem na fonte (path null no manifesto) vira null, para não mostrar imagem quebrada. */
+export const localImage = (url: string | null | undefined): string | null => {
+  if (!url) return null;
+  const entry = mediaManifest[url];
+  return entry ? entry.path : url;
+};
 function withLocalImages<T extends { image_url?: string | null; minimap_url?: string | null }>(rows: T[]): T[] {
   return rows.map((r) => ({ ...r, image_url: localImage(r.image_url), ...("minimap_url" in r ? { minimap_url: localImage(r.minimap_url) } : {}) }));
 }
