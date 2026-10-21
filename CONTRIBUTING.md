@@ -39,6 +39,10 @@ feat/minha-coisa ──PR──▶ mu-explorer-dev ──PR (release)──▶ m
 5. De tempos em tempos, um PR de `mu-explorer-dev` para `main` leva tudo para produção
    (https://mu-explorer.buiu.workers.dev).
 
+Builds de preview (Cloudflare Workers Builds, aba "Previews Base" do Worker): o comando de preview deve ser o
+padrão `npx wrangler preview`, que exige o bloco `previews` do `wrangler.jsonc`. Não use `wrangler versions upload`
+ali: a Cloudflare rejeita com "The name in your wrangler.jsonc file must match the name of your Worker".
+
 Nunca faça commit direto na `main` nem na `mu-explorer-dev` (as regras de proteção bloqueiam).
 
 ## Como dividir o trabalho sem conflito
