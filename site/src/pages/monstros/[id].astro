@@ -19,6 +19,7 @@ const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one :
 <Base title={monster.name} description={`${monster.name}: atributos, onde aparece e drops em MU Online.`}>
   <p class="crumbs"><a href="/monstros/">Monstros</a></p>
   <h1>{monster.name}</h1>
+  {monster.image_url && <img class="mob-img" src={monster.image_url} alt={monster.name} loading="lazy" referrerpolicy="no-referrer" />}
   <p class="muted">{monster.number != null && <>Nº {monster.number} · </>}{monster.difficulty != null && <>dificuldade {monster.difficulty}</>}</p>
 
   <h2>Atributos</h2>
@@ -59,3 +60,7 @@ const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one :
   {monster.notes.map((n) => <p class="muted">{n}</p>)}
   <p class="muted">Fonte: <a href={monster.source_url}>{monster.source}</a></p>
 </Base>
+
+<style>
+  .mob-img { display: block; max-width: 10rem; max-height: 10rem; object-fit: contain; margin: .5rem 0; background: #12131a; border-radius: .5rem; padding: .4rem; }
+</style>

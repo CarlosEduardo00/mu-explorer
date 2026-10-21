@@ -8,7 +8,7 @@
  */
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
-import type { Ruleset } from "./planner";
+import type { Ruleset, BuildTemplate } from "./planner";
 
 export type Requirements = Record<"level" | "strength" | "agility" | "vitality" | "energy" | "command", number | null>;
 
@@ -30,6 +30,7 @@ export interface GameMap {
   id: string; name: string; parent_id: string | null; description: string | null; quick_facts: string[];
   valued_drops: Record<string, string[]>; monsters: string[]; special_monsters: string[]; bosses: string[];
   npcs: string[]; connections: string[]; notes: string[]; image_url: string | null; source: string; source_url: string;
+  level_required?: number | null; level_recommended_min?: number | null; level_recommended_max?: number | null;
 }
 export interface Npc {
   id: string; name: string; type: string | null; description: string | null; image_url: string | null;
@@ -39,6 +40,12 @@ export interface Npc {
 }
 export interface Spawn { monster_id: string; map_id: string; kind: string | null; x: number | null; y: number | null; count: number | null }
 export interface Drop { monster_id: string; item_id: string; item_name: string; kind: string; table: string | null; category: string | null; quantity: number | null }
+export interface FarmSpot {
+  id: string; map_id: string; map_name: string; x: number; y: number; x_min: number; y_min: number; x_max: number; y_max: number;
+  monsters: { monster_id: string; name: string; level: number | null; count: number }[];
+  total: number; level_min: number | null; level_max: number | null; source: string | null; source_url: string | null;
+}
+export interface MapMarker { map_id: string; kind: string; name: string; x: number | null; y: number | null; description: string | null }
 export interface Source { id: string; name: string; url: string; credit: string | null }
 
 const dataset = process.env.SITE_DATA ?? "muemu";
@@ -57,6 +64,8 @@ export const npcs = load<Npc>("npcs.json");
 export const spawns = load<Spawn>("spawns.json");
 export const drops = load<Drop>("drops.json");
 export const sources = load<Source>("sources.json");
+export const farmSpots = load<FarmSpot>("farm_spots.json");
+export const mapMarkers = load<MapMarker>("map_markers.json");
 
 /**
  * Regras do planner (data/curated/planner.json), da season mais nova para a mais antiga.
@@ -67,6 +76,10 @@ const plannerPath = resolve(process.cwd(), "data", "curated", "planner.json");
 const plannerFile: PlannerFile = existsSync(plannerPath) ? JSON.parse(readFileSync(plannerPath, "utf-8")) : { rulesets: [] };
 export const rulesets: Ruleset[] = plannerFile.rulesets.filter((r) => r.publish || dataset !== "muemu");
 
+/** Builds prontas (data/curated/builds.json): curadoria nossa, regras de distribuição por fase de nível. */
+const buildsPath = resolve(process.cwd(), "data", "curated", "builds.json");
+export const builds: BuildTemplate[] = existsSync(buildsPath) ? JSON.parse(readFileSync(buildsPath, "utf-8")).builds : [];
+
 export const itemById = new Map(items.map((i) => [i.id, i]));
 export const monsterById = new Map(monsters.map((m) => [m.id, m]));
 export const mapById = new Map(maps.map((m) => [m.id, m]));
@@ -76,6 +89,8 @@ export const spawnsByMonster = groupBy(spawns, (s) => s.monster_id);
 export const spawnsByMap = groupBy(spawns, (s) => s.map_id);
 export const dropsByMonster = groupBy(drops, (d) => d.monster_id);
 export const dropsByItem = groupBy(drops, (d) => d.item_id);
+export const spotsByMap = groupBy(farmSpots, (s) => s.map_id);
+export const markersByMap = groupBy(mapMarkers, (m) => m.map_id);
 
 function groupBy<T>(rows: T[], key: (row: T) => string): Map<string, T[]> {
   const out = new Map<string, T[]>();

@@ -29,6 +29,9 @@ python -m scrapers.muemu parse                       # arquivos do MuEmu -> data
 python -m scrapers.combine                           # Fanz + MuEmu -> data/processed/combined/ + combine_report.md
 python -m scrapers.planner fetch                     # guias de classe + Stat Planner do Fanz (14 páginas, ~15 s)
 python -m scrapers.planner build                     # data/raw -> data/curated/planner.json (regras de classes)
+python -m scrapers.spots [--set combined]            # spawns -> data/processed/<conjunto>/farm_spots.json (spots de farm)
+python -m scrapers.gmo fetch                         # guias do Global MU Online (sitemap, 210 páginas, ~4 min)
+python -m scrapers.gmo parse                         # -> data/processed/gmo/ (mapas, monstros c/ imagem, spawns, marcadores)
 ```
 
 `parse` nunca acessa a rede: dá para refazer o parsing quantas vezes quiser sem rebaixar nada.
@@ -39,7 +42,7 @@ Site (Astro, Node 22, publicado no Cloudflare Workers com Static Assets; saída 
 npm install          # Astro e Wrangler (versões fixas em package.json)
 npm run dev          # servidor local em http://localhost:4321 (hot reload)
 npm run build        # gera ~3.500 páginas estáticas em site/dist (~8 s)
-npm run test:site    # testes da lógica do planner (node --test, sem dependências)
+npm run test:site    # testes da lógica do planner e da API (node --test, sem dependências)
 npm run check        # dry run do deploy dos dois ambientes (o Wrangler roda o build sozinho)
 npm run deploy:hml   # publicação manual (precisa de `npx wrangler login`); normalmente quem publica é o Git
 SITE_DATA=combined npm run dev    # usa Fanz + MuEmu (SÓ LOCAL: ver "Dados no site" abaixo)
@@ -75,6 +78,8 @@ scrapers/fanz/     urls.py, discover.py, parse_item.py, parse_monster.py, parse_
 scrapers/muemu/    source.py (vocabulário, fórmula de requisitos), parse.py, cli.py
 scrapers/combine.py  cruzamento Fanz + MuEmu (Fanz é a base; MuEmu só preenche campos vazios)
 scrapers/planner/  build.py: regras de classes (pontos por nível, base, evolução) -> data/curated/planner.json
+scrapers/gmo/      cli.py (fetch pelo sitemap), parse.py (guias de mapa: zonas de spawn, cards, marcadores)
+scrapers/spots.py  spots de farm: agrupa spawns por região (grade 32×32) -> farm_spots.json (não copia guias)
 data/curated/      arquivos curados por nós (hoje só planner.json), commitados
 docs/              rascunhos e notas (ex.: pedido de acesso ao muonline.us)
 schema/            JSON Schema (draft 2020-12) de cada entidade publicada
@@ -83,7 +88,8 @@ data/processed/    JSON normalizado por fonte + poc_report.md
 tests/             testes; tests/fixtures/<fonte>/ guarda HTML real usado como fixture
 site/src/          Astro: layouts/Base, components/FilterList, lib/data.ts (leitura dos JSON), lib/planner.ts (lógica
                    pura do planner + testes), pages/ (início, itens, monstros, mapas, npcs: lista com filtro +
-                   página por registro; planner/; data/ = JSON estático para o planner)
+                   página por registro; planner/; data/ = JSON estático para o planner; api/ = API estática)
+                   lib/api.ts + lib/sqlite.ts: manifesto, registros com relações e SQLite (node:sqlite)
 site/public/       arquivos fixos copiados para a saída (_headers, 404.html)
 site/dist/         saída do build (fora do git); é o que o Cloudflare publica
 astro.config.mjs   Astro com srcDir=site/src e outDir=site/dist
@@ -214,7 +220,21 @@ o que foi mapeado antes do bloqueio.
   `-g<grupo>-i<índice>` no id. Monstros com o mesmo nome são variantes de nível (Aegis em Kalima 1..7).
 - No cruzamento, excellent/ancient do Fanz casam com o item base (no MU têm o mesmo grupo/índice).
 
-### 4. Outras (referência, não prioritárias)
+### 4. Global MU Online (globalmuonline.com) — imagens de monstros, spawns e spots da S21
+- Servidor **privado** Season 21 (com reset), não é o oficial. robots.txt só bloqueia conta/admin; sitemap com
+  ~330 URLs, das quais usamos 210 guias (ficam de fora os conjuntos de itens ancient/mastery/legendary).
+- Guia de mapa (`/guides/<mapa>/`): zonas de spawn em `<polygon class="lmZone" data-m=<nº do monstro>
+  data-c="x1,y1 – x2,y2" data-d="Lv · HP · dmg · N here" data-img>`, cards `.monCard` com imagem, tabela
+  "Full stat table" (Lv, HP, Damage, Def, Atk rate, Block, Respawn, On map), marcadores `button.lmM t-spot|t-gate|...`
+  (t-spot = spot marcado no minimapa do jogo) e FAQ com o nível do warp. Resultado: 54 mapas, 312 monstros
+  (248 com imagem), 991 zonas, 695 marcadores.
+- Sem licença aberta: como o Fanz, **só build local** (entra no `combined`). No cruzamento: preenche imagens,
+  traz monstros/mapas novos, e nos mapas que cobre os spawns dele substituem os do MuEmu (S21, sem duplicar
+  spots). Grafias diferentes viram o id do Fanz (`GMO_MAP_ALIASES`); andares numerados ganham `parent_id`.
+- Classes, builds e drops (`/drop/location`) do GMO ainda não são extraídos.
+- muonline.fandom.com responde com desafio anti-bot da Cloudflare: não coletamos.
+
+### 5. Outras (referência, não prioritárias)
 muonline.fandom.com (MediaWiki, `/api.php`, cobertura parcial), StrategyWiki (antiga),
 wiki.infinitymu.net e info.topmuonline.net (servidores privados), globalmuonline.com/drop
 (Season 19/21).
@@ -233,13 +253,20 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 - `map`: id, name, parent_id, description, quick_facts, valued_drops, monsters, special_monsters, bosses,
   npcs, connections, notes, image_url. `npc`: id, name, type, locations (map_id, x, y), description, sells
   (item, categoria, preço em Zen, detalhes). `spawn`: monster_id, map_id, kind, x, y, x2, y2, radius, count.
+  `farm_spot`: id, map_id, centro (x, y), área (x_min..y_max), monsters (id, nome, nível, quantidade), total,
+  level_min/max (gerado por `scrapers.spots`; eventos e monstros dourados ficam de fora).
   `drop`: monster_id, item_id, item_name, kind
   (normal/excellent/ancient/socket/unknown), table, category, quantity, rate (null se a fonte não informa).
   Um drop do Fanz significa "o monstro pode dropar este item"; não há taxa.
-- `source`: id, name, url, scraped_at, credit.
+- `source`: id, name, url, scraped_at, credit, revision (commit da fonte, quando houver; ex.: MuEmu).
 - Builds **não existem como dado** nas fontes: serão curadoria nossa (referência: guias por
   classe e Stat Planner do Fanz). As distribuições de pontos sugeridas pelo Fanz são curadoria do autor e
   **não são copiadas**.
+- `builds` (`data/curated/builds.json`, schema `builds.schema.json`): builds prontas por classe, curadoria nossa em
+  regras (fases por nível; metas: número, `gear` = requisito do equipamento escolhido, ou `{per_level}`; resto
+  dividido por `split`). Pisos de skill são fatos do jogo; cada build cita referências. 29 builds, 13 classes.
+- `map`: também `level_required`, `level_recommended_min/max` (Quick Facts do Fanz; nível do warp no GMO).
+- `map_marker` (`map_markers.json`): map_id, kind (spot/hot_spot/gate/warp/npc/shop/quest/event), name, x, y.
 - `planner` (`data/curated/planner.json`, schema `planner.schema.json`): `rulesets` da season mais nova
   para a mais antiga; cada um com `classes` (base de atributos, pontos por nível em faixas, nível de
   desbloqueio, evolução, nomes). Hoje: `global-atual` (guias e Stat Planner do Fanz; 13 classes) e
@@ -249,7 +276,8 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 nível e pontos extras; distribui pontos de atributo; escolhe equipamento (itens de `planner-items.json`, por
 classe e slot) e confere requisitos; o estado vai no endereço (`#...`) para compartilhar a build. Pontos por
 nível = soma das faixas de cada nível de 2 até `max_level_points` (400); tier 1: 5, e 6 a partir do nível 220
-(quest Hero Status); tier 2 (MG, DL, RF, GL): 7. Requisitos dos itens são os do item +0. **Ainda não
+(quest Hero Status); tier 2 (MG, DL, RF, GL): 7. Requisitos dos itens são os do item +0. Com uma build pronta,
+o planner simula nível a nível (`simulateBuild`) e mostra a curva de atributos. **Ainda não
 calcula** HP/Mana/AG/SD nem dano: as fórmulas dos guias do Fanz têm lacunas ("+? AG", "every ? Agility")
 justamente em Gun Crusher e Slayer; precisam de outra fonte ou de conferência no jogo.
 
@@ -263,7 +291,9 @@ justamente em Gun Crusher e Slayer; precisam de outra fonte ou de conferência n
    obrigatórios; integridade referencial (todo drop aponta para item e monstro existentes);
    normalização de nomes divergentes entre fontes ("Ax Warrior" vs "Axe Warrior"); relatório de
    divergências; alerta quando um re-scrape mudar muito o resultado.
-4. Publicação: SQLite + JSON estático versionado por season (GitHub Pages/CDN) como API.
+4. Publicação: SQLite + JSON estático como API, gerados no build do site em `/api/v1/` (página `/api/`).
+   `v1` é a versão do formato; a versão dos dados (conjunto, season, revisão de cada fonte) fica no manifesto
+   `/api/v1/index.json` e na tabela `meta` do SQLite. Mudança incompatível de formato vira `/api/v2/`.
 5. Site: páginas de itens, mobs e spots; builds com curadoria manual.
 
 ## Decisões em aberto (resolver antes da coleta completa)

@@ -29,6 +29,12 @@ def test_guia_de_classe_tier_2():
     assert [e["name"] for e in guide["evolutions"]] == ["Grow Lancer", "Mirage Lancer", "Shining Lancer"]
 
 
+def test_guia_com_faixa_de_niveis_na_linha_seguinte():
+    # O guia do DK escreve "+6 Stat Points per level" e, na linha seguinte, "From level 220 ~ 400."
+    guide = build.parse_guide(lines("dk"))
+    assert guide["rates"] == [(5, False), (6, True)]
+
+
 def test_pontos_por_nivel_viram_faixas():
     assert build.rates_to_steps([(5, False), (6, True)]) == [
         {"from_level": 2, "per_level": 5}, {"from_level": 220, "per_level": 6}]

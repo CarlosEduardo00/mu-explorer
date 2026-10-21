@@ -1,0 +1,80 @@
+Advertisement:
+Home - Guide - Characters
+Dark Knight
+The Dark Knight is a fearless warrior with high strength and agility. They use their special abilities to deal powerful physical attacks on enemies with sword type weapons. Their unique ability to wield two swords at once can unleash hell on its enemies from the weapon damage bonus these character's receive by equipping identical swords! The Dark Knight is home to Lorencia with a long history there. These dedicated warriors fight tirelessly to bring Kundun's reign to an end!
+#Stats & Formulas...
+||
+#Weapons...
+||
+#Shields...
+||
+#Armor Sets...
+||
+#Wings...
+||
+#Basic Skills...
+||
+#Special Skills...
+||
+#Master Skill Tree...
+Free to play
+No purchase required!
+Tier 1 Class
+A beginner character!
+Unlocked
+No prerequisites required!
++5 Stat Points per level
+From level 1 ~ 220.
++6 Stat Points per level
+From level 220 ~ 400.
+Starts in Lorencia!
+The character's starting map.
+Strength points create an offensive build!
+Energy points create a defensive build!
+Class Specialization...
+Each character has unique specialization bonuses.
+x2 Weapon Bonus
+Equipping two weapons increases weapon DMG!
+Any two weapons: +10% DMG
+Two identical weapons: +30% DMG
+Strength stat bonus
+Adding stat points in STR increases ATK DMG!
+0 ~ 1,500 points: +0% ~ +10% increase
+1,501 ~ 2,000 points: +10% ~ +30% increase
+2,001+ points: +30% up to +45% increase
+Agility stat bonus
+Adding stat points in AGI increases DEF!
+0 ~ 1,500 points: +0% ~ +10% increase
+1,501 ~ 2,000 points: +10% ~ +30% increase
+2,001+ points: +30% up to +45% increase
+Party Set Bonus
+Gain increased EXP gain when in a party with:
+Dark Knight
+Fairy Elf
+Dark Wizard
+Class Evolution...
+All characters evolve through a series of classes after reaching a specific character level and after completing main quests.
+Dark Knight (1st class)
+Stops gaining EXP at Level 400.
+Evolves into Blade Knight after:
+Reaching Character Level 150.
+Completing the 2nd Class Upgrade quest.
+Blade Knight (2nd class)
+Unlocks the 'Combo' ability.
+Stops gaining EXP at Level 400.
+Evolves into Blade Master after:
+Reaching Character Level 400.
+Completing the 3rd Class Upgrade quest.
+Blade Master (3rd class)
+Unlocks the 'Master Skill Tree.'
+Stops gaining EXP at Level 800.
+Evolves into Dragon Knight.
+Reaching Character Level 800.
+Completing the 4th Class Upgrade quest.
+Dragon Knight (4th class)
+Unlocks the 'Skill Enhancement Tree.'
+Stops gaining EXP at Level 1450.
+Stats Details... #
+Check the formulas below to understand how each stat increases the character's abilities.
+Strength... (28 base points)
+Adding points to this stat increases...

@@ -7,3 +7,11 @@
 /data/*
   Access-Control-Allow-Origin: *
   Cache-Control: public, max-age=3600
+
+# API estática (/api/v1/): JSON e SQLite, legíveis por outros sites, com cache de 1h.
+/api/v1/*
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=3600
+
+/api/v1/mu-explorer.sqlite
+  Content-Disposition: attachment; filename="mu-explorer.sqlite"

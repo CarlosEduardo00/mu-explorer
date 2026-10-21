@@ -23,6 +23,12 @@ import Base from "../../layouts/Base.astro";
     <div id="classes" class="chips" role="radiogroup" aria-label="Classe"></div>
     <p id="class-note" class="muted"></p>
 
+    <h2>Build</h2>
+    <div class="planner-controls">
+      <label>Build pronta <select id="build"></select></label>
+    </div>
+    <div id="build-info"></div>
+
     <h2>Atributos</h2>
     <div class="table-wrap">
       <table id="stats">
@@ -35,6 +41,13 @@ import Base from "../../layouts/Base.astro";
     <h2>Equipamento</h2>
     <div id="gear" class="gear"></div>
     <div id="gear-check"></div>
+
+    <section id="curve-section" hidden>
+      <h2>Curva por nível</h2>
+      <p class="muted">Como a build distribui os pontos ao subir de nível (atributos totais, com a base).</p>
+      <div id="curve-chart"></div>
+      <div class="table-wrap"><table id="curve"></table></div>
+    </section>
 
     <p><button id="share" type="button" class="btn">Copiar link desta build</button> <span id="share-msg" class="muted" role="status"></span></p>
     <p id="credit" class="muted"></p>
@@ -60,22 +73,36 @@ import Base from "../../layouts/Base.astro";
   .bad { color: #b3261e; font-weight: 600; }
   #stats input[type="number"] { width: 6rem; }
   #stats .btn { white-space: nowrap; }
+  #stats input:disabled { opacity: .7; }
+  .build-card { padding: .75rem 1rem; background: var(--panel); border: 1px solid var(--line); border-radius: .5rem; margin: .5rem 0; }
+  .build-card p { margin: .25rem 0; }
+  .build-card ul { margin: .25rem 0; padding-left: 1.2rem; }
+  .role { display: inline-block; padding: 0 .5rem; border: 1px solid var(--line); border-radius: 1rem; font-size: .8rem; color: var(--muted); margin-left: .35rem; }
+  .curve-svg { width: 100%; height: auto; max-height: 16rem; display: block; margin: .5rem 0; }
+  .curve-svg text { fill: var(--muted); font-size: 11px; }
+  .curve-svg .axis { stroke: var(--line); }
+  .legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem; font-size: .85rem; padding: 0; list-style: none; }
+  .legend i { display: inline-block; width: .8rem; height: .2rem; vertical-align: middle; margin-right: .3rem; }
 </style>
 
 <script>
   import {
     STATS, STAT_LABELS, SLOTS, pointsAtLevel, sumAllocation, totals, usableBy, checkItem, neededByGear,
-    pointsToWear, encodeState, decodeState, emptyAllocation,
-    type Allocation, type ClassRules, type GearItem, type PlannerState, type Ruleset, type Slot, type Stat,
+    pointsToWear, encodeState, decodeState, emptyAllocation, simulateBuild,
+    type Allocation, type BuildTemplate, type ClassRules, type CurvePoint, type GearItem, type PlannerState, type Ruleset,
+    type Slot, type Stat,
   } from "../../lib/planner";
 
   const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
   const fmt = (n: number) => n.toLocaleString("pt-BR");
 
-  const [{ rulesets }, { items }] = await Promise.all([
+  const [{ rulesets }, { items }, { builds }] = await Promise.all([
     fetch("/data/planner.json").then((r) => r.json() as Promise<{ rulesets: Ruleset[] }>),
     fetch("/data/planner-items.json").then((r) => r.json() as Promise<{ items: GearItem[] }>),
+    fetch("/data/builds.json").then((r) => r.json() as Promise<{ builds: BuildTemplate[] }>),
   ]);
+  const esc = (t: string) => t.replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[ch] as string);
+  const STAT_COLORS: Record<Stat, string> = { str: "#c2410c", agi: "#15803d", vit: "#b91c1c", ene: "#1d4ed8", cmd: "#7e22ce" };
   const gearById = new Map(items.map((i) => [i.id, i]));
 
   if (rulesets.length === 0) {
@@ -95,6 +122,8 @@ import Base from "../../layouts/Base.astro";
 
     const rules = (): Ruleset => rulesets.find((r) => r.id === state.ruleset) ?? rulesets[0];
     const cls = (): ClassRules => rules().classes.find((c) => c.id === state.classId) ?? rules().classes[0];
+    const classBuilds = (): BuildTemplate[] => builds.filter((b) => b.class_id === cls().id);
+    const activeBuild = (): BuildTemplate | undefined => classBuilds().find((b) => b.id === state.build);
 
     // conjunto de regras: da season mais nova para a mais antiga
     const rulesetSelect = $<HTMLSelectElement>("ruleset");
@@ -106,6 +135,58 @@ import Base from "../../layouts/Base.astro";
       const max = cls().max_level;
       state.level = Math.min(Math.max(1, state.level || 1), max);
       if (!cls().base.cmd) state.added.cmd = 0;
+      if (state.build && !activeBuild()) state.build = undefined;
+    }
+
+    function renderBuildSelect() {
+      const list = classBuilds();
+      const select = $<HTMLSelectElement>("build");
+      select.innerHTML = `<option value="">${list.length ? "— distribuição manual —" : "sem builds prontas para esta classe"}</option>` +
+        list.map((b) => `<option value="${b.id}">${esc(b.name)}</option>`).join("");
+      select.disabled = list.length === 0;
+      select.value = state.build ?? "";
+    }
+
+    function renderBuildInfo(build: BuildTemplate | undefined) {
+      const box = $("build-info");
+      if (!build) {
+        box.innerHTML = classBuilds().length
+          ? `<p class="muted">Escolha uma build para distribuir os pontos automaticamente conforme o nível.</p>` : "";
+        return;
+      }
+      const notes = build.notes.length ? `<ul>${build.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>` : "";
+      const sources = build.sources.length
+        ? `<p class="muted">Referências: ${build.sources.map((x) => `<a href="${esc(x.url)}" rel="noopener">${esc(x.name)}</a>`).join(", ")}.</p>` : "";
+      box.innerHTML = `<div class="build-card">
+        <p><strong>${esc(build.name)}</strong><span class="role">${esc(build.role)}</span></p>
+        <p>${esc(build.summary)}</p>${notes}${sources}
+        <p><button type="button" class="btn small" id="build-manual">Editar manualmente a partir daqui</button></p>
+      </div>`;
+    }
+
+    function renderCurve(curve: CurvePoint[] | null) {
+      const section = $("curve-section");
+      if (!curve || curve.length < 2) { section.hidden = true; return; }
+      section.hidden = false;
+      const stats = STATS.filter((st) => st !== "cmd" || cls().base.cmd > 0);
+      const w = 640, h = 220, pad = { l: 44, r: 12, t: 10, b: 24 };
+      const maxLevel = curve[curve.length - 1].level;
+      const maxValue = Math.max(1, ...curve.flatMap((p) => stats.map((st) => p.total[st])));
+      const x = (lv: number) => pad.l + ((lv - 1) / Math.max(1, maxLevel - 1)) * (w - pad.l - pad.r);
+      const y = (v: number) => h - pad.b - (v / maxValue) * (h - pad.t - pad.b);
+      const lines = stats.map((st) => `<polyline fill="none" stroke="${STAT_COLORS[st]}" stroke-width="2"
+        points="${curve.map((p) => `${x(p.level).toFixed(1)},${y(p.total[st]).toFixed(1)}`).join(" ")}" />`).join("");
+      const ticks = [0, 0.5, 1].map((f) => Math.round(maxValue * f));
+      $("curve-chart").innerHTML = `
+        <svg class="curve-svg" viewBox="0 0 ${w} ${h}" role="img" aria-label="Atributos totais por nível">
+          <line class="axis" x1="${pad.l}" y1="${h - pad.b}" x2="${w - pad.r}" y2="${h - pad.b}" />
+          ${ticks.map((v) => `<text x="${pad.l - 6}" y="${y(v) + 4}" text-anchor="end">${fmt(v)}</text>`).join("")}
+          <text x="${pad.l}" y="${h - 6}">nv 1</text><text x="${w - pad.r}" y="${h - 6}" text-anchor="end">nv ${fmt(maxLevel)}</text>
+          ${lines}
+        </svg>
+        <ul class="legend">${stats.map((st) => `<li><i style="background:${STAT_COLORS[st]}"></i>${STAT_LABELS[st]}</li>`).join("")}</ul>`;
+      $("curve").innerHTML = `<thead><tr><th class="num">Nível</th>${stats.map((st) => `<th class="num">${STAT_LABELS[st]}</th>`).join("")}<th class="num">Pontos</th></tr></thead>
+        <tbody>${curve.map((p) => `<tr><td class="num">${fmt(p.level)}</td>${stats.map((st) => `<td class="num">${fmt(p.total[st])}</td>`).join("")}<td class="num">${fmt(p.points)}</td></tr>`).join("")}</tbody>`;
     }
 
     function renderClasses() {
@@ -135,9 +216,9 @@ import Base from "../../layouts/Base.astro";
         <tr>
           <td>${STAT_LABELS[s]}</td>
           <td class="num">${fmt(c.base[s])}</td>
-          <td class="num"><input type="number" min="0" step="1" inputmode="numeric" data-stat="${s}" value="${state.added[s]}" aria-label="Pontos em ${STAT_LABELS[s]}" /></td>
+          <td class="num"><input type="number" min="0" step="1" inputmode="numeric" data-stat="${s}" value="${state.added[s]}" aria-label="Pontos em ${STAT_LABELS[s]}" ${state.build ? "disabled" : ""} /></td>
           <td class="num" data-total="${s}"></td>
-          <td><button type="button" class="btn small" data-rest="${s}">Resto</button></td>
+          <td>${state.build ? "" : `<button type="button" class="btn small" data-rest="${s}">Resto</button>`}</td>
         </tr>`).join("");
       $("stats").querySelector("tbody")!.innerHTML = rows;
     }
@@ -146,6 +227,23 @@ import Base from "../../layouts/Base.astro";
       const c = cls();
       const r = rules();
       const base = c.base;
+      const equippedNow = SLOTS.flatMap(({ id }) => {
+        const item = state.gear[id] ? gearById.get(state.gear[id] as string) : undefined;
+        return item ? [item] : [];
+      });
+      const build = activeBuild();
+      let curve: CurvePoint[] | null = null;
+      if (build) {
+        const sim = simulateBuild(c, build, state.level, state.extra, neededByGear(equippedNow), 50);
+        state.added = sim.added;
+        curve = sim.curve;
+        for (const st of STATS) {
+          const input = document.querySelector<HTMLInputElement>(`[data-stat="${st}"]`);
+          if (input) input.value = String(state.added[st]);
+        }
+      }
+      renderBuildInfo(build);
+      renderCurve(curve);
       const levelPoints = pointsAtLevel(c.points, state.level, c.max_level_points);
       const available = levelPoints + state.extra;
       const used = sumAllocation(state.added);
@@ -206,7 +304,7 @@ import Base from "../../layouts/Base.astro";
       rulesetSelect.value = state.ruleset;
       ($("level") as HTMLInputElement).value = String(state.level);
       ($("extra") as HTMLInputElement).value = String(state.extra);
-      renderClasses(); renderStats(); renderGearSelects(); update();
+      renderClasses(); renderBuildSelect(); renderStats(); renderGearSelects(); update();
     }
 
     rulesetSelect.addEventListener("change", () => { state.ruleset = rulesetSelect.value; fullRender(); });
@@ -218,6 +316,7 @@ import Base from "../../layouts/Base.astro";
       state.classId = button.dataset.class as string;
       state.added = emptyAllocation();
       state.gear = {};
+      state.build = undefined;
       fullRender();
     });
     $("stats").addEventListener("input", (e) => {
@@ -244,6 +343,16 @@ import Base from "../../layouts/Base.astro";
       if (!slot) return;
       if (select.value) state.gear[slot] = select.value; else delete state.gear[slot];
       update();
+    });
+    $("build").addEventListener("change", (e) => {
+      state.build = (e.target as HTMLSelectElement).value || undefined;
+      renderStats(); update();
+    });
+    $("build-info").addEventListener("click", (e) => {
+      if ((e.target as HTMLElement).id !== "build-manual") return;
+      state.build = undefined;      // mantém os pontos atuais e libera a edição
+      $<HTMLSelectElement>("build").value = "";
+      renderStats(); update();
     });
     $("share").addEventListener("click", async () => {
       const message = $("share-msg");

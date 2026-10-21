@@ -41,6 +41,15 @@ export function pointsAtLevel(steps: Step[], level: number, maxLevelPoints: numb
   return total;
 }
 
+/** Pontos ganhos ao chegar no nível `level` (0 no nível 1 e acima do nível máximo de pontos). */
+export function rateAt(steps: Step[], level: number, maxLevelPoints: number): number {
+  if (level < 2 || level > maxLevelPoints) return 0;
+  let rate = 0;
+  let from = -Infinity;
+  for (const step of steps) if (step.from_level <= level && step.from_level >= from) { rate = step.per_level; from = step.from_level; }
+  return rate;
+}
+
 export const sumAllocation = (a: Allocation): number => STATS.reduce((n, s) => n + a[s], 0);
 
 export function totals(base: Allocation, added: Allocation): Allocation {
@@ -86,6 +95,8 @@ export function pointsToWear(need: Record<"level" | Stat, number>, base: Allocat
 
 export interface PlannerState {
   ruleset: string; classId: string; level: number; extra: number; added: Allocation; gear: Partial<Record<Slot, string>>;
+  /** Build pronta aplicada (id em builds.json); vazio = distribuição manual. */
+  build?: string;
 }
 
 export function encodeState(s: PlannerState): string {
@@ -95,6 +106,7 @@ export function encodeState(s: PlannerState): string {
     s: STATS.map((k) => s.added[k]).join(","),
   });
   if (gear) params.set("e", gear);
+  if (s.build) params.set("b", s.build);
   return params.toString();
 }
 
@@ -121,5 +133,102 @@ export function decodeState(hash: string): Partial<PlannerState> {
     if (SLOTS.some((x) => x.id === slot) && id) gear[slot as Slot] = id;
   }
   if (Object.keys(gear).length) out.gear = gear;
+  if (params.get("b")) out.build = params.get("b") as string;
   return out;
+}
+
+// --- builds prontas (data/curated/builds.json): regras de distribuição por fase de nível ------------------------
+
+/**
+ * Meta de um atributo (total, contando a base): número fixo, "gear" (o que o equipamento escolhido exige)
+ * ou proporcional ao nível ({ per_level: 2 } = 2 × nível).
+ */
+export type Target = number | "gear" | { per_level: number };
+export interface FillRule { stat: Stat; to: Target }
+export interface BuildPhase {
+  from_level: number;
+  /** Em ordem: cada nível novo enche estas metas primeiro. */
+  fill: FillRule[];
+  /** O que sobra é dividido nesta proporção (ex.: { ene: 3, agi: 1 }). */
+  split: Partial<Record<Stat, number>>;
+}
+export interface BuildSource { name: string; url: string }
+export interface BuildTemplate {
+  id: string; class_id: string; name: string; role: "pvm" | "pvp" | "suporte" | "híbrida";
+  summary: string; phases: BuildPhase[]; notes: string[]; sources: BuildSource[];
+}
+
+export function resolveTarget(to: Target, level: number, gearNeed: Partial<Record<Stat, number>>, stat: Stat): number {
+  if (typeof to === "number") return to;
+  if (to === "gear") return gearNeed[stat] ?? 0;
+  return Math.floor(to.per_level * level);
+}
+
+export function phaseAt(phases: BuildPhase[], level: number): BuildPhase | null {
+  let found: BuildPhase | null = null;
+  for (const p of [...phases].sort((a, b) => a.from_level - b.from_level)) if (p.from_level <= level) found = p;
+  return found;
+}
+
+/**
+ * Gasta `points` segundo a fase: primeiro as metas (em ordem), depois o resto na proporção do split.
+ * `splitGiven` guarda quanto cada atributo já recebeu pelo split, para a proporção valer no acumulado.
+ * Atributos fora de `allowed` (ex.: Comando em quem não tem) nunca recebem pontos.
+ */
+function spend(points: number, level: number, phase: BuildPhase, base: Allocation, added: Allocation,
+  splitGiven: Allocation, gearNeed: Partial<Record<Stat, number>>, allowed: Stat[]): number {
+  let left = points;
+  for (const rule of phase.fill) {
+    if (left <= 0) break;
+    if (!allowed.includes(rule.stat)) continue;
+    const missing = resolveTarget(rule.to, level, gearNeed, rule.stat) - (base[rule.stat] + added[rule.stat]);
+    if (missing <= 0) continue;
+    const give = Math.min(left, missing);
+    added[rule.stat] += give;
+    left -= give;
+  }
+  const weights = STATS.filter((s) => allowed.includes(s) && (phase.split[s] ?? 0) > 0);
+  if (weights.length === 0) return left;
+  while (left > 0) {
+    let best = weights[0];
+    for (const s of weights) {
+      if (splitGiven[s] / (phase.split[s] as number) < splitGiven[best] / (phase.split[best] as number)) best = s;
+    }
+    added[best] += 1;
+    splitGiven[best] += 1;
+    left -= 1;
+  }
+  return 0;
+}
+
+export interface CurvePoint { level: number; total: Allocation; points: number }
+
+/**
+ * Simula a build nível a nível (pontos de cada nível gastos ao subir, sem refazer o que já foi gasto) e
+ * devolve os pontos adicionados no nível pedido e a curva (um ponto a cada `every` níveis + o último).
+ * Pontos extras (quests, frutas) entram no nível final.
+ */
+export function simulateBuild(cls: ClassRules, build: BuildTemplate, level: number, extra = 0,
+  gearNeed: Partial<Record<Stat, number>> = {}, every = 50): { added: Allocation; curve: CurvePoint[]; unspent: number } {
+  const allowed = STATS.filter((s) => s !== "cmd" || cls.base.cmd > 0);
+  const added = emptyAllocation();
+  const splitGiven = emptyAllocation();
+  const last = Math.max(1, Math.min(Math.floor(level), cls.max_level));
+  const curve: CurvePoint[] = [];
+  let pool = 0;   // pontos recebidos e ainda não gastos (metas cumpridas e sem split)
+  let earned = 0;
+  const step = (points: number, l: number) => {
+    pool += points;
+    const phase = phaseAt(build.phases, l);
+    if (phase) pool = spend(pool, l, phase, cls.base, added, splitGiven, gearNeed, allowed);
+  };
+  for (let l = 1; l <= last; l++) {
+    const gained = rateAt(cls.points, l, cls.max_level_points);
+    if (gained > 0) { earned += gained; step(gained, l); }
+    if ((l === 1 || l % every === 0) && l !== last) curve.push({ level: l, total: totals(cls.base, added), points: earned });
+  }
+  if (extra > 0) { earned += extra; step(extra, last); }
+  curve.push({ level: last, total: totals(cls.base, added), points: earned });
+  const unspent = pool;
+  return { added, curve, unspent };
 }
