@@ -1,0 +1,69 @@
+---
+import Base from "../../layouts/Base.astro";
+import { items, itemById, dropsByItem, monsterById, fmt } from "../../lib/data";
+
+export function getStaticPaths() {
+  return items.map((item) => ({ params: { id: item.id }, props: { item } }));
+}
+const { item } = Astro.props;
+const req = item.requirements;
+const reqRows: [string, number | null][] = [
+  ["Nível", req.level], ["Força", req.strength], ["Agilidade", req.agility],
+  ["Vitalidade", req.vitality], ["Energia", req.energy], ["Comando", req.command],
+];
+const statRows = Object.entries(item.stats);
+const droppers = [...new Set((dropsByItem.get(item.id) ?? []).map((d) => d.monster_id))]
+  .map((id) => monsterById.get(id)).filter((m) => m !== undefined);
+const related = item.related_items.map((id) => itemById.get(id)).filter((i) => i !== undefined);
+---
+<Base title={item.name} description={`${item.name}: requisitos, atributos e onde dropa em MU Online.`}>
+  <p class="crumbs"><a href="/itens/">Itens</a> › {item.category ?? "item"}</p>
+  <h1>{item.name}</h1>
+  <p class="muted">
+    {item.group != null && <>Grupo {item.group} · índice {item.index} · </>}
+    {item.grade && <>{item.grade} · </>}
+    {item.season && <>{item.season}</>}
+  </p>
+
+  {item.classes.length > 0 && (<><h2>Classes</h2><ul class="tags">{item.classes.map((c) => <li>{c}</li>)}</ul></>)}
+
+  {reqRows.some(([, v]) => v != null) && (
+    <>
+      <h2>Requisitos</h2>
+      <dl class="facts">{reqRows.filter(([, v]) => v != null).map(([k, v]) => <><dt>{k}</dt><dd>{fmt(v)}</dd></>)}</dl>
+    </>
+  )}
+
+  {(statRows.length > 0 || item.durability != null) && (
+    <>
+      <h2>Atributos</h2>
+      <dl class="facts">
+        {statRows.map(([k, v]) => <><dt>{k.replaceAll("_", " ")}</dt><dd>{fmt(v)}</dd></>)}
+        {item.durability != null && <><dt>durabilidade</dt><dd>{fmt(item.durability)}</dd></>}
+      </dl>
+    </>
+  )}
+
+  {item.options.length > 0 && (<><h2>Opções possíveis</h2><ul class="tags">{item.options.map((o) => <li>{o}</li>)}</ul></>)}
+  {item.option_groups.map((g) => (
+    <>
+      <h2>{g.title}{g.max ? ` (até ${g.max})` : ""}</h2>
+      <ul>{g.lines.map((l) => <li>{l}</li>)}</ul>
+    </>
+  ))}
+
+  {droppers.length > 0 && (
+    <>
+      <h2>Quem dropa</h2>
+      <ul class="tags">{droppers.map((m) => <li><a href={`/monstros/${m.id}/`}>{m.name}</a></li>)}</ul>
+    </>
+  )}
+  {related.length > 0 && (
+    <>
+      <h2>Itens relacionados</h2>
+      <ul class="tags">{related.map((r) => <li><a href={`/itens/${r.id}/`}>{r.name}</a></li>)}</ul>
+    </>
+  )}
+  {item.notes.length > 0 && (<><h2>Notas</h2>{item.notes.map((n) => <p>{n}</p>)}</>)}
+  <p class="muted">Fonte: <a href={item.source_url}>{item.source}</a></p>
+</Base>

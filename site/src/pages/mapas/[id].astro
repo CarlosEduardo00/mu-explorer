@@ -1,0 +1,48 @@
+---
+import Base from "../../layouts/Base.astro";
+import { maps, mapById, monsterById, npcById, spawnsByMap, fmt } from "../../lib/data";
+
+export function getStaticPaths() {
+  return maps.map((map) => ({ params: { id: map.id }, props: { map } }));
+}
+const { map } = Astro.props;
+const spawnList = spawnsByMap.get(map.id) ?? [];
+const monsterIds = [...new Set([...map.monsters, ...map.special_monsters, ...map.bosses, ...spawnList.map((s) => s.monster_id)])];
+const listed = monsterIds.map((id) => monsterById.get(id)).filter((m) => m !== undefined)
+  .sort((a, b) => (a.level ?? 0) - (b.level ?? 0));
+const npcsHere = map.npcs.map((id) => npcById.get(id)).filter((n) => n !== undefined);
+const spotsOf = (id: string) => spawnList.filter((s) => s.monster_id === id);
+const connections = map.connections.map((id) => mapById.get(id)).filter((m) => m !== undefined);
+const parent = map.parent_id ? mapById.get(map.parent_id) : undefined;
+---
+<Base title={map.name} description={map.description ?? `${map.name}: monstros e NPCs em MU Online.`}>
+  <p class="crumbs"><a href="/mapas/">Mapas</a>{parent && <> › <a href={`/mapas/${parent.id}/`}>{parent.name}</a></>}</p>
+  <h1>{map.name}</h1>
+  {map.description && <p class="lead">{map.description}</p>}
+  {map.quick_facts.length > 0 && <ul>{map.quick_facts.map((f) => <li>{f}</li>)}</ul>}
+  {Object.entries(map.valued_drops).map(([group, lines]) => (
+    <>
+      <h2>Drops valiosos ({group.replaceAll("_", " ")})</h2>
+      <ul class="tags">{lines.map((l) => <li>{l}</li>)}</ul>
+    </>
+  ))}
+
+  {listed.length > 0 && (
+    <>
+      <h2>Monstros</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Nome</th><th class="num">Nível</th><th class="num">Pontos de spawn</th></tr></thead>
+          <tbody>
+            {listed.map((m) => (
+              <tr><td><a href={`/monstros/${m.id}/`}>{m.name}</a></td><td class="num">{fmt(m.level)}</td><td class="num">{fmt(spotsOf(m.id).length || null)}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  )}
+  {npcsHere.length > 0 && (<><h2>NPCs</h2><ul class="tags">{npcsHere.map((n) => <li><a href={`/npcs/${n.id}/`}>{n.name}</a></li>)}</ul></>)}
+  {connections.length > 0 && (<><h2>Ligações</h2><ul class="tags">{connections.map((c) => <li><a href={`/mapas/${c.id}/`}>{c.name}</a></li>)}</ul></>)}
+  <p class="muted">Fonte: <a href={map.source_url}>{map.source}</a></p>
+</Base>

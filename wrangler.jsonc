@@ -1,17 +1,23 @@
-// Cloudflare Workers com Static Assets: publica o conteúdo de site/public.
+// Cloudflare Workers com Static Assets: publica o site gerado em site/dist (Astro; arquivos fixos como _headers e 404.html vêm de site/public).
 // Sem "main": por enquanto é só site estático, sem código no servidor.
 //
 // Ambientes (cada um é um Worker separado no painel da Cloudflare):
 //   prod -> Worker "mu-explorer"      branch main              `npx wrangler deploy --env prod`
 //   hml  -> Worker "mu-explorer-hml"  branch mu-explorer-dev   `npx wrangler deploy --env hml`
 // O bloco de fora (sem env) é o que `npm run dev` usa localmente.
+// Builds do Git (Workers Builds): em branches que não são de produção, o comando do painel deve ser
+// `npx wrangler versions upload --env prod` (no Worker mu-explorer) ou `--env hml` (no mu-explorer-hml);
+// sem --env o Wrangler avisa que há vários ambientes definidos.
 // workers_dev: true mantém o endereço <nome>.buiu.workers.dev ligado a cada deploy.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  // O site é gerado pelo Astro: o Wrangler roda o build antes de publicar, então o build command
+  // do painel da Cloudflare pode ficar vazio.
+  "build": { "command": "npm run build" },
   "name": "mu-explorer",
   "compatibility_date": "2026-09-30",
   "assets": {
-    "directory": "./site/public",
+    "directory": "./site/dist",
     "not_found_handling": "404-page"
   },
   "env": {
@@ -19,7 +25,7 @@
       "name": "mu-explorer",
       "workers_dev": true,
       "assets": {
-        "directory": "./site/public",
+        "directory": "./site/dist",
         "not_found_handling": "404-page"
       }
     },
@@ -27,7 +33,7 @@
       "name": "mu-explorer-hml",
       "workers_dev": true,
       "assets": {
-        "directory": "./site/public",
+        "directory": "./site/dist",
         "not_found_handling": "404-page"
       }
     }

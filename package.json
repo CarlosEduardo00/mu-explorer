@@ -1,14 +1,18 @@
 {
   "name": "mu-explorer",
   "private": true,
-  "description": "Site do MU Explorer (Cloudflare Workers com Static Assets). Os scrapers ficam em Python, em scrapers/.",
+  "description": "Site do MU Explorer (Astro, publicado no Cloudflare Workers com Static Assets). Os scrapers ficam em Python, em scrapers/.",
   "scripts": {
-    "dev": "wrangler dev",
+    "dev": "astro dev --port 4321",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check",
     "check": "wrangler deploy --dry-run --env prod && wrangler deploy --dry-run --env hml",
-    "deploy:prod": "wrangler deploy --env prod",
-    "deploy:hml": "wrangler deploy --env hml"
+    "deploy:prod": "npm run build && wrangler deploy --env prod",
+    "deploy:hml": "npm run build && wrangler deploy --env hml"
   },
   "devDependencies": {
+    "astro": "^7.3.6",
     "wrangler": "4.145.0"
   }
 }

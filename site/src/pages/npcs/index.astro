@@ -1,0 +1,16 @@
+---
+import Base from "../../layouts/Base.astro";
+import FilterList from "../../components/FilterList.astro";
+import { npcs } from "../../lib/data";
+const rows = npcs.map((n) => ({
+  href: `/npcs/${n.id}/`,
+  cells: [n.name, n.type, n.locations.map((l) => l.map_name).join(", ") || null],
+  search: `${n.name} ${n.type ?? ""} ${n.locations.map((l) => l.map_name).join(" ")}`.toLowerCase(),
+}));
+---
+<Base title="NPCs">
+  <h1>NPCs</h1>
+  {npcs.length === 0
+    ? <p class="muted">Sem dados de NPCs neste conjunto.</p>
+    : <FilterList columns={[{ label: "Nome" }, { label: "Tipo" }, { label: "Onde" }]} rows={rows} placeholder="Filtrar por nome, tipo ou mapa" noun="NPCs" />}
+</Base>
