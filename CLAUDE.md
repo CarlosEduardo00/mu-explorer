@@ -44,7 +44,7 @@ Site (Astro, Node 22, publicado no Cloudflare Workers com Static Assets; saída 
 npm install          # Astro e Wrangler (versões fixas em package.json)
 npm run dev          # servidor local em http://localhost:4321 (hot reload)
 npm run build        # gera ~3.500 páginas estáticas em site/dist (~8 s)
-npm run test:site    # testes da lógica do planner e da API (node --test, sem dependências)
+npm run test:site    # testes do planner, da API e da taxonomia (node --test, sem dependências)
 npm run check        # dry run do deploy dos dois ambientes (o Wrangler roda o build sozinho)
 npm run deploy:hml   # publicação manual (precisa de `npx wrangler login`); normalmente quem publica é o Git
 SITE_DATA=muemu npm run dev       # build só com dados de licença aberta (MuEmu); o padrão é combined
@@ -94,12 +94,16 @@ schema/            JSON Schema (draft 2020-12) de cada entidade publicada
 data/raw/          HTML bruto + .meta.json por página (fora do git)
 data/processed/    JSON normalizado por fonte + poc_report.md
 tests/             testes; tests/fixtures/<fonte>/ guarda HTML real usado como fixture
-site/src/          Astro: layouts/Base, components/FilterList, components/MapExplorer (mapa interativo: mapa vetorial
-                   próprio, hot spots com cor e volume, painel com monstros, atributos e drops, camadas de spots do
-                   minimapa do jogo, portais e imagem do minimapa), lib/data.ts (leitura dos JSON), lib/planner.ts (lógica
-                   pura do planner + testes), pages/ (início, itens, monstros, mapas, npcs: lista com filtro +
-                   página por registro; spots/ = área separada: índice com filtro por nível e spots/<mapa>/ com o
-                   mapa interativo; planner/; data/ = JSON estático para o planner; api/ = API estática)
+site/src/          Astro: layouts/Base (tema escuro com dourado, Cinzel em public/fonts, busca global com /data/search.json),
+                   components/ Catalog (lista com facetas, faixa de nível, ordenação e estado no endereço), Card,
+                   PageHead (cabeçalho padrão de registro), MapExplorer (mapa interativo: mapa vetorial próprio, hot
+                   spots com cor e volume, painel com monstros, atributos e drops, camadas de spots do minimapa do jogo,
+                   portais e imagem do minimapa); lib/data.ts (leitura dos JSON), lib/taxonomy.ts (vocabulário em
+                   português: categorias de item por grupo/tipo, qualidades, famílias de classe, atributos, tabelas de
+                   drop, tipos de NPC; com testes), lib/view.ts (taxonomia aplicada aos dados), lib/planner.ts (lógica
+                   pura do planner + testes), pages/ (início, itens, monstros, mapas, npcs: catálogo + página por
+                   registro; mapas/<id>/mapa.svg = miniatura vetorial; spots/ = área separada: busca por nível e
+                   spots/<mapa>/ com o mapa interativo; planner/; data/ = JSON estático; api/ = API estática)
                    lib/api.ts + lib/sqlite.ts: manifesto, registros com relações e SQLite (node:sqlite)
 site/public/       arquivos fixos copiados para a saída (_headers, 404.html, media/ = imagens copiadas das fontes)
 site/dist/         saída do build (fora do git); é o que o Cloudflare publica
@@ -323,9 +327,10 @@ justamente em Gun Crusher e Slayer; precisam de outra fonte ou de conferência n
 5. Site: páginas de itens, mobs e spots; builds com curadoria manual. Spots ficam numa área própria
    (`/spots/<mapa>/#spot-N`); a página do mapa só leva até lá. "Onde dropa" do item mostra, para cada monstro, o
    spot com mais dele (para farmar até dropar).
-6. **Próximo (combinado com o dono):** revisão de todo o front-end depois dos mapas refeitos: estilo de arte,
-   dinâmica, distribuição das telas, filtros de itens e nomes de categoria padronizados (hoje aparecem slugs
-   como `accessory_misc` e atributos repetidos em inglês/português, ex.: durability/durabilidade).
+6. Revisão do front-end (pedido do dono, feita depois dos mapas refeitos): tema do jogo, busca global, catálogos com
+   facetas e nomes padronizados em português (`lib/taxonomy.ts`). **Regra:** texto exibido passa pela taxonomia
+   (categoria, qualidade, classe, atributo, tabela de drop, tipo de NPC); nada de slug ou chave crua na tela. Os
+   dados e a API continuam com os valores da fonte.
 
 ## Decisões em aberto (resolver antes da coleta completa)
 

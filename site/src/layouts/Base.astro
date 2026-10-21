@@ -263,6 +263,9 @@ const path = Astro.url.pathname;
   .filter { width: 100%; padding: .6rem .8rem; margin: 1rem 0 .5rem; }
   .count { color: var(--muted); font-size: .85rem; margin: 0 0 .5rem; }
   .warn { color: #ff7b72; font-weight: 600; }
+  code { font-size: .88em; color: var(--accent-2); background: var(--panel-2); padding: .05rem .3rem; border-radius: .25rem; }
+  pre { overflow-x: auto; padding: .75rem 1rem; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); font-size: .85rem; }
+  pre code { background: none; padding: 0; color: var(--fg); }
 
   /* Hot spots */
   .heat-tag { display: inline-block; padding: 0 .45rem; border-radius: .3rem; color: #111; font-size: .8rem; font-weight: 600; text-transform: capitalize; }
