@@ -29,9 +29,19 @@ Site (Node 22, Cloudflare Workers com Static Assets, publica `site/public/`):
 ```bash
 npm install          # instala o wrangler (versão fixa em package.json)
 npm run dev          # servidor local em http://localhost:8787
-npm run check        # valida a configuração (wrangler deploy --dry-run)
-npm run deploy       # publica (precisa de `npx wrangler login`); normalmente quem publica é o Git
+npm run check        # valida a configuração dos dois ambientes (dry run)
+npm run deploy:hml   # publicação manual (precisa de `npx wrangler login`); normalmente quem publica é o Git
 ```
+
+## Ambientes e branches
+
+| ambiente | Worker (Cloudflare)  | branch                   | deploy command                  |
+|----------|----------------------|--------------------------|---------------------------------|
+| hml      | `mu-explorer-hml`    | `claude/mu-explorer-dev` | `npx wrangler deploy --env hml`  |
+| prod     | `mu-explorer`        | `main`                   | `npx wrangler deploy --env prod` |
+
+Fluxo: branch curta a partir de `claude/mu-explorer-dev` → PR para `claude/mu-explorer-dev` (publica em
+hml para testar) → PR de `claude/mu-explorer-dev` para `main` (publica em prod). Nunca commitar direto na `main`.
 
 ## Estrutura
 
@@ -45,7 +55,7 @@ data/raw/          HTML bruto + .meta.json por página (fora do git)
 data/processed/    JSON normalizado por fonte + poc_report.md
 tests/             testes; tests/fixtures/<fonte>/ guarda HTML real usado como fixture
 site/public/       site estático publicado no Cloudflare Workers (por enquanto, página "em construção")
-wrangler.jsonc     configuração do Worker (nome mu-explorer, assets em site/public, 404.html)
+wrangler.jsonc     configuração dos Workers (env prod = mu-explorer, env hml = mu-explorer-hml; assets em site/public)
 ```
 
 ## Convenções de código
@@ -60,7 +70,8 @@ wrangler.jsonc     configuração do Worker (nome mu-explorer, assets em site/pu
   (`scrapers/common/html.py`) e mapeiam rótulos por regex. Rótulo não mapeado vai para o
   relatório (`unmapped`), não para o registro.
 - Todo scraper novo vem com testes de parse usando HTML salvo como fixture.
-- Branches curtas e PRs pequenos. Dividir trabalho por fonte/fase para evitar conflito.
+- Branches curtas e PRs pequenos, sempre para `claude/mu-explorer-dev` (ver "Ambientes e branches").
+  Dividir trabalho por fonte/fase para evitar conflito.
 - Nunca commitar credenciais.
 
 ## Regras de coleta (obrigatórias)
@@ -171,8 +182,8 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 
 - [ ] Season/servidor alvo (global oficial ou privado; Fanz cita S16–S19, muonline.us vai até S22).
 - [ ] Site pessoal, público ou monetizado (risco jurídico; se público, pedir autorização ao Fanz e dar crédito).
-- [x] Hosting: Cloudflare Workers com Static Assets, deploy pelo Git (Workers Builds). `site/public/_headers`
-      define CORS e cache de `/data/*`, que será a API estática.
+- [x] Hosting: Cloudflare Workers com Static Assets, deploy pelo Git (Workers Builds), com ambientes hml e
+      prod (ver "Ambientes e branches"). `site/public/_headers` define CORS e cache de `/data/*`, a API estática.
 - [ ] Stack do frontend (HTML puro ou framework com build, ex.: Astro/Vite; se tiver build, apontar
       `assets.directory` para a pasta de saída e configurar o build command no painel).
 - [ ] Publicar dados do Fanz em `site/public/data/` só depois da decisão acima sobre autorização.

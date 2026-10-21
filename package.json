@@ -4,8 +4,9 @@
   "description": "Site do MU Explorer (Cloudflare Workers com Static Assets). Os scrapers ficam em Python, em scrapers/.",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "check": "wrangler deploy --dry-run"
+    "check": "wrangler deploy --dry-run --env prod && wrangler deploy --dry-run --env hml",
+    "deploy:prod": "wrangler deploy --env prod",
+    "deploy:hml": "wrangler deploy --env hml"
   },
   "devDependencies": {
     "wrangler": "4.145.0"
