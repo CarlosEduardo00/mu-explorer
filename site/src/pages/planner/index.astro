@@ -168,7 +168,7 @@ import Base from "../../layouts/Base.astro";
       const list = classBuilds();
       const select = $<HTMLSelectElement>("build");
       select.innerHTML = `<option value="">${list.length ? "— distribuição manual —" : "sem builds prontas para esta classe"}</option>` +
-        list.map((b) => `<option value="${b.id}">${esc(b.name)}</option>`).join("");
+        list.map((b) => `<option value="${b.id}">${esc(b.name)}${b.status === "antiga" ? " (antiga)" : ""}</option>`).join("");
       select.disabled = list.length === 0;
       select.value = state.build ?? "";
     }
@@ -184,6 +184,7 @@ import Base from "../../layouts/Base.astro";
       box.innerHTML = `<div class="build-card">
         <p><strong>${esc(build.name)}</strong><span class="role">${esc(build.role)}</span></p>
         <p>${esc(build.summary)}</p>${notes}
+        <p><a href="/builds/${build.id}/">Ver a build completa: como seguir, skills e equipamento por nível →</a></p>
         <p><button type="button" class="btn small" id="build-manual">Editar manualmente a partir daqui</button></p>
       </div>`;
     }

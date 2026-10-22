@@ -29,6 +29,7 @@ python -m scrapers.muemu parse                       # arquivos do MuEmu -> data
 python -m scrapers.combine                           # Fanz + MuEmu -> data/processed/combined/ + combine_report.md
 python -m scrapers.planner fetch                     # guias de classe + Stat Planner do Fanz (14 páginas, ~15 s)
 python -m scrapers.planner build                     # data/raw -> data/curated/planner.json (regras de classes)
+python -m scrapers.planner builds                    # -> data/curated/builds.json (builds prontas, só do servidor oficial)
 python -m scrapers.spots [--set combined]            # spawns -> data/processed/<conjunto>/farm_spots.json (spots de farm)
 python -m scrapers.gmo fetch                         # guias do Global MU Online (sitemap, 210 páginas, ~4 min)
 python -m scrapers.gmo fetch-drops                   # listas de drop por mapa do GMO (/drop/location, 111 páginas, ~2 min)
@@ -105,7 +106,9 @@ site/src/          Astro: layouts/Base (tema escuro com dourado, Cinzel em publi
                    drop, tipos de NPC; com testes), lib/view.ts (taxonomia aplicada aos dados), lib/planner.ts (lógica
                    pura do planner + testes), pages/ (início, itens, monstros, mapas, npcs: catálogo + página por
                    registro; mapas/<id>/mapa.svg = miniatura vetorial; spots/ = área separada: busca por nível e
-                   spots/<mapa>/ com o mapa interativo; planner/; data/ = JSON estático; api/ = API estática)
+                   spots/<mapa>/ com o mapa interativo; builds/ = builds prontas do oficial para seguir (proporção,
+                   skills por nível, atributos por nível, sets de mastery por nível, vídeos); planner/; data/ = JSON
+                   estático; api/ = API estática)
                    lib/api.ts + lib/sqlite.ts: manifesto, registros com relações e SQLite (node:sqlite)
 site/public/       arquivos fixos copiados para a saída (_headers, 404.html, media/ = imagens copiadas das fontes)
 site/dist/         saída do build (fora do git); é o que o Cloudflare publica
@@ -290,13 +293,19 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
   (normal/excellent/ancient/socket/unknown), table, category, quantity, rate (null se a fonte não informa).
   Um drop do Fanz significa "o monstro pode dropar este item"; não há taxa.
 - `source`: id, name, url, scraped_at, credit, revision (commit da fonte, quando houver; ex.: MuEmu).
-- Builds **não existem como dado** nas fontes: serão curadoria nossa (referência: guias por
-  classe e Stat Planner do Fanz). As distribuições de pontos sugeridas pelo Fanz são curadoria do autor e
-  **não são copiadas**.
-- `builds` (`data/curated/builds.json`, schema `builds.schema.json`): builds prontas por classe, curadoria nossa em
-  regras (fases por nível; metas: número, `gear` = requisito do equipamento escolhido, ou `{per_level}`; resto
-  dividido por `split`). Pisos de skill são fatos do jogo; cada build cita referências. 35 builds, 16 classes. Os pontos
-  de atributo acabam no nível 400: degraus finais começam antes (250/300) para fechar até lá (há teste).
+- `builds` (`data/curated/builds.json`, schema `builds.schema.json`, gerado por `python -m scrapers.planner builds` em
+  `scrapers/planner/builds.py`): builds prontas para seguir, **só do MU Online oficial da Webzen** (pedido do dono:
+  nada de servidor modificado; há teste que só aceita fontes do Fanz e da Webzen). 29 builds, 16 classes:
+  - distribuição (`ratio`, % dos pontos ganhos) das 13 classes do Fanz = presets do Stat Planner do Fanz (os mesmos da
+    página Stat Builds), lidos de `data/raw/fanz/tools/stat-planner.html` (publicação autorizada, out/2026);
+  - IK, Alchemist e Crusader não têm distribuição publicada: proporção nossa (`basis: "nossa"`), a partir do atributo
+    principal e dos requisitos de skill dos guias oficiais da Webzen; a página diz isso;
+  - `status: "antiga"` quando uma renovação oficial mudou o atributo do dano depois da distribuição (RF e Slayer de
+    Força depois da S18; DL de Força antes da S19); a 1ª nota explica;
+  - `skills` (requisitos oficiais), `videos` (YouTube de jogadores do oficial), `gear_variant` (ATK/ENE/WIZ/Belief);
+  - regras do planner: fase única, primeiro o que o equipamento pede de Força/Agilidade, o resto na proporção.
+  Fontes do oficial: guias da Webzen (`muonline.webzen.com/en/gameinfo/guide/detail/N`, só fatos, parafraseados) e do
+  Fanz. Fontes de servidor privado (globalmuonline, muonline.net/.ai/.eu, wikis de privados) não entram em builds.
 - `map`: também `level_required`, `level_recommended_min/max` (Quick Facts do Fanz; nível do warp no GMO) e
   `minimap_url` (Fanz `graphics/<Mapa>/map.jpg`, 1024×1024 = 4 px por casa; **horizontal = y, vertical = x**, conferido
   com os NPCs de Devias/Lorencia). Os pontos dos Hot Spots do Fanz ficam no php bloqueado: não coletamos.

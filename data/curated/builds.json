@@ -1,1840 +1,1966 @@
 {
-  "builds": [
+ "builds": [
+  {
+   "id": "dk-duas-armas",
+   "class_id": "dark-knight",
+   "name": "Duas armas (Força)",
+   "role": "pvm",
+   "summary": "A build de dano do Dark Knight: Força como atributo principal (é ela que escala o dano desde a renovação da S18) e Agilidade para velocidade, com uma arma em cada mão.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 55,
+    "agi": 30,
+    "vit": 10,
+    "ene": 5
+   },
+   "phases": [
     {
-      "id": "gc-energia",
-      "class_id": "gun-crusher",
-      "name": "Energia (dano mágico)",
-      "role": "pvm",
-      "summary": "Energia como atributo principal: o dano mágico do Gun Crusher escala com Energia. Força e Agilidade só o que o equipamento pede; um pouco de Agilidade para velocidade e defesa.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "ene": 4,
-            "agi": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500).",
-        "Vitalidade fica na base: em PvM o dano conta mais."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia do Gun Crusher (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/gun-crusher/"
-        },
-        {
-          "name": "Webzen: guia do Gun Crusher",
-          "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/79"
-        },
-        {
-          "name": "Paragon MU Wiki: Gun Crusher",
-          "url": "https://wiki.paragon-mu.com/Gun-Crusher.html"
-        },
-        {
-          "name": "Guide MU Online: Gun Crusher",
-          "url": "https://guidemuonline.com/characters/gun-crusher"
-        }
-      ]
-    },
-    {
-      "id": "gc-agilidade",
-      "class_id": "gun-crusher",
-      "name": "Agilidade (defensiva / PvP)",
-      "role": "pvp",
-      "summary": "Agilidade alta para taxa de defesa, defesa e taxa de ataque em PvP; Energia em segundo para manter o dano e um pouco de Vitalidade.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "ene",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "agi": 5,
-            "ene": 4,
-            "vit": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500).",
-        "As referências divergem: a maioria põe Energia como principal; alguns guias de PvP preferem Agilidade."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia do Gun Crusher (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/gun-crusher/"
-        },
-        {
-          "name": "Webzen: guia do Gun Crusher",
-          "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/79"
-        },
-        {
-          "name": "Guide MU Online: Gun Crusher",
-          "url": "https://guidemuonline.com/characters/gun-crusher"
-        }
-      ]
-    },
-    {
-      "id": "slayer-forca",
-      "class_id": "slayer",
-      "name": "Força (dano)",
-      "role": "pvm",
-      "summary": "Força como atributo principal: o dano e o bônus de skill do Slayer escalam melhor com Força (1% a cada 8 de Força contra 28 de Agilidade). A Agilidade sobe em degraus, até o requisito das skills de cada fase.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": 100
-            }
-          ],
-          "split": {
-            "str": 1
-          }
-        },
-        {
-          "from_level": 150,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": 380
-            }
-          ],
-          "split": {
-            "str": 1
-          }
-        },
-        {
-          "from_level": 250,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": 800
-            }
-          ],
-          "split": {
-            "str": 1
-          }
-        },
-        {
-          "from_level": 300,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "str",
-              "to": 300
-            },
-            {
-              "stat": "agi",
-              "to": 1100
-            }
-          ],
-          "split": {
-            "str": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "Degraus de Agilidade (fecham até o nível 400, quando acabam os pontos por nível): 100 (Sword Inertia), 380 (Bat Flock), 800 (Detection), 1.100 (Pierce Attack, que também pede 300 de Força). Demolish pede 1.450.",
-        "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500)."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia do Slayer (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/slayer/"
-        },
-        {
-          "name": "Webzen: guia do Slayer",
-          "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/100"
-        },
-        {
-          "name": "muonline.net: Slayer (requisitos de skill)",
-          "url": "https://muonline.net/guides/mu-online-slayer/"
-        },
-        {
-          "name": "Paragon MU Wiki: Slayer",
-          "url": "https://wiki.paragon-mu.com/Slayer.html"
-        }
-      ]
-    },
-    {
-      "id": "slayer-agilidade",
-      "class_id": "slayer",
-      "name": "Agilidade (PvP / defensiva)",
-      "role": "pvp",
-      "summary": "Agilidade como atributo principal (velocidade, taxa de defesa, ataque em PvP) com Vitalidade em segundo para aguentar; Força só o que o equipamento e o Pierce Attack pedem.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "agi": 3,
-            "vit": 1
-          }
-        },
-        {
-          "from_level": 300,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "str",
-              "to": 300
-            }
-          ],
-          "split": {
-            "agi": 3,
-            "vit": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "Slayer ganha 3 de HP por ponto de Vitalidade: é a classe que mais aproveita Vitalidade junto com o Dark Knight.",
-        "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500)."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia do Slayer (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/slayer/"
-        },
-        {
-          "name": "Webzen: guia do Slayer",
-          "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/100"
-        },
-        {
-          "name": "muonline.net: Slayer (requisitos de skill)",
-          "url": "https://muonline.net/guides/mu-online-slayer/"
-        }
-      ]
-    },
-    {
-      "id": "gl-forca",
-      "class_id": "grow-lancer",
-      "name": "Força (dano)",
-      "role": "pvm",
-      "summary": "Força como atributo principal (dano e skills de Retaliation). Agilidade acompanha o nível para velocidade e defesa; 200 de Energia para a skill Obsidian; o resto em Força com um pouco de Vitalidade.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": {
-                "per_level": 0.75
-              }
-            }
-          ],
-          "split": {
-            "str": 3,
-            "vit": 1
-          }
-        },
-        {
-          "from_level": 150,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "ene",
-              "to": 200
-            },
-            {
-              "stat": "agi",
-              "to": {
-                "per_level": 0.75
-              }
-            }
-          ],
-          "split": {
-            "str": 3,
-            "vit": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "Grow Lancer ganha 7 pontos por nível e só 1 de HP por Vitalidade.",
-        "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500)."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia do Grow Lancer (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/gl/"
-        },
-        {
-          "name": "Webzen: guia do Grow Lancer",
-          "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/97"
-        },
-        {
-          "name": "MU Online Wiki (Fandom): Grow Lancer",
-          "url": "https://muonline.fandom.com/wiki/Grow_Lancer"
-        }
-      ]
-    },
-    {
-      "id": "gl-agilidade",
-      "class_id": "grow-lancer",
-      "name": "Agilidade (elemental / defesa)",
-      "role": "pvp",
-      "summary": "Agilidade como atributo principal: escala o dano elemental 1 para 1, a defesa e as skills de Rage. Força só o que o equipamento pede.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "agi": 4,
-            "vit": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "Com pouca Força algumas skills ficam travadas: confira os requisitos no jogo.",
-        "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500)."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia do Grow Lancer (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/gl/"
-        },
-        {
-          "name": "Webzen: guia do Grow Lancer",
-          "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/97"
-        },
-        {
-          "name": "MU Online Wiki (Fandom): Grow Lancer",
-          "url": "https://muonline.fandom.com/wiki/Grow_Lancer"
-        }
-      ]
-    },
-    {
-      "id": "gl-hibrida",
-      "class_id": "grow-lancer",
-      "name": "Híbrida (Força e Agilidade)",
-      "role": "híbrida",
-      "summary": "Força e Agilidade em partes iguais, para ter dano, defesa e acesso às skills das duas famílias; 200 de Energia para Obsidian.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "str": 1,
-            "agi": 1
-          }
-        },
-        {
-          "from_level": 150,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "ene",
-              "to": 200
-            }
-          ],
-          "split": {
-            "str": 1,
-            "agi": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia do Grow Lancer (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/gl/"
-        },
-        {
-          "name": "MU Online Wiki (Fandom): Grow Lancer",
-          "url": "https://muonline.fandom.com/wiki/Grow_Lancer"
-        }
-      ]
-    },
-    {
-      "id": "dk-forca-agilidade",
-      "class_id": "dark-knight",
-      "name": "Força e Agilidade (clássica)",
-      "role": "pvm",
-      "summary": "A build clássica: Força para o dano, Agilidade para velocidade e defesa, Vitalidade e Energia na base.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "ene",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "str": 3,
-            "agi": 2
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500)."
-      ],
-      "sources": [
-        {
-          "name": "OpenMU (fórmulas das classes clássicas, MIT)",
-          "url": "https://github.com/MUnique/OpenMU"
-        },
-        {
-          "name": "MU Online Fanz: guia do Dark Knight (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/dk/"
-        },
-        {
-          "name": "StrategyWiki: Dark Knight",
-          "url": "https://strategywiki.org/wiki/Mu_Online/Dark_Knight"
-        }
-      ]
-    },
-    {
-      "id": "dk-energia",
-      "class_id": "dark-knight",
-      "name": "Energia (dano de skill)",
-      "role": "híbrida",
-      "summary": "Energia alta para o dano das skills (+1% a cada 10 de Energia) e para o Swell Life; Força só o que o equipamento pede e Agilidade acompanhando o nível.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": {
-                "per_level": 0.75
-              }
-            }
-          ],
-          "split": {
-            "ene": 3,
-            "str": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "No jogo atual a Energia do DK conta como defensiva (Swell Life aumenta o HP com Energia)."
-      ],
-      "sources": [
-        {
-          "name": "OpenMU (fórmulas das classes clássicas, MIT)",
-          "url": "https://github.com/MUnique/OpenMU"
-        },
-        {
-          "name": "MU Online Fanz: guia do Dark Knight (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/dk/"
-        }
-      ]
-    },
-    {
-      "id": "dk-forca-vitalidade",
-      "class_id": "dark-knight",
-      "name": "Força e Vitalidade (PvP)",
-      "role": "pvp",
-      "summary": "Força para o dano e Vitalidade para aguentar (o DK ganha 3 de HP por ponto); Agilidade só o necessário.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": {
-                "per_level": 0.5
-              }
-            }
-          ],
-          "split": {
-            "str": 3,
-            "vit": 2
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia do Dark Knight (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/dk/"
-        },
-        {
-          "name": "Mulande Hub: distribuição de pontos",
-          "url": "https://hub.mulandeonline.com.br/artigo/distribuicao-pontos"
-        },
-        {
-          "name": "StrategyWiki: Dark Knight",
-          "url": "https://strategywiki.org/wiki/Mu_Online/Dark_Knight"
-        }
-      ]
-    },
-    {
-      "id": "dw-energia",
-      "class_id": "dark-wizard",
-      "name": "Energia pura",
-      "role": "pvm",
-      "summary": "Energia em tudo o que sobrar: o dano mágico (wizardry) escala só com Energia. Força e Agilidade só o que o equipamento pede.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "ene": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500)."
-      ],
-      "sources": [
-        {
-          "name": "OpenMU (fórmulas das classes clássicas, MIT)",
-          "url": "https://github.com/MUnique/OpenMU"
-        },
-        {
-          "name": "MU Online Fanz: guia do Dark Wizard (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/dw/"
-        },
-        {
-          "name": "muonline.net: stat builds",
-          "url": "https://muonline.net/guides/mu-online-stat-builds/"
-        }
-      ]
-    },
-    {
-      "id": "dw-energia-agilidade",
-      "class_id": "dark-wizard",
-      "name": "Energia e Agilidade (PvP)",
-      "role": "pvp",
-      "summary": "Energia principal; Agilidade para velocidade e Soul Barrier; um pouco de Vitalidade para PvP.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "ene": 6,
-            "agi": 3,
-            "vit": 2
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner."
-      ],
-      "sources": [
-        {
-          "name": "OpenMU (fórmulas das classes clássicas, MIT)",
-          "url": "https://github.com/MUnique/OpenMU"
-        },
-        {
-          "name": "MU Online Fanz: guia do Dark Wizard (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/dw/"
-        },
-        {
-          "name": "InfinityMU Wiki: fórmulas",
-          "url": "https://wiki.infinitymu.net/index.php?title=Stats_Formulas"
-        }
-      ]
-    },
-    {
-      "id": "elf-agilidade",
-      "class_id": "fairy-elf",
-      "name": "Agilidade (arco)",
-      "role": "pvm",
-      "summary": "Agilidade como atributo principal: dano com arco, velocidade e defesa. Força só o que o arco pede.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "ene",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "agi": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "A Elf ganha pouca velocidade por Agilidade (1 a cada 50).",
-        "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500)."
-      ],
-      "sources": [
-        {
-          "name": "OpenMU (fórmulas das classes clássicas, MIT)",
-          "url": "https://github.com/MUnique/OpenMU"
-        },
-        {
-          "name": "MU Online Fanz: guia da Elf (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/elf/"
-        }
-      ]
-    },
-    {
-      "id": "elf-energia",
-      "class_id": "fairy-elf",
-      "name": "Energia (suporte)",
-      "role": "suporte",
-      "summary": "Energia como atributo principal: os buffs (Greater Damage, Greater Defense, Heal) escalam com Energia. Agilidade acompanhando o nível e um pouco de Vitalidade para sobreviver.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": {
-                "per_level": 0.5
-              }
-            }
-          ],
-          "split": {
-            "ene": 4,
-            "vit": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "Os coeficientes dos buffs mudam entre versões do jogo."
-      ],
-      "sources": [
-        {
-          "name": "OpenMU (fórmulas das classes clássicas, MIT)",
-          "url": "https://github.com/MUnique/OpenMU"
-        },
-        {
-          "name": "MU Online Fanz: guia da Elf (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/elf/"
-        },
-        {
-          "name": "GuiaMU: fórmulas da Elf (S16–S21)",
-          "url": "https://guiamu.com.ar/page/formulas-elfa-de-season-16-a-season-21-210"
-        }
-      ]
-    },
-    {
-      "id": "mg-energia",
-      "class_id": "magic-gladiator",
-      "name": "Energia (mágico)",
-      "role": "pvm",
-      "summary": "Energia como atributo principal (wizardry e parte do dano físico); Agilidade acompanhando o nível para velocidade; Força só o que o equipamento pede.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": {
-                "per_level": 1
-              }
-            }
-          ],
-          "split": {
-            "ene": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500)."
-      ],
-      "sources": [
-        {
-          "name": "OpenMU (fórmulas das classes clássicas, MIT)",
-          "url": "https://github.com/MUnique/OpenMU"
-        },
-        {
-          "name": "MU Online Fanz: guia do Magic Gladiator (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/mg/"
-        },
-        {
-          "name": "Guide MU Online: Magic Gladiator",
-          "url": "https://guidemuonline.com/characters/magic-gladiator"
-        }
-      ]
-    },
-    {
-      "id": "mg-forca",
-      "class_id": "magic-gladiator",
-      "name": "Força e Agilidade (físico / PvP)",
-      "role": "pvp",
-      "summary": "Força e Agilidade em partes iguais, com um pouco de Vitalidade: o MG não usa elmo e a Agilidade compensa a defesa.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "ene",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "str": 2,
-            "agi": 2,
-            "vit": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner."
-      ],
-      "sources": [
-        {
-          "name": "OpenMU (fórmulas das classes clássicas, MIT)",
-          "url": "https://github.com/MUnique/OpenMU"
-        },
-        {
-          "name": "MU Online Fanz: guia do Magic Gladiator (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/mg/"
-        },
-        {
-          "name": "Guide MU Online: Magic Gladiator",
-          "url": "https://guidemuonline.com/characters/magic-gladiator"
-        }
-      ]
-    },
-    {
-      "id": "dl-forca-energia",
-      "class_id": "dark-lord",
-      "name": "Força e Energia (cetro)",
-      "role": "pvm",
-      "summary": "Força principal e Energia em segundo (dano e bônus das skills de lorde); Agilidade acompanhando o nível para velocidade; Comando só o que o equipamento pede.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "cmd",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": {
-                "per_level": 0.5
-              }
-            }
-          ],
-          "split": {
-            "str": 3,
-            "ene": 2
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner."
-      ],
-      "sources": [
-        {
-          "name": "OpenMU (fórmulas das classes clássicas, MIT)",
-          "url": "https://github.com/MUnique/OpenMU"
-        },
-        {
-          "name": "MU Online Fanz: guia do Dark Lord (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/dl/"
-        },
-        {
-          "name": "StrategyWiki: Dark Lord",
-          "url": "https://strategywiki.org/wiki/Mu_Online/Dark_Lord"
-        }
-      ]
-    },
-    {
-      "id": "dl-comando",
-      "class_id": "dark-lord",
-      "name": "Comando (corvo e cavalo)",
-      "role": "suporte",
-      "summary": "Comando como atributo principal (dano do corvo, skills de pet, tamanho da guilda); Energia acompanhando o nível; Força só o que o equipamento pede.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "ene",
-              "to": {
-                "per_level": 0.75
-              }
-            }
-          ],
-          "split": {
-            "cmd": 3,
-            "ene": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner."
-      ],
-      "sources": [
-        {
-          "name": "OpenMU (fórmulas das classes clássicas, MIT)",
-          "url": "https://github.com/MUnique/OpenMU"
-        },
-        {
-          "name": "MU Online Fanz: guia do Dark Lord (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/dl/"
-        },
-        {
-          "name": "StrategyWiki: Dark Lord",
-          "url": "https://strategywiki.org/wiki/Mu_Online/Dark_Lord"
-        }
-      ]
-    },
-    {
-      "id": "sum-energia",
-      "class_id": "summoner",
-      "name": "Energia (wizardry e curse)",
-      "role": "pvm",
-      "summary": "Energia como atributo principal (wizardry, curse e Berserker); um pouco de Agilidade para velocidade; Força só o que o equipamento pede.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "ene": 4,
-            "agi": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500)."
-      ],
-      "sources": [
-        {
-          "name": "OpenMU (fórmulas das classes clássicas, MIT)",
-          "url": "https://github.com/MUnique/OpenMU"
-        },
-        {
-          "name": "MU Online Fanz: guia da Summoner (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/sum/"
-        }
-      ]
-    },
-    {
-      "id": "sum-pvp",
-      "class_id": "summoner",
-      "name": "Energia com Vitalidade (PvP)",
-      "role": "pvp",
-      "summary": "Energia principal com Agilidade e Vitalidade: o Berserker gasta HP e a Summoner tem pouco HP.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "ene": 5,
-            "agi": 2,
-            "vit": 2
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner."
-      ],
-      "sources": [
-        {
-          "name": "OpenMU (fórmulas das classes clássicas, MIT)",
-          "url": "https://github.com/MUnique/OpenMU"
-        },
-        {
-          "name": "MU Online Fanz: guia da Summoner (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/sum/"
-        }
-      ]
-    },
-    {
-      "id": "rf-forca",
-      "class_id": "rage-fighter",
-      "name": "Força (dano)",
-      "role": "pvm",
-      "summary": "Força como atributo principal; Agilidade acompanhando o nível (velocidade e skills DIV) e um pouco de Vitalidade.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": {
-                "per_level": 0.75
-              }
-            }
-          ],
-          "split": {
-            "str": 3,
-            "vit": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500)."
-      ],
-      "sources": [
-        {
-          "name": "OpenMU (fórmulas das classes clássicas, MIT)",
-          "url": "https://github.com/MUnique/OpenMU"
-        },
-        {
-          "name": "MU Online Fanz: guia do Rage Fighter (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/rf/"
-        },
-        {
-          "name": "Guide MU Online: Rage Fighter",
-          "url": "https://guidemuonline.com/characters/rage-fighter"
-        }
-      ]
-    },
-    {
-      "id": "rf-vitalidade",
-      "class_id": "rage-fighter",
-      "name": "Vitalidade (tank)",
-      "role": "pvp",
-      "summary": "Vitalidade como atributo principal: aumenta o HP, o dano físico e as skills de proximidade do Rage Fighter.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": {
-                "per_level": 0.5
-              }
-            }
-          ],
-          "split": {
-            "vit": 3,
-            "str": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia do Rage Fighter (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/rf/"
-        },
-        {
-          "name": "Guide MU Online: Rage Fighter",
-          "url": "https://guidemuonline.com/characters/rage-fighter"
-        }
-      ]
-    },
-    {
-      "id": "rf-energia",
-      "class_id": "rage-fighter",
-      "name": "Energia (área e buffs)",
-      "role": "suporte",
-      "summary": "Energia como atributo principal: escala as skills de área e os buffs de grupo.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": {
-                "per_level": 0.5
-              }
-            }
-          ],
-          "split": {
-            "ene": 3,
-            "vit": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia do Rage Fighter (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/rf/"
-        },
-        {
-          "name": "Guide MU Online: Rage Fighter",
-          "url": "https://guidemuonline.com/characters/rage-fighter"
-        }
-      ]
-    },
-    {
-      "id": "rw-energia",
-      "class_id": "rune-mage",
-      "name": "Energia pura",
-      "role": "pvm",
-      "summary": "Energia em tudo o que sobrar: as skills do Rune Wizard só pedem Energia.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "ene": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "Requisitos de Energia citados: Plasma Ball 300, Runic Spear 600, Lightning Storm 1.080.",
-        "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500)."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia do Rune Wizard (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/rm/"
-        },
-        {
-          "name": "muonline.ai: Rune Wizard",
-          "url": "https://muonline.ai/classes/rune-wizard"
-        }
-      ]
-    },
-    {
-      "id": "rw-pvp",
-      "class_id": "rune-mage",
-      "name": "Energia com Agilidade e Vitalidade (PvP)",
-      "role": "pvp",
-      "summary": "Energia principal, com Agilidade para velocidade e defesa e Vitalidade para aguentar.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "ene": 5,
-            "agi": 2,
-            "vit": 2
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia do Rune Wizard (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/rm/"
-        },
-        {
-          "name": "muonline.ai: Rune Wizard",
-          "url": "https://muonline.ai/classes/rune-wizard"
-        }
-      ]
-    },
-    {
-      "id": "ww-energia",
-      "class_id": "white-wizard",
-      "name": "Energia",
-      "role": "pvm",
-      "summary": "Energia como atributo principal (o White Wizard tem o melhor dano mágico por ponto de Energia); um pouco de Agilidade para velocidade e defesa.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "ene": 4,
-            "agi": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "Há poucos guias desta classe; regras gerais de mago.",
-        "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500)."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia do White Wizard (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/white-wizard/"
-        }
-      ]
-    },
-    {
-      "id": "ww-pvp",
-      "class_id": "white-wizard",
-      "name": "Energia com Agilidade e Vitalidade (PvP)",
-      "role": "pvp",
-      "summary": "Energia principal, com Agilidade e Vitalidade para PvP.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "ene": 5,
-            "agi": 2,
-            "vit": 2
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "Há poucos guias desta classe; regras gerais de mago."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia do White Wizard (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/white-wizard/"
-        }
-      ]
-    },
-    {
-      "id": "mage-energia",
-      "class_id": "mage",
-      "name": "Energia",
-      "role": "pvm",
-      "summary": "Energia como atributo principal; Agilidade em segundo para defesa e velocidade.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "ene": 4,
-            "agi": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "No jogo atual, o atributo principal ganha bônus de especialização a partir de 1.500 e de novo em 2.000 pontos (MG: Energia em 1.800 e 2.500)."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia da Lemuria Mage (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/mage/"
-        },
-        {
-          "name": "Guide MU Online: Lemuria",
-          "url": "https://guidemuonline.com/characters/lemuria"
-        }
-      ]
-    },
-    {
-      "id": "mage-pvp",
-      "class_id": "mage",
-      "name": "Energia com Vitalidade (PvP)",
-      "role": "pvp",
-      "summary": "Energia principal, com Agilidade e mais Vitalidade para PvP.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "ene": 5,
-            "agi": 2,
-            "vit": 2
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner."
-      ],
-      "sources": [
-        {
-          "name": "MU Online Fanz: guia da Lemuria Mage (fórmulas)",
-          "url": "https://muonlinefanz.com/guide/characters/mage/"
-        },
-        {
-          "name": "Guide MU Online: Lemuria",
-          "url": "https://guidemuonline.com/characters/lemuria"
-        }
-      ]
-    },
-    {
-      "id": "crusader-forca",
-      "class_id": "crusader",
-      "name": "Força (martelo)",
-      "role": "pvm",
-      "summary": "Força como atributo principal (dano Força/6 a Força/4) e Agilidade em segundo: a defesa do Crusader é Agilidade/2, a melhor proporção do jogo. Os degraus seguem os requisitos das skills de cada evolução.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "str",
-              "to": 60
-            },
-            {
-              "stat": "agi",
-              "to": 29
-            }
-          ],
-          "split": {
-            "str": 3,
-            "agi": 1
-          }
-        },
-        {
-          "from_level": 150,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "str",
-              "to": 420
-            },
-            {
-              "stat": "agi",
-              "to": 168
-            },
-            {
-              "stat": "ene",
-              "to": 200
-            }
-          ],
-          "split": {
-            "str": 3,
-            "agi": 1
-          }
-        },
-        {
-          "from_level": 250,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "str",
-              "to": 1045
-            },
-            {
-              "stat": "agi",
-              "to": 420
-            },
-            {
-              "stat": "ene",
-              "to": 200
-            }
-          ],
-          "split": {
-            "str": 3,
-            "agi": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "Degraus: 60/29 (Divine Fall), 420/168 de Força/Agilidade e 200 de Energia (Holly Sweep, Lugard's Protection), 1.045/418 (Sacred Impact) e 420 de Agilidade (armadura Imperial).",
-        "Requisitos da Season 21; confira no seu servidor."
-      ],
-      "sources": [
-        {
-          "name": "Global MU Online: guia do Crusader (requisitos de skill)",
-          "url": "https://globalmuonline.com/guides/crusader/"
-        },
-        {
-          "name": "muonline.net: Crusader",
-          "url": "https://muonline.net/guides/mu-online-crusader/"
-        },
-        {
-          "name": "muonline.eu: Crusader (S21)",
-          "url": "https://muonline.eu/index.php?/topic/72-crusader-mu-online-season-21/"
-        }
-      ]
-    },
-    {
-      "id": "crusader-escudo",
-      "class_id": "crusader",
-      "name": "Escudo (tanque / PvP)",
-      "role": "pvp",
-      "summary": "Força para o dano e Vitalidade para o HP, com Agilidade para a defesa: Crusader de escudo para PvP e para segurar o grupo.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "str",
-              "to": 60
-            },
-            {
-              "stat": "agi",
-              "to": 29
-            }
-          ],
-          "split": {
-            "str": 2,
-            "vit": 2,
-            "agi": 1
-          }
-        },
-        {
-          "from_level": 150,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "str",
-              "to": 420
-            },
-            {
-              "stat": "agi",
-              "to": 168
-            },
-            {
-              "stat": "ene",
-              "to": 200
-            }
-          ],
-          "split": {
-            "str": 2,
-            "vit": 2,
-            "agi": 1
-          }
-        },
-        {
-          "from_level": 250,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "str",
-              "to": 1045
-            },
-            {
-              "stat": "agi",
-              "to": 420
-            },
-            {
-              "stat": "ene",
-              "to": 200
-            }
-          ],
-          "split": {
-            "str": 2,
-            "vit": 2,
-            "agi": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "Mesmos degraus de requisito da build de Força."
-      ],
-      "sources": [
-        {
-          "name": "Global MU Online: guia do Crusader (requisitos de skill)",
-          "url": "https://globalmuonline.com/guides/crusader/"
-        },
-        {
-          "name": "muonline.net: Crusader",
-          "url": "https://muonline.net/guides/mu-online-crusader/"
-        }
-      ]
-    },
-    {
-      "id": "ik-agilidade",
-      "class_id": "illusion-knight",
-      "name": "Agilidade (lâminas)",
-      "role": "pvm",
-      "summary": "Agilidade como atributo principal: o dano do Illusion Knight vem sobretudo da Agilidade (Agilidade/9 + Força/11 a Agilidade/6 + Força/9) e ela também dá velocidade. Força em segundo, que soma no dano e na defesa.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": 80
-            }
-          ],
-          "split": {
-            "agi": 3,
-            "str": 1
-          }
-        },
-        {
-          "from_level": 150,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": 900
-            }
-          ],
-          "split": {
-            "agi": 3,
-            "str": 1
-          }
-        },
-        {
-          "from_level": 250,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": 1150
-            }
-          ],
-          "split": {
-            "agi": 3,
-            "str": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "Degraus de Agilidade: 80 (Charge Slash), 900 (Illusion Avatar), 1.150 (Blade Storm).",
-        "Requisitos da Season 21; confira no seu servidor."
-      ],
-      "sources": [
-        {
-          "name": "Global MU Online: guia do Illusion Knight (requisitos de skill)",
-          "url": "https://globalmuonline.com/guides/illusion-knight/"
-        },
-        {
-          "name": "Guide MU Online: Illusion Knight",
-          "url": "https://guidemuonline.com/characters/illusion-knight"
-        },
-        {
-          "name": "muonline.net: Illusion Knight",
-          "url": "https://muonline.net/guides/mu-online-illusion-knight/"
-        }
-      ]
-    },
-    {
-      "id": "ik-pvp",
-      "class_id": "illusion-knight",
-      "name": "Agilidade com Vitalidade (PvP)",
-      "role": "pvp",
-      "summary": "Agilidade principal, Força em segundo (dano e defesa: Força/5) e Vitalidade para aguentar no PvP.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": 80
-            }
-          ],
-          "split": {
-            "agi": 2,
-            "str": 1,
-            "vit": 1
-          }
-        },
-        {
-          "from_level": 150,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": 900
-            }
-          ],
-          "split": {
-            "agi": 2,
-            "str": 1,
-            "vit": 1
-          }
-        },
-        {
-          "from_level": 250,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": 1150
-            }
-          ],
-          "split": {
-            "agi": 2,
-            "str": 1,
-            "vit": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner."
-      ],
-      "sources": [
-        {
-          "name": "Global MU Online: guia do Illusion Knight (requisitos de skill)",
-          "url": "https://globalmuonline.com/guides/illusion-knight/"
-        },
-        {
-          "name": "muonline.net: Illusion Knight",
-          "url": "https://muonline.net/guides/mu-online-illusion-knight/"
-        }
-      ]
-    },
-    {
-      "id": "alchemist-energia",
-      "class_id": "alchemist",
-      "name": "Energia (alquimia)",
-      "role": "pvm",
-      "summary": "Energia como atributo principal (wizardry Energia/4 a Energia/3 e as skills de alquimia); um pouco de Agilidade para defesa (Agilidade/2) e velocidade de cast.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            },
-            {
-              "stat": "agi",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "ene": 4,
-            "agi": 1
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner.",
-        "Requisitos de Energia: Angel Homunculus 70, Ignition Bomber 680, Confusion Stone 850, Countless Weapon 1.025."
-      ],
-      "sources": [
-        {
-          "name": "Global MU Online: guia do Alchemist (requisitos de skill)",
-          "url": "https://globalmuonline.com/guides/alchemist/"
-        },
-        {
-          "name": "Webzen: guia do Alchemist",
-          "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/365"
-        },
-        {
-          "name": "muonline.net: Alchemist",
-          "url": "https://muonline.net/guides/mu-online-alchemist/"
-        }
-      ]
-    },
-    {
-      "id": "alchemist-pvp",
-      "class_id": "alchemist",
-      "name": "Energia com Agilidade e Vitalidade (PvP)",
-      "role": "pvp",
-      "summary": "Energia principal, com Agilidade para defesa e Vitalidade para o HP no PvP.",
-      "phases": [
-        {
-          "from_level": 1,
-          "fill": [
-            {
-              "stat": "str",
-              "to": "gear"
-            }
-          ],
-          "split": {
-            "ene": 5,
-            "agi": 2,
-            "vit": 2
-          }
-        }
-      ],
-      "notes": [
-        "Escolha o equipamento: as metas de requisito usam o que estiver equipado no planner."
-      ],
-      "sources": [
-        {
-          "name": "Global MU Online: guia do Alchemist (requisitos de skill)",
-          "url": "https://globalmuonline.com/guides/alchemist/"
-        },
-        {
-          "name": "muonline.net: Alchemist",
-          "url": "https://muonline.net/guides/mu-online-alchemist/"
-        }
-      ]
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 55,
+      "agi": 30,
+      "vit": 10,
+      "ene": 5
+     }
     }
-  ]
+   ],
+   "skills": [
+    {
+     "name": "Sword Fury",
+     "req": {
+      "str": 1060
+     }
+    },
+    {
+     "name": "Water Blow",
+     "req": {
+      "str": 1090
+     }
+    }
+   ],
+   "videos": [],
+   "notes": [
+    "Duas armas dão +10% de dano; duas armas iguais, +30%."
+   ],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/dk/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (321)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/321"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (106)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/106"
+    }
+   ]
+  },
+  {
+   "id": "dk-escudo",
+   "class_id": "dark-knight",
+   "name": "Arma e escudo (PvP)",
+   "role": "pvp",
+   "summary": "Mais Vitalidade e Energia para aguentar dano, com escudo: a skill Firm Belief transforma o personagem em Belief Knight, que ganha defesa.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 40,
+    "agi": 30,
+    "vit": 20,
+    "ene": 10
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 40,
+      "agi": 30,
+      "vit": 20,
+      "ene": 10
+     }
+    }
+   ],
+   "skills": [
+    {
+     "name": "Firm Belief (com escudo)",
+     "req": {
+      "ene": 1040
+     }
+    }
+   ],
+   "videos": [],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/dk/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (106)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/106"
+    }
+   ],
+   "gear_variant": "Belief"
+  },
+  {
+   "id": "dk-suporte",
+   "class_id": "dark-knight",
+   "name": "Suporte de grupo",
+   "role": "suporte",
+   "summary": "Vitalidade e Energia para a skill de grupo do Dragon Knight, que usa a Agilidade para absorver parte do HP da party e a Energia para aumentar o ataque dela.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 5,
+    "agi": 20,
+    "vit": 45,
+    "ene": 30
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 5,
+      "agi": 20,
+      "vit": 45,
+      "ene": 30
+     }
+    }
+   ],
+   "skills": [
+    {
+     "name": "Skill de suporte do grupo",
+     "req": {
+      "ene": 1052
+     }
+    }
+   ],
+   "videos": [
+    {
+     "title": "Dragon Knight Support lvl 800 | Mu Online WEBZEN",
+     "url": "https://www.youtube.com/watch?v=Jd2V26cMqAQ"
+    }
+   ],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/dk/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (106)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/106"
+    }
+   ]
+  },
+  {
+   "id": "dw-pvm",
+   "class_id": "dark-wizard",
+   "name": "Energia e Agilidade (PvM)",
+   "role": "pvm",
+   "summary": "Energia para o dano mágico e bastante Agilidade para a taxa de ataque e a velocidade de magia.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 10,
+    "agi": 35,
+    "vit": 10,
+    "ene": 45
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 10,
+      "agi": 35,
+      "vit": 10,
+      "ene": 45
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/dw/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (6)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/6"
+    }
+   ]
+  },
+  {
+   "id": "dw-pvp",
+   "class_id": "dark-wizard",
+   "name": "Energia (PvP)",
+   "role": "pvp",
+   "summary": "Ainda mais Energia (dano e defesa mágica) e menos Agilidade; para duelos e castle siege.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 10,
+    "agi": 25,
+    "vit": 5,
+    "ene": 60
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 10,
+      "agi": 25,
+      "vit": 5,
+      "ene": 60
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/dw/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (6)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/6"
+    }
+   ]
+  },
+  {
+   "id": "dw-suporte",
+   "class_id": "dark-wizard",
+   "name": "Suporte (Energia)",
+   "role": "suporte",
+   "summary": "Quase tudo em Energia, para os buffs e o escudo de mana do grupo. Pouco usada fora de party fixa.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 5,
+    "agi": 15,
+    "vit": 10,
+    "ene": 70
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 5,
+      "agi": 15,
+      "vit": 10,
+      "ene": 70
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/dw/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (6)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/6"
+    }
+   ]
+  },
+  {
+   "id": "elf-agilidade",
+   "class_id": "fairy-elf",
+   "name": "Agilidade (ataque)",
+   "role": "pvm",
+   "summary": "A Elf de ataque: Agilidade como atributo principal (arcos e bestas) e Força para o equipamento. É o tipo de ataque da renovação oficial da Elf.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 35,
+    "agi": 50,
+    "vit": 5,
+    "ene": 10
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 35,
+      "agi": 50,
+      "vit": 5,
+      "ene": 10
+     }
+    }
+   ],
+   "skills": [
+    {
+     "name": "Dex Booster",
+     "req": {
+      "agi": 500
+     }
+    },
+    {
+     "name": "Raining Arrow",
+     "req": {
+      "agi": 1302
+     }
+    }
+   ],
+   "videos": [
+    {
+     "title": "Agility Elf BUILD PVM - MU Online 2025 Webzen",
+     "url": "https://www.youtube.com/watch?v=JwV0msgyB0g"
+    },
+    {
+     "title": "Agility Elf Build PVM Raining Arrow - S17.2-2",
+     "url": "https://www.youtube.com/watch?v=YAp5A3Eo5x8"
+    }
+   ],
+   "notes": [
+    "Raining Arrow também pede 10 pontos de Multi Shot na árvore de skills."
+   ],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/elf/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (284)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/284"
+    }
+   ],
+   "gear_variant": "ATK"
+  },
+  {
+   "id": "elf-energia",
+   "class_id": "fairy-elf",
+   "name": "Energia (suporte)",
+   "role": "suporte",
+   "summary": "A Elf de suporte da renovação oficial: Energia para os buffs e escudos exclusivos, e Vitalidade.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 5,
+    "agi": 10,
+    "vit": 25,
+    "ene": 60
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 5,
+      "agi": 10,
+      "vit": 25,
+      "ene": 60
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/elf/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (284)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/284"
+    }
+   ],
+   "gear_variant": "ENE"
+  },
+  {
+   "id": "mg-forca",
+   "class_id": "magic-gladiator",
+   "name": "Força e Agilidade (cavaleiro)",
+   "role": "pvm",
+   "summary": "MG físico: Força e Agilidade, que são os atributos do dano do MG desde a S18. Duas espadas de uma mão puxam Agilidade (velocidade); espada de duas mãos puxa Força (dano).",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 45,
+    "agi": 35,
+    "vit": 10,
+    "ene": 10
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 45,
+      "agi": 35,
+      "vit": 10,
+      "ene": 10
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/mg/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (321)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/321"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (244)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/244"
+    }
+   ],
+   "gear_variant": "ATK"
+  },
+  {
+   "id": "mg-energia",
+   "class_id": "magic-gladiator",
+   "name": "Energia (mago)",
+   "role": "pvm",
+   "summary": "MG mago: Energia para o dano mágico, com cajado na mão esquerda somando Wizardry; Agilidade para a velocidade.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 10,
+    "agi": 35,
+    "vit": 10,
+    "ene": 45
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 10,
+      "agi": 35,
+      "vit": 10,
+      "ene": 45
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [
+    {
+     "title": "Rebuild Energy Magic Gladiator LvL 956 - Mu Online Webzen S18.2.2",
+     "url": "https://www.youtube.com/watch?v=Ol5xzixaUZY"
+    }
+   ],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/mg/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (244)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/244"
+    }
+   ],
+   "gear_variant": "WIZ"
+  },
+  {
+   "id": "mg-pvp",
+   "class_id": "magic-gladiator",
+   "name": "PvP / tanque",
+   "role": "pvp",
+   "summary": "Mais Vitalidade para aguentar dano em PvP, sem largar Agilidade e Força.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 20,
+    "agi": 35,
+    "vit": 40,
+    "ene": 5
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 20,
+      "agi": 35,
+      "vit": 40,
+      "ene": 5
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [
+    {
+     "title": "MG PvP nível 400 (espanhol)",
+     "url": "https://www.youtube.com/watch?v=kKuSew1QI1o"
+    }
+   ],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/mg/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (321)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/321"
+    }
+   ],
+   "gear_variant": "ATK"
+  },
+  {
+   "id": "dl-comando",
+   "class_id": "dark-lord",
+   "name": "Comando (PvM)",
+   "role": "pvm",
+   "summary": "Comando como atributo principal, para as skills do Lord e o dano depois da renovação da S19.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 20,
+    "agi": 15,
+    "vit": 5,
+    "ene": 20,
+    "cmd": 40
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 20,
+      "agi": 15,
+      "vit": 5,
+      "ene": 20,
+      "cmd": 40
+     }
+    }
+   ],
+   "skills": [
+    {
+     "name": "Lord of Dignity Strengthener",
+     "req": {
+      "ene": 102,
+      "cmd": 300
+     }
+    },
+    {
+     "name": "Crown Force",
+     "req": {
+      "ene": 300,
+      "cmd": 400
+     }
+    }
+   ],
+   "videos": [
+    {
+     "title": "Dark Lord Command Build Level 800 PVM - 2025 Webzen",
+     "url": "https://www.youtube.com/watch?v=Rw2yadq0XI8"
+    },
+    {
+     "title": "Rebuilding DL Lv.1300+ - Alfheim - S19.2.3",
+     "url": "https://www.youtube.com/watch?v=22ZwhE-IMdw"
+    }
+   ],
+   "notes": [
+    "Na renovação da S19, os pontos do Dark Lord foram reiniciados: quem já tinha personagem refez a build."
+   ],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/dl/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (348)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/348"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (347)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/347"
+    }
+   ]
+  },
+  {
+   "id": "dl-pvp",
+   "class_id": "dark-lord",
+   "name": "PvP / tanque",
+   "role": "pvp",
+   "summary": "Vitalidade e Agilidade para sobreviver e acertar em PvP.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 15,
+    "agi": 30,
+    "vit": 45,
+    "ene": 10
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 15,
+      "agi": 30,
+      "vit": 45,
+      "ene": 10
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [
+    {
+     "title": "Dark Lord Build 190 SPEED Level 850+",
+     "url": "https://www.youtube.com/watch?v=wGnbCuiiqto"
+    }
+   ],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/dl/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (348)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/348"
+    }
+   ]
+  },
+  {
+   "id": "dl-forca",
+   "class_id": "dark-lord",
+   "name": "Força (ataque)",
+   "role": "pvm",
+   "summary": "Força como atributo principal, com Energia e um pouco de Comando. Desde a renovação da S19 (parte 2), o dano do Dark Lord vem de Força e Comando.",
+   "status": "antiga",
+   "basis": "fanz",
+   "ratio": {
+    "str": 40,
+    "agi": 15,
+    "vit": 10,
+    "ene": 25,
+    "cmd": 10
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 40,
+      "agi": 15,
+      "vit": 10,
+      "ene": 25,
+      "cmd": 10
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [
+    {
+     "title": "Build PVM DL de Força - Mu Online Webzen",
+     "url": "https://www.youtube.com/watch?v=-fM4l3m7YQM"
+    }
+   ],
+   "notes": [
+    "Distribuição publicada antes da renovação do Dark Lord na S19 (parte 2), que passou a escalar o dano com Força e Comando: confira o Comando antes de seguir."
+   ],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/dl/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (348)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/348"
+    }
+   ]
+  },
+  {
+   "id": "sum-energia",
+   "class_id": "summoner",
+   "name": "Energia (ataque)",
+   "role": "pvm",
+   "summary": "Energia como atributo principal nos dois estilos do Summoner: Chaos Wizard (Berserker, com o dano de maldição do livro) e Cursed Wizard (Darkness, área e debuffs com o cajado).",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 10,
+    "agi": 30,
+    "vit": 10,
+    "ene": 50
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 10,
+      "agi": 30,
+      "vit": 10,
+      "ene": 50
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [
+    {
+     "title": "Build Summoner PVM - Mu Global",
+     "url": "https://www.youtube.com/watch?v=BV9gUU7ZqEo"
+    },
+    {
+     "title": "TOP SMS PVP de Helheim",
+     "url": "https://www.youtube.com/watch?v=9vrCf8dUBRY"
+    }
+   ],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/sum/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (91)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/91"
+    }
+   ]
+  },
+  {
+   "id": "rf-vitalidade",
+   "class_id": "rage-fighter",
+   "name": "Vitalidade e Agilidade",
+   "role": "híbrida",
+   "summary": "Desde a renovação da S18, o dano do Rage Fighter escala com Agilidade e Vitalidade: é a build que segue o jogo atual, boa em PvP e em PvM.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 15,
+    "agi": 25,
+    "vit": 50,
+    "ene": 10
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 15,
+      "agi": 25,
+      "vit": 50,
+      "ene": 10
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [
+    {
+     "title": "MU Online Webzen RF vitalidad test daño PVM",
+     "url": "https://www.youtube.com/watch?v=K51qT6tsjIQ"
+    }
+   ],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/rf/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (321)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/321"
+    }
+   ]
+  },
+  {
+   "id": "rf-energia",
+   "class_id": "rage-fighter",
+   "name": "Energia (suporte)",
+   "role": "suporte",
+   "summary": "Energia para as skills de grupo do RF, em party e em muitos monstros ao mesmo tempo.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 15,
+    "agi": 25,
+    "vit": 10,
+    "ene": 50
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 15,
+      "agi": 25,
+      "vit": 10,
+      "ene": 50
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/rf/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (87)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/87"
+    }
+   ]
+  },
+  {
+   "id": "rf-forca",
+   "class_id": "rage-fighter",
+   "name": "Força (PvM, clássica)",
+   "role": "pvm",
+   "summary": "A build clássica de caça do RF, com Força para matar rápido sozinho.",
+   "status": "antiga",
+   "basis": "fanz",
+   "ratio": {
+    "str": 50,
+    "agi": 25,
+    "vit": 10,
+    "ene": 15
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 50,
+      "agi": 25,
+      "vit": 10,
+      "ene": 15
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [],
+   "notes": [
+    "Distribuição de antes da renovação da S18 (parte 2-2): hoje o dano do RF escala com Agilidade e Vitalidade, não com Força."
+   ],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/rf/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (87)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/87"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (321)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/321"
+    }
+   ]
+  },
+  {
+   "id": "gl-forca",
+   "class_id": "grow-lancer",
+   "name": "Força (ataque)",
+   "role": "pvm",
+   "summary": "Força como atributo principal: o mais forte para caçar e para PvP, e o buff Wrath escala com Força e Agilidade.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 55,
+    "agi": 25,
+    "vit": 15,
+    "ene": 5
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 55,
+      "agi": 25,
+      "vit": 15,
+      "ene": 5
+     }
+    }
+   ],
+   "skills": [
+    {
+     "name": "Shining Pick",
+     "req": {
+      "str": 600
+     }
+    }
+   ],
+   "videos": [],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/gl/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (97)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/97"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (329)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/329"
+    }
+   ]
+  },
+  {
+   "id": "gl-agilidade",
+   "class_id": "grow-lancer",
+   "name": "Agilidade (elemental)",
+   "role": "pvm",
+   "summary": "Agilidade como atributo principal: caça mais rápido e chega na skill de Ruud de Agilidade.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 35,
+    "agi": 50,
+    "vit": 10,
+    "ene": 5
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 35,
+      "agi": 50,
+      "vit": 10,
+      "ene": 5
+     }
+    }
+   ],
+   "skills": [
+    {
+     "name": "Oversting",
+     "req": {
+      "agi": 1470
+     }
+    }
+   ],
+   "videos": [],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/gl/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (97)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/97"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (329)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/329"
+    }
+   ]
+  },
+  {
+   "id": "slayer-agilidade",
+   "class_id": "slayer",
+   "name": "Agilidade (dano)",
+   "role": "pvm",
+   "summary": "A build atual do Slayer: o dano escala com Agilidade desde a renovação da S18, e as skills principais pedem muita Agilidade.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 25,
+    "agi": 50,
+    "vit": 15,
+    "ene": 10
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 25,
+      "agi": 50,
+      "vit": 15,
+      "ene": 10
+     }
+    }
+   ],
+   "skills": [
+    {
+     "name": "Bat Flock",
+     "req": {
+      "str": 100,
+      "agi": 380
+     }
+    },
+    {
+     "name": "Detection",
+     "req": {
+      "agi": 800
+     }
+    },
+    {
+     "name": "Pierce Attack",
+     "req": {
+      "str": 300,
+      "agi": 1100
+     }
+    },
+    {
+     "name": "Demolish",
+     "req": {
+      "agi": 1450
+     }
+    }
+   ],
+   "videos": [
+    {
+     "title": "Build de Slayer Top PVM - Midgard",
+     "url": "https://www.youtube.com/watch?v=qVzFOrcH3ec"
+    },
+    {
+     "title": "Agi Slayer Pierce Attack (Test Server S15.3)",
+     "url": "https://www.youtube.com/watch?v=WdnNtLn8DAY"
+    }
+   ],
+   "notes": [
+    "Pierce Attack também pede 10 pontos de Bat Flock Mastery na árvore."
+   ],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/slayer/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (100)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/100"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (321)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/321"
+    }
+   ]
+  },
+  {
+   "id": "slayer-forca",
+   "class_id": "slayer",
+   "name": "Força (velocidade, clássica)",
+   "role": "pvm",
+   "summary": "A build de Força de antes da renovação, focada em velocidade de ataque.",
+   "status": "antiga",
+   "basis": "fanz",
+   "ratio": {
+    "str": 50,
+    "agi": 30,
+    "vit": 15,
+    "ene": 5
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 50,
+      "agi": 30,
+      "vit": 15,
+      "ene": 5
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [],
+   "notes": [
+    "Distribuição de antes da renovação da S18 (parte 2-2): hoje o dano do Slayer escala com Agilidade."
+   ],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/slayer/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (321)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/321"
+    }
+   ]
+  },
+  {
+   "id": "gc-energia",
+   "class_id": "gun-crusher",
+   "name": "Energia (ataque)",
+   "role": "pvm",
+   "summary": "Energia é o atributo principal: a Magic Gun soma Wizardry e o dano mágico escala com Energia. Agilidade dá taxa de defesa e taxa de ataque em PvP.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 15,
+    "agi": 25,
+    "vit": 5,
+    "ene": 55
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 15,
+      "agi": 25,
+      "vit": 5,
+      "ene": 55
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/gun-crusher/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (79)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/79"
+    }
+   ]
+  },
+  {
+   "id": "rm-energia",
+   "class_id": "rune-mage",
+   "name": "Energia (ataque)",
+   "role": "pvm",
+   "summary": "Energia como atributo principal. Na renovação da S20 (parte 2) o Rune Mage ganhou o atributo Magic Power e a Rune Mace de uma mão passou a dar Wizardry.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 10,
+    "agi": 30,
+    "vit": 10,
+    "ene": 50
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 10,
+      "agi": 30,
+      "vit": 10,
+      "ene": 50
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/rm/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (92)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/92"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (388)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/388"
+    }
+   ]
+  },
+  {
+   "id": "ww-ataque",
+   "class_id": "white-wizard",
+   "name": "Agilidade e Energia",
+   "role": "híbrida",
+   "summary": "Metade em Agilidade e o resto quase todo em Energia: a Energia fortalece a magia (PvM) e a Agilidade pesa mais em PvP. Defesa baixa; combina com a Lemuria no Bond Buff.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 10,
+    "agi": 50,
+    "ene": 40
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 10,
+      "agi": 50,
+      "ene": 40
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [
+    {
+     "title": "Kundun White Wizard Lv 780 PVM - Speed Server 2024 Webzen",
+     "url": "https://www.youtube.com/watch?v=nesyTY7WwV4"
+    },
+    {
+     "title": "Light Wizard (Kundun) 1700 PVM - S20",
+     "url": "https://www.youtube.com/shorts/i8JvFQf2oBk"
+    }
+   ],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/white-wizard/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (259)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/259"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (266)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/266"
+    }
+   ]
+  },
+  {
+   "id": "mage-energia",
+   "class_id": "mage",
+   "name": "Energia (ataque)",
+   "role": "pvm",
+   "summary": "Quase tudo em Energia: a Lemuria ataca com orbes e a Energia fortalece a magia; HP e defesa baixos.",
+   "status": "atual",
+   "basis": "fanz",
+   "ratio": {
+    "str": 10,
+    "agi": 10,
+    "ene": 80
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 10,
+      "agi": 10,
+      "ene": 80
+     }
+    }
+   ],
+   "skills": [],
+   "videos": [],
+   "notes": [],
+   "sources": [
+    {
+     "name": "MU Online Fanz: Stat Builds",
+     "url": "https://muonlinefanz.com/guide/hunting/stat-builds/"
+    },
+    {
+     "name": "MU Online Fanz: Stat Planner",
+     "url": "https://muonlinefanz.com/tools/stat-planner/"
+    },
+    {
+     "name": "MU Online Fanz: guia da classe",
+     "url": "https://muonlinefanz.com/guide/characters/mage/"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (259)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/259"
+    }
+   ]
+  },
+  {
+   "id": "ik-agilidade",
+   "class_id": "illusion-knight",
+   "name": "Agilidade (PvM)",
+   "role": "pvm",
+   "summary": "No guia oficial, a Agilidade (Dexterity) aumenta o ataque e o dano de skill do Illusion Knight, e todas as skills principais pedem Agilidade.",
+   "status": "atual",
+   "basis": "nossa",
+   "ratio": {
+    "str": 25,
+    "agi": 55,
+    "vit": 15,
+    "ene": 5
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 25,
+      "agi": 55,
+      "vit": 15,
+      "ene": 5
+     }
+    }
+   ],
+   "skills": [
+    {
+     "name": "Charging Slash",
+     "req": {
+      "agi": 80
+     }
+    },
+    {
+     "name": "Wind Glaive",
+     "req": {
+      "agi": 650
+     }
+    },
+    {
+     "name": "Illusion Avatar",
+     "req": {
+      "agi": 900
+     }
+    },
+    {
+     "name": "Blade Storm",
+     "req": {
+      "agi": 1150
+     }
+    }
+   ],
+   "videos": [
+    {
+     "title": "Illusion Knight Level 750 PVM/PVE BUILD Speed Server - 2024 Webzen",
+     "url": "https://www.youtube.com/watch?v=FJjS3YXD8Z4"
+    }
+   ],
+   "notes": [
+    "Blade Storm também pede 10 pontos de Wind Glaive na árvore."
+   ],
+   "sources": [
+    {
+     "name": "Webzen: guia oficial do MU Online (290)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/290"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (291)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/291"
+    }
+   ]
+  },
+  {
+   "id": "alchemist-energia",
+   "class_id": "alchemist",
+   "name": "Energia (PvM)",
+   "role": "pvm",
+   "summary": "No guia oficial, a Energia fortalece as skills mágicas do Alchemist; os elixires pedem um pouco de Agilidade (até ~120).",
+   "status": "atual",
+   "basis": "nossa",
+   "ratio": {
+    "str": 5,
+    "agi": 10,
+    "vit": 20,
+    "ene": 65
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": 120
+      }
+     ],
+     "split": {
+      "str": 5,
+      "agi": 10,
+      "vit": 20,
+      "ene": 65
+     }
+    }
+   ],
+   "skills": [
+    {
+     "name": "Angel Homunculus",
+     "req": {
+      "ene": 70
+     }
+    },
+    {
+     "name": "Ignition Bomber",
+     "req": {
+      "ene": 680
+     }
+    },
+    {
+     "name": "Confusion Stone",
+     "req": {
+      "ene": 850
+     }
+    },
+    {
+     "name": "Countless Weapon",
+     "req": {
+      "ene": 1025
+     }
+    }
+   ],
+   "videos": [
+    {
+     "title": "Alchemist BUILD level 800 PVM - 2025 Webzen",
+     "url": "https://www.youtube.com/watch?v=dBWZXSYzwnA"
+    },
+    {
+     "title": "ALCHEMIST GUIDE: Build, Skills...",
+     "url": "https://www.youtube.com/watch?v=oD55Ij6ExZc"
+    }
+   ],
+   "notes": [],
+   "sources": [
+    {
+     "name": "Webzen: guia oficial do MU Online (365)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/365"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (366)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/366"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (367)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/367"
+    }
+   ]
+  },
+  {
+   "id": "crusader-forca",
+   "class_id": "crusader",
+   "name": "Força (martelo)",
+   "role": "pvm",
+   "summary": "Força como atributo principal, com martelo e Paladin Shield. As skills pedem Agilidade em torno de 40% da Força exigida, e o buff Retaliation (Lugard's Blessing) pede 200 de Energia.",
+   "status": "atual",
+   "basis": "nossa",
+   "ratio": {
+    "str": 55,
+    "agi": 22,
+    "vit": 13,
+    "ene": 10
+   },
+   "phases": [
+    {
+     "from_level": 1,
+     "fill": [
+      {
+       "stat": "str",
+       "to": "gear"
+      },
+      {
+       "stat": "agi",
+       "to": "gear"
+      }
+     ],
+     "split": {
+      "str": 55,
+      "agi": 22,
+      "vit": 13,
+      "ene": 10
+     }
+    }
+   ],
+   "skills": [
+    {
+     "name": "Divine Fall",
+     "req": {
+      "str": 60,
+      "agi": 29
+     }
+    },
+    {
+     "name": "Retaliation",
+     "req": {
+      "ene": 200
+     }
+    },
+    {
+     "name": "Holy Sweep",
+     "req": {
+      "str": 420,
+      "agi": 168
+     }
+    },
+    {
+     "name": "Sacred Impact",
+     "req": {
+      "str": 1045,
+      "agi": 418
+     }
+    }
+   ],
+   "videos": [],
+   "notes": [],
+   "sources": [
+    {
+     "name": "Webzen: guia oficial do MU Online (419)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/419"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (420)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/420"
+    },
+    {
+     "name": "Webzen: guia oficial do MU Online (421)",
+     "url": "https://muonline.webzen.com/en/gameinfo/guide/detail/421"
+    }
+   ]
+  }
+ ]
 }
