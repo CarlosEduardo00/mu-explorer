@@ -53,7 +53,8 @@ Site (Astro, Node 22, publicado no Cloudflare Workers com Static Assets; saída 
 npm install          # Astro e Wrangler (versões fixas em package.json)
 npm run dev          # servidor local em http://localhost:4321 (hot reload)
 npm run build        # gera ~3.500 páginas estáticas em site/dist (~8 s)
-npm run test:site    # testes do planner, da API e da taxonomia (node --test, sem dependências)
+npm run test:site    # testes do planner, da API, da taxonomia, dos guias e do inglês (node --test, sem dependências)
+npm run i18n:check   # depois do build: textos das páginas sem tradução para o inglês (também roda no CI)
 npm run check        # dry run do deploy dos dois ambientes (o Wrangler roda o build sozinho)
 npm run deploy:hml   # publicação manual (precisa de `npx wrangler login`); normalmente quem publica é o Git
 SITE_DATA=muemu npm run dev       # build só com dados de licença aberta (MuEmu); o padrão é combined
@@ -399,6 +400,14 @@ justamente em Gun Crusher e Slayer; precisam de outra fonte ou de conferência n
    facetas e nomes padronizados em português (`lib/taxonomy.ts`). **Regra:** texto exibido passa pela taxonomia
    (categoria, qualidade, classe, atributo, tabela de drop, tipo de NPC); nada de slug ou chave crua na tela. Os
    dados e a API continuam com os valores da fonte.
+7. Inglês (pedido do dono, no modelo do hyrule-explorer): seletor de idioma com bandeiras no topo (preferência
+   `mu-explorer:lang` no navegador). O site continua escrito em português; `lib/i18n.ts` tem o dicionário `EN`
+   chaveado pelo próprio texto em português e modelos com lacunas (`EN_PATTERNS`, "{0} monstros" -> "{0} monsters"),
+   e `lib/i18n-client.ts` traduz a página no navegador quando a pessoa escolhe English (texto, placeholder, title,
+   aria-label, título da aba e o que os scripts montam depois). Nomes do jogo ficam como nas fontes; os guias mostram o
+   original em inglês; frases com as duas línguas usam `<span class="tx" lang="pt-BR|en">`; o que não se traduz leva
+   `lang="en"`, `data-i18n="off"` ou `translate="no"`. **Regra:** texto novo da interface precisa de entrada no
+   dicionário; `npm run i18n:check` (no CI, depois do build) lista o que sobrar em português.
 
 ## Decisões em aberto (resolver antes da coleta completa)
 

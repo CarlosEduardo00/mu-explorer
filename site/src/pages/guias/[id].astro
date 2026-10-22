@@ -5,7 +5,7 @@ import GuideText from "../../components/GuideText.astro";
 import GuideBlocks from "../../components/GuideBlocks.astro";
 import Flag from "../../components/Flag.astro";
 import { guides } from "../../lib/data";
-import { SERIES, translated } from "../../lib/guides";
+import { SERIES, translated, textHtml } from "../../lib/guides";
 
 export function getStaticPaths() {
   return guides.map((g) => ({ params: { id: g.id }, props: { guide: g } }));
@@ -16,12 +16,12 @@ const siblings = guide.siblings.filter((s) => guides.some((g) => g.id === s.id))
 const titlePt = translated(guide.title) ?? guide.title.t;
 const plain = (s: string) => s.replace(/<[^>]+>|\{\d+\}/g, "").trim();
 ---
-<Base title={plain(titlePt)} description={`${plain(titlePt)}: guia de MU Online.`}>
+<Base title={plain(titlePt)} titleEn={plain(textHtml(guide.title)).replace(/^\[Guide\]\s*/, "")} description={`${plain(titlePt)}: guia de MU Online.`}>
   <nav class="crumbs" aria-label="Trilha"><a href="/guias/">Guias</a>{series && <span>{series.label}</span>}</nav>
   <header class="g-head">
     <GuideText as="h1" text={guide.title} />
     <div class="lang-switch" role="group" aria-label="Idioma do texto">
-      <button type="button" data-lang-set="pt-BR" aria-pressed="true"><Flag lang="pt-BR" /> Português</button>
+      <button type="button" data-lang-set="pt-BR" aria-pressed="true"><Flag lang="pt-BR" /> <span data-i18n="off">Português</span></button>
       <button type="button" data-lang-set="en" aria-pressed="false"><Flag lang="en" /> English</button>
     </div>
   </header>

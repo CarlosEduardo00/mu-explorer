@@ -37,3 +37,4 @@ jobs:
       - run: npm run check   # o Wrangler roda o build do Astro e valida o deploy dos dois ambientes
         env:
           WRANGLER_SEND_METRICS: "false"
+      - run: npm run i18n:check   # textos das páginas geradas sem tradução para o inglês (lib/i18n.ts)

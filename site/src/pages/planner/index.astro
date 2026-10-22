@@ -293,9 +293,10 @@ import Base from "../../layouts/Base.astro";
         `usados <strong>${fmt(used)}</strong> · ` +
         `${left >= 0 ? "sobram" : "faltam"} <strong class="${left < 0 ? "neg" : ""}">${fmt(Math.abs(left))}</strong>`;
 
-      const tier = c.tier === 2 ? ` Classe de 2º tier${c.unlock_level ? `: libera no nível ${c.unlock_level} de outro personagem` : ""}.` : "";
-      const evo = c.evolutions.length ? ` Evolução: ${c.evolutions.map((e) => e.name).join(" → ")}.` : "";
-      $("class-note").textContent = `${tier}${evo}${c.notes?.length ? " " + c.notes.join(" ") : ""}`.trim();
+      const tier = c.tier === 2 ? `Classe de 2º tier${c.unlock_level ? `: libera no nível ${c.unlock_level} de outro personagem` : ""}.` : "";
+      const evo = c.evolutions.length ? `Evolução: ${c.evolutions.map((e) => e.name).join(" → ")}.` : "";
+      // uma frase por elemento (a tradução para o inglês troca cada uma)
+      $("class-note").innerHTML = [tier, evo, ...(c.notes ?? [])].filter(Boolean).map((s) => `<span>${esc(s)}</span>`).join(" ");
       $("evolutions").innerHTML = c.evolutions.some((e) => e.image_url)
         ? c.evolutions.map((e) => `<figure>${e.image_url ? `<img src="${esc(e.image_url)}" alt="${esc(e.name)}" loading="lazy" />` : `<span class="noimg"></span>`}<figcaption>${esc(e.name)}${e.level ? `<br><small>nv ${fmt(e.level)}</small>` : ""}</figcaption></figure>`).join("")
         : "";

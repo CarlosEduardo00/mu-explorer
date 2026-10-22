@@ -120,7 +120,13 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
 
   {notes.length > 0 && (
     <ul class="panel lines how-notes">
-      {notes.map((n) => <li lang={n.translated ? undefined : "en"}>{linkNpcs(n.text).map((part) => (typeof part === "string" ? part : <a href={`/npcs/${part.id}/`}>{part.name}</a>))}</li>)}
+      {notes.map((n) => {
+        const linked = (text: string) => linkNpcs(text).map((part) => (typeof part === "string" ? part : <a href={`/npcs/${part.id}/`}>{part.name}</a>));
+        // Frase traduzida: português e o original em inglês (o seletor de idioma mostra uma).
+        return n.translated
+          ? <li><span class="tx" lang="pt-BR">{linked(n.text)}</span><span class="tx" lang="en">{linked(n.original)}</span></li>
+          : <li lang="en">{linked(n.text)}</li>;
+      })}
     </ul>
   )}
 
