@@ -1,19 +1,80 @@
 ---
 import Base from "../layouts/Base.astro";
-import { items, monsters, maps, npcs, spawns } from "../lib/data";
-const cards = [
-  { href: "/itens/", n: items.length, label: "itens" },
-  { href: "/monstros/", n: monsters.length, label: "monstros" },
-  { href: "/mapas/", n: maps.length, label: "mapas" },
-  { href: "/npcs/", n: npcs.length, label: "NPCs" },
-].filter((c) => c.n > 0);
+import { items, monsters, maps, npcs, farmSpots, spotsByMap, mapById, spotsUrl, rulesets, builds, fmt } from "../lib/data";
+import { mapThumb } from "../lib/view";
+
+const featured = ["lorencia", "devias", "lost-tower", "atlans", "tarkan", "icarus", "kanturu-1", "raklion", "vulcanus", "acheron", "debenter", "nars"]
+  .map((id) => mapById.get(id)).filter((m) => m !== undefined && spotsByMap.has(m.id)).slice(0, 6);
+const classes = rulesets[0]?.classes ?? [];
+const sections = [
+  { href: "/itens/", n: items.length, label: "itens", text: "armas, sets, asas, joias e o que dropa cada um", img: items.find((i) => i.name === "Wings of Dragon")?.image_url },
+  { href: "/monstros/", n: monsters.length, label: "monstros", text: "atributos, mapas e drops", img: monsters.find((m) => m.id === "kundun")?.image_url ?? monsters.find((m) => m.image_url)?.image_url },
+  { href: "/mapas/", n: maps.length, label: "mapas", text: "nível, monstros, NPCs e ligações", img: mapById.get("lorencia") ? mapThumb(mapById.get("lorencia")!) : null },
+  { href: "/spots/", n: farmSpots.length, label: "spots de farm", text: "onde upar no seu nível", img: mapById.get("devias") ? mapThumb(mapById.get("devias")!) : null },
+  { href: "/npcs/", n: npcs.length, label: "NPCs", text: "onde ficam e o que vendem", img: npcs.find((n) => n.image_url)?.image_url },
+  { href: "/planner/", n: builds.length, label: "builds prontas", text: `planner de pontos para ${classes.length} classes`, img: classes[0]?.image_url },
+].filter((s) => s.n > 0);
 ---
-<Base title="MU Explorer">
-  <h1>MU Explorer</h1>
-  <p class="lead">Itens, monstros, mapas e NPCs de MU Online. Em construção: builds por classe virão depois.</p>
-  <ul class="cards">
-    {cards.map((c) => <li><a href={c.href}><strong>{c.n.toLocaleString("pt-BR")}</strong>{c.label}</a></li>)}
+<Base title="MU Explorer" wide>
+  <section class="hero">
+    <h1>MU Explorer</h1>
+    <p class="lead">Base de dados de MU Online: itens, monstros, mapas com hot spots de farm e um planner de builds para todas as classes.</p>
+    <form class="hero-level" action="/spots/" method="get">
+      <label for="hero-level">Onde upar no nível</label>
+      <input id="hero-level" name="nivel" type="number" min="1" max="1200" inputmode="numeric" placeholder="ex.: 150" required />
+      <button class="btn" type="submit">Ver spots</button>
+    </form>
+  </section>
+
+  <ul class="tiles home-tiles">
+    {sections.map((s) => (
+      <li>
+        <a class="tile" href={s.href}>
+          {s.img && <img class="bg" src={s.img} alt="" loading="lazy" />}
+          <strong>{fmt(s.n)} {s.label}</strong>
+          <span>{s.text}</span>
+        </a>
+      </li>
+    ))}
   </ul>
-  <p><a href="/planner/">Planner de builds →</a> distribua pontos de atributo e confira os requisitos do equipamento.</p>
-  {spawns.length > 0 && <p class="muted">{spawns.length.toLocaleString("pt-BR")} pontos de spawn com coordenadas.</p>}
+
+  {featured.length > 0 && (
+    <>
+      <h2>Mapas com hot spots</h2>
+      <div class="grid map-grid">
+        {featured.map((m) => (
+          <a class="map-card" href={spotsUrl(m.id)}>
+            <span class="map-card-img">{mapThumb(m) ? <img src={mapThumb(m)} alt="" loading="lazy" /> : <span class="ph"></span>}</span>
+            <span class="map-card-body"><b>{m.name}</b><small>{spotsByMap.get(m.id)!.length} spots</small></span>
+          </a>
+        ))}
+      </div>
+      <p><a href="/spots/">Todos os mapas com spots →</a></p>
+    </>
+  )}
+
+  {classes.length > 0 && (
+    <>
+      <h2>Classes no planner</h2>
+      <ul class="class-strip">
+        {classes.map((c) => (
+          <li><a href={`/planner/#c=${c.id}`}>{c.image_url ? <img src={c.image_url} alt="" loading="lazy" /> : <span class="ph"></span>}<span>{c.name}</span></a></li>
+        ))}
+      </ul>
+    </>
+  )}
 </Base>
+
+<style>
+  .hero { padding: 1.5rem 0 1.75rem; }
+  .home-tiles { grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr)); }
+  .hero h1 { font-size: clamp(2rem, 6vw, 3.2rem); }
+  .hero .lead { font-size: 1.1rem; }
+  .hero-level { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; margin-top: 1rem; padding: .8rem 1rem; background: var(--panel); border: 1px solid rgba(214,165,74,.4); border-radius: var(--radius); max-width: 34rem; }
+  .hero-level label { font-family: var(--display); font-weight: 700; color: var(--accent-2); }
+  .hero-level input { width: 8rem; }
+  .class-strip { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr)); gap: .5rem; }
+  .class-strip a { display: flex; flex-direction: column; align-items: center; gap: .35rem; padding: .6rem .4rem; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; color: var(--fg); font-size: .82rem; text-align: center; line-height: 1.2; }
+  .class-strip a:hover { border-color: var(--accent); color: var(--accent-2); }
+  .class-strip img, .class-strip .ph { width: 64px; height: 64px; object-fit: contain; }
+</style>

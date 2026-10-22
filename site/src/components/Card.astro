@@ -1,0 +1,9 @@
+---
+// Cartão com imagem, nome e uma linha de detalhe (listas de itens, monstros, mapas e NPCs).
+interface Props { href: string; name: string; image?: string | null; detail?: string | null; nameClass?: string; attrs?: Record<string, string> }
+const { href, name, image, detail, nameClass, attrs = {} } = Astro.props;
+---
+<a class="card" href={href} {...attrs}>
+  <span class="card-img">{image ? <img src={image} alt="" loading="lazy" /> : <span class="ph"></span>}</span>
+  <span class="card-body"><b class:list={["gname", nameClass]}>{name}</b>{detail && <small>{detail}</small>}<slot /></span>
+</a>

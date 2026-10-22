@@ -54,7 +54,7 @@ const heats = (["hot", "mid", "low", "boss"] as const).filter((h) => spots.some(
           <path class="t-safe" d={terrain.safe} fill-rule="evenodd" />
         </g>
       )}
-      {minimap && <g data-group="minimap" class:list={{ off: !!terrain }}><image href={minimap} x="0" y="0" width="256" height="256" preserveAspectRatio="none" referrerpolicy="no-referrer" /></g>}
+      {minimap && <g data-group="minimap" class:list={{ off: !!terrain }}><image href={minimap} x="0" y="0" width="256" height="256" preserveAspectRatio="none" /></g>}
       <g data-group="game">
         {shownMarkers.filter((m) => m.kind === "spot" || m.kind === "hot_spot").map((m) => (
           <path class={m.kind === "hot_spot" ? "mk-hot" : "mk-spot"} d={`M${m.y},${(m.x as number) - 4.5} L${(m.y as number) + 4},${(m.x as number) + 3.5} L${(m.y as number) - 4},${(m.x as number) + 3.5} Z`}><title>{m.name} ({m.x}, {m.y})</title></path>
@@ -93,7 +93,7 @@ const heats = (["hot", "mid", "low", "boss"] as const).filter((h) => spots.some(
   };
   const fmt = (n: number | null | undefined) => (n == null ? "—" : n.toLocaleString("pt-BR"));
   const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
-  const img = (src: string | null, cls: string) => (src ? `<img class="${cls}" src="${esc(src)}" alt="" loading="lazy" referrerpolicy="no-referrer" />` : "");
+  const img = (src: string | null, cls: string) => (src ? `<img class="${cls}" src="${esc(src)}" alt="" loading="lazy" />` : "");
   const KIND: Record<string, string> = { ancient: "ancient", excellent: "excellent", socket: "socket", normal: "normal" };
 
   for (const root of document.querySelectorAll<HTMLElement>("[data-mx]")) {
@@ -151,8 +151,9 @@ const heats = (["hot", "mid", "low", "boss"] as const).filter((h) => spots.some(
 <style is:global>
   .mx { margin: .5rem 0 1.25rem; }
   .mx-layers { display: flex; flex-wrap: wrap; gap: .25rem 1rem; font-size: .85rem; color: var(--muted); margin-bottom: .4rem; }
-  .mx-body { display: grid; grid-template-columns: minmax(0, 26rem) minmax(0, 1fr); gap: 1rem; align-items: start; }
-  @media (max-width: 48rem) { .mx-body { grid-template-columns: 1fr; } }
+  .mx-body { display: grid; grid-template-columns: minmax(0, 40rem) minmax(0, 1fr); gap: 1.25rem; align-items: start; }
+  .mx-panel { position: sticky; top: 4.5rem; max-height: calc(100vh - 5.5rem); overflow: auto; scrollbar-width: thin; }
+  @media (max-width: 56rem) { .mx-body { grid-template-columns: minmax(0, 1fr); } .mx-panel { position: static; max-height: none; } }
   .mx-svg { width: 100%; height: auto; display: block; border-radius: .5rem; border: 1px solid var(--line); background: var(--panel); }
   .mx-bg { fill: var(--panel); }
   .has-terrain .mx-bg { fill: #0b0d12; }
@@ -189,7 +190,11 @@ const heats = (["hot", "mid", "low", "boss"] as const).filter((h) => spots.some(
   .mx-count { color: var(--muted); }
   .mx-drops { list-style: none; padding: 0; margin: .5rem 0 0; display: flex; flex-wrap: wrap; gap: .3rem; }
   .mx-drops li { display: inline-flex; align-items: center; gap: .3rem; font-size: .8rem; padding: .1rem .5rem .1rem .2rem; border: 1px solid var(--line); border-radius: 1rem; }
-  .mx-drops li.k-excellent { border-color: #15803d; } .mx-drops li.k-ancient { border-color: #b45309; } .mx-drops li.k-socket { border-color: #7e22ce; }
+  /* Cores de qualidade iguais às do resto do site (--g-*). */
+  .mx-drops li a { color: var(--fg); text-decoration: none; } .mx-drops li a:hover { text-decoration: underline; }
+  .mx-drops li.k-excellent { border-color: color-mix(in srgb, var(--g-excellent) 45%, transparent); } .mx-drops li.k-excellent a { color: var(--g-excellent); }
+  .mx-drops li.k-ancient { border-color: color-mix(in srgb, var(--g-ancient) 45%, transparent); } .mx-drops li.k-ancient a { color: var(--g-ancient); }
+  .mx-drops li.k-socket { border-color: color-mix(in srgb, var(--g-socket) 45%, transparent); } .mx-drops li.k-socket a { color: var(--g-socket); }
   .mx-drop-img { width: 20px; height: 20px; object-fit: contain; }
   .mx-more { display: inline-block; margin-top: .35rem; font-size: .85rem; }
   .mx-nodrops { margin: .4rem 0 0; font-size: .85rem; }

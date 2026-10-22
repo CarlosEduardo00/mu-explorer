@@ -1,17 +1,35 @@
 ---
 import Base from "../../layouts/Base.astro";
-import FilterList from "../../components/FilterList.astro";
-import { npcs } from "../../lib/data";
-const rows = npcs.map((n) => ({
-  href: `/npcs/${n.id}/`,
-  image: n.image_url,
-  cells: [n.name, n.type, n.locations.map((l) => l.map_name).join(", ") || null],
-  search: `${n.name} ${n.type ?? ""} ${n.locations.map((l) => l.map_name).join(" ")}`.toLowerCase(),
-}));
+import Catalog from "../../components/Catalog.astro";
+import Card from "../../components/Card.astro";
+import { npcs, maps } from "../../lib/data";
+import { npcTypeLabel } from "../../lib/taxonomy";
+
+const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+const typeKey = (t: string) => norm(t.replace(/\s*NPC$/i, ""));
+const types = [...new Set(npcs.map((n) => n.type).filter((t): t is string => !!t))].sort((a, b) => npcTypeLabel(a)!.localeCompare(npcTypeLabel(b)!));
+const mapIds = new Set(npcs.flatMap((n) => n.locations.map((l) => l.map_id)));
+const facets = [
+  { key: "type", label: "Tipo", options: [...new Map(types.map((t) => [typeKey(t), npcTypeLabel(t)!])).entries()].map(([value, label]) => ({ value, label })) },
+  { key: "map", label: "Mapa", options: maps.filter((m) => mapIds.has(m.id)).map((m) => ({ value: m.id, label: m.name })) },
+  { key: "has", label: "Mostrar", options: [{ value: "shop", label: "Vende itens" }] },
+];
+const sorts = [{ value: "name", label: "Nome (A–Z)", attr: "name", dir: 1 as const }];
+const rows = [...npcs].sort((a, b) => a.name.localeCompare(b.name));
 ---
-<Base title="NPCs">
+<Base title="NPCs" description="NPCs de MU Online: onde ficam, o que fazem e o que vendem." wide>
   <h1>NPCs</h1>
+  <p class="lead">Mercadores, NPCs de missão, de combinação e de eventos, com a localização e a lista do que vendem.</p>
   {npcs.length === 0
     ? <p class="muted">Sem dados de NPCs neste conjunto.</p>
-    : <FilterList columns={[{ label: "Nome" }, { label: "Tipo" }, { label: "Onde" }]} rows={rows} placeholder="Filtrar por nome, tipo ou mapa" noun="NPCs" />}
+    : (
+      <Catalog facets={facets} sorts={sorts} noun="NPCs" placeholder="Buscar NPC" levelLabel={null} page={120}>
+        {rows.map((n) => (
+          <Card href={`/npcs/${n.id}/`} name={n.name} image={n.image_url}
+            detail={[npcTypeLabel(n.type), n.locations.map((l) => l.map_name).filter((v, i, a) => a.indexOf(v) === i).slice(0, 2).join(", ")].filter(Boolean).join(" · ")}
+            attrs={{ "data-cat": "", "data-q": norm(`${n.name} ${n.locations.map((l) => l.map_name).join(" ")}`), "data-name": n.name,
+              "data-f": [n.type ? `type:${typeKey(n.type)}` : "", ...new Set(n.locations.map((l) => `map:${l.map_id}`)), n.sells.length ? "has:shop" : ""].filter(Boolean).join(" ") }} />
+        ))}
+      </Catalog>
+    )}
 </Base>

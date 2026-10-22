@@ -1,22 +1,35 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { npcs, itemById, fmt } from "../../lib/data";
+import PageHead from "../../components/PageHead.astro";
+import { npcs, itemById, spotMapIds, spotsUrl, fmt } from "../../lib/data";
+import { npcTypeLabel } from "../../lib/taxonomy";
 
 export function getStaticPaths() {
   return npcs.map((npc) => ({ params: { id: npc.id }, props: { npc } }));
 }
 const { npc } = Astro.props;
 const categories = [...new Set(npc.sells.map((s) => s.category ?? "Itens"))];
+const type = npcTypeLabel(npc.type);
 ---
 <Base title={npc.name} description={npc.description ?? `${npc.name}: localização e itens à venda em MU Online.`}>
-  <p class="crumbs"><a href="/npcs/">NPCs</a>{npc.type && <> › {npc.type}</>}</p>
-  <h1>{npc.name}</h1>
-  {npc.image_url && <img class="hero-img" src={npc.image_url} alt={npc.name} loading="lazy" referrerpolicy="no-referrer" />}
-  {npc.description && <p class="lead">{npc.description}</p>}
+  <PageHead crumbs={[{ href: "/npcs/", label: "NPCs" }, ...(type ? [{ href: `/npcs/?type=${encodeURIComponent((npc.type ?? "").replace(/\s*NPC$/i, "").toLowerCase())}`, label: type }] : []), { label: npc.name }]}
+    title={npc.name} image={npc.image_url} lead={npc.description}>
+    <ul class="chips">
+      {type && <li class="chip gold">{type}</li>}
+      {npc.sells.length > 0 && <li class="chip">{npc.sells.length} itens à venda</li>}
+    </ul>
+  </PageHead>
   {npc.locations.length > 0 && (
     <>
       <h2>Onde fica</h2>
-      <ul>{npc.locations.map((l) => <li><a href={`/mapas/${l.map_id}/`}>{l.map_name}</a>{l.x != null && <span class="muted"> · ({l.x}, {l.y})</span>}</li>)}</ul>
+      <ul class="chips">
+        {npc.locations.map((l) => (
+          <li>
+            <a class="chip" href={`/mapas/${l.map_id}/`}>{l.map_name}{l.x != null && <span class="muted">({l.x}, {l.y})</span>}</a>
+            {spotMapIds.includes(l.map_id) && <a class="chip" href={spotsUrl(l.map_id)}>ver mapa</a>}
+          </li>
+        ))}
+      </ul>
     </>
   )}
   {categories.map((category) => (
@@ -26,16 +39,22 @@ const categories = [...new Set(npc.sells.map((s) => s.category ?? "Itens"))];
         <table>
           <thead><tr><th>Item</th><th>Detalhes</th><th class="num">Preço (Zen)</th></tr></thead>
           <tbody>
-            {npc.sells.filter((s) => (s.category ?? "Itens") === category).map((s) => (
-              <tr>
-                <td>{itemById.has(s.item_id) ? <a href={`/itens/${s.item_id}/`}>{s.item_name}</a> : s.item_name}</td>
-                <td>{s.details ?? "—"}</td>
-                <td class="num">{fmt(s.price_zen)}</td>
-              </tr>
-            ))}
+            {npc.sells.filter((s) => (s.category ?? "Itens") === category).map((s) => {
+              const item = itemById.get(s.item_id);
+              return (
+                <tr>
+                  <td>{item ? <a href={`/itens/${item.id}/`} class="name-cell">{item.image_url && <img class="thumb" src={item.image_url} alt="" loading="lazy" />}<span class:list={["gname", item.grade ? `grade-${item.grade}` : null]}>{s.item_name}</span></a> : s.item_name}</td>
+                  <td>{s.details ?? "—"}</td>
+                  <td class="num">{fmt(s.price_zen)}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
     </>
   ))}
 </Base>
+<style>
+  .chips li { display: inline-flex; gap: .25rem; }
+</style>

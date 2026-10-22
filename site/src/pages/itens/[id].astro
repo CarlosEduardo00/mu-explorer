@@ -1,22 +1,35 @@
 ---
 import Base from "../../layouts/Base.astro";
+import PageHead from "../../components/PageHead.astro";
+import Card from "../../components/Card.astro";
 import { items, itemById, dropsByItem, monsterById, spotRefsByMonster, spawnsByMonster, mapById, spotsUrl, fmt } from "../../lib/data";
+import { itemView, familyOf, familyName } from "../../lib/view";
+import { gradeLabel, statRows, optionGroupLabel, dropTableLabel, ALL_CLASSES } from "../../lib/taxonomy";
 
 export function getStaticPaths() {
   return items.map((item) => ({ params: { id: item.id }, props: { item } }));
 }
 const { item } = Astro.props;
+const v = itemView(item);
 const req = item.requirements;
 const reqRows: [string, number | null][] = [
   ["Nível", req.level], ["Força", req.strength], ["Agilidade", req.agility],
   ["Vitalidade", req.vitality], ["Energia", req.energy], ["Comando", req.command],
 ];
-const statRows = Object.entries(item.stats);
+const stats = statRows(Object.fromEntries(Object.entries(item.stats).filter(([k]) => !(k === "durability" && item.durability != null))), fmt);
+if (item.durability != null) stats.push(["Durabilidade", fmt(item.durability)]);
+// Classes agrupadas pela família (classe base), com as evoluções que podem usar.
+const byFamily = new Map<string, string[]>();
+for (const c of item.classes) {
+  if (c === ALL_CLASSES) continue;
+  const f = familyOf(c) ?? c;
+  byFamily.set(f, [...(byFamily.get(f) ?? []), c]);
+}
 const dropRows = dropsByItem.get(item.id) ?? [];
 const droppers = [...new Set(dropRows.map((d) => d.monster_id))]
   .map((id) => monsterById.get(id)).filter((m) => m !== undefined)
   .sort((a, b) => (a.level ?? 0) - (b.level ?? 0));
-const dropKind = (monsterId: string) => [...new Set(dropRows.filter((d) => d.monster_id === monsterId).map((d) => d.table ?? d.kind))].join(", ");
+const dropKind = (monsterId: string) => [...new Set(dropRows.filter((d) => d.monster_id === monsterId).map((d) => dropTableLabel(d.table, d.kind)))].join(", ");
 const whereMaps = (monsterId: string) => [...new Set((spawnsByMonster.get(monsterId) ?? []).map((s) => s.map_id))];
 // Onde farmar: para cada monstro que dropa, o spot com mais dele. Os destaques são os monstros de menor nível
 // (mais fáceis de farmar) que têm spot conhecido; empate pelo spot com mais monstros.
@@ -27,48 +40,67 @@ const bestSpots = droppers.flatMap((m) => {
 const levelText = (min: number | null, max: number | null) =>
   min == null ? "" : min === max ? `nv ${fmt(min)}` : `nv ${fmt(min)}–${fmt(max)}`;
 const related = item.related_items.map((id) => itemById.get(id)).filter((i) => i !== undefined);
+const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
 ---
 <Base title={item.name} description={`${item.name}: requisitos, atributos e onde dropa em MU Online.`}>
-  <p class="crumbs"><a href="/itens/">Itens</a> › {item.category ?? "item"}</p>
-  <h1>{item.name}</h1>
-  {item.image_url && <img class="hero-img" src={item.image_url} alt={item.name} loading="lazy" />}
-  <p class="muted">
-    {item.group != null && <>Grupo {item.group} · índice {item.index} · </>}
-    {item.grade && <>{item.grade} · </>}
-    {item.season && <>{item.season}</>}
-  </p>
+  <PageHead crumbs={[{ href: "/itens/", label: "Itens" }, { href: `/itens/?group=${v.group}`, label: v.groupLabel }, ...(v.kindLabel !== v.groupLabel ? [{ href: `/itens/?group=${v.group}&kind=${v.kind}`, label: v.kindLabel }] : []), { label: item.name }]}
+    title={item.name} image={item.image_url} titleClass={gradeClass}>
+    <ul class="chips">
+      {item.grade && <li class:list={["chip", gradeClass]}>{gradeLabel(item.grade)}</li>}
+      <li class="chip">{v.kindLabel}</li>
+      {item.group != null && <li class="chip">Grupo {item.group} · índice {item.index}</li>}
+      {item.season && <li class="chip">{item.season}</li>}
+    </ul>
+  </PageHead>
 
-  {item.classes.length > 0 && (<><h2>Classes</h2><ul class="tags">{item.classes.map((c) => <li>{c}</li>)}</ul></>)}
+  <div class="cols">
+    {reqRows.some(([, x]) => x != null) && (
+      <section>
+        <h2>Requisitos</h2>
+        <dl class="stats">{reqRows.filter(([, x]) => x != null).map(([k, x]) => <div><dt>{k}</dt><dd>{fmt(x)}</dd></div>)}</dl>
+      </section>
+    )}
+    {stats.length > 0 && (
+      <section>
+        <h2>Atributos</h2>
+        <dl class="stats">{stats.map(([k, x]) => <div><dt>{k}</dt><dd>{x}</dd></div>)}</dl>
+      </section>
+    )}
+  </div>
 
-  {reqRows.some(([, v]) => v != null) && (
+  {(item.classes.length > 0) && (
     <>
-      <h2>Requisitos</h2>
-      <dl class="facts">{reqRows.filter(([, v]) => v != null).map(([k, v]) => <><dt>{k}</dt><dd>{fmt(v)}</dd></>)}</dl>
+      <h2>Classes</h2>
+      {item.classes.includes(ALL_CLASSES) && <p>Todas as classes podem usar.</p>}
+      <ul class="chips">
+        {[...byFamily].map(([f, names]) => (
+          <li class="chip" title={names.join(", ")}>{familyName(f)}{names.length && !(names.length === 1 && names[0] === familyName(f)) && <span class="muted">· {names.join(", ")}</span>}</li>
+        ))}
+      </ul>
     </>
   )}
 
-  {(statRows.length > 0 || item.durability != null) && (
+  {(item.options.length > 0 || item.option_groups.length > 0) && (
     <>
-      <h2>Atributos</h2>
-      <dl class="facts">
-        {statRows.map(([k, v]) => <><dt>{k.replaceAll("_", " ")}</dt><dd>{fmt(v)}</dd></>)}
-        {item.durability != null && <><dt>durabilidade</dt><dd>{fmt(item.durability)}</dd></>}
-      </dl>
+      <h2>Opções</h2>
+      {item.options.length > 0 && <ul class="chips opts">{item.options.map((o) => <li class="chip gold">{o}</li>)}</ul>}
+      {item.option_groups.length > 0 && (
+        <div class="cols">
+          {item.option_groups.map((g) => (
+            <div class="panel">
+              <h3>{optionGroupLabel(g.title)}{g.max ? <span class="muted small"> · até {g.max}</span> : null}</h3>
+              <ul class="lines">{g.lines.map((l) => <li>{l}</li>)}</ul>
+            </div>
+          ))}
+        </div>
+      )}
     </>
   )}
-
-  {item.options.length > 0 && (<><h2>Opções possíveis</h2><ul class="tags">{item.options.map((o) => <li>{o}</li>)}</ul></>)}
-  {item.option_groups.map((g) => (
-    <>
-      <h2>{g.title}{g.max ? ` (até ${g.max})` : ""}</h2>
-      <ul>{g.lines.map((l) => <li>{l}</li>)}</ul>
-    </>
-  ))}
 
   {droppers.length > 0 && (
     <>
       <h2 id="onde-dropa">Onde dropa</h2>
-      <p class="muted">{droppers.length} monstros podem dropar este item. O spot é onde há mais daquele monstro: dá para ficar lá farmando até dropar.</p>
+      <p class="muted">{droppers.length} {droppers.length === 1 ? "monstro pode" : "monstros podem"} dropar este item. O spot indicado é onde há mais daquele monstro: dá para ficar lá farmando até dropar.</p>
       {bestSpots.length > 0 && (
         <div class="farm-cards">
           {bestSpots.map(({ monster, ref }) => (
@@ -116,11 +148,20 @@ const related = item.related_items.map((id) => itemById.get(id)).filter((i) => i
       </div>
     </>
   )}
+
   {related.length > 0 && (
     <>
       <h2>Itens relacionados</h2>
-      <ul class="tags">{related.map((r) => <li><a href={`/itens/${r.id}/`}>{r.name}</a></li>)}</ul>
+      <div class="grid">
+        {related.map((r) => <Card href={`/itens/${r.id}/`} name={r.name} image={r.image_url} nameClass={r.grade ? `grade-${r.grade}` : undefined}
+          detail={[itemView(r).kindLabel, gradeLabel(r.grade)].filter(Boolean).join(" · ")} />)}
+      </div>
     </>
   )}
-  {item.notes.length > 0 && (<><h2>Notas</h2>{item.notes.map((n) => <p>{n}</p>)}</>)}
+  {item.notes.length > 0 && (<><h2>Notas</h2><div class="panel">{item.notes.map((n) => <p>{n}</p>)}</div></>)}
 </Base>
+<style>
+  .opts { margin-bottom: .75rem; }
+  .cols > section > h2 { margin-top: 1.25rem; }
+  .chip .muted { font-size: .75rem; }
+</style>

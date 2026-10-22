@@ -1,20 +1,43 @@
 ---
 import Base from "../../layouts/Base.astro";
-import FilterList from "../../components/FilterList.astro";
+import Catalog from "../../components/Catalog.astro";
+import Card from "../../components/Card.astro";
 import { items, fmt } from "../../lib/data";
-const rows = items.map((i) => ({
-  href: `/itens/${i.id}/`,
-  image: i.image_url,
-  cells: [i.name, i.category, i.requirements.level, i.classes.length ? i.classes.join(", ") : null],
-  search: `${i.name} ${i.category ?? ""} ${i.classes.join(" ")}`.toLowerCase(),
-}));
+import { itemView, families } from "../../lib/view";
+import { GROUPS, KINDS, GRADES, gradeLabel } from "../../lib/taxonomy";
+
+const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+const views = items.map((item) => ({ item, v: itemView(item) }));
+const used = (pred: (x: (typeof views)[number]) => boolean) => views.some(pred);
+const facets = [
+  { key: "group", label: "Categoria", options: GROUPS.filter((g) => used((x) => x.v.group === g.id)).map((g) => ({ value: g.id, label: g.label })) },
+  { key: "kind", label: "Tipo", dependsOn: "group", options: KINDS.filter((k) => used((x) => x.v.kind === k.id)).map((k) => ({ value: k.id, label: k.label, parent: k.group })) },
+  { key: "grade", label: "Qualidade", options: GRADES.filter((g) => used((x) => x.item.grade === g.id)).map((g) => ({ value: g.id, label: g.label })) },
+  { key: "class", label: "Classe", options: [
+    ...families.filter((f) => used((x) => x.v.families.includes(f.id))).map((f) => ({ value: f.id, label: f.name })),
+    { value: "all", label: "Todas as classes" },
+  ] },
+];
+const sorts = [
+  { value: "name", label: "Nome (A–Z)", attr: "name", dir: 1 as const },
+  { value: "level", label: "Nível (menor primeiro)", attr: "level", dir: 1 as const, numeric: true },
+  { value: "level-desc", label: "Nível (maior primeiro)", attr: "level", dir: -1 as const, numeric: true },
+];
+// Ordem padrão: categoria (na ordem dos grupos e tipos), depois nível e nome.
+const kindOrder = new Map(KINDS.map((k, i) => [k.id, i]));
+views.sort((a, b) => (kindOrder.get(a.v.kind)! - kindOrder.get(b.v.kind)!) || (a.item.requirements.level ?? 0) - (b.item.requirements.level ?? 0) || a.item.name.localeCompare(b.item.name));
 ---
-<Base title="Itens">
+<Base title="Itens" description="Itens de MU Online por categoria, qualidade e classe: requisitos, atributos e onde dropam." wide>
   <h1>Itens</h1>
-  <FilterList
-    columns={[{ label: "Nome" }, { label: "Categoria" }, { label: "Nível", num: true }, { label: "Classes" }]}
-    rows={rows.map((r) => ({ ...r, cells: r.cells.map((c, idx) => (idx === 2 ? fmt(c as number | null) : c)) }))}
-    placeholder="Filtrar por nome, categoria ou classe"
-    noun="itens"
-  />
+  <p class="lead">Armas, armaduras, asas, acessórios, joias e consumíveis. Filtre por categoria, qualidade e classe; cada item mostra requisitos, atributos e onde farmar.</p>
+  <Catalog facets={facets} sorts={sorts} noun="itens" placeholder="Buscar pelo nome (ex.: Dragon, Jewel of Bless)">
+    {views.map(({ item, v }) => {
+      const tokens = [`group:${v.group}`, `kind:${v.kind}`, item.grade ? `grade:${item.grade}` : "", ...v.families.map((f) => `class:${f}`), v.allClasses ? "class:all" : ""];
+      const detail = [v.kindLabel, gradeLabel(item.grade), item.requirements.level != null ? `nv ${fmt(item.requirements.level)}` : null].filter(Boolean).join(" · ");
+      return (
+        <Card href={`/itens/${item.id}/`} name={item.name} image={item.image_url} detail={detail} nameClass={item.grade ? `grade-${item.grade}` : undefined}
+          attrs={{ "data-cat": "", "data-q": norm(item.name), "data-f": tokens.filter(Boolean).join(" "), "data-name": item.name, "data-level": item.requirements.level != null ? String(item.requirements.level) : "" }} />
+      );
+    })}
+  </Catalog>
 </Base>

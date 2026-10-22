@@ -195,7 +195,7 @@ import Base from "../../layouts/Base.astro";
 
     function renderClasses() {
       $("classes").innerHTML = rules().classes
-        .map((c) => `<button type="button" role="radio" class="chip${c.image_url ? " with-img" : ""}" aria-checked="${c.id === state.classId}" data-class="${c.id}">${c.image_url ? `<img src="${esc(c.image_url)}" alt="" loading="lazy" referrerpolicy="no-referrer" />` : ""}${esc(c.name)}</button>`)
+        .map((c) => `<button type="button" role="radio" class="chip${c.image_url ? " with-img" : ""}" aria-checked="${c.id === state.classId}" data-class="${c.id}">${c.image_url ? `<img src="${esc(c.image_url)}" alt="" loading="lazy" />` : ""}${esc(c.name)}</button>`)
         .join("");
     }
 
@@ -267,7 +267,7 @@ import Base from "../../layouts/Base.astro";
       const evo = c.evolutions.length ? ` Evolução: ${c.evolutions.map((e) => e.name).join(" → ")}.` : "";
       $("class-note").textContent = `${tier}${evo}${c.notes?.length ? " " + c.notes.join(" ") : ""}`.trim();
       $("evolutions").innerHTML = c.evolutions.some((e) => e.image_url)
-        ? c.evolutions.map((e) => `<figure>${e.image_url ? `<img src="${esc(e.image_url)}" alt="${esc(e.name)}" loading="lazy" referrerpolicy="no-referrer" />` : `<span class="noimg"></span>`}<figcaption>${esc(e.name)}${e.level ? `<br><small>nv ${fmt(e.level)}</small>` : ""}</figcaption></figure>`).join("")
+        ? c.evolutions.map((e) => `<figure>${e.image_url ? `<img src="${esc(e.image_url)}" alt="${esc(e.name)}" loading="lazy" />` : `<span class="noimg"></span>`}<figcaption>${esc(e.name)}${e.level ? `<br><small>nv ${fmt(e.level)}</small>` : ""}</figcaption></figure>`).join("")
         : "";
       $("ruleset-note").textContent = r.description;
       ($("level") as HTMLInputElement).max = String(c.max_level);

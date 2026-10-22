@@ -1,0 +1,108 @@
+---
+import Base from "../../../layouts/Base.astro";
+import PageHead from "../../../components/PageHead.astro";
+import Card from "../../../components/Card.astro";
+import { maps, mapById, monsterById, npcById, spawnsByMap, spotsByMap, spotMapIds, spotsUrl, fmt } from "../../../lib/data";
+import { isBoss, mapLevels, mapThumb } from "../../../lib/view";
+import { npcTypeLabel, valuedGroupLabel } from "../../../lib/taxonomy";
+
+export function getStaticPaths() {
+  return maps.map((map) => ({ params: { id: map.id }, props: { map } }));
+}
+const { map } = Astro.props;
+const spawnList = spawnsByMap.get(map.id) ?? [];
+const monsterIds = [...new Set([...map.monsters, ...map.special_monsters, ...map.bosses, ...spawnList.map((s) => s.monster_id)])];
+const listed = monsterIds.map((id) => monsterById.get(id)).filter((m) => m !== undefined)
+  .sort((a, b) => (a.level ?? 0) - (b.level ?? 0));
+const npcsHere = map.npcs.map((id) => npcById.get(id)).filter((n) => n !== undefined);
+const spawnCount = (id: string) => spawnList.filter((s) => s.monster_id === id).reduce((n, s) => n + (s.count ?? 1), 0);
+const connections = map.connections.map((id) => mapById.get(id)).filter((m) => m !== undefined);
+const parent = map.parent_id ? mapById.get(map.parent_id) : undefined;
+const floors = maps.filter((m) => m.parent_id === map.id);
+const spots = spotsByMap.get(map.id) ?? [];
+const levels = mapLevels(map);
+const thumb = mapThumb(map);
+// Linhas do resumo que já aparecem nas etiquetas (nível de entrada e recomendado) não se repetem.
+const facts = map.quick_facts.filter((f) => !/^(Requires character level|Recommended for characters level)/i.test(f));
+---
+<Base title={map.name} description={map.description ?? `${map.name}: monstros, NPCs e spots de farm em MU Online.`}>
+  <PageHead crumbs={[{ href: "/mapas/", label: "Mapas" }, ...(parent ? [{ href: `/mapas/${parent.id}/`, label: parent.name }] : []), { label: map.name }]}
+    title={map.name} image={map.image_url ?? thumb} wideImage lead={map.description}>
+    <ul class="chips">
+      {map.level_required != null && <li class="chip gold">Entrada: nível {fmt(map.level_required)}</li>}
+      {levels.min != null && <li class="chip">Monstros: nível {fmt(levels.min)}{levels.max != null && levels.max !== levels.min ? `–${fmt(levels.max)}` : "+"}</li>}
+      {listed.length > 0 && <li class="chip">{listed.length} monstros</li>}
+      {npcsHere.length > 0 && <li class="chip">{npcsHere.length} NPCs</li>}
+    </ul>
+  </PageHead>
+
+  {spotMapIds.includes(map.id) && (
+    <a class="spots-cta" href={spotsUrl(map.id)}>
+      {thumb && <img src={thumb} alt="" loading="lazy" />}
+      <span>
+        <strong>{spots.length > 0 ? `${spots.length} spots de farm` : "Mapa interativo"}</strong>
+        <span>{spots.length > 0 ? "Veja no mapa onde ficam, quantos monstros há em cada um e o que dropam →" : "Veja o mapa, portais e marcações →"}</span>
+      </span>
+    </a>
+  )}
+
+  {floors.length > 0 && (
+    <>
+      <h2>Andares</h2>
+      <ul class="chips">{floors.map((f) => <li><a class="chip" href={`/mapas/${f.id}/`}>{f.name}</a></li>)}</ul>
+    </>
+  )}
+
+  {facts.length > 0 && (
+    <>
+      <h2>Resumo</h2>
+      <div class="panel"><ul class="lines">{facts.map((f) => <li>{f}</li>)}</ul></div>
+    </>
+  )}
+
+  {listed.length > 0 && (
+    <>
+      <h2>Monstros</h2>
+      <div class="grid">
+        {listed.map((m) => (
+          <Card href={`/monstros/${m.id}/`} name={m.name} image={m.image_url}
+            detail={[m.level != null ? `nv ${fmt(m.level)}` : null, m.hp != null ? `HP ${fmt(m.hp)}` : null, spawnCount(m.id) ? `${fmt(spawnCount(m.id))} no mapa` : null].filter(Boolean).join(" · ")}>
+            {isBoss(m) && <small class="boss-line">Chefe</small>}
+          </Card>
+        ))}
+      </div>
+    </>
+  )}
+
+  {Object.entries(map.valued_drops).length > 0 && (
+    <>
+      <h2>Drops valiosos</h2>
+      <div class="cols">
+        {Object.entries(map.valued_drops).map(([group, lines]) => (
+          <div class="panel"><h3>{valuedGroupLabel(group)}</h3><ul class="lines">{lines.map((l) => <li>{l}</li>)}</ul></div>
+        ))}
+      </div>
+    </>
+  )}
+
+  {npcsHere.length > 0 && (
+    <>
+      <h2>NPCs</h2>
+      <div class="grid">
+        {npcsHere.map((n) => {
+          const loc = n.locations.find((l) => l.map_id === map.id);
+          return <Card href={`/npcs/${n.id}/`} name={n.name} image={n.image_url} detail={[npcTypeLabel(n.type), loc?.x != null ? `(${loc.x}, ${loc.y})` : null].filter(Boolean).join(" · ")} />;
+        })}
+      </div>
+    </>
+  )}
+  {connections.length > 0 && (
+    <>
+      <h2>Ligações</h2>
+      <ul class="chips">{connections.map((c) => <li><a class="chip" href={`/mapas/${c.id}/`}>{c.name}</a></li>)}</ul>
+    </>
+  )}
+</Base>
+<style>
+  .boss-line { color: #ffb44a !important; font-weight: 600; }
+</style>
