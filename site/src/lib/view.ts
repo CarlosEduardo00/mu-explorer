@@ -58,9 +58,9 @@ export const mapThumb = (map: GameMap): string | null =>
 // ---------------------------------------------------------------- de onde vem cada item
 
 export interface DropPlace { map: GameMap; spot: SpotRef | null }
-/** Um monstro que dropa o item: tabelas (Normal, Excellent...), mapas onde está (com o melhor spot de cada) e se a
- * informação vem só das listas de drop da Season 21 (servidor privado), e não das tabelas do jogo oficial. */
-export interface Dropper { monster: Monster; tables: string[]; places: DropPlace[]; s21Only: boolean }
+/** Um monstro que dropa o item: tabelas (Normal, Excellent...) e mapas onde está (com o melhor spot de cada).
+ * Os drops não mudam entre seasons: listas de outras seasons valem como as tabelas do jogo atual. */
+export interface Dropper { monster: Monster; tables: string[]; places: DropPlace[] }
 export interface Seller { npc: Npc; price: number | null; details: string | null; maps: { id: string; name: string }[] }
 export interface ItemSources { droppers: Dropper[]; sellers: Seller[]; notes: Acquisition[]; kinds: AcquisitionKind[]; dropMapIds: string[] }
 
@@ -96,7 +96,7 @@ export function itemSources(item: Item): ItemSources {
       .sort((a, b) => mapOrder(a) - mapOrder(b) || a.name.localeCompare(b.name))
       .map((map) => ({ map, spot: refs.find((r) => r.map_id === map.id) ?? null }));
     droppers.push({
-      monster, places, s21Only: list.every((d) => d.season === "S21"),
+      monster, places,
       tables: [...new Set(list.map((d) => dropTableLabel(d.table, d.kind)))],
     });
   }

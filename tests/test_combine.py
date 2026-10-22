@@ -143,7 +143,7 @@ def test_casamento_de_nomes_de_item_entre_fontes():
     assert resolve("Leather Gunner Helmet X")["id"] == "robust-helm"  # pelo nome do MuEmu
 
 
-def test_drops_do_gmo_so_completam_itens_sem_drop_do_fanz():
+def test_drops_do_gmo_completam_pares_que_o_fanz_nao_tem():
     from scrapers.combine import add_gmo_drops, expand_drop_lists
     lists = [{"map_name": "Devias", "source_url": "https://globalmuonline.com/drop/location/Devias",
               "scraped_at": "2026-10-22T11:11:23Z", "season": "S21",
@@ -157,5 +157,17 @@ def test_drops_do_gmo_so_completam_itens_sem_drop_do_fanz():
     new = [d for d in data["drop"] if d.get("source") == "gmo"]
     assert {(d["monster_id"], d["item_id"], d["map_id"]) for d in new} == {("worm", "kenaz-armor", "devias"), ("aegis", "kenaz-armor", "devias")}
     assert all(d["kind"] == "normal" and d["season"] == "S21" and "monster_name" not in d for d in new)
-    assert stats["drops do GMO não usados (o item já tem drop do Fanz)"] == 1
+    assert stats["drops do GMO já nas tabelas do Fanz"] == 1          # worm -> kris já vem do Fanz
     assert stats["drops do GMO com item que o site não tem"] == 1
+
+
+def test_drop_do_gmo_um_registro_por_par_e_mapa_pelos_spawns():
+    from scrapers.combine import add_gmo_drops, expand_drop_lists
+    lists = [{"map_name": name, "source_url": f"https://globalmuonline.com/drop/location/{name}", "scraped_at": "2026-10-22T11:11:23Z",
+              "season": "S21", "monsters": [{"name": "Worm", "items": ["Kenaz Armor"]}]} for name in ("Arena", "Devias")]
+    data = {"item": [fitem("Kenaz Armor", "normal")], "monster": [mon("worm", "Worm", 20)],
+            "map": [{"id": "devias"}, {"id": "arena"}], "drop": [], "spawn": [spawn("worm", "devias")]}
+    add_gmo_drops(data, expand_drop_lists(lists), {})
+    assert len(data["drop"]) == 1
+    # o monstro aparece em Devias (spawn): o mapa vem dos spawns e o registro fica sem map_id
+    assert data["drop"][0]["map_id"] is None
