@@ -193,8 +193,8 @@ servidor privado; o Fanz acompanha o global. Diferença aqui não é erro de par
 - spawns do MuEmu trocados: 1443
 - spawns do GMO: 991
 - mapas novos: 24
-- drops do GMO não usados (o item já tem drop do Fanz): 84932
 - drops do GMO com item que o site não tem: 16356
-- drops do GMO com monstro desconhecido: 304
-- drops do GMO (monstro -> item por mapa): 5350
-- itens com drop do GMO: 247
+- drops do GMO já nas tabelas do Fanz: 21242
+- drops do GMO com monstro desconhecido: 2047
+- drops do GMO (pares monstro -> item): 31194
+- itens com drop do GMO: 839

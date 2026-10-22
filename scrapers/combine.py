@@ -273,8 +273,14 @@ def add_gmo_drops(data: dict, drops: list[dict], to_id: dict[str, str], muemu_na
                 return slug
         return None
 
-    covered = {d["item_id"] for d in data["drop"]}
-    seen = set()
+    # Par monstro -> item que as tabelas do Fanz já trazem não se repete (o Fanz vem primeiro). Um registro por par:
+    # map_id fica null quando o monstro aparece (spawns) num dos mapas da lista (o site acha os mapas pelos spawns);
+    # senão, guarda o primeiro mapa da lista. Assim o drops.json fica bem abaixo dos 25 MB por arquivo do Cloudflare.
+    covered = {(d["monster_id"], d["item_id"]) for d in data["drop"]}
+    spawn_maps: dict[str, set[str]] = {}
+    for s in data.get("spawn", []):
+        spawn_maps.setdefault(s["monster_id"], set()).add(s["map_id"])
+    pairs: dict[tuple[str, str], dict] = {}
     out = []
     for d in drops:
         item = resolve_item(d["item_name"])
@@ -282,23 +288,26 @@ def add_gmo_drops(data: dict, drops: list[dict], to_id: dict[str, str], muemu_na
         if item is None:
             stats["drops do GMO com item que o site não tem"] += 1
             continue
-        if item["id"] in covered:
-            stats["drops do GMO não usados (o item já tem drop do Fanz)"] += 1
-            continue
         if mid is None:
             stats["drops do GMO com monstro desconhecido"] += 1
             continue
-        map_id = gmo_drop_map_id(d.get("map_name") or "", known_maps)
-        key = (mid, item["id"], map_id)
-        if key in seen:
+        if (mid, item["id"]) in covered:
+            stats["drops do GMO já nas tabelas do Fanz"] += 1
             continue
-        seen.add(key)
+        map_id = gmo_drop_map_id(d.get("map_name") or "", known_maps)
+        key = (mid, item["id"])
+        if key in pairs:
+            if map_id and map_id in spawn_maps.get(mid, set()):
+                pairs[key]["map_id"] = None
+            continue
         record = {k: v for k, v in d.items() if k not in ("monster_name", "map_name")}
-        record.update(monster_id=mid, item_id=item["id"], item_name=item["name"], map_id=map_id,
+        record.update(monster_id=mid, item_id=item["id"], item_name=item["name"],
+                      map_id=None if map_id in spawn_maps.get(mid, set()) else map_id,
                       kind=item["grade"] if item.get("grade") in ("normal", "excellent", "ancient", "socket") else "unknown")
+        pairs[key] = record
         out.append(record)
     data["drop"] = data["drop"] + out
-    stats["drops do GMO (monstro -> item por mapa)"] = len(out)
+    stats["drops do GMO (pares monstro -> item)"] = len(out)
     stats["itens com drop do GMO"] = len({r["item_id"] for r in out})
     return stats
 

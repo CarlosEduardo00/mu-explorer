@@ -71,7 +71,7 @@ const boss = isBoss(monster);
     const rows = rowsOf(table);
     return (
       <details class="drop-table" open={tableOrder(kind) < 3 || tables.length === 1}>
-        <summary><span class:list={["chip", `grade-${kind}`]}>{table}</span>{rows.every((d) => d.season === "S21") && <span class="chip s21" title="Lista de drop de servidor da Season 21: o jogo oficial pode ser diferente">S21</span>} <span class="muted small">{rows.length} itens</span></summary>
+        <summary><span class:list={["chip", `grade-${kind}`]}>{table}</span> <span class="muted small">{rows.length} itens</span></summary>
         <ul class="drop-list">
           {rows.map((d) => {
             const item = itemById.get(d.item_id);
@@ -100,5 +100,4 @@ const boss = isBoss(monster);
   .drop-list small { margin-left: auto; font-size: .72rem; white-space: nowrap; }
   .drop-list .name-cell { display: flex; }
   .notes { margin-top: 1rem; }
-  .chip.s21 { font-size: .7rem; padding: 0 .4rem; color: var(--muted); }
 </style>
