@@ -1,65 +1,100 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { monsters, spawnsByMonster, mapById, dropsByMonster, itemById, spotRefsByMonster, spotsUrl, fmt } from "../../lib/data";
+import PageHead from "../../components/PageHead.astro";
+import { monsters, spawnsByMonster, dropsByMonster, itemById, spotRefsByMonster, spotsUrl, fmt } from "../../lib/data";
+import { isBoss, monsterMaps, itemView } from "../../lib/view";
+import { dropTableLabel } from "../../lib/taxonomy";
 
 export function getStaticPaths() {
   return monsters.map((monster) => ({ params: { id: monster.id }, props: { monster } }));
 }
 const { monster } = Astro.props;
 const spawnList = spawnsByMonster.get(monster.id) ?? [];
-const mapIds = [...new Set(spawnList.map((s) => s.map_id))];
-const spots = (mapId: string) => spawnList.filter((s) => s.map_id === mapId && s.x != null);
+const mapsHere = monsterMaps(monster);
+const spawnCount = (mapId: string) => spawnList.filter((s) => s.map_id === mapId).reduce((n, s) => n + (s.count ?? 1), 0);
 const drops = dropsByMonster.get(monster.id) ?? [];
-const tables = [...new Set(drops.map((d) => d.table ?? d.kind))];
+// Tabelas na ordem: ancient, excellent, socket, normal (as raras primeiro).
+const tableOrder = (kind: string) => ({ ancient: 0, excellent: 1, socket: 2, normal: 3 } as Record<string, number>)[kind] ?? 4;
+const tables = [...new Map(drops.map((d) => [d.table ?? d.kind, d.kind])).entries()]
+  .sort((a, b) => tableOrder(a[1]) - tableOrder(b[1]) || a[0].localeCompare(b[0]));
 const respawn = monster.respawn_seconds != null
-  ? (monster.respawn_seconds >= 3600 ? `${monster.respawn_seconds / 3600} h` : `${monster.respawn_seconds} s`)
+  ? (monster.respawn_seconds >= 3600 ? `${fmt(monster.respawn_seconds / 3600)} h` : monster.respawn_seconds >= 60 ? `${fmt(Math.round(monster.respawn_seconds / 60))} min` : `${monster.respawn_seconds} s`)
   : monster.respawn_raw;
-const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+const statCells: [string, string][] = [
+  ["Nível", fmt(monster.level)], ["HP", fmt(monster.hp)],
+  ["Dano", monster.atk_min != null ? `${fmt(monster.atk_min)} ~ ${fmt(monster.atk_max)}` : "—"],
+  ["Taxa de ataque", fmt(monster.atk_rate)], ["Defesa", fmt(monster.def)], ["Taxa de defesa", fmt(monster.def_rate)],
+  ...(monster.elemental_def != null ? [["Defesa elemental", fmt(monster.elemental_def)] as [string, string]] : []),
+  ...(respawn ? [["Respawn", respawn] as [string, string]] : []),
+];
+const boss = isBoss(monster);
 ---
 <Base title={monster.name} description={`${monster.name}: atributos, onde aparece e drops em MU Online.`}>
-  <p class="crumbs"><a href="/monstros/">Monstros</a></p>
-  <h1>{monster.name}</h1>
-  {monster.image_url && <img class="hero-img" src={monster.image_url} alt={monster.name} loading="lazy" referrerpolicy="no-referrer" />}
-  <p class="muted">{monster.number != null && <>Nº {monster.number} · </>}{monster.difficulty != null && <>dificuldade {monster.difficulty}</>}</p>
+  <PageHead crumbs={[{ href: "/monstros/", label: "Monstros" }, ...(boss ? [{ href: "/monstros/?type=boss", label: "Chefes" }] : []), { label: monster.name }]}
+    title={monster.name} image={monster.image_url}>
+    <ul class="chips">
+      {boss && <li class="chip boss">Chefe</li>}
+      {monster.level != null && <li class="chip gold">Nível {fmt(monster.level)}</li>}
+      {mapsHere.slice(0, 4).map((m) => <li><a class="chip" href={`/mapas/${m.id}/`}>{m.name}</a></li>)}
+      {monster.drops_normal_items === false && <li class="chip">Não dropa itens normais</li>}
+    </ul>
+  </PageHead>
 
   <h2>Atributos</h2>
-  <dl class="facts">
-    <dt>Nível</dt><dd>{fmt(monster.level)}</dd>
-    <dt>HP</dt><dd>{fmt(monster.hp)}</dd>
-    <dt>Dano</dt><dd>{monster.atk_min != null ? `${fmt(monster.atk_min)} ~ ${fmt(monster.atk_max)}` : "—"}</dd>
-    <dt>Taxa de ataque</dt><dd>{fmt(monster.atk_rate)}</dd>
-    <dt>Defesa</dt><dd>{fmt(monster.def)}</dd>
-    <dt>Taxa de defesa</dt><dd>{fmt(monster.def_rate)}</dd>
-    {respawn && <><dt>Respawn</dt><dd>{respawn}</dd></>}
-  </dl>
+  <dl class="stats">{statCells.map(([k, x]) => <div><dt>{k}</dt><dd>{x}</dd></div>)}</dl>
 
-  {mapIds.length > 0 && (
+  {mapsHere.length > 0 && (
     <>
-      <h2>Onde aparece</h2>
-      <ul>
-        {mapIds.map((id) => {
-          const map = mapById.get(id);
-          const n = spots(id).length;
-          const refs = (spotRefsByMonster.get(monster.id) ?? []).filter((r) => r.map_id === id);
-          return <li>{map ? <a href={`/mapas/${id}/`}>{map.name}</a> : id}{n > 0 && <span class="muted"> · {plural(n, "ponto de spawn", "pontos de spawn")}</span>}
-            {refs.length > 0 && <span class="muted"> · spots {refs.map((r, i) => <>{i > 0 && ", "}<a href={spotsUrl(id, r.n)}>{r.n}</a> (×{r.count})</>)}</span>}</li>;
+      <h2>Onde farmar</h2>
+      <div class="where">
+        {mapsHere.map((m) => {
+          const refs = (spotRefsByMonster.get(monster.id) ?? []).filter((r) => r.map_id === m.id);
+          const n = spawnCount(m.id);
+          return (
+            <div class="panel where-map">
+              <h3><a href={`/mapas/${m.id}/`}>{m.name}</a>{n > 0 && <span class="muted small"> · {fmt(n)} no mapa</span>}</h3>
+              {refs.length > 0
+                ? <ul class="chips">{refs.map((r) => <li><a class="chip gold" href={spotsUrl(m.id, r.n)}>Spot {r.n} · ×{r.count}</a></li>)}</ul>
+                : <p class="muted small">Sem spot de farm marcado.</p>}
+            </div>
+          );
         })}
-      </ul>
+      </div>
     </>
   )}
 
-  {tables.length > 0 && <span id="drops"></span>}
-  {tables.map((table) => (
-    <>
-      <h2>{table}</h2>
-      <ul class="tags">
-        {drops.filter((d) => (d.table ?? d.kind) === table).map((d) => {
-          const item = itemById.get(d.item_id);
-          return <li>{item ? <a href={`/itens/${item.id}/`} class="name-cell">{item.image_url && <img class="thumb" src={item.image_url} alt="" loading="lazy" referrerpolicy="no-referrer" />}{d.item_name}</a> : d.item_name}</li>;
-        })}
-      </ul>
-    </>
-  ))}
-  {monster.notes.map((n) => <p class="muted">{n}</p>)}
+  {tables.length > 0 && <h2 id="drops">Drops <span class="muted small">({fmt(new Set(drops.map((d) => d.item_id)).size)})</span></h2>}
+  {tables.map(([table, kind]) => {
+    const rows = drops.filter((d) => (d.table ?? d.kind) === table);
+    return (
+      <details class="drop-table" open={tableOrder(kind) < 3 || tables.length === 1}>
+        <summary><span class:list={["chip", `grade-${kind}`]}>{dropTableLabel(table, kind)}</span> <span class="muted small">{rows.length} itens</span></summary>
+        <ul class="drop-list">
+          {rows.map((d) => {
+            const item = itemById.get(d.item_id);
+            return (
+              <li>
+                {item
+                  ? <a href={`/itens/${item.id}/`} class="name-cell">{item.image_url ? <img class="thumb" src={item.image_url} alt="" loading="lazy" /> : <span class="thumb"></span>}<span class:list={["gname", item.grade ? `grade-${item.grade}` : null]}>{d.item_name}</span><small class="muted">{itemView(item).kindLabel}</small></a>
+                  : <span class="name-cell"><span class="thumb"></span>{d.item_name}</span>}
+              </li>
+            );
+          })}
+        </ul>
+      </details>
+    );
+  })}
+  {monster.notes.length > 0 && <div class="panel notes">{monster.notes.map((n) => <p>{n}</p>)}</div>}
 </Base>
-
+<style>
+  .where { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr)); gap: .6rem; }
+  .where-map h3 { font-family: inherit; font-size: 1rem; letter-spacing: 0; }
+  .drop-table { margin: 0 0 .6rem; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: .5rem .75rem; }
+  .drop-table summary { cursor: pointer; display: flex; gap: .5rem; align-items: center; }
+  .drop-list { list-style: none; margin: .6rem 0 .2rem; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr)); gap: .25rem .75rem; }
+  .drop-list a, .drop-list .name-cell { color: var(--fg); text-decoration: none; min-width: 0; }
+  .drop-list a:hover .gname { text-decoration: underline; }
+  .drop-list small { margin-left: auto; font-size: .72rem; white-space: nowrap; }
+  .drop-list .name-cell { display: flex; }
+  .notes { margin-top: 1rem; }
+</style>

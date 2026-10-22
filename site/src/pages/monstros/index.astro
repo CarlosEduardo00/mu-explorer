@@ -1,20 +1,45 @@
 ---
 import Base from "../../layouts/Base.astro";
-import FilterList from "../../components/FilterList.astro";
-import { monsters, fmt } from "../../lib/data";
-const rows = monsters.map((m) => ({
-  href: `/monstros/${m.id}/`,
-  image: m.image_url,
-  cells: [m.name, fmt(m.level), fmt(m.hp), m.atk_min != null ? `${fmt(m.atk_min)} ~ ${fmt(m.atk_max)}` : "—", fmt(m.def)],
-  search: m.name.toLowerCase(),
-}));
+import Catalog from "../../components/Catalog.astro";
+import Card from "../../components/Card.astro";
+import { monsters, maps, fmt } from "../../lib/data";
+import { isBoss, monsterMaps, mapLevels } from "../../lib/view";
+
+const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+const rows = monsters.map((m) => ({ m, maps: monsterMaps(m), boss: isBoss(m) }));
+// Mapas na ordem de nível (os que têm monstros); variantes numeradas (Kalima 1..7) entram como o mapa pai.
+const mapIds = new Set(rows.flatMap((r) => r.maps.map((x) => x.parent_id ?? x.id)));
+const mapOptions = maps.filter((x) => mapIds.has(x.id))
+  .sort((a, b) => (mapLevels(a).min ?? 999) - (mapLevels(b).min ?? 999) || a.name.localeCompare(b.name))
+  .map((x) => ({ value: x.id, label: x.name }));
+const facets = [
+  { key: "type", label: "Tipo", options: [{ value: "normal", label: "Comuns" }, { value: "boss", label: "Chefes" }] },
+  { key: "map", label: "Mapa", options: mapOptions },
+];
+const sorts = [
+  { value: "level", label: "Nível (menor primeiro)", attr: "level", dir: 1 as const, numeric: true },
+  { value: "level-desc", label: "Nível (maior primeiro)", attr: "level", dir: -1 as const, numeric: true },
+  { value: "hp", label: "HP (maior primeiro)", attr: "hp", dir: -1 as const, numeric: true },
+  { value: "name", label: "Nome (A–Z)", attr: "name", dir: 1 as const },
+];
+rows.sort((a, b) => (a.m.level ?? 9999) - (b.m.level ?? 9999) || a.m.name.localeCompare(b.m.name));
 ---
-<Base title="Monstros">
+<Base title="Monstros" description="Monstros de MU Online: nível, HP, dano, defesa, onde aparecem e o que dropam." wide>
   <h1>Monstros</h1>
-  <FilterList
-    columns={[{ label: "Nome" }, { label: "Nível", num: true }, { label: "HP", num: true }, { label: "Dano", num: true }, { label: "DEF", num: true }]}
-    rows={rows}
-    placeholder="Filtrar por nome"
-    noun="monstros"
-  />
+  <p class="lead">Atributos, mapas e drops de cada monstro. Filtre pelo mapa ou pela faixa de nível para achar onde upar.</p>
+  <Catalog facets={facets} sorts={sorts} noun="monstros" placeholder="Buscar pelo nome (ex.: Yeti, Kundun)">
+    {rows.map(({ m, maps: ms, boss }) => {
+      const tokens = [`type:${boss ? "boss" : "normal"}`, ...new Set(ms.map((x) => `map:${x.parent_id ?? x.id}`))];
+      const detail = [m.level != null ? `nv ${fmt(m.level)}` : null, m.hp != null ? `HP ${fmt(m.hp)}` : null, ms[0]?.name].filter(Boolean).join(" · ") + (ms.length > 1 ? ` +${ms.length - 1}` : "");
+      return (
+        <Card href={`/monstros/${m.id}/`} name={m.name} image={m.image_url} detail={detail}
+          attrs={{ "data-cat": "", "data-q": norm(m.name), "data-f": tokens.join(" "), "data-name": m.name, "data-level": m.level != null ? String(m.level) : "", "data-hp": m.hp != null ? String(m.hp) : "" }}>
+          {boss && <small class="boss-line">Chefe</small>}
+        </Card>
+      );
+    })}
+  </Catalog>
 </Base>
+<style>
+  .boss-line { color: #ffb44a !important; font-weight: 600; }
+</style>

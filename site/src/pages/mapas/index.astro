@@ -1,15 +1,43 @@
 ---
 import Base from "../../layouts/Base.astro";
-import FilterList from "../../components/FilterList.astro";
-import { maps, spawnsByMap } from "../../lib/data";
-const rows = maps.map((m) => ({
-  href: `/mapas/${m.id}/`,
-  image: m.image_url,
-  cells: [m.name, (new Set((spawnsByMap.get(m.id) ?? []).map((s) => s.monster_id)).size || m.monsters.length).toLocaleString("pt-BR")],
-  search: m.name.toLowerCase(),
-}));
+import Catalog from "../../components/Catalog.astro";
+import { maps, spotsByMap, spawnsByMap, fmt } from "../../lib/data";
+import { mapLevels, mapThumb } from "../../lib/view";
+
+const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+// Andares numerados (Kalima 1..7, Abyss 2..3) ficam dentro da página do mapa pai.
+const rows = maps.filter((m) => !m.parent_id).map((m) => {
+  const lv = mapLevels(m);
+  const monsterCount = new Set([...(spawnsByMap.get(m.id) ?? []).map((s) => s.monster_id), ...m.monsters, ...m.special_monsters, ...m.bosses]).size;
+  return { m, lv, spots: spotsByMap.get(m.id)?.length ?? 0, monsterCount, thumb: mapThumb(m) };
+}).sort((a, b) => (a.lv.min ?? 9999) - (b.lv.min ?? 9999) || a.m.name.localeCompare(b.m.name));
+const facets = [
+  { key: "has", label: "Mostrar", options: [{ value: "spots", label: "Com spots de farm" }, { value: "npcs", label: "Com NPCs" }] },
+];
+const sorts = [
+  { value: "level", label: "Nível (menor primeiro)", attr: "level", dir: 1 as const, numeric: true },
+  { value: "name", label: "Nome (A–Z)", attr: "name", dir: 1 as const },
+  { value: "spots", label: "Mais spots", attr: "spots", dir: -1 as const, numeric: true },
+];
+const lvText = (lv: { min: number | null; max: number | null }) =>
+  lv.min == null ? null : `nv ${fmt(lv.min)}${lv.max != null && lv.max !== lv.min ? `–${fmt(lv.max)}` : "+"}`;
 ---
-<Base title="Mapas">
+<Base title="Mapas" description="Mapas de MU Online: nível recomendado, monstros, NPCs e spots de farm." wide>
   <h1>Mapas</h1>
-  <FilterList columns={[{ label: "Nome" }, { label: "Monstros", num: true }]} rows={rows} placeholder="Filtrar por nome" noun="mapas" />
+  <p class="lead">Do Lorencia aos mapas da última season, na ordem de nível. Cada mapa mostra monstros, NPCs, ligações e os spots de farm no mapa interativo.</p>
+  <Catalog facets={facets} sorts={sorts} noun="mapas" placeholder="Buscar mapa" levelLabel="Nível dos monstros" page={120}>
+    {rows.map(({ m, lv, spots, monsterCount, thumb }) => (
+      <a class="map-card" href={`/mapas/${m.id}/`} data-cat="" data-q={norm(m.name)} data-name={m.name} data-level={lv.min ?? ""} data-spots={spots}
+        data-f={[spots ? "has:spots" : "", m.npcs.length ? "has:npcs" : ""].filter(Boolean).join(" ")}>
+        <span class="map-card-img">{thumb ? <img src={thumb} alt="" loading="lazy" /> : <span class="ph"></span>}</span>
+        <span class="map-card-body">
+          <b>{m.name}</b>
+          <small>{[lvText(lv), monsterCount ? `${fmt(monsterCount)} monstros` : null, spots ? `${fmt(spots)} spots` : null].filter(Boolean).join(" · ") || "—"}</small>
+        </span>
+      </a>
+    ))}
+  </Catalog>
 </Base>
+<style is:global>
+  .cat-grid:has(.map-card) { grid-template-columns: repeat(auto-fill, minmax(min(12rem, 100%), 1fr)); }
+</style>

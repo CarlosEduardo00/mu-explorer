@@ -1,93 +1,126 @@
 ---
 import Base from "../../layouts/Base.astro";
 import { farmSpots, mapById, monsterById, spotsByMap, spotsUrl, fmt } from "../../lib/data";
+import { mapLevels, mapThumb } from "../../lib/view";
 
-// Mapas em ordem do spot de menor nível; dentro do mapa, spots por nível.
-const byMap = new Map<string, typeof farmSpots>();
-for (const s of [...farmSpots].sort((a, b) => (a.level_min ?? 0) - (b.level_min ?? 0) || a.id.localeCompare(b.id, "en", { numeric: true }))) {
-  const list = byMap.get(s.map_id) ?? [];
-  list.push(s);
-  byMap.set(s.map_id, list);
-}
-// Número do spot na página do mapa (mesma ordem de spotsByMap).
+// Mapas com spots, na ordem do spot de menor nível.
+const mapIds = [...spotsByMap.keys()].filter((id) => mapById.has(id));
+const mapRows = mapIds.map((id) => {
+  const map = mapById.get(id)!;
+  const spots = spotsByMap.get(id)!;
+  const lv = spots.flatMap((s) => [s.level_min, s.level_max]).filter((v): v is number => v != null);
+  return { map, spots, min: lv.length ? Math.min(...lv) : null, max: lv.length ? Math.max(...lv) : null, thumb: mapThumb(map), rec: mapLevels(map) };
+}).sort((a, b) => (a.min ?? 9999) - (b.min ?? 9999) || a.map.name.localeCompare(b.map.name));
 const spotNumber = (s: (typeof farmSpots)[number]) => (spotsByMap.get(s.map_id) ?? []).indexOf(s) + 1;
-const levelText = (s: (typeof farmSpots)[number]) =>
-  s.level_min == null ? "—" : s.level_min === s.level_max ? fmt(s.level_min) : `${fmt(s.level_min)}–${fmt(s.level_max)}`;
-const recommended = (mapId: string) => {
-  const m = mapById.get(mapId);
-  if (!m || m.level_recommended_min == null) return null;
-  return `recomendado nv ${fmt(m.level_recommended_min)}${m.level_recommended_max != null ? `–${fmt(m.level_recommended_max)}` : "+"}`;
-};
+const range = (min: number | null, max: number | null) => (min == null ? "—" : min === max ? fmt(min) : `${fmt(min)}–${fmt(max)}`);
+// Todos os spots (para o filtro por nível), do maior volume para o menor.
+const allSpots = farmSpots.filter((s) => mapById.has(s.map_id) && s.level_min != null).sort((a, b) => b.total - a.total);
 ---
-<Base title="Spots de farm" description="Onde upar em MU Online: grupos de monstros por mapa, com coordenadas e faixa de nível.">
+<Base title="Spots de farm" description="Onde upar em MU Online: hot spots por mapa, com volume de monstros, nível e drops." wide>
   <h1>Spots de farm</h1>
   <p class="lead">
-    Grupos de monstros próximos em cada mapa (hot spots), com coordenadas, volume e faixa de nível dos monstros.
-    Eventos ficam de fora.
-    Spot de farm bom depende também da classe, do equipamento e das taxas do servidor.
+    Grupos de monstros próximos em cada mapa. A cor mostra o volume comparado aos outros spots do mapa:
+    <span class="heat-tag heat-hot">hot</span> <span class="heat-tag heat-mid">mid</span> <span class="heat-tag heat-low">low</span>
+    e <span class="heat-tag heat-boss">boss</span> para chefes. Eventos ficam de fora.
   </p>
 
-  <div class="spot-filter">
-    <label>Seu nível <input id="char-level" type="number" min="1" step="1" inputmode="numeric" placeholder="ex.: 80" /></label>
-    <label>Níveis abaixo <input id="below" type="number" min="0" step="1" value="15" inputmode="numeric" /></label>
-    <label>Níveis acima <input id="above" type="number" min="0" step="1" value="5" inputmode="numeric" /></label>
+  <div class="panel level-box">
+    <label>Seu nível <input id="char-level" type="number" min="1" step="1" inputmode="numeric" placeholder="ex.: 120" /></label>
+    <label>Até quantos níveis abaixo <input id="below" type="number" min="0" step="1" value="15" inputmode="numeric" /></label>
+    <label>Até quantos acima <input id="above" type="number" min="0" step="1" value="5" inputmode="numeric" /></label>
+    <p class="muted small" id="spot-count">Digite seu nível para ver os melhores spots para upar.</p>
   </div>
-  <p class="count" id="spot-count">{fmt(farmSpots.length)} spots em {fmt(byMap.size)} mapas</p>
 
-  {[...byMap.entries()].map(([mapId, spots]) => (
-    <section class="spot-map-section" data-map>
-      {mapById.get(mapId)?.image_url && <img class="spot-map-thumb" src={mapById.get(mapId)?.image_url} alt="" loading="lazy" />}
-      <h2><a href={spotsUrl(mapId)}>{spots[0].map_name}</a>{recommended(mapId) && <span class="rec"> · {recommended(mapId)}</span>}</h2>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Spot</th><th>Coordenadas</th><th class="num">Nível</th><th>Monstros</th></tr></thead>
-          <tbody>
-            {spots.map((s) => (
-              <tr data-min={s.level_min ?? ""} data-max={s.level_max ?? ""}>
-                <td><a href={spotsUrl(mapId, spotNumber(s))}>spot {spotNumber(s)}</a> <span class={`heat-tag heat-${s.heat ?? "mid"}`}>x{s.total}</span></td>
-                <td>{s.x}, {s.y}<span class="muted"> ({s.x_min},{s.y_min})–({s.x_max},{s.y_max})</span></td>
-                <td class="num">{levelText(s)}</td>
-                <td>{s.monsters.map((m, i) => <>{i > 0 && ", "}<a href={`/monstros/${m.monster_id}/`} class="name-cell">{monsterById.get(m.monster_id)?.image_url && <img class="thumb" src={monsterById.get(m.monster_id)?.image_url} alt="" loading="lazy" />}{m.name}</a> ×{m.count}</>)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  ))}
+  <section id="best" hidden>
+    <h2>Melhores spots para o seu nível</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Spot</th><th class="num">Monstros</th><th class="num">Nível</th><th>Quem tem lá</th></tr></thead>
+        <tbody>
+          {allSpots.map((s) => (
+            <tr data-min={s.level_min} data-max={s.level_max} hidden>
+              <td><a href={spotsUrl(s.map_id, spotNumber(s))}>{mapById.get(s.map_id)!.name} · spot {spotNumber(s)}</a> <span class={`heat-tag heat-${s.heat ?? "mid"}`}>{s.heat ?? "mid"}</span></td>
+              <td class="num">{fmt(s.total)}</td>
+              <td class="num">{range(s.level_min, s.level_max)}</td>
+              <td>{s.monsters.map((m, i) => <>{i > 0 && ", "}<a href={`/monstros/${m.monster_id}/`} class="name-cell">{monsterById.get(m.monster_id)?.image_url && <img class="thumb" src={monsterById.get(m.monster_id)?.image_url} alt="" loading="lazy" />}{m.name}</a> ×{m.count}</>)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="muted small" id="best-more" hidden></p>
+  </section>
+
+  <h2>Mapas</h2>
+  <div class="grid spot-maps">
+    {mapRows.map(({ map, spots, min, max, thumb }) => (
+      <a class="map-card" href={spotsUrl(map.id)} data-map-min={min ?? ""} data-map-max={max ?? ""}>
+        <span class="map-card-img">{thumb ? <img src={thumb} alt="" loading="lazy" /> : <span class="ph"></span>}</span>
+        <span class="map-card-body">
+          <b>{map.name}</b>
+          <small>{fmt(spots.length)} spots · nv {range(min, max)}</small>
+          <small class="fit" hidden></small>
+        </span>
+      </a>
+    ))}
+  </div>
 </Base>
 
-<style>
-  .spot-filter { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; margin: 1rem 0 .25rem; }
-  .spot-filter label { display: flex; flex-direction: column; gap: .2rem; font-size: .85rem; color: var(--muted); }
-  .spot-filter input { font: inherit; width: 7rem; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: .4rem; padding: .4rem .6rem; }
-  td .muted { font-size: .8rem; }
-  .rec { font-size: .85rem; font-weight: 400; color: var(--muted); }
-  .spot-map-thumb { display: block; width: 100%; max-height: 9rem; object-fit: cover; border-radius: .5rem; margin-top: 2rem; }
-  .spot-map-thumb + h2 { margin-top: .5rem; }
+<style is:global>
+  .level-box { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; align-items: flex-end; }
+  .level-box label { display: flex; flex-direction: column; gap: .2rem; font-size: .8rem; color: var(--muted); }
+  .level-box input { width: 8rem; }
+  .level-box p { flex-basis: 100%; margin: 0; }
+  .map-card-body .fit { color: var(--g-excellent); font-weight: 600; }
+  .spot-maps { grid-template-columns: repeat(auto-fill, minmax(min(12rem, 100%), 1fr)); }
+  .map-card.dim { opacity: .35; }
 </style>
 
 <script>
   const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
-  const rows = [...document.querySelectorAll<HTMLTableRowElement>("tr[data-min]")];
-  const sections = [...document.querySelectorAll<HTMLElement>("[data-map]")];
-  const count = document.getElementById("spot-count") as HTMLElement;
-  const total = rows.length;
+  const rows = [...document.querySelectorAll<HTMLTableRowElement>("#best tr[data-min]")];
+  const cards = [...document.querySelectorAll<HTMLAnchorElement>("[data-map-min]")];
+  const best = document.getElementById("best")!;
+  const more = document.getElementById("best-more")!;
+  const count = document.getElementById("spot-count")!;
+  const LIMIT = 25;
+  const fits = (min: number, max: number, level: number, below: number, above: number) => max >= level - below && min <= level + above;
 
   function apply() {
     const level = Number($("char-level").value);
     const below = Math.max(0, Number($("below").value) || 0);
     const above = Math.max(0, Number($("above").value) || 0);
-    let shown = 0;
+    best.hidden = !level;
+    let shown = 0, total = 0;
+    const perMap = new Map<string, number>();
     for (const row of rows) {
-      const min = Number(row.dataset.min), max = Number(row.dataset.max);
-      // Spot serve se algum monstro dele está na faixa [nível - abaixo, nível + acima].
-      const ok = !level || (row.dataset.min !== "" && max >= level - below && min <= level + above);
-      row.hidden = !ok;
-      if (ok) shown++;
+      const ok = !!level && fits(Number(row.dataset.min), Number(row.dataset.max), level, below, above);
+      if (ok) {
+        total++;
+        const href = row.querySelector("a")!.getAttribute("href")!.split("#")[0];
+        perMap.set(href, (perMap.get(href) ?? 0) + 1);
+      }
+      row.hidden = !ok || shown >= LIMIT;
+      if (ok && shown < LIMIT) shown++;
     }
-    for (const section of sections) section.hidden = !section.querySelector("tr[data-min]:not([hidden])");
-    count.textContent = level ? `${shown.toLocaleString("pt-BR")} de ${total.toLocaleString("pt-BR")} spots para o nível ${level}` : `${total.toLocaleString("pt-BR")} spots`;
+    more.hidden = total <= LIMIT;
+    more.textContent = `Mostrando os ${LIMIT} spots com mais monstros de ${total.toLocaleString("pt-BR")}. Veja todos no mapa de cada um.`;
+    for (const card of cards) {
+      const n = perMap.get(card.getAttribute("href")!) ?? 0;
+      card.classList.toggle("dim", !!level && n === 0);
+      const fit = card.querySelector<HTMLElement>(".fit")!;
+      fit.hidden = !level || n === 0;
+      fit.textContent = `${n} ${n === 1 ? "spot" : "spots"} no seu nível`;
+    }
+    count.textContent = level
+      ? `${total.toLocaleString("pt-BR")} spots com monstros entre o nível ${Math.max(1, level - below)} e ${level + above}.`
+      : "Digite seu nível para ver os melhores spots para upar.";
+    const p = new URLSearchParams(location.search);
+    if (level) p.set("nivel", String(level)); else p.delete("nivel");
+    history.replaceState(null, "", p.toString() ? `?${p}` : location.pathname);
   }
+  const initial = new URLSearchParams(location.search).get("nivel");
+  if (initial) $("char-level").value = initial;
   for (const id of ["char-level", "below", "above"]) $(id).addEventListener("input", apply);
+  apply();
 </script>
