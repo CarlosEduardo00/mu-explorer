@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/carloseduardo00/mu-explorer/schema/farm_spot.schema.json",
   "title": "FarmSpot",
-  "description": "Spot de farm: grupo de spawns próximos no mesmo mapa (gerado por scrapers/spots.py a partir das coordenadas da fonte).",
+  "description": "Spot de farm: spot publicado pelo Guide MU Online ou grupo de spawns próximos do MuEmu (scrapers/spots.py).",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -37,6 +37,13 @@
     "map_name": {
       "type": "string",
       "minLength": 1
+    },
+    "zone": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Zona do mapa (andar, área) quando a fonte divide o mapa, ex.: \"Atlans 2\"."
     },
     "x": {
       "type": "integer",
@@ -88,8 +95,12 @@
             ]
           },
           "count": {
-            "type": "integer",
-            "minimum": 1
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1,
+            "description": "null quando a fonte só dá o total do spot (guia com mais de um monstro no spot)."
           }
         }
       }

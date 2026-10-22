@@ -1,17 +1,26 @@
 import type { APIRoute } from "astro";
 import { maps, terrainByMap, spotsByMap } from "../../../lib/data";
+import { rot, ROTATE, fitBox, pathPoints } from "../../../lib/mapview";
 
-// Miniatura vetorial do mapa (terreno + spots), usada nos cartões de mapas e de spots. Só para mapas com terreno.
+// Miniatura vetorial do mapa (terreno + spots) na orientação do minimapa do jogo (girado 45°), usada nos cartões de
+// mapas e de spots. Só para mapas com terreno.
 export function getStaticPaths() {
   return maps.filter((m) => terrainByMap.has(m.id)).map((m) => ({ params: { id: m.id } }));
 }
-const HEAT: Record<string, string> = { hot: "#ef4444", mid: "#facc15", low: "#f1f5f9", boss: "#f59e0b" };
+const HEAT: Record<string, string> = { hot: "#fbbf24", mid: "#2dd4bf", low: "#9aa6b8", boss: "#fb7185" };
 export const GET: APIRoute = ({ params }) => {
   const t = terrainByMap.get(params.id as string)!;
   const spots = spotsByMap.get(params.id as string) ?? [];
-  const dots = spots.map((s) => `<circle cx="${s.y}" cy="${s.x}" r="${Math.min(7, 3.5 + Math.sqrt(s.total) / 3).toFixed(1)}" fill="${HEAT[s.heat ?? "mid"]}" stroke="#111" stroke-width=".8"/>`).join("");
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="#0b0d12"/>`
-    + `<path d="${t.land}" fill="#2b2f3a" fill-rule="evenodd"/><path d="${t.walk}" fill="#c9c3a8" fill-rule="evenodd"/>`
-    + `<path d="${t.safe}" fill="#6fa8dc" fill-opacity=".55" fill-rule="evenodd"/>${dots}</svg>`;
+  const box = fitBox(pathPoints(t.walk || t.land), 4, 48) ?? { x: -53, y: -53, size: 362 };
+  const r = (box.size / 100).toFixed(2);
+  const dots = spots.map((s) => {
+    const [u, v] = rot(s.x, s.y);
+    return `<rect x="${(u - 1.4 * Number(r)).toFixed(1)}" y="${(v - 1.1 * Number(r)).toFixed(1)}" width="${(2.8 * Number(r)).toFixed(1)}" height="${(2.2 * Number(r)).toFixed(1)}" rx="${(0.5 * Number(r)).toFixed(1)}" fill="${HEAT[s.heat ?? "mid"]}" stroke="#0b0d12" stroke-width="${(0.35 * Number(r)).toFixed(2)}"/>`;
+  }).join("");
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${box.x.toFixed(1)} ${box.y.toFixed(1)} ${box.size.toFixed(1)} ${box.size.toFixed(1)}">`
+    + `<rect x="-1000" y="-1000" width="2256" height="2256" fill="#0c0e12"/><g transform="${ROTATE}">`
+    + `<path d="${t.walk}" fill="#3b414e" stroke="#9aa3b5" stroke-opacity=".6" stroke-width="${(box.size / 400).toFixed(2)}" fill-rule="evenodd"/>`
+    + (t.safe ? `<path d="${t.safe}" fill="#38bdf8" fill-opacity=".22" fill-rule="evenodd"/>` : "")
+    + `</g>${dots}</svg>`;
   return new Response(svg, { headers: { "Content-Type": "image/svg+xml" } });
 };

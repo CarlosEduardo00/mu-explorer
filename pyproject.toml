@@ -11,6 +11,8 @@ dependencies = [
     "requests>=2.31",
     "selectolax>=0.3.21",
     "jsonschema>=4.20",
+    "numpy>=1.26",       # terreno estimado das imagens 3D do GMO (scrapers.terrain)
+    "pillow>=10",
 ]
 
 [project.optional-dependencies]

@@ -30,12 +30,16 @@ python -m scrapers.combine                           # Fanz + MuEmu -> data/proc
 python -m scrapers.planner fetch                     # guias de classe + Stat Planner do Fanz (14 páginas, ~15 s)
 python -m scrapers.planner build                     # data/raw -> data/curated/planner.json (regras de classes)
 python -m scrapers.planner builds                    # -> data/curated/builds.json (builds prontas, só do servidor oficial)
-python -m scrapers.spots [--set combined]            # spawns -> data/processed/<conjunto>/farm_spots.json (spots de farm)
+python -m scrapers.spots [--set combined]            # spots de farm -> data/processed/<conjunto>/farm_spots.json
+                                                     #    (combined: spots do Guide MU Online + spot_groups.json = barra de mapas)
 python -m scrapers.gmo fetch                         # guias do Global MU Online (sitemap, 210 páginas, ~4 min)
 python -m scrapers.gmo fetch-drops                   # listas de drop por mapa do GMO (/drop/location, 111 páginas, ~2 min)
 python -m scrapers.gmo parse                         # -> data/processed/gmo/ (mapas, monstros c/ imagem, spawns, marcadores,
                                                      #    drop_lists.json = mapa -> monstro -> itens, formato compacto)
-python -m scrapers.terrain                           # terreno do MuEmu (.att) -> data/processed/terrain/terrains.json (mapas vetoriais)
+python -m scrapers.guidemu fetch                     # Guide MU Online: JS com mapas/spots/monstros + 70 imagens de mapa (~1,5 min)
+python -m scrapers.guidemu parse                     # -> data/processed/guidemu/ (monsters, spots, groups, map_images)
+python -m scrapers.terrain                           # terreno (.att do MuEmu; imagens do guia nos mapas sem .att)
+                                                     #    -> data/processed/terrain/terrains.json (mapas vetoriais)
 python -m scrapers.media list|fetch                  # imagens usadas pelo site -> site/public/media/ + data/media.json (1 req/s)
 ```
 
@@ -54,8 +58,8 @@ SITE_DATA=muemu npm run dev       # build só com dados de licença aberta (MuEm
 ```
 
 **Dados no site:** o site lê `data/processed/<conjunto>/*.json` em tempo de build (`site/src/lib/data.ts`).
-O padrão é `combined` (Fanz + MuEmu + Global MU Online), que é o que hml e prod publicam: **o dono do projeto
-obteve autorização para publicar o conteúdo do Fanz e do GMO (out/2026)**. Dar sempre crédito às fontes (rodapé,
+O padrão é `combined` (Fanz + MuEmu + Global MU Online + Guide MU Online), que é o que hml e prod publicam: **o dono
+do projeto obteve autorização para publicar o conteúdo do Fanz, do GMO e do Guide MU Online (out/2026)**. Dar sempre crédito às fontes (rodapé,
 campo `credit` de `sources.json`): **a referência às fontes fica só no rodapé do site** (páginas, planner e `/api/`
 não citam fontes; os dados guardam `source`/`source_url` como procedência). As imagens são servidas por nós: cópias
 em `site/public/media/` (`python -m scrapers.media fetch`), ligadas pela URL original em `data/media.json`;
@@ -88,25 +92,28 @@ scrapers/muemu/    source.py (vocabulário, fórmula de requisitos), parse.py, c
 scrapers/combine.py  cruzamento Fanz + MuEmu (Fanz é a base; MuEmu só preenche campos vazios)
 scrapers/planner/  build.py: regras de classes (pontos por nível, base, evolução) -> data/curated/planner.json
 scrapers/gmo/      cli.py (fetch pelo sitemap), parse.py (guias de mapa: zonas de spawn, cards, marcadores)
-scrapers/terrain.py  mapas vetoriais: terreno .att do MuEmu -> contornos SVG (chão, obstáculos, zona segura)
+scrapers/guidemu/  bundle.py (JS do site: tabela de chunks ofuscada, JSON em string), cli.py, parse.py, places.py
+                   (mapa/zona do guia -> mapa do site)
+scrapers/terrain.py  mapas vetoriais: terreno .att do MuEmu (ou imagens do guia) -> contornos SVG (chão, zona segura)
 scrapers/media.py  cópia local das imagens do site (site/public/media + data/media.json)
-scrapers/spots.py  spots de farm: agrupa spawns por região (grade 32×32) -> farm_spots.json (não copia guias)
+scrapers/spots.py  spots de farm: os do Guide MU Online; fora dele, agrupa spawns do MuEmu -> farm_spots.json
 data/curated/      arquivos curados por nós (hoje só planner.json), commitados
 docs/              rascunhos e notas (ex.: pedido de acesso ao muonline.us)
 schema/            JSON Schema (draft 2020-12) de cada entidade publicada
 data/raw/          HTML bruto + .meta.json por página (fora do git)
 data/processed/    JSON normalizado por fonte + poc_report.md
 tests/             testes; tests/fixtures/<fonte>/ guarda HTML real usado como fixture
-site/src/          Astro: layouts/Base (tema escuro com dourado, Cinzel em public/fonts, busca global com /data/search.json),
+site/src/          Astro: layouts/Base (tema escuro com dourado, Cinzel nos títulos e Source Sans 3 no texto em public/fonts, busca global com /data/search.json),
                    components/ Catalog (lista com facetas, faixa de nível, ordenação e estado no endereço), Card,
-                   PageHead (cabeçalho padrão de registro), MapExplorer (mapa interativo: mapa vetorial próprio, hot
-                   spots com cor e volume, painel com monstros, atributos e drops, camadas de spots do minimapa do jogo,
-                   portais e imagem do minimapa); lib/data.ts (leitura dos JSON), lib/taxonomy.ts (vocabulário em
+                   PageHead (cabeçalho padrão de registro), SpotBar (barra de mapas da área de spots, ordem do guia),
+                   MapExplorer (mapa interativo na orientação do minimapa do jogo, girado 45°: terreno vetorial, abas
+                   das zonas/andares, etiquetas com a quantidade de monstros, zoom/arrasto/pinça, painel com lista e
+                   detalhe do spot, portais); lib/mapview.ts (giro e enquadramento, com testes); lib/data.ts (leitura dos JSON), lib/taxonomy.ts (vocabulário em
                    português: categorias de item por grupo/tipo, qualidades, famílias de classe, atributos, tabelas de
                    drop, tipos de NPC; com testes), lib/view.ts (taxonomia aplicada aos dados), lib/planner.ts (lógica
                    pura do planner + testes), pages/ (início, itens, monstros, mapas, npcs: catálogo + página por
-                   registro; mapas/<id>/mapa.svg = miniatura vetorial; spots/ = área separada: busca por nível e
-                   spots/<mapa>/ com o mapa interativo; builds/ = builds prontas do oficial para seguir (proporção,
+                   registro; mapas/<id>/mapa.svg = miniatura vetorial; spots/ = área separada: mapas em
+                   cartões com as subcategorias e spots/<mapa>/ (?zona=...) com o mapa interativo; builds/ = builds prontas do oficial para seguir (proporção,
                    skills por nível, atributos por nível, sets de mastery por nível, vídeos); planner/; data/ = JSON
                    estático; api/ = API estática)
                    lib/api.ts + lib/sqlite.ts: manifesto, registros com relações e SQLite (node:sqlite)
@@ -264,7 +271,25 @@ o que foi mapeado antes do bloqueio.
   nome do MuEmu, ou difflib ≥ 0,9 com a mesma última palavra).
 - muonline.fandom.com responde com desafio anti-bot da Cloudflare: não coletamos.
 
-### 5. Outras (referência, não prioritárias)
+### 5. Guide MU Online (guidemuonline.com) — spots, mapas e monstros do MU oficial
+- Guia do MU Online **oficial**; publicação autorizada pelo dono (out/2026). robots.txt libera tudo (só o sitemap).
+- Site em React: não há HTML com dados. Mapas (43, com zonas: andares e áreas) e monstros (331) vêm embutidos como JSON
+  em strings dos chunks JS (`static/js/<id>.<hash>.chunk.js`). O `main.js` é ofuscado (javascript-obfuscator): a tabela
+  id -> hash sai da tabela de strings rotacionada, usando 'static/js/' e '.chunk.js' como âncoras (`bundle.py`). Os ids
+  8413 (mapas) e 4972 (monstros) são tentados primeiro; se mudarem, o fetch varre os chunks (1 req/s).
+- Spot: coordenada, `cantidadmobs` (quantidade de monstros, 3 a 10), `tipo` low/medium/high (-> heat low/mid/hot) e os
+  monstros; a quantidade de cada monstro só existe com um monstro no spot (`count` null quando há mais de um).
+- Imagens de spots (Firebase Storage do site): o minimapa do jogo, girado 45°, fundo transparente. A transformação
+  coordenada -> posição na imagem sai dos spots de cada imagem (rotação + escala + espelho; erro < 1,5% em quase todas;
+  Kanturu Ruins 1 não fecha e fica de fora). Usadas para o terreno dos mapas sem .att (Aida, Temple of Arnil, Gray Aida,
+  Swamp of Peace, Kethotum, Ignis...) e para enquadrar cada zona (`frame`).
+- Zonas: área do mesmo mapa (Atlans 1/2/3, Lost Tower 1..7, Aida 1/2, Alkamar e Ubaid em Acheron) vira `zone` no spot;
+  zona que é mapa próprio no site (Kalima 1..7, andares do Deep Dungeon, Atlans Abyss 1..3, Karutan 1/2, Debenter, Nars,
+  Uruk) vira o mapa (`places.py`, conferido contra o terreno do MuEmu). Nos mapas que o guia cobre, os spots dele
+  substituem os gerados dos spawns; os spawns do GMO não geram spots (a quantidade de lá não vale para o oficial).
+- O guia também tem uma aba de guias (ainda não coletada).
+
+### 6. Outras (referência, não prioritárias)
 muonline.fandom.com (MediaWiki, `/api.php`, cobertura parcial), StrategyWiki (antiga),
 wiki.infinitymu.net e info.topmuonline.net (servidores privados), globalmuonline.com/drop
 (Season 19/21).
@@ -283,14 +308,19 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 - `map`: id, name, parent_id, description, quick_facts, valued_drops, monsters, special_monsters, bosses,
   npcs, connections, notes, image_url. `npc`: id, name, type, locations (map_id, x, y), description, sells
   (item, categoria, preço em Zen, detalhes). `spawn`: monster_id, map_id, kind, x, y, x2, y2, radius, count.
-  `farm_spot`: id, map_id, centro (x, y), área (x_min..y_max), monsters (id, nome, nível, quantidade), total,
-  level_min/max e `heat` (gerado por `scrapers.spots`: spawns a até 10 casas viram um spot de no máximo 24×24;
-  eventos e monstros dourados ficam de fora). `heat`: boss (tem chefe: bosses do mapa ou respawn ≥ 1 h), senão
-  hot (≥ 1,5 × a mediana de monstros dos spots do mapa), low (≤ 0,75 ×) ou mid — os "hot spots" do mapa interativo.
-- Terreno (`data/processed/terrain/terrains.json`): por mapa, caminhos SVG `land`/`walk`/`safe` gerados dos .att do
-  MuEmu (grade 256×256, índice y×256+x; flags 1 = zona segura, 4 = bloqueado, 8 = fora do mapa). O pareamento arquivo →
-  mapa (`scrapers/terrain.py: FILES`) foi conferido contra os spawns (Aida e Kanturu Ruins da S21 mudaram: ficam com a
-  imagem do minimapa). É o fundo padrão do mapa interativo; a imagem do minimapa vira camada opcional.
+  `farm_spot`: id, map_id, zone (andar/área do mapa ou null), centro (x, y), área (x_min..y_max), monsters (id, nome,
+  nível, quantidade ou null), total, level_min/max e `heat` (gerado por `scrapers.spots`). Do Guide MU Online: um por
+  spot do guia, heat pelo tipo (low/medium/high -> low/mid/hot; boss quando tem chefe), área de 7 × 7 em volta do ponto.
+  Fora do guia, spawns do MuEmu a até 10 casas viram um spot de no máximo 24×24 (eventos e dourados de fora); heat:
+  boss (bosses do mapa ou respawn ≥ 1 h), hot (≥ 1,5 × a mediana do mapa), low (≤ 0,75 ×) ou mid. No site, o heat vira
+  "Monstros no spot: Alto / Médio / Baixo / Chefe" (`heatLabel`). `spot_groups.json` (combined): grupos do guia
+  (id, name, level, entries: label, map_id, zone, frame) = a barra de mapas e as subcategorias.
+- Terreno (`data/processed/terrain/terrains.json`): por mapa, `source` e caminhos SVG `land`/`walk`/`safe` gerados dos
+  .att do MuEmu (grade 256×256, índice y×256+x; flags 1 = zona segura, 4 = bloqueado, 8 = fora do mapa). O pareamento
+  arquivo → mapa (`scrapers/terrain.py: FILES`) foi conferido contra os spawns. Mapas sem .att (ou que mudaram, como
+  Aida) usam as imagens do Guide MU Online (chão = pixel opaco; sem zona segura). O site só usa o terreno das fontes do
+  conjunto (o build `muemu` fica com o do MuEmu). No mapa interativo o desenho é girado 45° (orientação do minimapa do
+  jogo, como no guia): só o chão (`walk`, cinza com contorno claro) e a zona segura; `land` não é pintado.
   `drop`: monster_id, item_id, item_name, map_id (null quando a tabela vale para o monstro em qualquer mapa), kind
   (normal/excellent/ancient/socket/unknown), table, category, quantity, rate (null se a fonte não informa).
   Um drop do Fanz significa "o monstro pode dropar este item"; não há taxa.
@@ -345,7 +375,8 @@ justamente em Gun Crusher e Slayer; precisam de outra fonte ou de conferência n
    `v1` é a versão do formato; a versão dos dados (conjunto, season, revisão de cada fonte) fica no manifesto
    `/api/v1/index.json` e na tabela `meta` do SQLite. Mudança incompatível de formato vira `/api/v2/`.
 5. Site: páginas de itens, mobs e spots; builds com curadoria manual. Spots ficam numa área própria
-   (`/spots/<mapa>/#spot-N`); a página do mapa só leva até lá. "Onde dropa" do item mostra, para cada monstro, o
+   (`/spots/<mapa>/?zona=<zona>#spot-N`), com a barra de mapas na ordem do guia e as zonas/andares como subcategorias
+   (pedido do dono: sem busca de spot por nível); a página do mapa só leva até lá. "Onde dropa" do item mostra, para cada monstro, o
    spot com mais dele (para farmar até dropar): uma linha por monstro e mapa (relação direta item → monstro → mapa →
    spot), quem vende (NPCs) e as frases de "como conseguir" das notas do item, traduzidas por `acquisitionNotes`
    (loja de cash, combinação, evento, missão...). A lista de itens filtra por "Como conseguir" e "Dropa em" (mapa).

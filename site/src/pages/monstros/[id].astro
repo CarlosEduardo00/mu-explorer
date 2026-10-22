@@ -57,7 +57,7 @@ const boss = isBoss(monster);
             <div class="panel where-map">
               <h3><a href={`/mapas/${m.id}/`}>{m.name}</a>{n > 0 && <span class="muted small"> · {fmt(n)} no mapa</span>}</h3>
               {refs.length > 0
-                ? <ul class="chips">{refs.map((r) => <li><a class="chip gold" href={spotsUrl(m.id, r.n)}>Spot {r.n} · ×{r.count}</a></li>)}</ul>
+                ? <ul class="chips">{refs.map((r) => <li><a class="chip gold" href={spotsUrl(m.id, r.n)}>Spot {r.n} · {r.shared ? `${r.count} no spot` : `×${r.count}`}</a></li>)}</ul>
                 : <p class="muted small">Sem spot de farm marcado.</p>}
             </div>
           );

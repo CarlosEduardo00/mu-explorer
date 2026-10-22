@@ -76,3 +76,22 @@ test("como conseguir: frases das notas viram texto em português", async () => {
   assert.equal(out[2].text, "Combinação: a Jewel of Creation + a Jewel of Chaos na Chaos Goblin Machine.");
   assert.ok(out.every((a) => a.translated));
 });
+
+test("marcadores do mapa em português", async () => {
+  const { markerText } = await import("./taxonomy.ts");
+  const t = (kind: string, name: string, description: string) => markerText({ kind, name, description });
+  assert.deepEqual(t("gate", "Lorencia entrance", "Level 10+ required. Gate at 150,6 – 153,7; you arrive at Lorencia 213,244."),
+    { title: "Portal para Lorencia", detail: "nível 10+ · chega em (213, 244)", dest: "Lorencia" });
+  assert.equal(t("gate", "Deep Dungeon 2 entrance", "Level 400+ required. Gate at 130,130 – 131,131; you arrive at Deep Dungeon 2 131,128.").title,
+    "Portal para Deep Dungeon 2");
+  assert.deepEqual(t("gate", "Portal 1", "Step on 139,125 – 139,126 and you come out at 189,190."),
+    { title: "Portal 1", detail: "leva a (189, 190)", dest: null });
+  assert.equal(t("gate", "Devias entrance", "Level 10+ required. Far left tip of the map. Leads to Devias (level 10+).").title, "Portal para Devias");
+  assert.equal(t("gate", "Exit to Tarkan", "Walk into this strip to go back to Tarkan (arrive at Tarkan 10 20).").title, "Saída para Tarkan");
+  assert.deepEqual(t("warp", "Warp arrival: Noria", "Where the warp menu drops you for “Noria” (2,000 Zen, level 1)."),
+    { title: "Chegada do warp", detail: "warp: 2.000 Zen, nível 1+", dest: null });
+  assert.equal(t("warp", "Arrival from Atlans", "Where the gate from Atlans (50 level 50) puts you.").title, "Chegada vindo de Atlans");
+  assert.deepEqual(t("spot", "Goblin (minimap)", "Goblin spot as marked on the in-game minimap."),
+    { title: "Spot do minimapa do jogo", detail: "Goblin", dest: null });
+  assert.equal(t("hot_spot", "Minimap HOT SPOT", "Marked as a hot spot on the in-game minimap.").detail, null);
+});

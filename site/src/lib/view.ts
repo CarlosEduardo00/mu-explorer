@@ -4,7 +4,7 @@
  */
 import {
   items, monsters, maps, npcs, rulesets, spawnsByMonster, spotsByMap, mapById, monsterById, terrainByMap, dropsByItem,
-  spotRefsByMonster, type Item, type Monster, type GameMap, type Npc, type SpotRef,
+  spotRefsByMonster, spotGroups, spotMapIds, type Item, type Monster, type GameMap, type Npc, type SpotRef,
 } from "./data";
 import { itemKind, kindOf, groupOf, classFamilies, ALL_CLASSES, acquisitionNotes, dropTableLabel, type Acquisition, type AcquisitionKind } from "./taxonomy";
 
@@ -149,4 +149,16 @@ export function setProgression(classId: string, variant?: string | null): SetSte
     steps.push({ name: set.name, level: levels.length ? Math.min(...levels) : null, pieces });
   }
   return steps;
+}
+
+/** Barra de mapas da área de spots: grupos do guia (só com mapas que têm página de spots), com o mapa para onde o
+ *  grupo leva, e os outros mapas com página de spots que não estão em nenhum grupo. */
+export function spotBarGroups() {
+  const groups = spotGroups.map((g) => {
+    const entries = g.entries.filter((e) => spotMapIds.includes(e.map_id));
+    return { ...g, entries, href: entries.some((e) => e.map_id === g.id) ? g.id : entries[0]?.map_id };
+  }).filter((g) => g.entries.length > 0);
+  const grouped = new Set(groups.flatMap((g) => g.entries.map((e) => e.map_id)));
+  const others = maps.filter((m) => spotMapIds.includes(m.id) && !grouped.has(m.id) && spotsByMap.has(m.id));
+  return { groups, others };
 }

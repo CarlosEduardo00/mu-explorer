@@ -1,4 +1,466 @@
 {
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FAquilaGunner.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/AquilaGunner.webp",
+  "bytes": 3474,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:18:46Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FAquilaMagician.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/AquilaMagician.webp",
+  "bytes": 3038,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:18:48Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FAquilaWarrior.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/AquilaWarrior.webp",
+  "bytes": 5396,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:18:49Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FBahamutAbbys.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/BahamutAbbys.webp",
+  "bytes": 4428,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:18:50Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FBerserk.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/Berserk.webp",
+  "bytes": 4654,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:18:52Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FBloodedTantalos.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/BloodedTantalos.webp",
+  "bytes": 3580,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:18:53Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FBloodyBeamKnight.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/BloodyBeamKnight.webp",
+  "bytes": 3418,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:18:54Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FBloodyWolfofBlood.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/BloodyWolfofBlood.webp",
+  "bytes": 3316,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:18:55Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FCoreMagriffy.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/CoreMagriffy.webp",
+  "bytes": 8198,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:18:57Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FCrimsonFlamesGiantDrakan.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/CrimsonFlamesGiantDrakan.webp",
+  "bytes": 2542,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:18:59Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FCrimsonFlamesPhoenixofDarkness.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/CrimsonFlamesPhoenixofDarkness.webp",
+  "bytes": 4888,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:00Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FCrimsonHarpy.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/CrimsonHarpy.webp",
+  "bytes": 3436,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:02Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FCrimsonLycan.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/CrimsonLycan.webp",
+  "bytes": 6194,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:03Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FCrimsonMinos.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/CrimsonMinos.webp",
+  "bytes": 6136,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:04Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDeepDungeonHellHound.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/DeepDungeonHellHound.webp",
+  "bytes": 6332,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:05Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDeepDungeonSkeletonArcher.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/DeepDungeonSkeletonArcher.webp",
+  "bytes": 7022,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:06Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDevilScythe.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/DevilScythe.webp",
+  "bytes": 5358,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:08Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDevilSorcerer.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/DevilSorcerer.webp",
+  "bytes": 5032,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:09Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDevilSword.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/DevilSword.webp",
+  "bytes": 4752,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:10Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDoomNapin.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/DoomNapin.webp",
+  "bytes": 4342,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:11Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDoomShadowMaster.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/DoomShadowMaster.webp",
+  "bytes": 5104,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:13Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FEliteSkeletonWarrior.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/EliteSkeletonWarrior.webp",
+  "bytes": 6478,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:14Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FForgottenGiant.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/ForgottenGiant.webp",
+  "bytes": 5934,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:15Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FForgottenGiantMammoth.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/ForgottenGiantMammoth.webp",
+  "bytes": 6258,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:17Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FForgottenIronKnight.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/ForgottenIronKnight.webp",
+  "bytes": 6224,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:18Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FGnome.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/Gnome.webp",
+  "bytes": 5064,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:19Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FGrayBloodyWitchQueen.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/GrayBloodyWitchQueen.webp",
+  "bytes": 4100,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:20Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FGrayDeathRider.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/GrayDeathRider.webp",
+  "bytes": 4940,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:21Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FGrayDeathTree.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/GrayDeathTree.webp",
+  "bytes": 3584,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:23Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FGrayForestOrc.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/GrayForestOrc.webp",
+  "bytes": 5288,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:24Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FGrayGolem.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/GrayGolem.webp",
+  "bytes": 5070,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:25Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FGrayWitchQueen.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/GrayWitchQueen.webp",
+  "bytes": 4332,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:26Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FHammerScoutHero.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/HammerScoutHero.webp",
+  "bytes": 5274,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:28Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FHellmaine.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/Hellmaine.webp",
+  "bytes": 6202,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:29Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FHellraiser.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/Hellraiser.webp",
+  "bytes": 5332,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:30Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FLizardKingAbbys.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/LizardKingAbbys.webp",
+  "bytes": 3634,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:31Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FLordCenturion.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/LordCenturion.webp",
+  "bytes": 7416,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:33Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FLordSilvester.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/LordSilvester.webp",
+  "bytes": 8750,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:34Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FMagmaGladiator.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/MagmaGladiator.webp",
+  "bytes": 4818,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:35Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FMagmaHook.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/MagmaHook.webp",
+  "bytes": 6186,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:36Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FMagmaShaman.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/MagmaShaman.webp",
+  "bytes": 4848,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:38Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FMuff.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/Muff.webp",
+  "bytes": 5566,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:39Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FMutanlite.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/Mutanlite.webp",
+  "bytes": 3726,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:40Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FNix.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/Nix.webp",
+  "bytes": 5006,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:41Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FNormus.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/Normus.webp",
+  "bytes": 5324,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:43Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FPollutionButterfly.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/PollutionButterfly.webp",
+  "bytes": 2588,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:44Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FQueenRanier.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/QueenRanier.webp",
+  "bytes": 4794,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:45Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FSalamander.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/Salamander.webp",
+  "bytes": 4348,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:46Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FSapiQueenofDoom.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/SapiQueenofDoom.webp",
+  "bytes": 2306,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:48Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FScorchedAssasin.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/ScorchedAssasin.webp",
+  "bytes": 5128,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:49Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FScorchedWarrior.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/ScorchedWarrior.webp",
+  "bytes": 4234,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:50Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FScorchedWizard.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/ScorchedWizard.webp",
+  "bytes": 3210,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:52Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FSellihoden.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/Sellihoden.webp",
+  "bytes": 4736,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:53Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FSilla.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/Silla.webp",
+  "bytes": 7526,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:54Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FSilverValkyrieAbbys.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/SilverValkyrieAbbys.webp",
+  "bytes": 3090,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:55Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FSkeletonWarrior.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/SkeletonWarrior.webp",
+  "bytes": 4386,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:57Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FSpecterKnight.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/SpecterKnight.webp",
+  "bytes": 4604,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:58Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FSpecterScythe.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/SpecterScythe.webp",
+  "bytes": 4526,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:19:59Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FSpecterSorcerer.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/SpecterSorcerer.webp",
+  "bytes": 4754,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:00Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FSpiderEgg.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/SpiderEgg.webp",
+  "bytes": 1918,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:02Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FStormFiend.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/StormFiend.webp",
+  "bytes": 3734,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:03Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FStormGuard.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/StormGuard.webp",
+  "bytes": 4300,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:04Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FStormReaper.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/StormReaper.webp",
+  "bytes": 4240,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:05Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FSummonedSwampMonster.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/SummonedSwampMonster.webp",
+  "bytes": 3894,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:07Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FSylphid.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/Sylphid.webp",
+  "bytes": 10178,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:08Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FTempleGargoyle.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/TempleGargoyle.webp",
+  "bytes": 7164,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:09Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FTempleGramlin.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/TempleGramlin.webp",
+  "bytes": 5378,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:10Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FTempleOgre.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/TempleOgre.webp",
+  "bytes": 6956,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:11Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FTwistedCondra.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/TwistedCondra.webp",
+  "bytes": 4654,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:13Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FTwistedCrypta.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/TwistedCrypta.webp",
+  "bytes": 3352,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:14Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FTwistedGollock.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/TwistedGollock.webp",
+  "bytes": 3290,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:15Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FUkanva.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/Ukanva.webp",
+  "bytes": 5630,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:16Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FUndergroundDreadFear.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/UndergroundDreadFear.webp",
+  "bytes": 4282,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:18Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FUndergroundPersona.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/UndergroundPersona.webp",
+  "bytes": 4374,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:19Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FUndergroundTwinTail.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/UndergroundTwinTail.webp",
+  "bytes": 3836,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:20Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FUndine.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/Undine.webp",
+  "bytes": 4588,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:21Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FVeparAbbys.webp?alt=media": {
+  "path": "/media/guidemu/assets/maps/monsters/VeparAbbys.webp",
+  "bytes": 3448,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T13:20:23Z"
+ },
  "https://globalmuonline.com/assets/images/monsters/Aquila-Gunner.webp": {
   "path": "/media/gmo/assets/images/monsters/Aquila-Gunner.webp",
   "bytes": 3474,
