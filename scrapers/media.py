@@ -41,6 +41,10 @@ def image_urls(data_dir: Path) -> list[str]:
         if path.exists():
             for row in json.loads(path.read_text(encoding="utf-8")):
                 urls.update(row[k] for k in ("image_url", "minimap_url") if row.get(k))
+    guides = data_dir / "processed" / "combined" / "guides.json"
+    if guides.exists():
+        for guide in json.loads(guides.read_text(encoding="utf-8")):
+            urls.update(guide.get("image_urls") or [])
     planner = data_dir / "curated" / "planner.json"
     if planner.exists():
         for ruleset in json.loads(planner.read_text(encoding="utf-8"))["rulesets"]:

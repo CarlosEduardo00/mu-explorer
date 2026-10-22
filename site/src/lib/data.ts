@@ -93,6 +93,8 @@ export const spawns = load<Spawn>("spawns.json");
 export const drops = load<Drop>("drops.json");
 export const sources = load<Source>("sources.json");
 export const farmSpots = load<FarmSpot>("farm_spots.json");
+/** Guias (aba de guias do Guide MU Online); vazio no conjunto sem essa fonte. */
+export const guides = load<import("./guides").Guide>("guides.json").map((g) => ({ ...g, image_urls: g.image_urls.map((u) => localImage(u) ?? u) }));
 export const mapMarkers = load<MapMarker>("map_markers.json");
 
 /**

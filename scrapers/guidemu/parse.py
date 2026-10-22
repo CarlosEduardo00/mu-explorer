@@ -5,6 +5,8 @@ Saídas:
 - spots.json: um registro por spot: mapa e zona do guia, número, tipo (low/medium/high -> heat low/mid/hot),
   coordenada (x, y) do jogo, quantidade de monstros e os monstros (ids). Interno: vira farm_spots no `scrapers.spots`.
 - groups.json: a organização do guia (mapa -> zonas: andares, áreas), na ordem do site (por nível).
+- guides.json: os guias da aba de guias (scrapers.guidemu.guides), em blocos de conteúdo com o texto pronto para
+  tradução (termos do jogo em marcadores).
 - map_images.json: imagem de spots de cada mapa/zona e a transformação coordenada do jogo -> posição na imagem
   (em %), ajustada aos spots (as imagens seguem a orientação do minimapa do jogo, girada 45°). Base do terreno dos
   mapas que o MuEmu não tem (`scrapers.terrain`).
@@ -168,13 +170,24 @@ def parse_store(data_dir: Path) -> int:
     dump_records(out / "spots.json", spots)
     dump_records(out / "groups.json", groups)
     dump_records(out / "map_images.json", images)
+    from scrapers.guidemu.guides import parse_guide
+    guides = [g for g in (parse_guide(p.html, p.meta) for p in sorted(store.iter(SOURCE, "guides"), key=lambda p: p.path.name)
+                          if 200 <= p.meta.get("status", 0) < 300) if g]
+    # Ordem da série no site de origem (os botões de guias irmãos); guias soltos pelo título.
+    order = lambda g: next((i for i, s in enumerate(g["siblings"]) if s["id"] == g["id"]), 99)
+    guides.sort(key=lambda g: (g["series"], order(g), g["title"]["t"]))
+    ids = [g["id"] for g in guides]
+    for dup in sorted({i for i in ids if ids.count(i) > 1}):
+        errors.append(f"guias com o mesmo id: {dup}")
+    dump_records(out / "guides.json", guides)
     dump_records(out / "sources.json", [{
         "id": SOURCE, "name": "Guide MU Online", "url": BASE,
-        "credit": "Mapas, spots e monstros do Guide MU Online (guidemuonline.com), guia do MU Online oficial. Publicados com autorização.",
+        "credit": "Mapas, spots, monstros e guias do Guide MU Online (guidemuonline.com), guia do MU Online oficial. Publicados com autorização.",
         "pages": len(groups), "first_scraped_at": meta.get("fetched_at"), "last_scraped_at": meta.get("fetched_at")}])
     for err in errors[:20]:
         log.error(err)
     bad = [f"{i['map']}/{i['zone']}" for i in images if i["transform"] is None or i["error"] > FIT_MAX_ERROR]
-    log.info("mapas: %d · zonas: %d · spots: %d · monstros: %d · imagens: %d (sem transformação: %s) · erros de schema: %d",
-             len(groups), sum(len(g["zones"]) for g in groups), len(spots), len(records), len(images), ", ".join(bad) or "nenhuma", len(errors))
+    log.info("mapas: %d · zonas: %d · spots: %d · monstros: %d · imagens: %d (sem transformação: %s) · guias: %d · erros de schema: %d",
+             len(groups), sum(len(g["zones"]) for g in groups), len(spots), len(records), len(images), ", ".join(bad) or "nenhuma",
+             len(guides), len(errors))
     return 1 if errors else 0

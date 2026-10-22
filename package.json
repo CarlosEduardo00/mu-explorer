@@ -10,7 +10,7 @@
     "check": "wrangler deploy --dry-run --env prod && wrangler deploy --dry-run --env hml",
     "deploy:prod": "npm run build && wrangler deploy --env prod",
     "deploy:hml": "npm run build && wrangler deploy --env hml",
-    "test:site": "node --test site/src/lib/planner.test.ts site/src/lib/api.test.ts site/src/lib/taxonomy.test.ts site/src/lib/mapview.test.ts"
+    "test:site": "node --test site/src/lib/planner.test.ts site/src/lib/api.test.ts site/src/lib/taxonomy.test.ts site/src/lib/mapview.test.ts site/src/lib/guides.test.ts"
   },
   "devDependencies": {
     "astro": "^7.3.6",

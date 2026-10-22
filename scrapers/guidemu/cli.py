@@ -1,4 +1,4 @@
-"""CLI: python -m scrapers.guidemu {fetch,parse}."""
+"""CLI: python -m scrapers.guidemu {fetch,fetch-guides,parse}."""
 from __future__ import annotations
 
 import argparse
@@ -82,6 +82,58 @@ def cmd_fetch(args: argparse.Namespace) -> int:
     return 0
 
 
+SITEMAP = f"{BASE}/sitemap.xml"
+
+
+def guide_urls(sitemap_xml: str) -> list[str]:
+    """Páginas da aba de guias (/guides/...) no sitemap."""
+    import re
+    urls = re.findall(r"<loc>\s*([^<\s]+)\s*</loc>", sitemap_xml)
+    return sorted(dict.fromkeys(u for u in urls if u.startswith(f"{BASE}/guides/")))
+
+
+def guide_key(url: str) -> str:
+    return url.removeprefix(f"{BASE}/guides/").strip("/").replace("/", "--")
+
+
+def cmd_fetch_guides(args: argparse.Namespace) -> int:
+    """Guias (sitemap -> /guides/...), renderizados no navegador headless (scrapers.guidemu.render). 1 req/s."""
+    session = PoliteSession(min_interval=max(1.0, args.interval))
+    store = RawStore(args.data_dir / "raw")
+    try:
+        sitemap = session.get(SITEMAP)
+    except RobotsUnavailable as exc:
+        log.error("robots.txt indisponível, coleta abortada: %s", exc)
+        return 2
+    store.save(SOURCE, "pages", "sitemap", sitemap, ".xml")
+    urls = guide_urls(sitemap.text) if sitemap.ok else []
+    if not urls:
+        log.error("nenhum guia no sitemap (HTTP %s)", sitemap.status)
+        return 1
+    from scrapers.guidemu.render import Renderer
+    renderer = Renderer(session)
+    done = cached = failed = 0
+    try:
+        for url in urls:
+            key = guide_key(url)
+            if not args.refresh and store.exists(SOURCE, "guides", key, url):
+                cached += 1
+                continue
+            try:
+                page = renderer.render(url)
+            except Exception as exc:   # página que não montou (timeout do navegador): registra e segue
+                log.warning("falha ao renderizar %s: %s", url, exc)
+                failed += 1
+                continue
+            store.save(SOURCE, "guides", key, page)
+            done += 1
+    finally:
+        renderer.close()
+    log.info("guias: %d renderizados · %d já em disco · %d falhas · requisições do navegador: %d",
+             done, cached, failed, renderer.request_count)
+    return 0
+
+
 def cmd_parse(args: argparse.Namespace) -> int:
     from scrapers.guidemu.parse import parse_store
     return parse_store(args.data_dir)
@@ -95,7 +147,10 @@ def main(argv: list[str] | None = None) -> int:
     fetch.add_argument("--refresh", action="store_true", help="baixa de novo as imagens que já estão em disco")
     fetch.add_argument("--no-images", action="store_true")
     fetch.add_argument("--interval", type=float, default=1.0)
+    guides = sub.add_parser("fetch-guides", help="guias (/guides/...) renderizados no navegador -> data/raw/guidemu/guides (1 req/s)")
+    guides.add_argument("--refresh", action="store_true")
+    guides.add_argument("--interval", type=float, default=1.0)
     sub.add_parser("parse", help="data/raw/guidemu -> data/processed/guidemu (offline)")
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s", stream=sys.stderr)
-    return {"fetch": cmd_fetch, "parse": cmd_parse}[args.command](args)
+    return {"fetch": cmd_fetch, "fetch-guides": cmd_fetch_guides, "parse": cmd_parse}[args.command](args)

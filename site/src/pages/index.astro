@@ -1,6 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
-import { items, monsters, maps, npcs, farmSpots, spotsByMap, mapById, spotsUrl, rulesets, builds, fmt } from "../lib/data";
+import { items, monsters, maps, npcs, farmSpots, spotsByMap, mapById, spotsUrl, rulesets, builds, guides, fmt } from "../lib/data";
 import { mapThumb } from "../lib/view";
 
 const featured = ["lorencia", "devias", "lost-tower", "atlans", "tarkan", "icarus", "kanturu-1", "raklion", "vulcanus", "acheron", "debenter", "nars"]
@@ -12,13 +12,14 @@ const sections = [
   { href: "/mapas/", n: maps.length, label: "mapas", text: "nível, monstros, NPCs e ligações", img: mapById.get("lorencia") ? mapThumb(mapById.get("lorencia")!) : null },
   { href: "/spots/", n: farmSpots.length, label: "spots de farm", text: "spots de cada mapa, com os monstros", img: mapById.get("devias") ? mapThumb(mapById.get("devias")!) : null },
   { href: "/npcs/", n: npcs.length, label: "NPCs", text: "onde ficam e o que vendem", img: npcs.find((n) => n.image_url)?.image_url },
+  { href: "/guias/", n: guides.length, label: "guias", text: "quests de troca de classe, asas e sistemas do jogo", img: guides[0]?.image_urls[0] },
   { href: "/planner/", n: builds.length, label: "builds prontas", text: `planner de pontos para ${classes.length} classes`, img: classes[0]?.image_url },
 ].filter((s) => s.n > 0);
 ---
 <Base title="MU Explorer" wide>
   <section class="hero">
     <h1>MU Explorer</h1>
-    <p class="lead">Base de dados de MU Online: itens, monstros, mapas com os spots de farm de cada um, builds prontas e um planner de builds para todas as classes.</p>
+    <p class="lead">Base de dados de MU Online: itens, monstros, mapas com os spots de farm de cada um, builds prontas, guias e um planner de builds para todas as classes.</p>
   </section>
 
   <ul class="tiles home-tiles">

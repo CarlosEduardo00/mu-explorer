@@ -1,4 +1,1396 @@
 {
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fcharactersinformation%2Fbotonera%2FDarkKnightBTN.webp?alt=media&token=8f65020c-4fcd-4c31-b1c2-b15bd6662261": {
+  "path": "/media/guidemu/assets/charactersinformation/botonera/DarkKnightBTN.webp",
+  "bytes": 1608,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:49:47Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fcharactersinformation%2Fbotonera%2FDarkWizardBTN.webp?alt=media&token=b193b994-be08-4a67-81e3-c3088d3fc67c": {
+  "path": "/media/guidemu/assets/charactersinformation/botonera/DarkWizardBTN.webp",
+  "bytes": 1680,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:49:48Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fcharactersinformation%2Fbotonera%2FFairyElfBTN.webp?alt=media&token=b03eed58-e102-46dd-97f3-e618229696cb": {
+  "path": "/media/guidemu/assets/charactersinformation/botonera/FairyElfBTN.webp",
+  "bytes": 1628,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:49:49Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fcharactersinformation%2Fbotonera%2FGrowLancerBTN.webp?alt=media&token=12d685b6-732a-46ff-92f1-bf2ea36e7fb2": {
+  "path": "/media/guidemu/assets/charactersinformation/botonera/GrowLancerBTN.webp",
+  "bytes": 1502,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:49:51Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fcharactersinformation%2Fbotonera%2FSummonerBTN.webp?alt=media&token=2f3a0100-4e90-49c3-a932-9653102d91fc": {
+  "path": "/media/guidemu/assets/charactersinformation/botonera/SummonerBTN.webp",
+  "bytes": 1390,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:49:52Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fartifactsystem%2FArtifactSlotWindow.webp?alt=media&token=cdf46dfc-212e-4e92-8699-8f419248f8fc": {
+  "path": "/media/guidemu/assets/guides/artifactsystem/ArtifactSlotWindow.webp",
+  "bytes": 11678,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:49:53Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FCreateErrtel.webp?alt=media&token=11fbe7df-20b8-4a81-8c8c-46bf012a8977": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/CreateErrtel.webp",
+  "bytes": 2542,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:49:55Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FDissasembleErrtels.webp?alt=media&token=9c64b037-074b-4057-b31a-a480706f8dbb": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/DissasembleErrtels.webp",
+  "bytes": 9210,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:49:56Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FElementPentagramInfoWindow.webp?alt=media&token=f94390a8-bf88-4b1d-b23a-d473bbfae171": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ElementPentagramInfoWindow.webp",
+  "bytes": 11998,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:49:57Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FElementPentagramInteractionTableWindow.webp?alt=media&token=8d62d6ba-0844-4b5f-a62b-55842e0d45a3": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ElementPentagramInteractionTableWindow.webp",
+  "bytes": 11738,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:49:58Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FElementPentagramWindow.webp?alt=media&token=69d071c8-46ce-41c5-b496-3870b3a477c7": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ElementPentagramWindow.webp",
+  "bytes": 15248,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:00Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FElementalSystemDarkness.webp?alt=media&token=220211d3-3367-4747-a7e7-900a697d9f2b": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ElementalSystemDarkness.webp",
+  "bytes": 1718,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:01Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FElementalSystemEarth.webp?alt=media&token=3a539723-049d-446a-9712-ad892a5e815b": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ElementalSystemEarth.webp",
+  "bytes": 1590,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:02Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FElementalSystemFire.webp?alt=media&token=555f8e92-97db-4748-8c09-3b5efad9e92f": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ElementalSystemFire.webp",
+  "bytes": 1586,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:04Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FElementalSystemWater.webp?alt=media&token=36aac90a-186b-4c8c-9899-b68d3544d861": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ElementalSystemWater.webp",
+  "bytes": 1960,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:05Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FElementalSystemWind.webp?alt=media&token=fd476a9a-74ea-4cda-ae01-e5ed5143e8eb": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ElementalSystemWind.webp",
+  "bytes": 1938,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:06Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelAngerDarkness.webp?alt=media&token=cfa2503d-43ee-4b3f-a4fe-a8a05d9faf85": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelAngerDarkness.webp",
+  "bytes": 2674,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:07Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelAngerEarth.webp?alt=media&token=ecfa51c0-5c13-4b9f-99ca-43d29acde383": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelAngerEarth.webp",
+  "bytes": 2620,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:09Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelAngerFire.webp?alt=media&token=b8fed442-3359-40e2-b37b-bfa815c0d5ac": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelAngerFire.webp",
+  "bytes": 2630,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:10Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelAngerWater.webp?alt=media&token=2e5ec671-cd7f-4456-a573-1d090ea22e0b": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelAngerWater.webp",
+  "bytes": 2660,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:11Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelAngerWind.webp?alt=media&token=4bdaa797-bdee-495c-84d6-628b7ed24757": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelAngerWind.webp",
+  "bytes": 2446,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:12Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelBlessingDarkness.webp?alt=media&token=f292f082-695c-44db-a7ea-6a1c91db245e": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelBlessingDarkness.webp",
+  "bytes": 2940,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:14Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelBlessingEarth.webp?alt=media&token=089b5a34-a3d1-4ba5-a2cd-29a82357d8d3": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelBlessingEarth.webp",
+  "bytes": 2976,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:15Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelBlessingFire.webp?alt=media&token=7d2d91ad-644f-41d9-a359-7ee1f6834731": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelBlessingFire.webp",
+  "bytes": 3014,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:17Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelBlessingWater.webp?alt=media&token=7f225357-1225-4211-89fa-ea14da1fe74c": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelBlessingWater.webp",
+  "bytes": 2938,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:18Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelBlessingWind.webp?alt=media&token=12b6f268-a599-4803-8ac2-f66a4e1eeb59": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelBlessingWind.webp",
+  "bytes": 2930,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:19Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelDivinityDarkness.webp?alt=media&token=5a1b5941-8c03-49a5-a373-880ba149ac21": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelDivinityDarkness.webp",
+  "bytes": 2706,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:20Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelDivinityEarth.webp?alt=media&token=827d33e0-7903-43a5-8dba-fcb826fa7dca": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelDivinityEarth.webp",
+  "bytes": 2768,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:21Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelDivinityFire.webp?alt=media&token=5e43255d-f35e-41b6-8f24-360da65c7394": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelDivinityFire.webp",
+  "bytes": 2776,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:23Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelDivinityWater.webp?alt=media&token=6f5bf9e1-7c5f-4ebc-976e-7f9dd254e226": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelDivinityWater.webp",
+  "bytes": 2728,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:24Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelDivinityWind.webp?alt=media&token=b106214a-8074-46c7-b733-37e1869f9be9": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelDivinityWind.webp",
+  "bytes": 2754,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:25Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelIntegrityDarkness.webp?alt=media&token=909af73c-5f25-410f-9300-637266887d90": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelIntegrityDarkness.webp",
+  "bytes": 2570,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:26Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelIntegrityEarth.webp?alt=media&token=7078a210-3558-48b9-ac4b-b0db7d7107fd": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelIntegrityEarth.webp",
+  "bytes": 2560,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:28Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelIntegrityFire.webp?alt=media&token=f1466643-bda2-4928-a387-323edb759f6b": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelIntegrityFire.webp",
+  "bytes": 2540,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:29Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelIntegrityWater.webp?alt=media&token=80334323-6eb6-466d-a9ae-e65a58528e4d": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelIntegrityWater.webp",
+  "bytes": 2186,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:30Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelIntegrityWind.webp?alt=media&token=076cb60c-d3a8-442f-a030-d5407e965993": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelIntegrityWind.webp",
+  "bytes": 2404,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:31Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelOfBlessingExample.webp?alt=media&token=19084d9b-ccf6-45e5-baa9-ba3197723df3": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelOfBlessingExample.webp",
+  "bytes": 7404,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:32Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelOfBlessingExampleResult.webp?alt=media&token=81520b73-db91-47e7-bcd3-3f327c09cb88": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelOfBlessingExampleResult.webp",
+  "bytes": 4244,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:34Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelRadianceDarkness.webp?alt=media&token=954453a9-f3fd-4b15-aa2f-608b53817e97": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelRadianceDarkness.webp",
+  "bytes": 2828,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:35Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelRadianceEarth.webp?alt=media&token=534df952-5f3b-4d0b-8fcc-578c5c6236d6": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelRadianceEarth.webp",
+  "bytes": 2814,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:36Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelRadianceFire.webp?alt=media&token=9aa6b4f9-1a5f-48cf-9718-68098e6dbc54": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelRadianceFire.webp",
+  "bytes": 2806,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:37Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelRadianceWater.webp?alt=media&token=8158c05d-e138-4a3e-ab28-3f70411b08c6": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelRadianceWater.webp",
+  "bytes": 2878,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:38Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FErrtelRadianceWind.webp?alt=media&token=03f65e3b-4e36-43c7-bf1f-2dc0785a75cf": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/ErrtelRadianceWind.webp",
+  "bytes": 2824,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:40Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FFragmentOfRadianceSlot1.webp?alt=media&token=8c44bee2-e952-432c-994a-fef23a02db91": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/FragmentOfRadianceSlot1.webp",
+  "bytes": 1204,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:41Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FFragmentOfRadianceSlot2.webp?alt=media&token=e3e218a7-538b-496f-9c7b-7133f48c8171": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/FragmentOfRadianceSlot2.webp",
+  "bytes": 936,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:42Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FFragmentOfRadianceSlot3.webp?alt=media&token=48e884ad-6852-4329-b565-7a363a062f89": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/FragmentOfRadianceSlot3.webp",
+  "bytes": 1340,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:43Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FFragmentOfRadianceSlot4.webp?alt=media&token=51244392-0316-4e02-a771-5bb1e9f02f6a": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/FragmentOfRadianceSlot4.webp",
+  "bytes": 1030,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:45Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FHowCreateMasteryPentagram.webp?alt=media&token=8aaa9382-bfae-4342-bfd6-e84513c76f03": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/HowCreateMasteryPentagram.webp",
+  "bytes": 9670,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:46Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FHowToCreateAttributeOption.webp?alt=media&token=58a002e8-26ff-4854-8472-455531e64011": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/HowToCreateAttributeOption.webp",
+  "bytes": 5458,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:47Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FHowToLevelUpAttributeOption.webp?alt=media&token=8df59e76-a989-4d18-9811-034c3c39e639": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/HowToLevelUpAttributeOption.webp",
+  "bytes": 3718,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:48Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FHowToRemoveAttributeOption.webp?alt=media&token=2acac551-fcee-4720-904d-a6567338869c": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/HowToRemoveAttributeOption.webp",
+  "bytes": 3088,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:50Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FHowToUpgradeMasteryErrtel.webp?alt=media&token=38b5842a-614e-4f28-9ec8-97d55bc94956": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/HowToUpgradeMasteryErrtel.webp",
+  "bytes": 5102,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:51Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FLevelUpErrtel.webp?alt=media&token=2fe7b6bd-2a17-4326-810a-74dc3633f0f4": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/LevelUpErrtel.webp",
+  "bytes": 2628,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:52Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FMithrilDarkness.webp?alt=media&token=b45a1e2c-7934-424f-8ec2-ed8583090a6a": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/MithrilDarkness.webp",
+  "bytes": 1774,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:53Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FMithrilEarth.webp?alt=media&token=991e2bf2-e41f-4dc5-9604-d92874442893": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/MithrilEarth.webp",
+  "bytes": 1696,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:54Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FMithrilFire.webp?alt=media&token=27734a37-037d-429e-8211-48b51e83164b": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/MithrilFire.webp",
+  "bytes": 1948,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:56Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FMithrilFragmentDarkness.webp?alt=media&token=68f0d2a3-4b6e-442f-aaef-fdba3f086197": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/MithrilFragmentDarkness.webp",
+  "bytes": 1008,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:57Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FMithrilFragmentEarth.webp?alt=media&token=f559bfef-958d-467d-bc1f-5d81f1bf27cc": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/MithrilFragmentEarth.webp",
+  "bytes": 1210,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:58Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FMithrilFragmentFire.webp?alt=media&token=0e4b4c28-cc97-42a2-bdf8-ea35cb981437": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/MithrilFragmentFire.webp",
+  "bytes": 1216,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:50:59Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FMithrilFragmentWater.webp?alt=media&token=f4e9ae97-0c34-4395-a2da-473b58b0bf35": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/MithrilFragmentWater.webp",
+  "bytes": 1152,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:00Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FMithrilFragmentWind.webp?alt=media&token=02b2247f-4be7-441c-8cfe-7536637f13d7": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/MithrilFragmentWind.webp",
+  "bytes": 1102,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:02Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FMithrilWater.webp?alt=media&token=1e3530e1-572a-4eb9-93cb-37e338b57647": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/MithrilWater.webp",
+  "bytes": 1856,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:03Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FMithrilWind.webp?alt=media&token=1e215d40-fc54-47c3-bf50-5982a821857e": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/MithrilWind.webp",
+  "bytes": 1862,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:04Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FOptionalMaterialErrtel.webp?alt=media&token=30fcf256-d3ce-4fac-a0c1-030c7eba6f81": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/OptionalMaterialErrtel.webp",
+  "bytes": 1582,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:05Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FPentagramSlot.webp?alt=media&token=a7dced5c-235a-4301-8171-5538340d1f73": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/PentagramSlot.webp",
+  "bytes": 12220,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:07Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FRankUpErrtel.webp?alt=media&token=f9be4f93-cd4d-4515-8e1f-96ef1f443ef0": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/RankUpErrtel.webp",
+  "bytes": 3178,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:08Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FRelativeOptionAttributeSlots.webp?alt=media&token=2dfaa8bf-228e-4199-beef-65c65a1c5d8e": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/RelativeOptionAttributeSlots.webp",
+  "bytes": 12656,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:09Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FSlotOfRadianceAssembly.webp?alt=media&token=923cf24f-f67a-4885-aa98-8524f54a03c1": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/SlotOfRadianceAssembly.webp",
+  "bytes": 3452,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:10Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Felementalsystem%2FTransactionSeal.webp?alt=media&token=10a10fa2-1fa6-4ee2-a6c7-b824fc890162": {
+  "path": "/media/guidemu/assets/guides/elementalsystem/TransactionSeal.webp",
+  "bytes": 2128,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:12Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fguardiansystem%2FMiracleExchangeShopGuardianBox.webp?alt=media&token=4355e175-8ecf-4345-b05e-95f619cf50c2": {
+  "path": "/media/guidemu/assets/guides/guardiansystem/MiracleExchangeShopGuardianBox.webp",
+  "bytes": 13164,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:13Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fguardiansystem%2FMoss.webp?alt=media&token=044270ad-056e-4eca-bd20-3743576796c6": {
+  "path": "/media/guidemu/assets/guides/guardiansystem/Moss.webp",
+  "bytes": 17514,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:14Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fguardiansystem%2FPriestJames.webp?alt=media&token=940ae51e-e59c-49d7-ba43-224c36f0b7d1": {
+  "path": "/media/guidemu/assets/guides/guardiansystem/PriestJames.webp",
+  "bytes": 14514,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:15Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fguardiansystem%2FTrainer.webp?alt=media&token=693b5314-fa4d-41a1-84ce-cdf1c65bbb8a": {
+  "path": "/media/guidemu/assets/guides/guardiansystem/Trainer.webp",
+  "bytes": 7118,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:17Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fguardiansystem%2FTrainerChangeGuardianOption.webp?alt=media&token=29be7d0c-356a-4409-ba17-00fbf173f54b": {
+  "path": "/media/guidemu/assets/guides/guardiansystem/TrainerChangeGuardianOption.webp",
+  "bytes": 13454,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:18Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fguardiansystem%2FTrainerEnhancementGuardian.webp?alt=media&token=93c936b6-00b7-489d-897b-6566811e9119": {
+  "path": "/media/guidemu/assets/guides/guardiansystem/TrainerEnhancementGuardian.webp",
+  "bytes": 12852,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:19Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fguardiansystem%2FTrainerGuardianResurrection.webp?alt=media&token=fbe13358-e898-4090-8254-cb275395b693": {
+  "path": "/media/guidemu/assets/guides/guardiansystem/TrainerGuardianResurrection.webp",
+  "bytes": 13492,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:20Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fguardiansystem%2FTrainerUpgradeGuardianFierceLion.webp?alt=media&token=294a74fe-c189-4715-82bc-abdbb909a89e": {
+  "path": "/media/guidemu/assets/guides/guardiansystem/TrainerUpgradeGuardianFierceLion.webp",
+  "bytes": 13822,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:22Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fguardiansystem%2FTrainerUpgradeGuardianIceDragon.webp?alt=media&token=51f609de-0d0a-4758-a19d-a04d0d513918": {
+  "path": "/media/guidemu/assets/guides/guardiansystem/TrainerUpgradeGuardianIceDragon.webp",
+  "bytes": 13544,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:23Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fguardiansystem%2FTrainerUpgradeGuardianShiningTail.webp?alt=media&token=a458e189-85be-4203-90d1-7828d6aa3e2c": {
+  "path": "/media/guidemu/assets/guides/guardiansystem/TrainerUpgradeGuardianShiningTail.webp",
+  "bytes": 13548,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:24Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fguardiansystem%2FTrainerUpgradeGuardianUr.webp?alt=media&token=823bc1f5-f4d0-492c-80d3-551f45a3797b": {
+  "path": "/media/guidemu/assets/guides/guardiansystem/TrainerUpgradeGuardianUr.webp",
+  "bytes": 13992,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:25Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fhowtocreatewings%2FFilltheMagicSolution.webp?alt=media&token=d8a322cf-aeb9-402f-a69d-cb349c0def84": {
+  "path": "/media/guidemu/assets/guides/howtocreatewings/FilltheMagicSolution.webp",
+  "bytes": 2494,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:27Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fpandorasjewels%2FAidaZone.webp?alt=media&token=e74b093b-9cd7-4694-9fe8-8076d1aae830": {
+  "path": "/media/guidemu/assets/guides/pandorasjewels/AidaZone.webp",
+  "bytes": 27150,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:28Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fpandorasjewels%2FBlueMine.webp?alt=media&token=c6a9985a-2b10-4eea-b7e9-3f855f18e695": {
+  "path": "/media/guidemu/assets/guides/pandorasjewels/BlueMine.webp",
+  "bytes": 634,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:29Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fpandorasjewels%2FCuberaMineZone.webp?alt=media&token=ffbf8f5d-f84e-4a9d-8419-4bf913d64999": {
+  "path": "/media/guidemu/assets/guides/pandorasjewels/CuberaMineZone.webp",
+  "bytes": 9118,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:31Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fpandorasjewels%2FGoldMine.webp?alt=media&token=3fd8ab2f-d0f5-43fa-a4b5-4b097ec87239": {
+  "path": "/media/guidemu/assets/guides/pandorasjewels/GoldMine.webp",
+  "bytes": 684,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:32Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fpandorasjewels%2FLostTowerZone.webp?alt=media&token=329df041-ac3a-4f7d-a68b-5875fc99cbc2": {
+  "path": "/media/guidemu/assets/guides/pandorasjewels/LostTowerZone.webp",
+  "bytes": 10064,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:33Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fpandorasjewels%2FPandoraPickTwoHanded.webp?alt=media&token=f9386a39-8d6c-4acb-867c-2e9d42e29a5c": {
+  "path": "/media/guidemu/assets/guides/pandorasjewels/PandoraPickTwoHanded.webp",
+  "bytes": 926,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:34Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fpandorasjewels%2FPandorasGift.webp?alt=media&token=c557ddf0-e191-44f4-8d70-12e840ef8ddc": {
+  "path": "/media/guidemu/assets/guides/pandorasjewels/PandorasGift.webp",
+  "bytes": 20614,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:36Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fpandorasjewels%2FPurpleMine.webp?alt=media&token=631b757d-8cd0-479e-bc6d-584f39a4cc8a": {
+  "path": "/media/guidemu/assets/guides/pandorasjewels/PurpleMine.webp",
+  "bytes": 674,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:37Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fpandorasjewels%2FRaklionZone.webp?alt=media&token=99df2f37-3ee2-440e-b6b0-c2c0bde703d1": {
+  "path": "/media/guidemu/assets/guides/pandorasjewels/RaklionZone.webp",
+  "bytes": 23072,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:38Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fpandorasjewels%2FSuccesfullyJewelPandora.webp?alt=media&token=ad9b4f33-8d71-44be-8285-a73d792e7905": {
+  "path": "/media/guidemu/assets/guides/pandorasjewels/SuccesfullyJewelPandora.webp",
+  "bytes": 6786,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:41Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fpandorasjewels%2FSwampofPeaceZone.webp?alt=media&token=932ac4a5-0be8-4994-81c0-2b6e699b1a1e": {
+  "path": "/media/guidemu/assets/guides/pandorasjewels/SwampofPeaceZone.webp",
+  "bytes": 26500,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:42Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fpandorasjewels%2FTarkanZone.webp?alt=media&token=a67b9caf-b541-4bd8-8d09-d9403982171d": {
+  "path": "/media/guidemu/assets/guides/pandorasjewels/TarkanZone.webp",
+  "bytes": 31140,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:44Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2FAbyssalEye.webp?alt=media&token=dcb73feb-2582-4a02-bcd9-af07fb5a0e0e": {
+  "path": "/media/guidemu/assets/guides/quest/AbyssalEye.webp",
+  "bytes": 1656,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:45Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2FAida3rdQuest.webp?alt=media&token=8b2d2380-43d1-4b8c-90d8-a546ed2aad31": {
+  "path": "/media/guidemu/assets/guides/quest/Aida3rdQuest.webp",
+  "bytes": 37072,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:47Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2FBarracksOfBalgass3rdQuest.webp?alt=media&token=4c0f7bd3-d1e9-4a50-903e-fe93fa989efb": {
+  "path": "/media/guidemu/assets/guides/quest/BarracksOfBalgass3rdQuest.webp",
+  "bytes": 26952,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:48Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2FDarkPhoenixFeather.webp?alt=media&token=346f663b-42d9-4d34-b8c7-0c4a1c7275ef": {
+  "path": "/media/guidemu/assets/guides/quest/DarkPhoenixFeather.webp",
+  "bytes": 872,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:49Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2FDarkStone.webp?alt=media&token=c2a88805-9ae2-4cb5-bee8-ef05d8781047": {
+  "path": "/media/guidemu/assets/guides/quest/DarkStone.webp",
+  "bytes": 970,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:50Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2FDeathBeamKnightFlame.webp?alt=media&token=dc931158-d780-46bd-9b50-90850aa9b720": {
+  "path": "/media/guidemu/assets/guides/quest/DeathBeamKnightFlame.webp",
+  "bytes": 1580,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:52Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2FEuniceMonster.webp?alt=media&token=53b1cb69-dd28-44fc-9037-c07606faa689": {
+  "path": "/media/guidemu/assets/guides/quest/EuniceMonster.webp",
+  "bytes": 2360,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:53Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2FHellMinerHorn.webp?alt=media&token=f6e8aea0-ee59-4c32-ab94-f929f644e2a7": {
+  "path": "/media/guidemu/assets/guides/quest/HellMinerHorn.webp",
+  "bytes": 944,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:54Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2FIcarus3rdQuest.webp?alt=media&token=4bb455b6-a993-4387-a249-5ef1929229d5": {
+  "path": "/media/guidemu/assets/guides/quest/Icarus3rdQuest.webp",
+  "bytes": 33656,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:56Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2FRingofHonor.webp?alt=media&token=c124be44-a5e9-4d87-a828-d3200a5f5a3e": {
+  "path": "/media/guidemu/assets/guides/quest/RingofHonor.webp",
+  "bytes": 1464,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:57Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2FScrollofTheEmperor.webp?alt=media&token=8eacec98-5e8b-4191-80c9-3052f885fbc7": {
+  "path": "/media/guidemu/assets/guides/quest/ScrollofTheEmperor.webp",
+  "bytes": 1630,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:58Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2FSentMonster.webp?alt=media&token=75586b4a-ea42-4558-a167-0eacc3c74f91": {
+  "path": "/media/guidemu/assets/guides/quest/SentMonster.webp",
+  "bytes": 4220,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:51:59Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2FSoulShardofWizard.webp?alt=media&token=0dea455f-8699-4e28-9a9a-d24f5d862ce4": {
+  "path": "/media/guidemu/assets/guides/quest/SoulShardofWizard.webp",
+  "bytes": 1400,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:01Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2FTarkan3rdQuest.webp?alt=media&token=fcfea649-f855-4cb1-9eef-fbf352c43416": {
+  "path": "/media/guidemu/assets/guides/quest/Tarkan3rdQuest.webp",
+  "bytes": 39190,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:02Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2FTearofElf.webp?alt=media&token=2cb53f8f-b51a-4b85-8a92-c8b38715e52d": {
+  "path": "/media/guidemu/assets/guides/quest/TearofElf.webp",
+  "bytes": 1012,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:03Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fguides%2Fquest%2Fbrokensword.webp?alt=media&token=6b7c1135-b8fc-48e1-a44f-d2ba7bf4cb11": {
+  "path": "/media/guidemu/assets/guides/quest/brokensword.webp",
+  "bytes": 1098,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:04Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fartifacts%2FSpiderArtifactType1.webp?alt=media&token=752ba937-22cd-4d5d-adb2-81ce11aa0794": {
+  "path": "/media/guidemu/assets/items/artifacts/SpiderArtifactType1.webp",
+  "bytes": 550,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:05Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fartifacts%2FSpiderArtifactType3.webp?alt=media&token=2781e5f1-7c70-4fb6-bcb6-2a64113463d4": {
+  "path": "/media/guidemu/assets/items/artifacts/SpiderArtifactType3.webp",
+  "bytes": 1646,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:07Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fartifacts%2FSpiderArtifactType4.webp?alt=media&token=1128a404-baea-4759-9135-d6b1f69a5867": {
+  "path": "/media/guidemu/assets/items/artifacts/SpiderArtifactType4.webp",
+  "bytes": 2298,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:08Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fartifacts%2FSpiderArtifactType7.webp?alt=media&token=ad365479-5586-4c5c-871b-95b1d1c18ec9": {
+  "path": "/media/guidemu/assets/items/artifacts/SpiderArtifactType7.webp",
+  "bytes": 3308,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:09Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FFierceLion.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/guardian/FierceLion.webp",
+  "bytes": 4570,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:10Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FFierceLion.webp?alt=media&token=95508c64-2dd5-4968-a000-b764d6b822fc": {
+  "path": "/media/guidemu/assets/items/guardian/FierceLion.webp",
+  "bytes": 4570,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:11Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FFierceLionRare.webp?alt=media&token=d0e2c6df-aef3-43de-8e3f-494fa6879c16": {
+  "path": "/media/guidemu/assets/items/guardian/FierceLionRare.webp",
+  "bytes": 4756,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:13Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FIceDragon.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/guardian/IceDragon.webp",
+  "bytes": 5196,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:14Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FIceDragon.webp?alt=media&token=66450541-fa42-40b1-b8e9-a081141c0d1a": {
+  "path": "/media/guidemu/assets/items/guardian/IceDragon.webp",
+  "bytes": 5196,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:15Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FIceDragonRare.webp?alt=media&token=9cc66889-7d55-4671-a432-c47599988fc4": {
+  "path": "/media/guidemu/assets/items/guardian/IceDragonRare.webp",
+  "bytes": 5658,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:16Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FLeviathan.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/guardian/Leviathan.webp",
+  "bytes": 3558,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:18Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FPhantasmalSteed.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/guardian/PhantasmalSteed.webp",
+  "bytes": 4988,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:19Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FPhantasmalSteed.webp?alt=media&token=d6d3e22a-a656-481c-9bbc-e0a4485b1699": {
+  "path": "/media/guidemu/assets/items/guardian/PhantasmalSteed.webp",
+  "bytes": 4988,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:20Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FPhantasmalSteedRare.webp?alt=media&token=38a37319-698c-4d29-9d1a-3335dcd62c0b": {
+  "path": "/media/guidemu/assets/items/guardian/PhantasmalSteedRare.webp",
+  "bytes": 4624,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:21Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FRhino.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/guardian/Rhino.webp",
+  "bytes": 5696,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:23Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FShiningTail.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/guardian/ShiningTail.webp",
+  "bytes": 4602,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:24Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FShiningTail.webp?alt=media&token=cd8b66c8-ea25-4b67-b4f3-3a5ee49a97f7": {
+  "path": "/media/guidemu/assets/items/guardian/ShiningTail.webp",
+  "bytes": 4602,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:25Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FShiningTailRare.webp?alt=media&token=b6948367-7dae-4d54-a332-bff7aace2507": {
+  "path": "/media/guidemu/assets/items/guardian/ShiningTailRare.webp",
+  "bytes": 5370,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:26Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FTaurus.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/guardian/Taurus.webp",
+  "bytes": 4460,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:27Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FUr.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/guardian/Ur.webp",
+  "bytes": 3514,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:29Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FUr.webp?alt=media&token=d852f54d-186c-4900-8827-d97ba4f5b503": {
+  "path": "/media/guidemu/assets/items/guardian/Ur.webp",
+  "bytes": 3514,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:30Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fguardian%2FUrRare.webp?alt=media&token=ffaef30e-b4dc-4b2a-a500-8e68c276cacc": {
+  "path": "/media/guidemu/assets/items/guardian/UrRare.webp",
+  "bytes": 4252,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:31Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FArtifactEnchantmentStone.webp?alt=media&token=4942de2b-6726-4c1e-b955-3e160fbd18a1": {
+  "path": "/media/guidemu/assets/items/miscellaneous/ArtifactEnchantmentStone.webp",
+  "bytes": 1510,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:32Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FCondorFeather.webp?alt=media&token=8f916956-4c7f-4185-9db7-b2a47cd11fbc": {
+  "path": "/media/guidemu/assets/items/miscellaneous/CondorFeather.webp",
+  "bytes": 1172,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:34Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FCondorFlame.webp?alt=media&token=93561982-9c93-48e2-b811-4ba911758cba": {
+  "path": "/media/guidemu/assets/items/miscellaneous/CondorFlame.webp",
+  "bytes": 914,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:36Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FCondorMagicBell.webp?alt=media&token=fb84e8e4-6e33-4a96-b128-33434f2c98ee": {
+  "path": "/media/guidemu/assets/items/miscellaneous/CondorMagicBell.webp",
+  "bytes": 578,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:37Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FCondorsMagicSolution.webp?alt=media&token=5b8a8e8c-0946-40cd-95ae-e0a7d23c9293": {
+  "path": "/media/guidemu/assets/items/miscellaneous/CondorsMagicSolution.webp",
+  "bytes": 682,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:38Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FCrestofMonarch.webp?alt=media&token=117fd186-a2d0-4dab-a1ee-598fb7361b18": {
+  "path": "/media/guidemu/assets/items/miscellaneous/CrestofMonarch.webp",
+  "bytes": 626,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:39Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FDeathBeamKnightSoul.webp?alt=media&token=dac0370b-adbc-4e06-bb83-e348823024c9": {
+  "path": "/media/guidemu/assets/items/miscellaneous/DeathBeamKnightSoul.webp",
+  "bytes": 902,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:40Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FDeathKingBone.webp?alt=media&token=353f38e3-3402-4249-aa50-3abeddea57d3": {
+  "path": "/media/guidemu/assets/items/miscellaneous/DeathKingBone.webp",
+  "bytes": 1038,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:42Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FElementalCapsuleNormal.webp?alt=media&token=f708d7ab-3e4a-4f2a-b4d2-274865dd0baa": {
+  "path": "/media/guidemu/assets/items/miscellaneous/ElementalCapsuleNormal.webp",
+  "bytes": 1036,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:43Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FElementalRune.webp?alt=media&token=ee214b82-fc95-4ead-86f7-d46b86d69390": {
+  "path": "/media/guidemu/assets/items/miscellaneous/ElementalRune.webp",
+  "bytes": 1232,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:44Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FElementalTalismanOfChaosAssembly.webp?alt=media&token=5aaf1156-a21c-457d-b79e-dd97a04e7ccb": {
+  "path": "/media/guidemu/assets/items/miscellaneous/ElementalTalismanOfChaosAssembly.webp",
+  "bytes": 1856,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:45Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FElementalTalismanOfLuck.webp?alt=media&token=20cce166-6b33-46fd-8f38-86ff18484bbf": {
+  "path": "/media/guidemu/assets/items/miscellaneous/ElementalTalismanOfLuck.webp",
+  "bytes": 1836,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:46Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FEliteGuardianUpgradeStone.webp?alt=media&token=677d0e52-7b7c-4065-9eb6-b2e10073c959": {
+  "path": "/media/guidemu/assets/items/miscellaneous/EliteGuardianUpgradeStone.webp",
+  "bytes": 846,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:48Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FErrtelEmblem.webp?alt=media&token=401155b6-777d-4187-94eb-100fe146e95a": {
+  "path": "/media/guidemu/assets/items/miscellaneous/ErrtelEmblem.webp",
+  "bytes": 1658,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:49Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FFierceLionSeal.webp?alt=media&token=f6592f97-ba71-4f6b-95f8-6aa956981dfb": {
+  "path": "/media/guidemu/assets/items/miscellaneous/FierceLionSeal.webp",
+  "bytes": 2080,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:51Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FFragmentResurrection.webp?alt=media&token=7fd03925-0299-4ca9-8709-17c829b7aba2": {
+  "path": "/media/guidemu/assets/items/miscellaneous/FragmentResurrection.webp",
+  "bytes": 1468,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:52Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FGarudaFeather.webp?alt=media&token=3d6b607b-92dc-419e-a633-673a60f8421c": {
+  "path": "/media/guidemu/assets/items/miscellaneous/GarudaFeather.webp",
+  "bytes": 1110,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:53Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FGarudaFlame.webp?alt=media&token=9c848a72-68a0-40e4-bd8f-e69f037eacaf": {
+  "path": "/media/guidemu/assets/items/miscellaneous/GarudaFlame.webp",
+  "bytes": 1242,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:55Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FGoldenCrest.webp?alt=media&token=c1d154c8-b43e-49f5-ba25-5ea4c05d6402": {
+  "path": "/media/guidemu/assets/items/miscellaneous/GoldenCrest.webp",
+  "bytes": 2272,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:56Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FGuardianEliteOptionConversionFragment.webp?alt=media&token=ab88c0e1-502e-4769-b3ee-7d6bb853aed2": {
+  "path": "/media/guidemu/assets/items/miscellaneous/GuardianEliteOptionConversionFragment.webp",
+  "bytes": 858,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:57Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FGuardianEliteOptionConversionStone.webp?alt=media&token=5beb4170-0259-48cc-be62-307e1d3af26c": {
+  "path": "/media/guidemu/assets/items/miscellaneous/GuardianEliteOptionConversionStone.webp",
+  "bytes": 1382,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:52:58Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FGuardianUpgradeStone.webp?alt=media&token=b1cc94ae-6383-4e4b-bcbd-b6f954aa55b7": {
+  "path": "/media/guidemu/assets/items/miscellaneous/GuardianUpgradeStone.webp",
+  "bytes": 824,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:00Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FHellMaineLeather.webp?alt=media&token=54b4b3db-50e9-4f92-b9ad-4d46c101afb2": {
+  "path": "/media/guidemu/assets/items/miscellaneous/HellMaineLeather.webp",
+  "bytes": 942,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:02Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FHigherMagicStone.webp?alt=media&token=0d2afd79-cd89-4249-b19b-0868bf3982c0": {
+  "path": "/media/guidemu/assets/items/miscellaneous/HigherMagicStone.webp",
+  "bytes": 1324,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:03Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FIceDragonSeal.webp?alt=media&token=3b39b005-d26d-4b14-a15c-f641cea81b7b": {
+  "path": "/media/guidemu/assets/items/miscellaneous/IceDragonSeal.webp",
+  "bytes": 1614,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:04Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FLochMagicBell.webp?alt=media&token=d3df1b3c-abc9-4a2e-bb5b-bbedd4d639b9": {
+  "path": "/media/guidemu/assets/items/miscellaneous/LochMagicBell.webp",
+  "bytes": 580,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:05Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FLochsFeather.webp?alt=media&token=421835e0-abda-4d40-b29d-6b4d03b88a87": {
+  "path": "/media/guidemu/assets/items/miscellaneous/LochsFeather.webp",
+  "bytes": 844,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:07Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FLochsMagicSolution.webp?alt=media&token=5b16df83-078c-4f39-a8b1-963f30c0abbf": {
+  "path": "/media/guidemu/assets/items/miscellaneous/LochsMagicSolution.webp",
+  "bytes": 478,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:08Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FMediumMagicStone.webp?alt=media&token=ba8f4c7e-425c-480f-85cb-bc7974a231b5": {
+  "path": "/media/guidemu/assets/items/miscellaneous/MediumMagicStone.webp",
+  "bytes": 1346,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:09Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FPentagramEmblem.webp?alt=media&token=4926810b-25a0-4b5e-9f23-9b8ee742242c": {
+  "path": "/media/guidemu/assets/items/miscellaneous/PentagramEmblem.webp",
+  "bytes": 1922,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:10Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FPhoenixofFlame.webp?alt=media&token=4c96ac55-5f0a-4b45-9400-f8d2c2c7959d": {
+  "path": "/media/guidemu/assets/items/miscellaneous/PhoenixofFlame.webp",
+  "bytes": 952,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:11Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FSealofthePhantasmalSteed.webp?alt=media&token=7cb12791-83c0-460c-96c2-2a62ea07541f": {
+  "path": "/media/guidemu/assets/items/miscellaneous/SealofthePhantasmalSteed.webp",
+  "bytes": 1168,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:13Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FShiningTailSeal.webp?alt=media&token=53ba3b5f-0226-4527-8f22-25a69688b42f": {
+  "path": "/media/guidemu/assets/items/miscellaneous/ShiningTailSeal.webp",
+  "bytes": 1594,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:14Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FSpiderArtifactFragment.webp?alt=media&token=6cf311ba-fa77-46cc-ab39-0a3c642376ce": {
+  "path": "/media/guidemu/assets/items/miscellaneous/SpiderArtifactFragment.webp",
+  "bytes": 582,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:15Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmiscellaneous%2FUrSeal.webp?alt=media&token=64339eb5-937a-459d-817b-650c24ad913b": {
+  "path": "/media/guidemu/assets/items/miscellaneous/UrSeal.webp",
+  "bytes": 1252,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:16Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmounts%2FBlueGiantMount.webp?alt=media&token=1375795f-9f55-4c01-a9ae-4efc7d26d76e": {
+  "path": "/media/guidemu/assets/items/mounts/BlueGiantMount.webp",
+  "bytes": 4962,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:18Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmounts%2FGreyGiantMount.webp?alt=media&token=ce427828-d30f-4df6-b9a2-8f155d3869a3": {
+  "path": "/media/guidemu/assets/items/mounts/GreyGiantMount.webp",
+  "bytes": 5944,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:19Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fmounts%2FRedGiantMount.webp?alt=media&token=da33ee5e-45c9-4473-aac8-a99f24f41a6a": {
+  "path": "/media/guidemu/assets/items/mounts/RedGiantMount.webp",
+  "bytes": 4482,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:20Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fpentagram%2FPentagramforBeginners.webp?alt=media&token=941191eb-2b26-4695-9d9b-d540703b91c6": {
+  "path": "/media/guidemu/assets/items/pentagram/PentagramforBeginners.webp",
+  "bytes": 4242,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:21Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fweapons%2Fbow%2FChaosNatureBow.webp?alt=media&token=09acba41-bf43-41f5-b9eb-297973de0db4": {
+  "path": "/media/guidemu/assets/items/weapons/bow/ChaosNatureBow.webp",
+  "bytes": 3002,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:22Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fweapons%2Fmace%2FChaosDragonAxe.webp?alt=media&token=c9c36582-2434-4ac2-bfa2-41b2f539c18e": {
+  "path": "/media/guidemu/assets/items/weapons/mace/ChaosDragonAxe.webp",
+  "bytes": 2496,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:24Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fweapons%2Fstaff%2FChaosLightingStaff.webp?alt=media&token=71cd5349-c7c7-4592-b36e-44718a80c309": {
+  "path": "/media/guidemu/assets/items/weapons/staff/ChaosLightingStaff.webp",
+  "bytes": 2870,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:25Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FAngelWings.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/AngelWings.webp",
+  "bytes": 5662,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:26Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FBloodyWings.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/BloodyWings.webp",
+  "bytes": 5626,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:28Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCapeofEmperor.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/CapeofEmperor.webp",
+  "bytes": 2250,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:29Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCapeofFighter.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/CapeofFighter.webp",
+  "bytes": 1934,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:31Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCapeofLord.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/CapeofLord.webp",
+  "bytes": 1534,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:32Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCapeofOverrule.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/CapeofOverrule.webp",
+  "bytes": 2244,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:33Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCloakOfInnoncence.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/CloakOfInnoncence.webp",
+  "bytes": 3524,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:34Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCloakOfSteel.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/CloakOfSteel.webp",
+  "bytes": 2662,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:35Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCloakofBrilliance.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/CloakofBrilliance.webp",
+  "bytes": 3734,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:37Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCloakofBrilliance4th.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/CloakofBrilliance4th.webp",
+  "bytes": 4644,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:38Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCloakofDeath.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/CloakofDeath.webp",
+  "bytes": 2038,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:39Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCloakofDeath.webp?alt=media&token=b00c9847-6e1b-4415-ab14-8a629ab922ff": {
+  "path": "/media/guidemu/assets/items/wings/CloakofDeath.webp",
+  "bytes": 2038,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:40Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCloakofDeath3rd.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/CloakofDeath3rd.webp",
+  "bytes": 4986,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:41Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCloakofDesire.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/CloakofDesire.webp",
+  "bytes": 3116,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:43Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCloakofHatred.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/CloakofHatred.webp",
+  "bytes": 4236,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:44Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCloakofLimit.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/CloakofLimit.webp",
+  "bytes": 1772,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:45Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCloakofSanctuary.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/CloakofSanctuary.webp",
+  "bytes": 3946,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:46Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FCloakofTranscendence.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/CloakofTranscendence.webp",
+  "bytes": 1856,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:47Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FControlWings.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/ControlWings.webp",
+  "bytes": 5698,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:49Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FDestructionWings.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/DestructionWings.webp",
+  "bytes": 5816,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:50Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FDevilWings.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/DevilWings.webp",
+  "bytes": 6278,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:51Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FEbonyCloak.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/EbonyCloak.webp",
+  "bytes": 3288,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:52Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FElvenWings.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/ElvenWings.webp",
+  "bytes": 1082,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:54Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FEternalWings.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/EternalWings.webp",
+  "bytes": 6900,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:55Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FEternityCloak.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/EternityCloak.webp",
+  "bytes": 4006,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:56Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FGeniusWings.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/GeniusWings.webp",
+  "bytes": 4848,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:57Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FJudgmentCloak.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/JudgmentCloak.webp",
+  "bytes": 5806,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:53:58Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FPureWhiteCloak.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/PureWhiteCloak.webp",
+  "bytes": 3290,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:00Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofCalm.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofCalm.webp",
+  "bytes": 6376,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:01Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofChaos.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofChaos.webp",
+  "bytes": 2434,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:02Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofChaos.webp?alt=media&token=60a874a9-9792-4284-8a65-254a87b95ab5": {
+  "path": "/media/guidemu/assets/items/wings/WingsofChaos.webp",
+  "bytes": 2434,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:03Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofCondemnation.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofCondemnation.webp",
+  "bytes": 5958,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:04Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofCurse.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofCurse.webp",
+  "bytes": 1180,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:06Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofDarkness.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofDarkness.webp",
+  "bytes": 1456,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:07Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofDespair.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofDespair.webp",
+  "bytes": 1738,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:08Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofDimension.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofDimension.webp",
+  "bytes": 1900,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:09Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofDisillusion.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofDisillusion.webp",
+  "bytes": 2776,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:10Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofDragon.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofDragon.webp",
+  "bytes": 2036,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:12Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofEternal.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofEternal.webp",
+  "bytes": 2490,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:13Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofEternity.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofEternity.webp",
+  "bytes": 5570,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:14Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofFate.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofFate.webp",
+  "bytes": 3278,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:15Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofHeaven.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofHeaven.webp",
+  "bytes": 1828,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:16Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofHit.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofHit.webp",
+  "bytes": 3486,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:18Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofIllusion.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofIllusion.webp",
+  "bytes": 2480,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:19Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofLife.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofLife.webp",
+  "bytes": 2964,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:20Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofLife.webp?alt=media&token=c9debe0e-ac9e-4830-8cc9-4ea474121f05": {
+  "path": "/media/guidemu/assets/items/wings/WingsofLife.webp",
+  "bytes": 2964,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:21Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofMagic.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofMagic.webp",
+  "bytes": 2038,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:23Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofMagic.webp?alt=media&token=188f1ac4-18f6-4b07-ac3f-6e983f6d5a18": {
+  "path": "/media/guidemu/assets/items/wings/WingsofMagic.webp",
+  "bytes": 2038,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:24Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofPowerExplosive.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofPowerExplosive.webp",
+  "bytes": 5678,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:25Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofPurity.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofPurity.webp",
+  "bytes": 6630,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:26Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofRuin.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofRuin.webp",
+  "bytes": 1814,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:28Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofSatan.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofSatan.webp",
+  "bytes": 1572,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:29Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofSilence.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofSilence.webp",
+  "bytes": 5610,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:30Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofSoul.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofSoul.webp",
+  "bytes": 2796,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:31Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofSpirit.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofSpirit.webp",
+  "bytes": 2134,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:32Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fitems%2Fwings%2FWingsofStorm.webp?alt=media": {
+  "path": "/media/guidemu/assets/items/wings/WingsofStorm.webp",
+  "bytes": 3002,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:34Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmap%2FAreaElegibility.webp?alt=media&token=457684f3-d723-43b1-8d8b-91ec48be2ce4": {
+  "path": "/media/guidemu/assets/maps/map/AreaElegibility.webp",
+  "bytes": 10206,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:35Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmap%2FBarracksOfBalgass.webp?alt=media&token=bf0380db-0d87-4ed8-b523-439f73344193": {
+  "path": "/media/guidemu/assets/maps/map/BarracksOfBalgass.webp",
+  "bytes": 27192,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:36Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmap%2FRefugeOfBalgass.webp?alt=media&token=1d88512c-2f80-451a-a30a-879673784227": {
+  "path": "/media/guidemu/assets/maps/map/RefugeOfBalgass.webp",
+  "bytes": 35922,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:38Z"
+ },
  "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FAquilaGunner.webp?alt=media": {
   "path": "/media/guidemu/assets/maps/monsters/AquilaGunner.webp",
   "bytes": 3474,
@@ -22,6 +1414,12 @@
   "bytes": 4428,
   "type": "image/webp",
   "fetched_at": "2026-10-22T13:18:50Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FBalram.webp?alt=media&token=d20b67bb-d1b8-4413-aed3-97f6fc520e51": {
+  "path": "/media/guidemu/assets/maps/monsters/Balram.webp",
+  "bytes": 4106,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:39Z"
  },
  "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FBerserk.webp?alt=media": {
   "path": "/media/guidemu/assets/maps/monsters/Berserk.webp",
@@ -71,11 +1469,23 @@
   "type": "image/webp",
   "fetched_at": "2026-10-22T13:19:02Z"
  },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FCrimsonHarpy.webp?alt=media&token=a4f42aff-0c8b-47f6-8b14-6194514e9e26": {
+  "path": "/media/guidemu/assets/maps/monsters/CrimsonHarpy.webp",
+  "bytes": 3436,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:40Z"
+ },
  "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FCrimsonLycan.webp?alt=media": {
   "path": "/media/guidemu/assets/maps/monsters/CrimsonLycan.webp",
   "bytes": 6194,
   "type": "image/webp",
   "fetched_at": "2026-10-22T13:19:03Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FCrimsonLycan.webp?alt=media&token=f90c40ba-7c30-4fee-934e-67d4221d4f96": {
+  "path": "/media/guidemu/assets/maps/monsters/CrimsonLycan.webp",
+  "bytes": 6194,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:41Z"
  },
  "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FCrimsonMinos.webp?alt=media": {
   "path": "/media/guidemu/assets/maps/monsters/CrimsonMinos.webp",
@@ -83,17 +1493,59 @@
   "type": "image/webp",
   "fetched_at": "2026-10-22T13:19:04Z"
  },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FCrimsonMinos.webp?alt=media&token=2cb9b524-72be-4c74-b171-d4637c7fe546": {
+  "path": "/media/guidemu/assets/maps/monsters/CrimsonMinos.webp",
+  "bytes": 6136,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:43Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDarkElf.webp?alt=media&token=a9e8b5df-a17b-4252-9304-0bcbd398f95d": {
+  "path": "/media/guidemu/assets/maps/monsters/DarkElf.webp",
+  "bytes": 4220,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:44Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDeathBeamKnight.webp?alt=media&token=83e2b181-cdf4-4f3f-9440-c3c4d8fd1adf": {
+  "path": "/media/guidemu/assets/maps/monsters/DeathBeamKnight.webp",
+  "bytes": 5802,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:45Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDeathSpirit.webp?alt=media&token=10a38de1-4d03-44b4-8d6d-dd60295bf685": {
+  "path": "/media/guidemu/assets/maps/monsters/DeathSpirit.webp",
+  "bytes": 5026,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:46Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDeepDungeonCyclops.webp?alt=media&token=39c678bb-94ff-4c07-8ee2-4cc86c04f606": {
+  "path": "/media/guidemu/assets/maps/monsters/DeepDungeonCyclops.webp",
+  "bytes": 2712,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:47Z"
+ },
  "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDeepDungeonHellHound.webp?alt=media": {
   "path": "/media/guidemu/assets/maps/monsters/DeepDungeonHellHound.webp",
   "bytes": 6332,
   "type": "image/webp",
   "fetched_at": "2026-10-22T13:19:05Z"
  },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDeepDungeonLarva.webp?alt=media&token=d2634bd3-394e-4b73-b795-681e6286c317": {
+  "path": "/media/guidemu/assets/maps/monsters/DeepDungeonLarva.webp",
+  "bytes": 1522,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:49Z"
+ },
  "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDeepDungeonSkeletonArcher.webp?alt=media": {
   "path": "/media/guidemu/assets/maps/monsters/DeepDungeonSkeletonArcher.webp",
   "bytes": 7022,
   "type": "image/webp",
   "fetched_at": "2026-10-22T13:19:06Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDeepDungeonSkeletonWarrior.webp?alt=media&token=7e2330be-0233-4079-ad6e-713ba108b84c": {
+  "path": "/media/guidemu/assets/maps/monsters/DeepDungeonSkeletonWarrior.webp",
+  "bytes": 4400,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:50Z"
  },
  "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FDevilScythe.webp?alt=media": {
   "path": "/media/guidemu/assets/maps/monsters/DevilScythe.webp",
@@ -203,6 +1655,12 @@
   "type": "image/webp",
   "fetched_at": "2026-10-22T13:19:29Z"
  },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FHellmaine.webp?alt=media&token=7c78222d-59bb-4d33-82f2-112454916585": {
+  "path": "/media/guidemu/assets/maps/monsters/Hellmaine.webp",
+  "bytes": 6202,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:51Z"
+ },
  "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FHellraiser.webp?alt=media": {
   "path": "/media/guidemu/assets/maps/monsters/Hellraiser.webp",
   "bytes": 5332,
@@ -269,6 +1727,12 @@
   "type": "image/webp",
   "fetched_at": "2026-10-22T13:19:43Z"
  },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FPhoenixofDarkness.webp?alt=media&token=48eb8a42-c3b5-40e2-96df-d457146c6177": {
+  "path": "/media/guidemu/assets/maps/monsters/PhoenixofDarkness.webp",
+  "bytes": 4266,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:52Z"
+ },
  "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FPollutionButterfly.webp?alt=media": {
   "path": "/media/guidemu/assets/maps/monsters/PollutionButterfly.webp",
   "bytes": 2588,
@@ -334,6 +1798,12 @@
   "bytes": 4386,
   "type": "image/webp",
   "fetched_at": "2026-10-22T13:19:57Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FSoram.webp?alt=media&token=55cf827d-ab04-42fa-8c79-197928cbfedc": {
+  "path": "/media/guidemu/assets/maps/monsters/Soram.webp",
+  "bytes": 4442,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:54Z"
  },
  "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fmonsters%2FSpecterKnight.webp?alt=media": {
   "path": "/media/guidemu/assets/maps/monsters/SpecterKnight.webp",
@@ -460,6 +1930,72 @@
   "bytes": 3448,
   "type": "image/webp",
   "fetched_at": "2026-10-22T13:20:23Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fnpc%2FAdniel.webp?alt=media&token=738bd894-797d-4f82-a118-bb964350f233": {
+  "path": "/media/guidemu/assets/maps/npc/Adniel.webp",
+  "bytes": 12172,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:55Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fnpc%2FApostleDevin.webp?alt=media&token=a3a5d63e-767b-43ef-8f3a-bb33fba5a912": {
+  "path": "/media/guidemu/assets/maps/npc/ApostleDevin.webp",
+  "bytes": 9168,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:56Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fnpc%2FChaosGoblinMachine.webp?alt=media&token=e771a492-5856-449f-888c-71c32bc0bbba": {
+  "path": "/media/guidemu/assets/maps/npc/ChaosGoblinMachine.webp",
+  "bytes": 31604,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:57Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fnpc%2FEunice2.webp?alt=media&token=0b64655c-797a-48c6-968b-358602883744": {
+  "path": "/media/guidemu/assets/maps/npc/Eunice2.webp",
+  "bytes": 10468,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:54:58Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fnpc%2FGatekeeper.webp?alt=media&token=e15b96ad-80f2-4d2a-b604-876bac1cf682": {
+  "path": "/media/guidemu/assets/maps/npc/Gatekeeper.webp",
+  "bytes": 11570,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:55:00Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fnpc%2FMarlon.webp?alt=media&token=4e425d5f-a439-48eb-8210-5c6e1d8a911e": {
+  "path": "/media/guidemu/assets/maps/npc/Marlon.webp",
+  "bytes": 9908,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:55:01Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fnpc%2FPriestJames.webp?alt=media&token=c8731e68-628b-4164-8ba7-7869b186f3be": {
+  "path": "/media/guidemu/assets/maps/npc/PriestJames.webp",
+  "bytes": 8988,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:55:02Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fnpc%2FSebinaThePriest.webp?alt=media&token=2cb861d4-0b03-4ef8-b379-02bca6d90df4": {
+  "path": "/media/guidemu/assets/maps/npc/SebinaThePriest.webp",
+  "bytes": 5872,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:55:03Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fnpc%2FSent.webp?alt=media&token=f9bfa2f6-f776-4db8-bb6d-e0e230c02a30": {
+  "path": "/media/guidemu/assets/maps/npc/Sent.webp",
+  "bytes": 12628,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:55:05Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fnpc%2FWeaponsMerchantBolo.webp?alt=media&token=5d3a82af-6279-410e-b880-dc32cad3cf07": {
+  "path": "/media/guidemu/assets/maps/npc/WeaponsMerchantBolo.webp",
+  "bytes": 8036,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:55:06Z"
+ },
+ "https://firebasestorage.googleapis.com/v0/b/trade-mu.appspot.com/o/assets%2Fmaps%2Fnpc%2FWerewolfQuarrel.webp?alt=media&token=70a94f99-94ae-43c2-b6f8-6b6a0c787d99": {
+  "path": "/media/guidemu/assets/maps/npc/WerewolfQuarrel.webp",
+  "bytes": 14264,
+  "type": "image/webp",
+  "fetched_at": "2026-10-22T16:55:07Z"
  },
  "https://globalmuonline.com/assets/images/monsters/Aquila-Gunner.webp": {
   "path": "/media/gmo/assets/images/monsters/Aquila-Gunner.webp",

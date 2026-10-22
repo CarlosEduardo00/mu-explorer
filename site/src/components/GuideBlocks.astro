@@ -1,0 +1,62 @@
+---
+// Conteúdo de um guia (blocos de scrapers.guidemu.guides): títulos, parágrafos, imagens, listas, tabelas, cartões,
+// grades, abas e acordeões. Recursivo (Astro.self) para o que vem dentro de cartões, abas e acordeões.
+import GuideText from "./GuideText.astro";
+import { localImage } from "../lib/data";
+import type { Block } from "../lib/guides";
+
+interface Props { blocks: Block[] }
+const { blocks } = Astro.props;
+const uid = () => Math.random().toString(36).slice(2, 9);
+const kindOf = (items: Block[]) => (items[0]?.type === "card" ? items[0].kind : "guide");
+---
+{blocks.map((b) => {
+  switch (b.type) {
+    case "heading":
+      return b.style === "section"
+        ? <GuideText as="h2" class="g-section" text={b.text} />
+        : <GuideText as={b.level <= 2 ? "h3" : "h4"} class="g-title" text={b.text} />;
+    case "paragraph":
+      return <GuideText as="p" class:list={["g-p", b.style && `g-${b.style}`, { "g-center": b.center }]} text={b.text} />;
+    case "image":
+      return <img class="g-img" src={localImage(b.src) ?? b.src} alt={b.alt ?? ""} loading="lazy" />;
+    case "list":
+      return <ul class="g-list">{b.items.map((t) => <GuideText as="li" text={t} />)}</ul>;
+    case "table":
+      return (
+        <div class="table-wrap g-table"><table>
+          {b.head.some(Boolean) && <thead><tr>{b.head.map((h) => <GuideText as="th" text={h} />)}</tr></thead>}
+          <tbody>{b.rows.map((r) => <tr>{r.map((c) => (c ? <GuideText as="td" text={c} /> : <td></td>))}</tr>)}</tbody>
+        </table></div>
+      );
+    case "card":
+      return <div class:list={["g-card", `g-card-${b.kind}`]}><Astro.self blocks={b.blocks} /></div>;
+    case "grid":
+      return <div class:list={["g-grid", `g-grid-${kindOf(b.items)}`]}><Astro.self blocks={b.items} /></div>;
+    case "tabs": {
+      const id = uid();
+      return (
+        <div class="g-tabs" data-gtabs>
+          <div class="g-tablist" role="tablist">
+            {b.tabs.map((t, i) => (
+              <button type="button" role="tab" id={`t-${id}-${i}`} aria-controls={`p-${id}-${i}`} aria-selected={i === 0 ? "true" : "false"}>
+                <GuideText text={t.label} />
+              </button>
+            ))}
+          </div>
+          {b.tabs.map((t, i) => (
+            <div class="g-panel" role="tabpanel" id={`p-${id}-${i}`} aria-labelledby={`t-${id}-${i}`} data-open={i === 0 ? "" : undefined}>
+              <Astro.self blocks={t.blocks} />
+            </div>
+          ))}
+        </div>
+      );
+    }
+    case "accordion":
+      return b.items.map((it) => (
+        <details class="g-acc"><summary><GuideText text={it.title} /></summary><div class="g-acc-body"><Astro.self blocks={it.blocks} /></div></details>
+      ));
+    default:
+      return null;
+  }
+})}

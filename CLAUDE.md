@@ -37,7 +37,9 @@ python -m scrapers.gmo fetch-drops                   # listas de drop por mapa d
 python -m scrapers.gmo parse                         # -> data/processed/gmo/ (mapas, monstros c/ imagem, spawns, marcadores,
                                                      #    drop_lists.json = mapa -> monstro -> itens, formato compacto)
 python -m scrapers.guidemu fetch                     # Guide MU Online: JS com mapas/spots/monstros + 70 imagens de mapa (~1,5 min)
-python -m scrapers.guidemu parse                     # -> data/processed/guidemu/ (monsters, spots, groups, map_images)
+python -m scrapers.guidemu fetch-guides              # aba de guias (18 páginas, sitemap) renderizada no Chromium, ~1 min
+                                                     #    (precisa de `pip install -e ".[render]"`: Playwright)
+python -m scrapers.guidemu parse                     # -> data/processed/guidemu/ (monsters, spots, groups, map_images, guides)
 python -m scrapers.terrain                           # terreno (.att do MuEmu; imagens do guia nos mapas sem .att)
                                                      #    -> data/processed/terrain/terrains.json (mapas vetoriais)
 python -m scrapers.media list|fetch                  # imagens usadas pelo site -> site/public/media/ + data/media.json (1 req/s)
@@ -93,11 +95,12 @@ scrapers/combine.py  cruzamento Fanz + MuEmu (Fanz é a base; MuEmu só preenche
 scrapers/planner/  build.py: regras de classes (pontos por nível, base, evolução) -> data/curated/planner.json
 scrapers/gmo/      cli.py (fetch pelo sitemap), parse.py (guias de mapa: zonas de spawn, cards, marcadores)
 scrapers/guidemu/  bundle.py (JS do site: tabela de chunks ofuscada, JSON em string), cli.py, parse.py, places.py
-                   (mapa/zona do guia -> mapa do site)
+                   (mapa/zona do guia -> mapa do site), render.py (Chromium headless para os guias), guides.py (guia -> blocos)
 scrapers/terrain.py  mapas vetoriais: terreno .att do MuEmu (ou imagens do guia) -> contornos SVG (chão, zona segura)
 scrapers/media.py  cópia local das imagens do site (site/public/media + data/media.json)
 scrapers/spots.py  spots de farm: os do Guide MU Online; fora dele, agrupa spawns do MuEmu -> farm_spots.json
-data/curated/      arquivos curados por nós (hoje só planner.json), commitados
+data/curated/      arquivos curados por nós, commitados: planner.json, builds.json e translations/guides.pt-BR.json
+                   (tradução aproximada dos guias, nossa)
 docs/              rascunhos e notas (ex.: pedido de acesso ao muonline.us)
 schema/            JSON Schema (draft 2020-12) de cada entidade publicada
 data/raw/          HTML bruto + .meta.json por página (fora do git)
@@ -114,7 +117,8 @@ site/src/          Astro: layouts/Base (tema escuro com dourado, Cinzel nos tít
                    pura do planner + testes), pages/ (início, itens, monstros, mapas, npcs: catálogo + página por
                    registro; mapas/<id>/mapa.svg = miniatura vetorial; spots/ = área separada: mapas em
                    cartões com as subcategorias e spots/<mapa>/ (?zona=...) com o mapa interativo; builds/ = builds prontas do oficial para seguir (proporção,
-                   skills por nível, atributos por nível, sets de mastery por nível, vídeos); planner/; data/ = JSON
+                   skills por nível, atributos por nível, sets de mastery por nível, vídeos); guias/ = guias do Guide MU Online
+                   (lib/guides.ts, components/GuideBlocks + GuideText: texto em português ou inglês); planner/; data/ = JSON
                    estático; api/ = API estática)
                    lib/api.ts + lib/sqlite.ts: manifesto, registros com relações e SQLite (node:sqlite)
 site/public/       arquivos fixos copiados para a saída (_headers, 404.html, media/ = imagens copiadas das fontes)
@@ -271,7 +275,7 @@ o que foi mapeado antes do bloqueio.
   nome do MuEmu, ou difflib ≥ 0,9 com a mesma última palavra).
 - muonline.fandom.com responde com desafio anti-bot da Cloudflare: não coletamos.
 
-### 5. Guide MU Online (guidemuonline.com) — spots, mapas e monstros do MU oficial
+### 5. Guide MU Online (guidemuonline.com) — spots, mapas, monstros e guias do MU oficial
 - Guia do MU Online **oficial**; publicação autorizada pelo dono (out/2026). robots.txt libera tudo (só o sitemap).
 - Site em React: não há HTML com dados. Mapas (43, com zonas: andares e áreas) e monstros (331) vêm embutidos como JSON
   em strings dos chunks JS (`static/js/<id>.<hash>.chunk.js`). O `main.js` é ofuscado (javascript-obfuscator): a tabela
@@ -287,7 +291,18 @@ o que foi mapeado antes do bloqueio.
   zona que é mapa próprio no site (Kalima 1..7, andares do Deep Dungeon, Atlans Abyss 1..3, Karutan 1/2, Debenter, Nars,
   Uruk) vira o mapa (`places.py`, conferido contra o terreno do MuEmu). Nos mapas que o guia cobre, os spots dele
   substituem os gerados dos spawns; os spawns do GMO não geram spots (a quantidade de lá não vale para o oficial).
-- O guia também tem uma aba de guias (ainda não coletada).
+- Guias (`/guides/...`, 18 no sitemap: quests de troca de classe, asas, sistema elemental, Artifact, Guardian, Pandora):
+  o texto fica no código React, em pedaços, então `fetch-guides` renderiza cada página num Chromium headless
+  (`render.py`, Playwright): só HTML/JS/CSS do próprio host passam (sem imagens, anúncios, estatísticas nem Firebase),
+  cada requisição passa pelo robots.txt e pelo limite de 1 req/s do `PoliteSession`. O site só monta a aba ativa:
+  o renderizador clica em cada aba e guarda o conteúdo no fim do HTML salvo (`<section class="mu-explorer-tab">`;
+  modo `after` para as abas que separam partes de uma quest). `guides.py` transforma a página em blocos (título,
+  parágrafo, imagem, lista, tabela, cartão, grade, abas, acordeão) com o texto em modelo `{"t", "m"}`: os termos do
+  jogo (destaques `text-accent` curtos e nomes entre aspas simples, como 'Scroll of the Emperor') viram marcadores
+  `{0}`, `{1}`... e não se traduzem. A tradução aproximada (nossa, não oficial) fica em
+  `data/curated/translations/guides.pt-BR.json` (modelo em inglês -> modelo em português, com os mesmos marcadores e
+  tags; o site ignora a que não bater). Guia novo ou texto mudado = traduzir as frases novas (o teste confere a marcação).
+  No site (`/guias/`), português por padrão e botão Português/English (preferência `mu-explorer:lang` no navegador).
 
 ### 6. Outras (referência, não prioritárias)
 muonline.fandom.com (MediaWiki, `/api.php`, cobertura parcial), StrategyWiki (antiga),
