@@ -1,0 +1,23 @@
+---
+// Bandeiras desenhadas (o Windows não mostra bandeira em emoji): seletor de idioma dos guias.
+interface Props { lang: "pt-BR" | "en" }
+const { lang } = Astro.props;
+---
+<svg class="flag" viewBox="0 0 20 14" aria-hidden="true">
+  {lang === "pt-BR" ? (
+    <>
+      <rect width="20" height="14" fill="#009c3b" />
+      <path d="M10 1.5 18.5 7 10 12.5 1.5 7Z" fill="#ffdf00" />
+      <circle cx="10" cy="7" r="3.1" fill="#002776" />
+    </>
+  ) : (
+    <>
+      <rect width="20" height="14" fill="#fff" />
+      {[0, 2, 4, 6, 8, 10, 12].map((y) => <rect y={y} width="20" height="1" fill="#b22234" />)}
+      <rect width="9" height="7" fill="#3c3b6e" />
+    </>
+  )}
+</svg>
+<style>
+  .flag { width: 1.25rem; height: .875rem; flex: none; border-radius: 2px; box-shadow: 0 0 0 1px rgba(255,255,255,.18); }
+</style>

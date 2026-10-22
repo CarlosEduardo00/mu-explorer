@@ -29,7 +29,8 @@ log = logging.getLogger("scrapers.media")
 
 MEDIA_DIR = REPO_ROOT / "site" / "public" / "media"
 MANIFEST = REPO_ROOT / "data" / "media.json"
-HOSTS = {"muonlinefanz.com": "fanz", "www.muonlinefanz.com": "fanz", "globalmuonline.com": "gmo"}
+HOSTS = {"muonlinefanz.com": "fanz", "www.muonlinefanz.com": "fanz", "globalmuonline.com": "gmo",
+         "firebasestorage.googleapis.com": "guidemu"}   # imagens do Guide MU Online
 IMAGE_TYPES = ("image/jpeg", "image/png", "image/webp", "image/gif")
 
 
@@ -40,6 +41,10 @@ def image_urls(data_dir: Path) -> list[str]:
         if path.exists():
             for row in json.loads(path.read_text(encoding="utf-8")):
                 urls.update(row[k] for k in ("image_url", "minimap_url") if row.get(k))
+    guides = data_dir / "processed" / "combined" / "guides.json"
+    if guides.exists():
+        for guide in json.loads(guides.read_text(encoding="utf-8")):
+            urls.update(guide.get("image_urls") or [])
     planner = data_dir / "curated" / "planner.json"
     if planner.exists():
         for ruleset in json.loads(planner.read_text(encoding="utf-8"))["rulesets"]:
@@ -52,6 +57,8 @@ def local_path(url: str) -> str:
     """Caminho público estável: /media/<fonte>/<caminho da URL, sem espaços nem caracteres estranhos>."""
     parts = urlsplit(url)
     path = unquote(parts.path).lstrip("/")
+    if "/o/" in path and parts.netloc == "firebasestorage.googleapis.com":   # .../o/<objeto>?alt=media
+        path = path.split("/o/", 1)[1]
     safe = re.sub(r"[^A-Za-z0-9._/-]+", "-", path).strip("-")
     if safe != path:  # nomes diferentes que viram o mesmo slug não colidem
         stem, dot, ext = safe.rpartition(".")

@@ -14,8 +14,8 @@ Base: Fanz. O MuEmu só preenche campos vazios; os valores do Fanz nunca são so
 - item.index: 0 → 1863 de 3074
 - item.durability: 0 → 1678 de 3074
 - item.category: 0 → 1861 de 3074
-- monster.respawn_seconds: 6 → 273 de 406
-- monster.number: 0 → 181 de 406
+- monster.respawn_seconds: 6 → 273 de 471
+- monster.number: 0 → 181 de 471
 
 ## Mapas
 
@@ -198,3 +198,17 @@ servidor privado; o Fanz acompanha o global. Diferença aqui não é erro de par
 - drops do GMO com monstro desconhecido: 2047
 - drops do GMO (pares monstro -> item): 31194
 - itens com drop do GMO: 839
+
+## Guide MU Online (MU oficial)
+
+- mapas novos: 6
+- monstros novos: 65
+- monstros: atk_max preenchido: 4
+- monstros: atk_min preenchido: 4
+- monstros: def preenchido: 4
+- monstros: def_rate preenchido: 8
+- monstros: elemental_def preenchido: 199
+- monstros: elemental_dmg_max preenchido: 189
+- monstros: elemental_dmg_min preenchido: 189
+- monstros: hp preenchido: 4
+- monstros: image_url preenchido: 25

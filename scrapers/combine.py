@@ -6,6 +6,9 @@ python -m scrapers.combine  ->  data/processed/combined/*.json, item_matches.jso
 Regras:
 - Global MU Online (se data/processed/gmo existir): imagens de monstros que faltam, monstros e mapas novos e
   as zonas de spawn da S21 (nos mapas que ele cobre, substituem os spawns do MuEmu); marcadores em map_markers.json.
+- Guide MU Online (se data/processed/guidemu existir; MU oficial): monstros dos spots (preenche campos vazios e
+  acrescenta os que faltam) e mapas que o site não tem (zonas que são mapas próprios, como Kalima 2). Os spots
+  dele viram farm_spots no `scrapers.spots`.
 - Itens: casam pelo nome. Excellent/ancient do Fanz casam com o item base do MuEmu (no MU eles têm o mesmo
   grupo/índice do item base). Do MuEmu vêm group, index, durability e category, só quando o Fanz não tem.
 - Monstros: casam pelo nome e, havendo variantes (ex.: Aegis em Kalima 1-7), pelo nível. Do MuEmu vêm o
@@ -365,6 +368,53 @@ def add_gmo(data: dict, gmo: dict, muemu_names: dict[str, str] | None = None) ->
     return stats
 
 
+GUIDEMU_FILL = ("level", "hp", "atk_min", "atk_max", "def", "def_rate", "elemental_def", "elemental_dmg_min",
+                 "elemental_dmg_max", "image_url")
+
+
+def add_guidemu(data: dict, guidemu: dict) -> Counter:
+    """Guide MU Online (MU oficial): monstros (casam pelo nome e, com variantes, pelo nível; só campos vazios são
+    preenchidos), mapas novos (zonas do guia que são mapas próprios no site e mapas que o site não tem) e a fonte."""
+    from scrapers.guidemu.places import place
+    stats = Counter()
+    if not guidemu.get("monster"):
+        return stats
+    monsters = {m["id"]: m for m in data["monster"]}
+    by_slug = _index(data["monster"])
+    for g in guidemu["monster"]:
+        found = by_slug.get(slugify(g["name"]))
+        if found:
+            target = min(found, key=lambda m: abs((m.get("level") or 0) - (g.get("level") or 0)))
+            for field in GUIDEMU_FILL:
+                if target.get(field) is None and g.get(field) is not None:
+                    target[field] = g[field]
+                    stats[f"monstros: {field} preenchido"] += 1
+        elif g["id"] not in monsters:
+            monsters[g["id"]] = dict(g)
+            stats["monstros novos"] += 1
+    data["monster"] = sorted(monsters.values(), key=lambda m: m["id"])
+    maps = {m["id"]: m for m in data["map"]}
+    for group in guidemu.get("group", []):
+        parent = place(group["name"], None)[0]
+        for zone in group["zones"] or [None]:
+            map_id, area = place(group["name"], zone)
+            if map_id in maps:
+                continue
+            own = zone is not None and area is None   # zona que é um mapa próprio no site (ex.: Kalima 2)
+            maps[map_id] = {
+                "id": map_id, "name": zone if own else group["name"], "parent_id": parent if own and parent in maps else None,
+                "description": None if own else group.get("description"), "quick_facts": [], "valued_drops": {},
+                "monsters": [], "special_monsters": [], "bosses": [], "npcs": [], "connections": [], "notes": [],
+                "image_url": None, "season": None, "source": "guidemu", "source_url": group["source_url"],
+                "scraped_at": guidemu.get("scraped_at"), "page_updated_at": None,
+                "level_required": None, "level_recommended_min": None, "level_recommended_max": None, "minimap_url": None,
+            }
+            stats["mapas novos"] += 1
+    data["map"] = [maps[k] for k in sorted(maps)]
+    data["source"] = data["source"] + guidemu.get("source", [])
+    return stats
+
+
 def build_report(data: dict, matches: dict, diffs: list[str], fanz: dict, muemu: dict) -> str:
     def filled(field: str, entity: str) -> str:
         before = sum(1 for r in fanz[entity] if r.get(field) is not None)
@@ -429,6 +479,14 @@ def main(argv: list[str] | None = None) -> int:
     muemu_names = {slugify(muemu_by_id[match["muemu_id"]]["name"]): match["fanz_id"]
                    for match in matches["item"] if match["muemu_id"] in muemu_by_id}
     gmo_stats = add_gmo(data, gmo, muemu_names)
+    guidemu_dir = processed / "guidemu"
+    guidemu = {}
+    if guidemu_dir.exists():
+        read = lambda name: json.loads((guidemu_dir / name).read_text(encoding="utf-8")) if (guidemu_dir / name).exists() else []
+        guidemu = {"monster": read("monsters.json"), "group": read("groups.json"), "source": read("sources.json"),
+                   "guide": read("guides.json")}
+        guidemu["scraped_at"] = next((s.get("last_scraped_at") for s in guidemu["source"]), None)
+    guidemu_stats = add_guidemu(data, guidemu)
     out = processed / "combined"
     out.mkdir(parents=True, exist_ok=True)
     for entity, filename in OUTPUT.items():
@@ -436,9 +494,12 @@ def main(argv: list[str] | None = None) -> int:
     for entity in ("item", "monster"):
         dump_records(out / f"{entity}_matches.json", matches[entity])
     dump_records(out / "map_markers.json", data.get("map_marker", []))
+    dump_records(out / "guides.json", guidemu.get("guide", []))   # guias do Guide MU Online (páginas /guias/)
     report = build_report(data, matches, diffs, fanz, muemu)
     if gmo_stats:
         report += "\n## Global MU Online (S21, só local)\n\n" + "\n".join(f"- {k}: {v}" for k, v in gmo_stats.items()) + "\n"
+    if guidemu_stats:
+        report += "\n## Guide MU Online (MU oficial)\n\n" + "\n".join(f"- {k}: {v}" for k, v in sorted(guidemu_stats.items())) + "\n"
     (out / "combine_report.md").write_text(report, encoding="utf-8")
     from scrapers.common.storage import RawStore
     from scrapers.fanz.pipeline import dead_item_ids

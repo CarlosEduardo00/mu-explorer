@@ -7,12 +7,18 @@ Cada .att é uma grade 256 × 256 (os últimos 65.536 bytes; índice = y × 256 
 - safe: zona segura (flag 1, dentro do mapa).
 Cada camada vira contornos (bordas das casas encadeadas em polígonos) simplificados por Douglas-Peucker e
 gravados como `d` de <path> SVG, na orientação do mapa interativo (horizontal = y, vertical = x; casa (x, y)
-centrada em (y, x)). Nada é copiado das imagens das fontes: o desenho é nosso, gerado da geometria do jogo.
+centrada em (y, x)). Nesses mapas o desenho é nosso, gerado da geometria do jogo.
 
     python -m scrapers.terrain      # data/raw/muemu/repo/Data/Terrains -> data/processed/terrain/terrains.json
 
 O arquivo de cada mapa foi conferido contra os spawns (a fração de spawns em chão andável tem de superar a
-fração de chão do mapa); mapas da S21 que mudaram (ex.: Aida) ficam de fora e usam a imagem do minimapa.
+fração de chão do mapa).
+
+Mapas que o MuEmu não tem (ou que mudaram, como Aida) usam as imagens de spots do Guide MU Online (MU oficial,
+publicação autorizada; `python -m scrapers.guidemu fetch` e `parse`): as imagens seguem o minimapa do jogo (fundo
+transparente, chão opaco) e a transformação coordenada -> imagem sai dos spots de cada uma. Cada casa vira chão se
+cai em pixel opaco; `land` é o chão com uma casa de borda; sem zona segura. Conferido contra o .att do MuEmu nos
+mapas que existem nos dois (Lorencia, Noria, Atlans, Tarkan: o mesmo desenho, deslocado no máximo 1 a 2 casas).
 """
 from __future__ import annotations
 
@@ -20,6 +26,7 @@ import argparse
 import json
 import logging
 import sys
+from collections import deque
 from pathlib import Path
 
 from scrapers.common.model import REPO_ROOT
@@ -156,7 +163,90 @@ def build(terrain_dir: Path) -> tuple[dict, list[str]]:
         if name not in cache:
             masks = layer_masks(read_grid(path))
             cache[name] = {layer: path_data(contours(m)) for layer, m in masks.items()}
-        out[map_id] = {"file": f"Data/Terrains/{name}.att", **cache[name]}
+        out[map_id] = {"source": "muemu", "file": f"Data/Terrains/{name}.att", **cache[name]}
+    return out, notes
+
+
+# --- Terreno das imagens de spots do Guide MU Online ----------------------------------------------------------------
+
+ALPHA = 40       # opacidade mínima do pixel para contar como chão (o fundo das imagens é transparente)
+SUBSAMPLES = 3   # amostras por lado de cada casa (maioria decide)
+
+
+def image_mask(image, transform: list[list[float]]):
+    """Chão (matriz 256 × 256, linha = x) de uma imagem do guia: cada casa vai para a imagem pela transformação
+    (x, y) -> (left %, top %) e vale como chão se a maioria das amostras cai em pixel opaco."""
+    import numpy as np
+    alpha = np.asarray(image.convert("RGBA"))[..., 3]
+    h, w = alpha.shape
+    (a, b, c), (d, e, f) = transform
+    xs, ys = np.meshgrid(np.arange(SIZE, dtype=float), np.arange(SIZE, dtype=float), indexing="ij")
+    hits = np.zeros((SIZE, SIZE))
+    for ox in (np.arange(SUBSAMPLES) + 0.5) / SUBSAMPLES - 0.5:
+        for oy in (np.arange(SUBSAMPLES) + 0.5) / SUBSAMPLES - 0.5:
+            left = (a * (xs + ox) + b * (ys + oy) + c) / 100 * w
+            top = (d * (xs + ox) + e * (ys + oy) + f) / 100 * h
+            inside = (left >= 0) & (left < w) & (top >= 0) & (top < h)
+            i, j = np.clip(top.astype(int), 0, h - 1), np.clip(left.astype(int), 0, w - 1)
+            hits += inside & (alpha[i, j] > ALPHA)
+    return hits / SUBSAMPLES ** 2 >= 0.5
+
+
+def _grow(m):
+    import numpy as np
+    from numpy.lib.stride_tricks import sliding_window_view
+    return sliding_window_view(np.pad(m, 1), (3, 3)).any((2, 3))
+
+
+def _drop_small(m, min_size: int):
+    """Tira manchas (componentes 4-conexos) com menos de `min_size` casas."""
+    import numpy as np
+    keep, seen = np.zeros_like(m), np.zeros_like(m)
+    for i, j in zip(*np.nonzero(m)):
+        if seen[i, j]:
+            continue
+        seen[i, j] = True
+        comp, queue = [(i, j)], deque([(i, j)])
+        while queue:
+            a, b = queue.popleft()
+            for u, v in ((a + 1, b), (a - 1, b), (a, b + 1), (a, b - 1)):
+                if 0 <= u < SIZE and 0 <= v < SIZE and m[u, v] and not seen[u, v]:
+                    seen[u, v] = True
+                    comp.append((u, v))
+                    queue.append((u, v))
+        if len(comp) >= min_size:
+            keep[tuple(zip(*comp))] = True
+    return keep
+
+
+def build_guide(data_dir: Path, skip: set[str]) -> tuple[dict, list[str]]:
+    """Terreno dos mapas do guia que não estão em `skip` (os que já têm .att): união das imagens do mapa e das
+    zonas dele com transformação boa. `land` = chão + 1 casa de borda; sem zona segura."""
+    from PIL import Image
+    from scrapers.guidemu.parse import FIT_MAX_ERROR
+    from scrapers.guidemu.places import place
+    path = data_dir / "processed" / "guidemu" / "map_images.json"
+    if not path.exists():
+        return {}, ["guidemu: map_images.json ausente (rode scrapers.guidemu fetch e parse)"]
+    out, notes, by_map = {}, [], {}
+    for entry in json.loads(path.read_text(encoding="utf-8")):
+        map_id = place(entry["map"], entry["zone"])[0]
+        if map_id in skip:
+            continue
+        image = data_dir / "raw" / "guidemu" / "maps" / f"{entry['key']}.webp"
+        if not entry["transform"] or entry["error"] > FIT_MAX_ERROR or not image.exists():
+            notes.append(f"{map_id}: imagem {entry['key']} sem transformação confiável ou ausente")
+            continue
+        by_map.setdefault(map_id, []).append((entry, image))
+    for map_id, entries in sorted(by_map.items()):
+        import numpy as np
+        walk = np.zeros((SIZE, SIZE), dtype=bool)
+        for entry, image in entries:
+            walk |= image_mask(Image.open(image), entry["transform"])
+        walk = _drop_small(walk, 6)
+        land = _grow(walk)
+        out[map_id] = {"source": "guidemu", "file": ", ".join(e["image_url"] for e, _ in entries),
+                       "land": path_data(contours(land.tolist())), "walk": path_data(contours(walk.tolist())), "safe": ""}
     return out, notes
 
 
@@ -167,6 +257,9 @@ def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s", stream=sys.stderr)
     terrain_dir = args.data_dir / "raw" / "muemu" / "repo" / "Data" / "Terrains"
     data, notes = build(terrain_dir)
+    guide, guide_notes = build_guide(args.data_dir, set(data))
+    data.update(guide)
+    notes += guide_notes
     meta_path = args.data_dir / "raw" / "muemu" / "meta.json"
     meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
     target = args.data_dir / "processed" / "terrain" / "terrains.json"

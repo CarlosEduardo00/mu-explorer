@@ -1,0 +1,13 @@
+---
+// Um texto de guia nas duas línguas: a tradução aproximada (lang="pt-BR") e o original (lang="en"); o CSS do Base
+// mostra uma conforme a escolha (<html data-lang>). Sem tradução, só o original. Termos do jogo ficam iguais.
+import { textHtml, translated, type Text } from "../lib/guides";
+
+interface Props { text: Text | null | undefined; as?: string; class?: string }
+const { text, as = "span", class: cls } = Astro.props;
+const pt = translated(text);
+const Tag = as;
+---
+{text && (pt
+  ? <><Tag class:list={[cls, "tx"]} lang="pt-BR" set:html={textHtml(text, pt)} /><Tag class:list={[cls, "tx"]} lang="en" set:html={textHtml(text)} /></>
+  : <Tag class={cls} lang="en" set:html={textHtml(text)} />)}

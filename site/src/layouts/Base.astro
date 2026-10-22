@@ -1,8 +1,10 @@
 ---
-import { sources, datasetName } from "../lib/data";
+import { sources, datasetName, guides } from "../lib/data";
+import Flag from "../components/Flag.astro";
 
-interface Props { title: string; description?: string; wide?: boolean }
-const { title, description = "Itens, monstros, mapas, spots de farm e builds de MU Online.", wide = false } = Astro.props;
+/** titleEn: título em inglês quando ele não sai da tradução da interface (ex.: guias, que têm o título original). */
+interface Props { title: string; titleEn?: string; description?: string; wide?: boolean }
+const { title, titleEn, description = "Itens, monstros, mapas, spots de farm e builds de MU Online.", wide = false } = Astro.props;
 const nav = [
   { href: "/itens/", label: "Itens" },
   { href: "/monstros/", label: "Monstros" },
@@ -10,6 +12,7 @@ const nav = [
   { href: "/spots/", label: "Spots" },
   { href: "/npcs/", label: "NPCs" },
   { href: "/builds/", label: "Builds" },
+  ...(guides.length ? [{ href: "/guias/", label: "Guias" }] : []),
   { href: "/planner/", label: "Planner" },
 ];
 const path = Astro.url.pathname;
@@ -23,7 +26,20 @@ const path = Astro.url.pathname;
     <meta name="description" content={description} />
     <meta name="theme-color" content="#0c0e13" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 30 16 16 30 2 16Z' fill='%23d6a54a'/%3E%3Cpath d='M16 8 24 16 16 24 8 16Z' fill='%230c0e13'/%3E%3C/svg%3E" />
+    {titleEn && <meta name="mu:title-en" content={titleEn} />}
+    <script is:inline>
+      // Idioma escolhido antes de pintar a página: em inglês, a página fica escondida até a tradução (lib/i18n-client)
+      // terminar, para não piscar o português (no máximo 2,5 s, se o script falhar).
+      try {
+        if (localStorage.getItem("mu-explorer:lang") === "en") {
+          const h = document.documentElement;
+          h.dataset.lang = "en"; h.classList.add("i18n-wait");
+          setTimeout(() => h.classList.remove("i18n-wait"), 2500);
+        }
+      } catch {}
+    </script>
     <link rel="preload" href="/fonts/cinzel-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/source-sans-3-latin.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <header class="top">
@@ -35,6 +51,10 @@ const path = Astro.url.pathname;
         <nav aria-label="Seções">
           {nav.map((n) => <a href={n.href} aria-current={path.startsWith(n.href) ? "page" : undefined}>{n.label}</a>)}
         </nav>
+        <div class="lang-pick" role="group" aria-label="Idioma do site">
+          <button type="button" data-lang-set="pt-BR" aria-pressed="true" title="Português" data-i18n="off"><Flag lang="pt-BR" /><span class="sr">Português</span></button>
+          <button type="button" data-lang-set="en" aria-pressed="false" title="English"><Flag lang="en" /><span class="sr">English</span></button>
+        </div>
         <div class="gsearch" data-gsearch>
           <input type="search" placeholder="Buscar item, monstro, mapa…" aria-label="Buscar no site" autocomplete="off" />
           <ul class="gsearch-results" role="listbox" hidden></ul>
@@ -53,12 +73,13 @@ const path = Astro.url.pathname;
             {datasetName !== "combined" && <> Conjunto “{datasetName}”.</>}
           </p>
         )}
-        <p class="credits"><a href="/api/">API e dados abertos</a> · fonte Cinzel (SIL OFL)</p>
+        <p class="credits"><a href="/api/">API e dados abertos</a> · fontes Cinzel e Source Sans 3 (SIL OFL)</p>
+        <p class="credits only-en">Em inglês, os textos são traduções nossas da interface; nomes e textos do jogo ficam como nas fontes.</p>
       </div>
     </footer>
     <script>
       // Busca global: carrega o índice na primeira interação e mostra até 10 resultados (nome começa > contém).
-      type Entry = [string, string, string, string | null, string];
+      type Entry = [string, string, string, string | null, string, string?];
       const box = document.querySelector<HTMLElement>("[data-gsearch]")!;
       const input = box.querySelector("input")!;
       const list = box.querySelector("ul")!;
@@ -74,13 +95,13 @@ const path = Astro.url.pathname;
         if (!q || !index) { list.hidden = true; list.innerHTML = ""; return; }
         const starts: Entry[] = [], has: Entry[] = [];
         for (const e of index) {
-          const n = norm(e[1]);
-          if (n.startsWith(q)) starts.push(e); else if (n.includes(q)) has.push(e);
+          const n = norm(e[5] ? `${e[1]} ${e[5]}` : e[1]);   // guias: nome em português e o original
+          if (n.startsWith(q) || (e[5] && norm(e[5]).startsWith(q))) starts.push(e); else if (n.includes(q)) has.push(e);
           if (starts.length >= 10) break;
         }
         const found = [...starts, ...has].slice(0, 10);
         list.innerHTML = found.length
-          ? found.map((e) => `<li role="option"><a href="${e[2]}">${e[3] ? `<img src="${e[3]}" alt="" loading="lazy">` : `<span class="gs-ph"></span>`}<span><b>${esc(e[1])}</b><small>${esc(e[0])}${e[4] ? ` · ${esc(e[4])}` : ""}</small></span></a></li>`).join("")
+          ? found.map((e) => `<li role="option"><a href="${e[2]}">${e[3] ? `<img src="${e[3]}" alt="" loading="lazy">` : `<span class="gs-ph"></span>`}<span><b>${e[5] ? `<span class="tx" lang="pt-BR">${esc(e[1])}</span><span class="tx" lang="en">${esc(e[5])}</span>` : esc(e[1])}</b><small>${esc(e[0])}${e[4] ? ` · ${esc(e[4])}` : ""}</small></span></a></li>`).join("")
           : `<li class="gs-empty">Nada encontrado.</li>`;
         list.hidden = false;
       }
@@ -98,6 +119,24 @@ const path = Astro.url.pathname;
         } else if (ev.key === "Escape") { list.hidden = true; input.blur(); }
       });
       document.addEventListener("click", (ev) => { if (!box.contains(ev.target as Node)) list.hidden = true; });
+      // Idioma do site (topo e guias): fica guardado no navegador. Em inglês, lib/i18n-client traduz a página; para
+      // voltar ao português, a página recarrega (o texto original volta inteiro).
+      const html = document.documentElement;
+      const english = () => import("../lib/i18n-client").then((m) => m.start()).catch(() => html.classList.remove("i18n-wait"));
+      const pressed = (lang: string) =>
+        document.querySelectorAll<HTMLButtonElement>("[data-lang-set]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.langSet === lang)));
+      const setLang = (lang: string) => {
+        const was = html.dataset.lang === "en" ? "en" : "pt-BR";
+        try { localStorage.setItem("mu-explorer:lang", lang); } catch { /* sem armazenamento */ }
+        if (lang === was) return;
+        if (lang === "pt-BR") { location.reload(); return; }
+        html.dataset.lang = "en";
+        pressed("en");
+        english();
+      };
+      document.querySelectorAll<HTMLButtonElement>("[data-lang-set]").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.langSet!)));
+      pressed(html.dataset.lang === "en" ? "en" : "pt-BR");
+      if (html.dataset.lang === "en") english();
       document.addEventListener("keydown", (ev) => {
         const tag = document.activeElement?.tagName;
         if (ev.key === "/" && tag !== "INPUT" && tag !== "TEXTAREA" && tag !== "SELECT") { ev.preventDefault(); input.focus(); }
@@ -108,6 +147,7 @@ const path = Astro.url.pathname;
 
 <style is:global>
   @font-face { font-family: "Cinzel"; src: url("/fonts/cinzel-latin.woff2") format("woff2"); font-weight: 400 900; font-display: swap; }
+  @font-face { font-family: "Source Sans 3"; src: url("/fonts/source-sans-3-latin.woff2") format("woff2"); font-weight: 200 900; font-display: swap; }
   /* Tema escuro, no clima do jogo: pedra azulada, ouro nos destaques; cores de qualidade como no MU. */
   :root {
     color-scheme: dark;
@@ -116,14 +156,31 @@ const path = Astro.url.pathname;
     --g-normal: #e8e6df; --g-excellent: #5ee38a; --g-ancient: #4cc3ff; --g-socket: #c792ff; --g-siege: #ff9f4a;
     --radius: .6rem; --shadow: 0 1px 0 rgba(255,255,255,.03) inset, 0 6px 20px rgba(0,0,0,.25);
     --display: "Cinzel", "Trajan Pro", Georgia, serif;
+    --sans: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    /* Volume de monstros do spot (alto, médio, baixo) e chefe: as mesmas cores no mapa, nas etiquetas e nas listas. */
+    --heat-hot: #fbbf24; --heat-hot-fg: #1c1303; --heat-mid: #2dd4bf; --heat-mid-fg: #04201c;
+    --heat-low: #9aa6b8; --heat-low-fg: #0b1220; --heat-boss: #fb7185; --heat-boss-fg: #2a0610;
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
+  /* Textos com tradução: aparece a língua escolhida (padrão português). */
+  :root:not([data-lang="en"]) .tx[lang="en"], :root[data-lang="en"] .tx[lang="pt-BR"] { display: none !important; }
+  :root:not([data-lang="en"]) .only-en { display: none; }
+  html.i18n-wait body { visibility: hidden; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .lang-pick { display: inline-flex; gap: .2rem; flex: none; }
+  .lang-pick button { display: inline-flex; padding: .3rem .35rem; border: 1px solid transparent; border-radius: .4rem; background: none; cursor: pointer; opacity: .5; }
+  .lang-pick button:hover { opacity: .85; }
+  .lang-pick button[aria-pressed="true"] { opacity: 1; border-color: var(--line-2); background: var(--panel); }
+  .lang-switch { display: inline-flex; border: 1px solid var(--line-2); border-radius: .5rem; overflow: hidden; }
+  .lang-switch button { display: inline-flex; align-items: center; gap: .4rem; padding: .3rem .7rem; border: 0; background: var(--panel); color: var(--muted); font: 600 .85rem/1.3 var(--sans); cursor: pointer; }
+  .lang-switch button + button { border-left: 1px solid var(--line-2); }
+  .lang-switch button[aria-pressed="true"] { background: var(--panel-2); color: var(--accent-2); }
   html { scroll-padding-top: 5rem; }
   body {
     margin: 0; min-height: 100vh; display: flex; flex-direction: column; color: var(--fg);
     background: radial-gradient(1200px 500px at 50% -200px, #1a2033 0%, transparent 70%), var(--bg);
-    font: 15.5px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font: 16.5px/1.55 var(--sans); font-optical-sizing: auto; -webkit-font-smoothing: antialiased;
   }
   a { color: var(--link); text-decoration-color: rgba(231,187,99,.35); text-underline-offset: 2px; }
   a:hover { color: var(--accent-2); text-decoration-color: currentColor; }
@@ -159,7 +216,11 @@ const path = Astro.url.pathname;
   .gsearch-results b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .gsearch-results small { color: var(--muted); }
   .gs-empty { padding: .5rem; color: var(--muted); }
-  @media (max-width: 52rem) { .gsearch { order: 3; width: 100%; margin-left: 0; } .top nav { order: 2; width: 100%; } }
+  .top .lang-pick { order: 4; }
+  @media (max-width: 52rem) {
+    .gsearch { order: 3; width: 100%; margin-left: 0; } .top nav { order: 2; width: 100%; }
+    .top .lang-pick { order: 1; margin-left: auto; }
+  }
 
   /* Rodapé */
   footer { border-top: 1px solid var(--line); background: var(--bg-2); color: var(--muted); font-size: .85rem; }
@@ -276,9 +337,10 @@ const path = Astro.url.pathname;
   .st-ene { background: #3b82f6; } .st-cmd { background: #a855f7; }
 
   /* Hot spots */
-  .heat-tag { display: inline-block; padding: 0 .45rem; border-radius: .3rem; color: #111; font-size: .8rem; font-weight: 600; text-transform: capitalize; }
-  .heat-tag.heat-hot { background: #ef4444; color: #fff; } .heat-tag.heat-mid { background: #facc15; }
-  .heat-tag.heat-low { background: #e2e8f0; } .heat-tag.heat-boss { background: #f59e0b; }
+  .heat-tag { display: inline-block; padding: 0 .45rem; border-radius: .3rem; font-size: .78rem; font-weight: 700; line-height: 1.5; background: var(--heat-mid); color: var(--heat-mid-fg); }
+  .heat-tag.heat-hot { background: var(--heat-hot); color: var(--heat-hot-fg); }
+  .heat-tag.heat-low { background: var(--heat-low); color: var(--heat-low-fg); }
+  .heat-tag.heat-boss { background: var(--heat-boss); color: var(--heat-boss-fg); }
   .farm-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: .6rem; margin: .75rem 0 1rem; }
   .farm-card { display: flex; gap: .6rem; align-items: center; padding: .6rem .75rem; border: 1px solid rgba(214,165,74,.35); border-radius: var(--radius); background: linear-gradient(160deg, #1d2232, var(--panel)); text-decoration: none; color: var(--fg); }
   .farm-card:hover { border-color: var(--accent); color: var(--fg); }

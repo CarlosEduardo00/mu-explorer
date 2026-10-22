@@ -120,7 +120,13 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
 
   {notes.length > 0 && (
     <ul class="panel lines how-notes">
-      {notes.map((n) => <li lang={n.translated ? undefined : "en"}>{linkNpcs(n.text).map((part) => (typeof part === "string" ? part : <a href={`/npcs/${part.id}/`}>{part.name}</a>))}</li>)}
+      {notes.map((n) => {
+        const linked = (text: string) => linkNpcs(text).map((part) => (typeof part === "string" ? part : <a href={`/npcs/${part.id}/`}>{part.name}</a>));
+        // Frase traduzida: português e o original em inglês (o seletor de idioma mostra uma).
+        return n.translated
+          ? <li><span class="tx" lang="pt-BR">{linked(n.text)}</span><span class="tx" lang="en">{linked(n.original)}</span></li>
+          : <li lang="en">{linked(n.text)}</li>;
+      })}
     </ul>
   )}
 
@@ -135,7 +141,7 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
                 {monster.image_url && <img src={monster.image_url} alt="" loading="lazy" />}
                 <span>
                   <strong>{ref.map_name} · spot {ref.n}</strong>
-                  <span>×{ref.count} {monster.name}{monster.level != null && <> (nv {fmt(monster.level)})</>}</span>
+                  <span>{ref.shared ? <>{monster.name}{monster.level != null && <> (nv {fmt(monster.level)})</>} · {ref.count} monstros no spot</> : <>×{ref.count} {monster.name}{monster.level != null && <> (nv {fmt(monster.level)})</>}</>}</span>
                   <span class="muted">{levelText(ref.level_min, ref.level_max) && <>spot {levelText(ref.level_min, ref.level_max)} · </>}ver no mapa →</span>
                 </span>
               </a>
@@ -160,7 +166,7 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
                   {place?.spot
                     ? <a href={spotsUrl(place.map.id, place.spot.n)}>spot {place.spot.n}</a>
                     : place && spotMapIds.includes(place.map.id) ? <a class="muted" href={spotsUrl(place.map.id)}>ver mapa</a> : <span class="muted">—</span>}
-                  {place?.spot && <span class="muted"> ×{place.spot.count}</span>}
+                  {place?.spot && <span class="muted"> {place.spot.shared ? `${place.spot.count} no spot` : `×${place.spot.count}`}</span>}
                 </td>
                 {first && (
                   <td rowspan={span}>{d.tables.join(", ")}</td>
