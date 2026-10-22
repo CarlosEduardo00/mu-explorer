@@ -1,6 +1,7 @@
 ---
 import { sources, datasetName, guides } from "../lib/data";
 import Flag from "../components/Flag.astro";
+import Icon from "../components/Icon.astro";
 
 /** titleEn: título em inglês quando ele não sai da tradução da interface (ex.: guias, que têm o título original). */
 interface Props { title: string; titleEn?: string; description?: string; wide?: boolean }
@@ -16,12 +17,27 @@ const nav = [
   { href: "/planner/", label: "Planner" },
 ];
 const path = Astro.url.pathname;
+// Celular (como no hyrule-explorer): barra de abas fixa embaixo com as seções mais usadas e "Mais" com o resto.
+const TABS = [
+  { href: "/itens/", label: "Itens", icon: "items" },
+  { href: "/monstros/", label: "Monstros", icon: "monsters" },
+  { href: "/spots/", label: "Spots", icon: "spots" },
+  { href: "/builds/", label: "Builds", icon: "builds" },
+];
+const MORE = [
+  ...(guides.length ? [{ href: "/guias/", label: "Guias", icon: "guides" }] : []),
+  { href: "/mapas/", label: "Mapas", icon: "maps" },
+  { href: "/npcs/", label: "NPCs", icon: "npcs" },
+  { href: "/planner/", label: "Planner", icon: "planner" },
+  { href: "/api/", label: "API e dados abertos", icon: "api" },
+];
+const moreActive = MORE.some((m) => path.startsWith(m.href));
 ---
 <!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title === "MU Explorer" ? title : `${title} · MU Explorer`}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#0c0e13" />
@@ -51,6 +67,7 @@ const path = Astro.url.pathname;
         <nav aria-label="Seções">
           {nav.map((n) => <a href={n.href} aria-current={path.startsWith(n.href) ? "page" : undefined}>{n.label}</a>)}
         </nav>
+        <button type="button" class="icon-btn search-toggle" data-search-toggle aria-label="Buscar no site" aria-expanded="false"><Icon name="search" /></button>
         <div class="lang-pick" role="group" aria-label="Idioma do site">
           <button type="button" data-lang-set="pt-BR" aria-pressed="true" title="Português" data-i18n="off"><Flag lang="pt-BR" /><span class="sr">Português</span></button>
           <button type="button" data-lang-set="en" aria-pressed="false" title="English"><Flag lang="en" /><span class="sr">English</span></button>
@@ -61,6 +78,16 @@ const path = Astro.url.pathname;
         </div>
       </div>
     </header>
+    <nav class="tabbar" aria-label="Seções">
+      {TABS.map((t) => <a href={t.href} aria-current={path.startsWith(t.href) ? "page" : undefined}><Icon name={t.icon} /><span>{t.label}</span></a>)}
+      <button type="button" class:list={["tab-more", { on: moreActive }]} data-more aria-expanded="false" aria-controls="more-sheet"><Icon name="more" /><span>Mais</span></button>
+    </nav>
+    <div class="sheet-backdrop" data-sheet-backdrop hidden></div>
+    <div class="more-sheet" id="more-sheet" role="dialog" aria-label="Mais seções" hidden>
+      <ul>
+        {MORE.map((m) => <li><a href={m.href} aria-current={path.startsWith(m.href) ? "page" : undefined}><Icon name={m.icon} /><span>{m.label}</span></a></li>)}
+      </ul>
+    </div>
     <main class:list={[{ wide }]}><slot /></main>
     <footer>
       <div class="foot-in">
@@ -118,7 +145,28 @@ const path = Astro.url.pathname;
           location.href = (links[Math.max(active, 0)] as HTMLAnchorElement).href;
         } else if (ev.key === "Escape") { list.hidden = true; input.blur(); }
       });
-      document.addEventListener("click", (ev) => { if (!box.contains(ev.target as Node)) list.hidden = true; });
+      // Celular: a busca fica atrás do botão da lupa no topo (abre uma linha embaixo do cabeçalho).
+      const top = document.querySelector<HTMLElement>(".top")!;
+      const toggle = document.querySelector<HTMLButtonElement>("[data-search-toggle]")!;
+      const searching = (on: boolean) => {
+        top.classList.toggle("searching", on);
+        toggle.setAttribute("aria-expanded", String(on));
+        if (on) { input.focus(); load(); } else list.hidden = true;
+      };
+      toggle.addEventListener("click", () => searching(!top.classList.contains("searching")));
+      document.addEventListener("click", (ev) => {
+        const t = ev.target as Node;
+        if (!box.contains(t)) list.hidden = true;
+        if (!box.contains(t) && !toggle.contains(t) && top.classList.contains("searching")) searching(false);
+      });
+      // Celular: "Mais" abre um painel acima da barra de abas com as outras seções.
+      const moreBtn = document.querySelector<HTMLButtonElement>("[data-more]")!;
+      const sheet = document.getElementById("more-sheet")!;
+      const backdrop = document.querySelector<HTMLElement>("[data-sheet-backdrop]")!;
+      const more = (on: boolean) => { sheet.hidden = !on; backdrop.hidden = !on; moreBtn.setAttribute("aria-expanded", String(on)); };
+      moreBtn.addEventListener("click", () => more(sheet.hidden));
+      backdrop.addEventListener("click", () => more(false));
+      document.addEventListener("keydown", (ev) => { if (ev.key === "Escape") { more(false); if (top.classList.contains("searching")) searching(false); } });
       // Idioma do site (topo e guias): fica guardado no navegador. Em inglês, lib/i18n-client traduz a página; para
       // voltar ao português, a página recarrega (o texto original volta inteiro).
       const html = document.documentElement;
@@ -217,10 +265,51 @@ const path = Astro.url.pathname;
   .gsearch-results small { color: var(--muted); }
   .gs-empty { padding: .5rem; color: var(--muted); }
   .top .lang-pick { order: 4; }
+  .icon { width: 1.25rem; height: 1.25rem; flex: none; }
+  .icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; border: 1px solid var(--line-2); border-radius: .6rem; background: var(--panel); color: var(--fg); cursor: pointer; }
+  .icon-btn[aria-expanded="true"] { color: var(--accent-2); border-color: var(--accent); }
+  .tabbar, .more-sheet, .sheet-backdrop, .search-toggle { display: none; }
+
+  /* Celular (como no hyrule-explorer): topo de uma linha (marca, lupa, idioma), seções numa barra de abas fixa
+     embaixo, "Mais" num painel que sobe; a área segura do iPhone fica livre (env(safe-area-inset-*)). */
   @media (max-width: 52rem) {
-    .gsearch { order: 3; width: 100%; margin-left: 0; } .top nav { order: 2; width: 100%; }
-    .top .lang-pick { order: 1; margin-left: auto; }
+    .top { padding-top: env(safe-area-inset-top); }
+    .top-in { flex-wrap: nowrap; gap: .5rem; padding: .4rem max(1rem, env(safe-area-inset-right)) .4rem max(1rem, env(safe-area-inset-left)); }
+    .top nav { display: none; }
+    .search-toggle { display: inline-flex; margin-left: auto; }
+    .gsearch { display: none; }
+    .top.searching .gsearch { display: block; position: absolute; left: 0; right: 0; top: 100%; width: auto; margin: 0; padding: .55rem 1rem .7rem; background: rgba(12,14,19,.98); border-bottom: 1px solid var(--line); }
+    .top.searching .gsearch input { font-size: 1rem; padding: .65rem .85rem; }
+    .top.searching .gsearch-results { left: 1rem; right: 1rem; max-height: calc(100dvh - 12rem); }
+    .gsearch-results a { min-height: 2.9rem; }
+    .lang-pick button { padding: .45rem .5rem; }
+    .tabbar { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+      padding: .3rem max(.25rem, env(safe-area-inset-right)) calc(.3rem + env(safe-area-inset-bottom)) max(.25rem, env(safe-area-inset-left));
+      background: rgba(14,16,22,.97); backdrop-filter: blur(10px); border-top: 1px solid var(--line-2); box-shadow: 0 -8px 24px rgba(0,0,0,.35); }
+    .tabbar a, .tabbar button { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .15rem; min-height: 3.3rem;
+      border: 0; border-radius: .7rem; background: none; color: var(--muted); font: 600 .72rem/1.1 var(--sans); text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .tabbar .icon { width: 1.5rem; height: 1.5rem; }
+    .tabbar [aria-current], .tabbar .on, .tabbar [aria-expanded="true"] { color: var(--accent-2); }
+    .tabbar [aria-current]::before, .tabbar .on::before { content: ""; position: absolute; top: -.3rem; left: 28%; right: 28%; height: 2px; border-radius: 2px; background: var(--accent); }
+    .tabbar a:active, .tabbar button:active { background: var(--panel); }
+    .sheet-backdrop:not([hidden]) { display: block; position: fixed; inset: 0; z-index: 38; background: rgba(0,0,0,.5); }
+    .more-sheet:not([hidden]) { display: block; position: fixed; left: .5rem; right: .5rem; bottom: calc(4.4rem + env(safe-area-inset-bottom)); z-index: 45; padding: .5rem;
+      border-radius: 1rem; border: 1px solid var(--line-2); background: var(--panel); box-shadow: 0 -12px 32px rgba(0,0,0,.55); animation: sheet-up .16s ease-out; }
+    .more-sheet ul { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; margin: 0; padding: 0; list-style: none; }
+    .more-sheet a { display: flex; align-items: center; gap: .65rem; min-height: 3.2rem; padding: .55rem .8rem; border-radius: .75rem; background: var(--panel-2); color: var(--fg); text-decoration: none; font-weight: 600; }
+    .more-sheet a[aria-current] { color: var(--accent-2); box-shadow: inset 0 0 0 1px var(--accent); }
+    .more-sheet .icon { width: 1.4rem; height: 1.4rem; color: var(--accent-2); }
+    footer { padding-bottom: calc(4.4rem + env(safe-area-inset-bottom)); }
   }
+  html.sheet-open { overflow: hidden; }
+  /* Celular: campos com 16 px (o iPhone dá zoom ao focar campo menor) e alvos de toque de pelo menos ~40 px. */
+  @media (max-width: 52rem) {
+    input[type="search"], input[type="number"], input[type="text"], select { font-size: 16px; }
+  }
+  @media (pointer: coarse) {
+    a.chip, button.chip, .btn, .lang-switch button { min-height: 2.5rem; }
+  }
+  @keyframes sheet-up { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
 
   /* Rodapé */
   footer { border-top: 1px solid var(--line); background: var(--bg-2); color: var(--muted); font-size: .85rem; }

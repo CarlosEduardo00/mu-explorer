@@ -1,0 +1,20 @@
+---
+// Ícones de linha desenhados por nós (24×24, traço na cor do texto): barra de abas do celular e menu "Mais".
+interface Props { name: string; class?: string }
+const { name, class: cls } = Astro.props;
+const PATHS: Record<string, string> = {
+  items: '<path d="M14.5 3.5h6v6L9 21l-6-6z"/><path d="M5.5 12.5l6 6"/><path d="M14 10l2-2"/>',
+  monsters: '<path d="M12 3a7 7 0 0 0-7 7v3.5l2 2V19h10v-3.5l2-2V10a7 7 0 0 0-7-7z"/><circle cx="9.2" cy="11" r="1.4"/><circle cx="14.8" cy="11" r="1.4"/><path d="M10.3 19v-2.2M13.7 19v-2.2"/>',
+  spots: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/>',
+  builds: '<path d="M5 20v-8M12 20V5M19 20v-5"/><path d="M3 20h18"/>',
+  more: '<circle cx="5.5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18.5" cy="12" r="1.3"/>',
+  maps: '<path d="M3 6.5 9 4l6 2.5L21 4v13.5L15 20l-6-2.5L3 20z"/><path d="M9 4v13.5M15 6.5V20"/>',
+  npcs: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c.9-4 3.8-6 7-6s6.1 2 7 6"/>',
+  guides: '<path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19v-3"/><path d="M9 7.5h6M9 11h4"/>',
+  planner: '<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
+  api: '<path d="M8.5 4C6.5 4 6 5 6 7v2.2C6 10.4 5 11 4 12c1 1 2 1.6 2 2.8V17c0 2 .5 3 2.5 3M15.5 4c2 0 2.5 1 2.5 3v2.2c0 1.2 1 1.8 2 2.8-1 1-2 1.6-2 2.8V17c0 2-.5 3-2.5 3"/>',
+  search: '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>',
+  close: '<path d="M6 6l12 12M18 6 6 18"/>',
+};
+---
+<svg class:list={["icon", cls]} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={PATHS[name] ?? ""} />

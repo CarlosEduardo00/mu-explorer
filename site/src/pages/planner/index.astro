@@ -86,7 +86,7 @@ import Base from "../../layouts/Base.astro";
   .btn { font: inherit; cursor: pointer; padding: .35rem .8rem; border-radius: .4rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
   .btn.small { padding: .15rem .5rem; font-size: .8rem; }
   .points { font-size: 1.05rem; }
-  .points strong.neg { color: #b3261e; }
+  .points strong.neg { color: #f87171; }
   .steps { margin: 0 0 1rem; padding-left: 1.25rem; color: var(--muted); font-size: .92rem; }
   .steps strong { color: var(--fg); }
   .gear-filters { margin-top: 0; }
@@ -95,11 +95,19 @@ import Base from "../../layouts/Base.astro";
   .gear { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: .6rem 1rem; }
   .gear label { display: flex; flex-direction: column; gap: .2rem; font-size: .85rem; color: var(--muted); }
   .gear select { width: 100%; }
-  .ok { color: #1a7f37; }
-  .bad { color: #b3261e; font-weight: 600; }
+  .ok { color: #4ade80; }
+  .bad { color: #f87171; font-weight: 600; }
   #stats input[type="number"] { width: 6rem; }
   #stats .btn { white-space: nowrap; }
   #stats input:disabled { opacity: .7; }
+  @media (max-width: 36rem) {
+    #stats th, #stats td { padding-left: .45rem; padding-right: .45rem; }
+    #stats input[type="number"] { width: 4.6rem; }
+    #stats .btn.small { padding: .45rem .55rem; }
+    .planner-controls { gap: .6rem .9rem; }
+    .planner input[type="number"] { width: 6rem; }
+    .gear { grid-template-columns: 1fr; }
+  }
   .build-card { padding: .75rem 1rem; background: var(--panel); border: 1px solid var(--line); border-radius: .5rem; margin: .5rem 0; }
   .build-card p { margin: .25rem 0; }
   .build-card ul { margin: .25rem 0; padding-left: 1.2rem; }

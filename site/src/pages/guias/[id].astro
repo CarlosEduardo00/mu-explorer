@@ -90,7 +90,14 @@ const plain = (s: string) => s.replace(/<[^>]+>|\{\d+\}/g, "").trim();
   .g-card-item { text-align: center; }
   .g-card-item .g-title { font-size: .95rem; }
   .g-grid { display: grid; gap: .8rem; grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr)); align-items: start; }
-  .g-grid-item { grid-template-columns: repeat(auto-fill, minmax(min(10rem, 100%), 1fr)); }
+  /* Cartões lado a lado: largura proporcional ao tamanho do conteúdo (flex-grow vem do GuideBlocks); o muito mais
+     longo da linha ocupa a linha inteira (.g-wide). */
+  .g-flow { display: flex; flex-wrap: wrap; gap: .8rem; align-items: stretch; }
+  .g-flow > * { flex: 1 1 0; min-width: min(100%, 17rem); }
+  .g-flow > .g-wide { flex-basis: 100%; }
+  .g-grid-item { grid-template-columns: repeat(auto-fill, minmax(min(10rem, 100%), 1fr)); align-items: stretch; }
+  /* cartão de item (imagem + nome) em linha com cartões maiores: conteúdo centralizado na altura */
+  .g-flow > .g-card-item, .g-grid-item > .g-card { display: flex; flex-direction: column; justify-content: center; }
   .g-tabs { margin: .4rem 0; }
   .g-tablist { display: flex; flex-wrap: wrap; gap: .3rem; border-bottom: 1px solid var(--line-2); margin-bottom: .8rem; }
   .g-tablist [role=tab] { padding: .4rem .8rem; border: 1px solid transparent; border-bottom: 0; border-radius: .45rem .45rem 0 0; background: none; color: var(--muted); font: 600 .9rem/1.3 var(--sans); cursor: pointer; margin-bottom: -1px; }
@@ -99,5 +106,16 @@ const plain = (s: string) => s.replace(/<[^>]+>|\{\d+\}/g, "").trim();
   .g-panel { display: flex; flex-direction: column; gap: .9rem; }
   .g-acc { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
   .g-acc summary { cursor: pointer; padding: .6rem .9rem; font-weight: 700; color: var(--accent-2); }
+  @media (pointer: coarse) {
+    .g-siblings a { padding: .55rem .85rem; }
+    .g-tablist [role=tab] { padding: .6rem .9rem; }
+    .g-acc summary { padding: .8rem .9rem; }
+  }
+  @media (max-width: 36rem) {
+    .g-card { padding: .8rem .85rem; }
+    .g-tablist { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .g-tablist [role=tab] { flex: none; }
+    .g-table td, .g-table th { padding: .45rem .5rem; }
+  }
   .g-acc-body { padding: 0 .9rem .9rem; display: flex; flex-direction: column; gap: .6rem; }
 </style>

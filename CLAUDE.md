@@ -107,8 +107,12 @@ schema/            JSON Schema (draft 2020-12) de cada entidade publicada
 data/raw/          HTML bruto + .meta.json por página (fora do git)
 data/processed/    JSON normalizado por fonte + poc_report.md
 tests/             testes; tests/fixtures/<fonte>/ guarda HTML real usado como fixture
-site/src/          Astro: layouts/Base (tema escuro com dourado, Cinzel nos títulos e Source Sans 3 no texto em public/fonts, busca global com /data/search.json),
-                   components/ Catalog (lista com facetas, faixa de nível, ordenação e estado no endereço), Card,
+site/src/          Astro: layouts/Base (tema escuro com dourado, Cinzel nos títulos e Source Sans 3 no texto em public/fonts, busca global com /data/search.json;
+                   no celular, como no hyrule-explorer: topo de uma linha com a lupa, barra de abas fixa embaixo com
+                   Itens/Monstros/Spots/Builds e "Mais" num painel que sobe, área segura do iPhone, campos de 16 px e
+                   alvos de toque de ~40 px; tabelas largas viram cartões abaixo de 40rem; components/Icon = ícones nossos),
+                   components/ Catalog (lista com facetas, faixa de nível, ordenação e estado no endereço; no celular os
+                   filtros abrem num painel que sobe de baixo), Card,
                    PageHead (cabeçalho padrão de registro), SpotBar (barra de mapas da área de spots, ordem do guia),
                    MapExplorer (mapa interativo na orientação do minimapa do jogo, girado 45°: terreno vetorial, abas
                    das zonas/andares, etiquetas com a quantidade de monstros, zoom/arrasto/pinça, painel com lista e

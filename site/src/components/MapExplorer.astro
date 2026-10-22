@@ -635,6 +635,10 @@ const tabs = entries.length > 1 || zones.length > 0;
   .mx-seg button:first-child { border-radius: .45rem 0 0 .45rem; }
   .mx-seg button:last-child { border-radius: 0 .45rem .45rem 0; }
   .mx-seg button[aria-pressed="true"] { background: var(--panel-2); color: var(--accent-2); }
+  @media (pointer: coarse) {
+    .mx-zones > * { padding: .6rem .95rem; }
+    .mx-seg button { padding: .55rem .8rem; }
+  }
   .mx-seg button:hover { color: var(--fg); }
   .mx-layers { position: relative; }
   .mx-layers summary { list-style: none; cursor: pointer; padding: .28rem .75rem; border: 1px solid var(--line-2); border-radius: .45rem; background: var(--panel); font: 600 .82rem/1.3 var(--sans); color: var(--fg); user-select: none; }

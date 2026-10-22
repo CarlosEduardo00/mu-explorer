@@ -95,12 +95,12 @@ const reqText = (req: Partial<Record<Stat, number>>) => stats.filter((s) => req[
       <h2>Sets por nível</h2>
       <p class="muted">Os sets de mastery que {cls.name} veste, em ordem de nível{build.gear_variant && <>, na versão {build.gear_variant}</>}.</p>
       <div class="table-wrap">
-        <table>
+        <table class="sets-table">
           <thead><tr><th class="num">Nível</th><th>Set</th><th>Peças</th></tr></thead>
           <tbody>
             {sets.map((st) => (
               <tr>
-                <td class="num">{st.level != null ? fmt(st.level) : "—"}</td>
+                <td class="num">{st.level != null ? <><span class="m-only">nv </span>{fmt(st.level)}</> : "—"}</td>
                 <td><strong>{st.name}</strong></td>
                 <td>{st.pieces.map((p, i) => <>{i > 0 && ", "}<a href={`/itens/${p.id}/`} class:list={["gname", p.grade ? `grade-${p.grade}` : null]}>{p.name}</a></>)}</td>
               </tr>
@@ -143,4 +143,17 @@ const reqText = (req: Partial<Record<Stat, number>>) => stats.filter((s) => req[
   .rr-val { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
   .warn-panel { border-color: rgba(252,165,165,.45); color: #fecaca; }
   .chip.ok-tag { color: var(--g-excellent); }
+  .m-only { display: none; }
+  /* Celular: cada set vira um cartão (nome e nível em cima, peças embaixo). */
+  @media (max-width: 40rem) {
+    .m-only { display: inline; color: var(--muted); font-weight: 400; }
+    .sets-table thead { display: none; }
+    .sets-table, .sets-table tbody { display: block; }
+    .sets-table tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .3rem .75rem; padding: .65rem .85rem; border-top: 1px solid var(--line); }
+    .sets-table tr:first-child { border-top: 0; }
+    .sets-table td { display: block; padding: 0; border: 0; }
+    .sets-table td:nth-child(1) { grid-row: 1; grid-column: 2; }
+    .sets-table td:nth-child(2) { grid-row: 1; grid-column: 1; }
+    .sets-table td:nth-child(3) { grid-row: 2; grid-column: 1 / -1; font-size: .9rem; line-height: 1.5; }
+  }
 </style>

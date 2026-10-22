@@ -33,6 +33,58 @@ export const SERIES: { id: string; label: string; text: string }[] = [
   { id: "systems", label: "Sistemas do jogo", text: "Pandora's Jewels, Guardian e Artifact." },
 ];
 
+// ---------------------------------------------------------------- layout das grades de cartões
+
+const plainLength = (t: Text | null | undefined) => (t ? t.t.replace(/<[^>]+>/g, "").length + (t.m ?? []).join("").length : 0);
+
+/** Altura aproximada de um bloco, em "caracteres" (uma imagem vale umas 5 linhas de texto). */
+export function blockWeight(b: Block): number {
+  switch (b.type) {
+    case "heading": return 60;
+    case "paragraph": return 40 + plainLength(b.text);
+    case "image": return 250;
+    case "list": return b.items.reduce((n, t) => n + 40 + plainLength(t), 0);
+    case "table": return 80 + b.rows.length * 45;
+    case "card": return 40 + b.blocks.reduce((n, x) => n + blockWeight(x), 0);
+    case "grid": return Math.max(0, ...b.items.map(blockWeight));
+    case "tabs": return Math.max(0, ...b.tabs.map((t) => t.blocks.reduce((n, x) => n + blockWeight(x), 0)));
+    case "accordion": return 60 * b.items.length;
+  }
+}
+
+/**
+ * Quais cartões de uma grade ocupam a linha inteira. No site de origem os cartões ficam lado a lado mesmo quando um
+ * é muito mais longo que o outro, o que deixa um buraco ao lado do longo. Aqui as linhas são simuladas como no
+ * desktop (até `perRow` cartões por linha, na ordem): numa linha em que o cartão mais longo passa de `ratio` vezes o
+ * mais curto, ele vai para uma linha só dele, e a conta recomeça. Nas outras linhas a largura de cada cartão é
+ * proporcional ao tamanho (flex-grow no GuideBlocks), o que iguala as alturas. No celular, um embaixo do outro.
+ */
+export function wideCards(items: Block[], perRow = 3, ratio = 2.5, minWide = 600): boolean[] {
+  const w = items.map(blockWeight);
+  const wide = w.map(() => false);
+  for (let changed = true; changed;) {
+    changed = false;
+    const rows: number[][] = [];
+    let row: number[] = [];
+    w.forEach((_, i) => {
+      if (wide[i]) { if (row.length) rows.push(row); row = []; return; }
+      row.push(i);
+      if (row.length === perRow) { rows.push(row); row = []; }
+    });
+    if (row.length) rows.push(row);
+    for (const r of rows) {
+      const ws = r.map((i) => w[i]);
+      const max = Math.max(...ws);
+      if (r.length > 1 && max > minWide && max > ratio * Math.min(...ws)) {
+        wide[r[ws.indexOf(max)]] = true;
+        changed = true;
+        break;
+      }
+    }
+  }
+  return wide;
+}
+
 /** Imagem de capa do guia: nos de asas, a primeira asa (a primeira imagem é a Chaos Goblin Machine em todos). */
 export const guideCover = (g: { series: string; image_urls: string[] }): string | null =>
   (g.series === "wings" ? g.image_urls.find((u) => /items(\/|%2F)wings(\/|%2F)/.test(u)) : undefined) ?? g.image_urls[0] ?? null;
