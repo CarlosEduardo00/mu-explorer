@@ -111,3 +111,42 @@ export function itemSources(item: Item): ItemSources {
   sourcesCache.set(item.id, result);
   return result;
 }
+
+// ---------------------------------------------------------------- sets por nível (builds)
+
+/** Sets de mastery do jogo, na ordem em que aparecem; o nível vem dos próprios itens. */
+const MASTERY_SETS: { name: string; match: RegExp }[] = [
+  { name: "Bloodangel", match: /\bBloodangel\b/ }, { name: "Darkangel", match: /\bDarkangel\b/ },
+  { name: "Holyangel", match: /\bHolyangel\b/ }, { name: "Soul", match: /^(?:Excellent )?Soul\b|\bAwakening Soul\b/ },
+  { name: "Blue Eye", match: /\bBlue Eye\b/ }, { name: "Silver Heart", match: /\bSilver Heart\b/ },
+  { name: "Manticore", match: /\bManticore\b/ }, { name: "Brilliant", match: /\bBrilliant\b/ },
+];
+const ARMOR_SLOTS = ["helm", "armor", "pants", "gloves", "boots"];
+const GRADE_PREF = ["excellent", "normal", "ancient"];
+export interface SetStep { name: string; level: number | null; pieces: Item[] }
+
+/** Peças de cada set de mastery que a classe veste (uma por slot), na variante da build (ATK, ENE, WIZ, Belief) quando
+ * houver; prefere a versão excellent. Sets que a classe não tem ficam de fora. */
+export function setProgression(classId: string, variant?: string | null): SetStep[] {
+  const mine = items.filter((i) => itemView(i).families.includes(classId) && ARMOR_SLOTS.includes(itemView(i).kind));
+  const tagOf = (name: string) => name.match(/\(([^)]+)\)\s*$/)?.[1] ?? null;
+  const steps: SetStep[] = [];
+  for (const set of MASTERY_SETS) {
+    const ofSet = mine.filter((i) => set.match.test(i.name));
+    if (!ofSet.length) continue;
+    const pieces: Item[] = [];
+    for (const slot of ARMOR_SLOTS) {
+      const options = ofSet.filter((i) => itemView(i).kind === slot);
+      if (!options.length) continue;
+      const tagged = options.filter((i) => variant && tagOf(i.name) === variant);
+      const plain = options.filter((i) => tagOf(i.name) === null);
+      const pool = tagged.length ? tagged : plain.length ? plain : options;
+      const rank = (i: Item) => { const r = GRADE_PREF.indexOf(i.grade ?? ""); return r < 0 ? 9 : r; };
+      pool.sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
+      pieces.push(pool[0]);
+    }
+    const levels = ofSet.map((i) => i.requirements.level).filter((v): v is number => v != null);
+    steps.push({ name: set.name, level: levels.length ? Math.min(...levels) : null, pieces });
+  }
+  return steps;
+}

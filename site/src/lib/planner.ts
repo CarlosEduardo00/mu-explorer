@@ -163,9 +163,26 @@ export interface BuildPhase {
   split: Partial<Record<Stat, number>>;
 }
 export interface BuildSource { name: string; url: string }
+export interface BuildSkill { name: string; req: Partial<Record<Stat, number>> }
 export interface BuildTemplate {
   id: string; class_id: string; name: string; role: "pvm" | "pvp" | "suporte" | "híbrida";
   summary: string; phases: BuildPhase[]; notes: string[]; sources: BuildSource[];
+  /** "antiga": uma renovação oficial mudou o atributo do dano depois da distribuição (a 1ª nota explica). */
+  status?: "atual" | "antiga";
+  /** De onde vem a distribuição: preset publicado (Fanz) ou proporção nossa a partir dos guias oficiais. */
+  basis?: "fanz" | "nossa";
+  ratio?: Partial<Record<Stat, number>>;
+  skills?: BuildSkill[];
+  videos?: { title: string; url: string }[];
+  gear_variant?: "ATK" | "ENE" | "WIZ" | "Belief";
+}
+
+/** Primeiro nível em que a build cumpre o requisito (atributo total), simulando nível a nível; null se não chega. */
+export function levelForRequirement(curve: CurvePoint[], req: Partial<Record<Stat, number>>): number | null {
+  for (const point of curve) {
+    if (STATS.every((s) => (req[s] ?? 0) <= point.total[s])) return point.level;
+  }
+  return null;
 }
 
 export function resolveTarget(to: Target, level: number, gearNeed: Partial<Record<Stat, number>>, stat: Stat): number {

@@ -1,0 +1,68 @@
+---
+import Base from "../../layouts/Base.astro";
+import { builds, rulesets } from "../../lib/data";
+import { STAT_LABELS, type Stat } from "../../lib/planner";
+
+// Builds do jogo atual, agrupadas por classe na ordem do planner (Gun Crusher, Slayer e Grow Lancer primeiro).
+const classes = (rulesets[0]?.classes ?? []).map((c) => ({ c, list: builds.filter((b) => b.class_id === c.id) })).filter((x) => x.list.length);
+const ROLE: Record<string, string> = { pvm: "PvM", pvp: "PvP", suporte: "Suporte", "híbrida": "PvM e PvP" };
+const STAT_ORDER: Stat[] = ["str", "agi", "vit", "ene", "cmd"];
+const total = builds.length;
+---
+<Base title="Builds" description="Builds prontas do MU Online oficial (Webzen) para seguir, por classe: distribuição de pontos, skills e equipamento por nível." wide>
+  <h1>Builds</h1>
+  <p class="lead">
+    Builds prontas para <strong>seguir</strong>, do MU Online oficial da Webzen (sem servidores modificados): como
+    distribuir os pontos a cada nível, em que nível cada skill libera e que set usar. {total} builds em {classes.length} classes.
+    Para montar a sua própria, use o <a href="/planner/">planner de builds</a>.
+  </p>
+
+  <nav class="class-jump" aria-label="Classes">
+    {classes.map(({ c }) => (
+      <a href={`#${c.id}`}>{c.image_url ? <img src={c.image_url} alt="" loading="lazy" /> : <span class="ph"></span>}<span>{c.name}</span></a>
+    ))}
+  </nav>
+
+  {classes.map(({ c, list }) => (
+    <section class="class-builds" id={c.id}>
+      <h2>{c.image_url && <img class="class-ico" src={c.image_url} alt="" loading="lazy" />}{c.name}</h2>
+      <div class="build-cards">
+        {list.map((b) => (
+          <a class:list={["build-card", { old: b.status === "antiga" }]} href={`/builds/${b.id}/`}>
+            <span class="bc-head">
+              <b>{b.name}</b>
+              <span class="chips">
+                <span class="chip gold">{ROLE[b.role] ?? b.role}</span>
+                {b.status === "antiga" && <span class="chip old-tag" title="Distribuição de antes de uma renovação oficial">antiga</span>}
+              </span>
+            </span>
+            <span class="ratio-bar" aria-label={STAT_ORDER.filter((s) => b.ratio?.[s]).map((s) => `${STAT_LABELS[s]} ${b.ratio?.[s]}%`).join(", ")}>
+              {STAT_ORDER.filter((s) => b.ratio?.[s]).map((s) => <i class={`st-${s}`} style={`width:${b.ratio?.[s]}%`}></i>)}
+            </span>
+            <small>{STAT_ORDER.filter((s) => b.ratio?.[s]).map((s) => `${STAT_LABELS[s]} ${b.ratio?.[s]}%`).join(" · ")}</small>
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
+  <p class="muted small">
+    A distribuição de 13 classes é a publicada para o servidor oficial; a do Illusion Knight, do Alchemist e do
+    Crusader é sugerida por nós a partir do atributo principal e dos requisitos de skill do guia oficial (não há
+    distribuição publicada). "Antiga" indica distribuição de antes de uma renovação oficial da classe.
+  </p>
+</Base>
+
+<style is:global>
+  .class-jump { display: flex; flex-wrap: wrap; gap: .4rem; margin: .5rem 0 1rem; }
+  .class-jump a { display: inline-flex; align-items: center; gap: .35rem; padding: .2rem .6rem .2rem .25rem; border: 1px solid var(--line); border-radius: 2rem; background: var(--panel); color: var(--fg); text-decoration: none; font-size: .85rem; }
+  .class-jump a:hover { border-color: var(--accent); }
+  .class-jump img, .class-jump .ph { width: 26px; height: 26px; object-fit: contain; }
+  .class-ico { width: 34px; height: 34px; object-fit: contain; }
+  .build-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(17rem, 100%), 1fr)); gap: .6rem; }
+  .build-card { display: flex; flex-direction: column; gap: .45rem; padding: .7rem .8rem; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); color: var(--fg); text-decoration: none; }
+  .build-card:hover { border-color: var(--accent); color: var(--fg); }
+  .build-card.old { opacity: .78; }
+  .bc-head { display: flex; justify-content: space-between; gap: .5rem; align-items: flex-start; }
+  .bc-head b { font-weight: 600; }
+  .build-card small { color: var(--muted); font-size: .78rem; }
+</style>
