@@ -2,9 +2,9 @@
 import Base from "../../layouts/Base.astro";
 import PageHead from "../../components/PageHead.astro";
 import Card from "../../components/Card.astro";
-import { items, itemById, dropsByItem, monsterById, spotRefsByMonster, spawnsByMonster, mapById, spotsUrl, fmt } from "../../lib/data";
-import { itemView, familyOf, familyName } from "../../lib/view";
-import { gradeLabel, statRows, optionGroupLabel, dropTableLabel, ALL_CLASSES } from "../../lib/taxonomy";
+import { items, itemById, npcs, spotMapIds, spotsUrl, fmt } from "../../lib/data";
+import { itemView, familyOf, familyName, itemSources } from "../../lib/view";
+import { gradeLabel, statRows, optionGroupLabel, ALL_CLASSES, ACQUISITION_LABELS } from "../../lib/taxonomy";
 
 export function getStaticPaths() {
   return items.map((item) => ({ params: { id: item.id }, props: { item } }));
@@ -25,20 +25,32 @@ for (const c of item.classes) {
   const f = familyOf(c) ?? c;
   byFamily.set(f, [...(byFamily.get(f) ?? []), c]);
 }
-const dropRows = dropsByItem.get(item.id) ?? [];
-const droppers = [...new Set(dropRows.map((d) => d.monster_id))]
-  .map((id) => monsterById.get(id)).filter((m) => m !== undefined)
-  .sort((a, b) => (a.level ?? 0) - (b.level ?? 0));
-const dropKind = (monsterId: string) => [...new Set(dropRows.filter((d) => d.monster_id === monsterId).map((d) => dropTableLabel(d.table, d.kind)))].join(", ");
-const whereMaps = (monsterId: string) => [...new Set((spawnsByMonster.get(monsterId) ?? []).map((s) => s.map_id))];
-// Onde farmar: para cada monstro que dropa, o spot com mais dele. Os destaques são os monstros de menor nível
-// (mais fáceis de farmar) que têm spot conhecido; empate pelo spot com mais monstros.
-const bestSpots = droppers.flatMap((m) => {
-  const r = (spotRefsByMonster.get(m.id) ?? [])[0];
-  return r ? [{ monster: m, ref: r }] : [];
+// De onde vem o item: monstros (com mapa e melhor spot), NPCs que vendem e as frases de "como conseguir".
+const sources = itemSources(item);
+const { droppers, sellers, notes } = sources;
+const placeCount = new Set(droppers.flatMap((d) => d.places.map((p) => p.map.id))).size;
+// Destaques para farmar: monstros de menor nível que têm spot conhecido; empate pelo spot com mais deles.
+const bestSpots = droppers.flatMap((d) => {
+  const best = d.places.map((p) => p.spot).filter((r) => r !== null).sort((x, y) => y!.count - x!.count)[0];
+  return best ? [{ monster: d.monster, ref: best }] : [];
 }).sort((a, b) => (a.monster.level ?? 0) - (b.monster.level ?? 0) || b.ref.count - a.ref.count).slice(0, 3);
+// Uma linha por monstro e mapa: a relação direta item -> monstro -> mapa -> spot.
+const rows = droppers.flatMap((d) => (d.places.length ? d.places : [null]).map((place, i) => ({ d, place, first: i === 0, span: Math.max(1, d.places.length) })));
 const levelText = (min: number | null, max: number | null) =>
   min == null ? "" : min === max ? `nv ${fmt(min)}` : `nv ${fmt(min)}–${fmt(max)}`;
+const plural = (n: number, one: string, many: string) => `${fmt(n)} ${n === 1 ? one : many}`;
+const s21 = droppers.some((d) => d.s21Only);
+const s21Of = new Set(droppers.filter((d) => d.s21Only).map((d) => d.monster.id));
+// Nomes de NPC citados nas frases de "como conseguir" viram link para a página do NPC.
+const npcNames = [...npcs].sort((a, b) => b.name.length - a.name.length);
+const linkNpcs = (text: string): (string | { id: string; name: string })[] => {
+  for (const npc of npcNames) {
+    const i = text.toLowerCase().indexOf(npc.name.toLowerCase());
+    if (i >= 0) return [...linkNpcs(text.slice(0, i)), { id: npc.id, name: text.slice(i, i + npc.name.length) }, ...linkNpcs(text.slice(i + npc.name.length))];
+  }
+  return text ? [text] : [];
+};
+const noteKinds = [...new Set(notes.map((n) => n.kind))].filter((k) => !(k === "drop" && droppers.length) && !(k === "npc" && sellers.length));
 const related = item.related_items.map((id) => itemById.get(id)).filter((i) => i !== undefined);
 const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
 ---
@@ -97,52 +109,88 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
     </>
   )}
 
+  <h2 id="onde-dropa">Onde conseguir</h2>
+  {(droppers.length > 0 || sellers.length > 0 || notes.length > 0)
+    ? (
+      <ul class="chips how">
+        {droppers.length > 0 && <li><a class="chip gold" href="#onde-dropa-tabela">Dropa de {plural(droppers.length, "monstro", "monstros")}{placeCount > 0 && <> em {plural(placeCount, "mapa", "mapas")}</>}</a></li>}
+        {sellers.length > 0 && <li><a class="chip gold" href="#vendido-por">Vendido por {plural(sellers.length, "NPC", "NPCs")}</a></li>}
+        {noteKinds.map((k) => <li><span class="chip">{ACQUISITION_LABELS[k]}</span></li>)}
+      </ul>
+    )
+    : <p class="muted">Nenhuma das fontes informa onde este item dropa ou como consegui-lo.</p>}
+
+  {notes.length > 0 && (
+    <ul class="panel lines how-notes">
+      {notes.map((n) => <li lang={n.translated ? undefined : "en"}>{linkNpcs(n.text).map((part) => (typeof part === "string" ? part : <a href={`/npcs/${part.id}/`}>{part.name}</a>))}</li>)}
+    </ul>
+  )}
+
   {droppers.length > 0 && (
     <>
-      <h2 id="onde-dropa">Onde dropa</h2>
-      <p class="muted">{droppers.length} {droppers.length === 1 ? "monstro pode" : "monstros podem"} dropar este item. O spot indicado é onde há mais daquele monstro: dá para ficar lá farmando até dropar.</p>
       {bestSpots.length > 0 && (
-        <div class="farm-cards">
-          {bestSpots.map(({ monster, ref }) => (
-            <a class="farm-card" href={spotsUrl(ref.map_id, ref.n)}>
-              {monster.image_url && <img src={monster.image_url} alt="" loading="lazy" />}
-              <span>
-                <strong>{ref.map_name} · spot {ref.n}</strong>
-                <span>×{ref.count} {monster.name}{monster.level != null && <> (nv {fmt(monster.level)})</>}</span>
-                <span class="muted">{levelText(ref.level_min, ref.level_max) && <>spot {levelText(ref.level_min, ref.level_max)} · </>}ver no mapa →</span>
-              </span>
-            </a>
-          ))}
-        </div>
+        <>
+          <h3 class="sub">Melhores lugares para farmar</h3>
+          <div class="farm-cards">
+            {bestSpots.map(({ monster, ref }) => (
+              <a class="farm-card" href={spotsUrl(ref.map_id, ref.n)}>
+                {monster.image_url && <img src={monster.image_url} alt="" loading="lazy" />}
+                <span>
+                  <strong>{ref.map_name} · spot {ref.n}{s21Of.has(monster.id) && <span class="chip s21">S21</span>}</strong>
+                  <span>×{ref.count} {monster.name}{monster.level != null && <> (nv {fmt(monster.level)})</>}</span>
+                  <span class="muted">{levelText(ref.level_min, ref.level_max) && <>spot {levelText(ref.level_min, ref.level_max)} · </>}ver no mapa →</span>
+                </span>
+              </a>
+            ))}
+          </div>
+        </>
       )}
+      <h3 class="sub" id="onde-dropa-tabela">Monstros que dropam, por mapa</h3>
+      <p class="muted small">Cada linha é um lugar para farmar: o monstro, o mapa em que ele aparece e o spot com mais dele nesse mapa.</p>
+      {s21 && <p class="muted small s21-note"><span class="chip s21">S21</span> lista de drop de um servidor da Season 21, usada quando as tabelas do jogo oficial não trazem o item; no servidor oficial o drop pode ser diferente.</p>}
+      <div class="table-wrap">
+        <table class="drops-table">
+          <thead><tr><th>Monstro</th><th class="num">Nível</th><th>Mapa</th><th>Spot</th><th>Tabela</th></tr></thead>
+          <tbody>
+            {rows.map(({ d, place, first, span }) => (
+              <tr class:list={{ cont: !first }}>
+                {first && (
+                  <td rowspan={span}><a href={`/monstros/${d.monster.id}/`} class="name-cell">{d.monster.image_url && <img class="thumb" src={d.monster.image_url} alt="" loading="lazy" />}{d.monster.name}</a></td>
+                )}
+                {first && <td class="num" rowspan={span}>{fmt(d.monster.level)}</td>}
+                <td>{place ? <a href={`/mapas/${place.map.id}/`}>{place.map.name}</a> : <span class="muted">mapa não informado</span>}</td>
+                <td>
+                  {place?.spot
+                    ? <a href={spotsUrl(place.map.id, place.spot.n)}>spot {place.spot.n}</a>
+                    : place && spotMapIds.includes(place.map.id) ? <a class="muted" href={spotsUrl(place.map.id)}>ver mapa</a> : <span class="muted">—</span>}
+                  {place?.spot && <span class="muted"> ×{place.spot.count}</span>}
+                </td>
+                {first && (
+                  <td rowspan={span}>{d.tables.join(", ")}{d.s21Only && <span class="chip s21" title="Lista de drop de servidor da Season 21: o jogo oficial pode ser diferente">S21</span>}</td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  )}
+
+  {sellers.length > 0 && (
+    <>
+      <h3 class="sub" id="vendido-por">Vendido por</h3>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Monstro</th><th class="num">Nível</th><th>Tabela</th><th>Melhor spot</th><th>Outros spots</th></tr></thead>
+          <thead><tr><th>NPC</th><th>Onde fica</th><th>Detalhes</th><th class="num">Preço (Zen)</th></tr></thead>
           <tbody>
-            {droppers.map((m) => {
-              const refs = spotRefsByMonster.get(m.id) ?? [];
-              const maps = whereMaps(m.id);
-              const [best, ...others] = refs;
-              return (
-                <tr>
-                  <td><a href={`/monstros/${m.id}/`} class="name-cell">{m.image_url && <img class="thumb" src={m.image_url} alt="" loading="lazy" />}{m.name}</a></td>
-                  <td class="num">{fmt(m.level)}</td>
-                  <td>{dropKind(m.id)}</td>
-                  <td>
-                    {best
-                      ? <><a href={spotsUrl(best.map_id, best.n)}>{best.map_name} · spot {best.n}</a> <span class="muted">×{best.count}</span></>
-                      : maps.length > 0
-                        ? maps.map((id, i) => <>{i > 0 && ", "}<a href={`/mapas/${id}/`}>{mapById.get(id)?.name ?? id}</a></>)
-                        : <span class="muted">—</span>}
-                  </td>
-                  <td>
-                    {others.slice(0, 4).map((r, i) => <>{i > 0 && ", "}<a href={spotsUrl(r.map_id, r.n)}>{r.map_name} {r.n}</a> <span class="muted">×{r.count}</span></>)}
-                    {others.length > 4 && <span class="muted"> e mais {others.length - 4}</span>}
-                    {others.length === 0 && <span class="muted">—</span>}
-                  </td>
-                </tr>
-              );
-            })}
+            {sellers.map((s) => (
+              <tr>
+                <td><a href={`/npcs/${s.npc.id}/`} class="name-cell">{s.npc.image_url && <img class="thumb" src={s.npc.image_url} alt="" loading="lazy" />}{s.npc.name}</a></td>
+                <td>{s.maps.map((m, i) => <>{i > 0 && ", "}<a href={`/mapas/${m.id}/`}>{m.name}</a></>)}</td>
+                <td>{s.details ?? "—"}</td>
+                <td class="num">{fmt(s.price)}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -162,6 +210,13 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
 </Base>
 <style>
   .opts { margin-bottom: .75rem; }
+  .how { margin-bottom: .75rem; }
+  .how-notes { list-style: disc; padding-left: 2rem; margin: 0 0 1rem; }
+  h3.sub { margin: 1.25rem 0 .5rem; font-size: .95rem; color: var(--accent-2); }
+  .drops-table td[rowspan] { vertical-align: top; }
+  .drops-table tr.cont td { border-top: 0; }
+  .chip.s21 { margin-left: .4rem; font-size: .7rem; padding: 0 .4rem; color: var(--muted); vertical-align: middle; }
+  .s21-note .chip.s21 { margin: 0 .3rem 0 0; }
   .cols > section > h2 { margin-top: 1.25rem; }
   .chip .muted { font-size: .75rem; }
 </style>

@@ -61,3 +61,18 @@ test("rótulos de tabelas de drop, opções e NPCs", () => {
   assert.equal(npcTypeLabel("Merchant NPC"), "Mercador");
   assert.equal(npcTypeLabel(null), null);
 });
+
+test("como conseguir: frases das notas viram texto em português", async () => {
+  const { acquisitionNotes } = await import("./taxonomy.ts");
+  const out = acquisitionNotes([
+    "It is used to instantly recover 100% of health.", "This item is obtained from the cash item shop.",
+    "This item is sold by any general merchant, such as NPC Lumen the Barmaid.",
+    "This item can be crafted from a Jewel of Creation and a Jewel of Chaos through NPC Chaos Goblin Machine.",
+    "This item is an 'excellent' grade item; you can learn more about excellent items in the excellent items guide.",
+    "This item can be obtained during the Cherry Blossom event.",
+  ]);
+  assert.deepEqual(out.map((a) => a.kind), ["cash", "npc", "craft", "event"]);
+  assert.equal(out[1].text, "Vendido por qualquer mercador geral (ex.: Lumen the Barmaid).");
+  assert.equal(out[2].text, "Combinação: a Jewel of Creation + a Jewel of Chaos na Chaos Goblin Machine.");
+  assert.ok(out.every((a) => a.translated));
+});

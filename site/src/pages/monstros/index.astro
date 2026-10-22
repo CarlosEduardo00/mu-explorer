@@ -14,7 +14,7 @@ const mapOptions = maps.filter((x) => mapIds.has(x.id))
   .map((x) => ({ value: x.id, label: x.name }));
 const facets = [
   { key: "type", label: "Tipo", options: [{ value: "normal", label: "Comuns" }, { value: "boss", label: "Chefes" }] },
-  { key: "map", label: "Mapa", options: mapOptions },
+  { key: "map", label: "Mapa", collapse: 10, options: mapOptions },
 ];
 const sorts = [
   { value: "level", label: "Nível (menor primeiro)", attr: "level", dir: 1 as const, numeric: true },

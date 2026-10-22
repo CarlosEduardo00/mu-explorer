@@ -3,8 +3,8 @@ import json
 from pathlib import Path
 
 from scrapers.common.model import validate
-from scrapers.gmo.cli import guide_key, guide_urls
-from scrapers.gmo.parse import merge_monsters, parse_map_guide, zone_count
+from scrapers.gmo.cli import drop_key, drop_location_urls, guide_key, guide_urls
+from scrapers.gmo.parse import merge_monsters, parse_drop_location, parse_map_guide, zone_count
 
 FIX = Path(__file__).parent / "fixtures" / "gmo"
 
@@ -64,3 +64,31 @@ def test_quantidade_da_zona_nas_duas_grafias():
     assert zone_count("Lv 66 · 14,000 HP · 420–460 dmg · 9 here") == 9
     assert zone_count("Lv 2 · 60 HP · 8–14 dmg · 30 per spot") == 30
     assert zone_count("Lv 2 · 60 HP") is None
+
+
+def drop_devias():
+    html = (FIX / "drop-devias.html").read_text(encoding="utf-8")
+    meta = json.loads((FIX / "drop-devias.meta.json").read_text(encoding="utf-8"))
+    return parse_drop_location(html, meta)
+
+
+def test_lista_de_drop_do_mapa_monstro_para_itens():
+    r = drop_devias()
+    assert r["map_name"] == "Devias" and r["season"] == "S21"
+    assert r["source_url"] == "https://globalmuonline.com/drop/location/Devias"
+    monsters = {m["name"]: m["items"] for m in r["monsters"]}
+    assert list(monsters) == ["Worm", "Ice Monster", "Ice Queen"]
+    # a lista inteira vem no HTML ("Show More" só expande na tela)
+    assert len(monsters["Worm"]) == 93 and monsters["Worm"][:3] == ["Kris", "Short Sword", "Rapier"]
+    assert "Ring of Ice" in monsters["Ice Monster"]
+
+
+def test_pagina_que_nao_e_lista_de_drop():
+    assert parse_drop_location("<html><head><title>Atlans Map Guide</title></head></html>", {}) is None
+
+
+def test_links_das_listas_de_drop():
+    index = '<a href="https://globalmuonline.com/drop/location/Kalima+I">K</a><a href="https://globalmuonline.com/drop/item/Kris">x</a>'
+    urls = drop_location_urls(index + index)
+    assert urls == ["https://globalmuonline.com/drop/location/Kalima+I"]
+    assert drop_key(urls[0]) == "Kalima-I"

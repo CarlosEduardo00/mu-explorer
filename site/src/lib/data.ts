@@ -40,7 +40,10 @@ export interface Npc {
   source: string; source_url: string;
 }
 export interface Spawn { monster_id: string; map_id: string; kind: string | null; x: number | null; y: number | null; count: number | null }
-export interface Drop { monster_id: string; item_id: string; item_name: string; kind: string; table: string | null; category: string | null; quantity: number | null }
+export interface Drop {
+  monster_id: string; item_id: string; item_name: string; kind: string; table: string | null; category: string | null;
+  quantity: number | null; map_id?: string | null; season?: string | null; source?: string;
+}
 export interface FarmSpot {
   id: string; map_id: string; map_name: string; x: number; y: number; x_min: number; y_min: number; x_max: number; y_max: number;
   monsters: { monster_id: string; name: string; level: number | null; count: number }[];
