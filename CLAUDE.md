@@ -29,9 +29,12 @@ python -m scrapers.muemu parse                       # arquivos do MuEmu -> data
 python -m scrapers.combine                           # Fanz + MuEmu -> data/processed/combined/ + combine_report.md
 python -m scrapers.planner fetch                     # guias de classe + Stat Planner do Fanz (14 páginas, ~15 s)
 python -m scrapers.planner build                     # data/raw -> data/curated/planner.json (regras de classes)
+python -m scrapers.planner builds                    # -> data/curated/builds.json (builds prontas, só do servidor oficial)
 python -m scrapers.spots [--set combined]            # spawns -> data/processed/<conjunto>/farm_spots.json (spots de farm)
 python -m scrapers.gmo fetch                         # guias do Global MU Online (sitemap, 210 páginas, ~4 min)
-python -m scrapers.gmo parse                         # -> data/processed/gmo/ (mapas, monstros c/ imagem, spawns, marcadores)
+python -m scrapers.gmo fetch-drops                   # listas de drop por mapa do GMO (/drop/location, 111 páginas, ~2 min)
+python -m scrapers.gmo parse                         # -> data/processed/gmo/ (mapas, monstros c/ imagem, spawns, marcadores,
+                                                     #    drop_lists.json = mapa -> monstro -> itens, formato compacto)
 python -m scrapers.terrain                           # terreno do MuEmu (.att) -> data/processed/terrain/terrains.json (mapas vetoriais)
 python -m scrapers.media list|fetch                  # imagens usadas pelo site -> site/public/media/ + data/media.json (1 req/s)
 ```
@@ -103,7 +106,9 @@ site/src/          Astro: layouts/Base (tema escuro com dourado, Cinzel em publi
                    drop, tipos de NPC; com testes), lib/view.ts (taxonomia aplicada aos dados), lib/planner.ts (lógica
                    pura do planner + testes), pages/ (início, itens, monstros, mapas, npcs: catálogo + página por
                    registro; mapas/<id>/mapa.svg = miniatura vetorial; spots/ = área separada: busca por nível e
-                   spots/<mapa>/ com o mapa interativo; planner/; data/ = JSON estático; api/ = API estática)
+                   spots/<mapa>/ com o mapa interativo; builds/ = builds prontas do oficial para seguir (proporção,
+                   skills por nível, atributos por nível, sets de mastery por nível, vídeos); planner/; data/ = JSON
+                   estático; api/ = API estática)
                    lib/api.ts + lib/sqlite.ts: manifesto, registros com relações e SQLite (node:sqlite)
 site/public/       arquivos fixos copiados para a saída (_headers, 404.html, media/ = imagens copiadas das fontes)
 site/dist/         saída do build (fora do git); é o que o Cloudflare publica
@@ -197,6 +202,7 @@ wrangler.jsonc     Workers (env prod = mu-explorer, env hml = mu-explorer-hml; a
   coletamos. Coordenadas de spots vêm do MuEmu.
 - Mapas citados só em páginas de monstro ("Spawns in Kalima 1." com link para Kalima.php) viram variantes
   com `parent_id` (kalima-1 -> kalima).
+- "Spawns in Lorencia, Noria, or Devias." sem link vira um mapa para cada nome (antes virava um mapa falso).
 - NPC: tipo (Merchant/Quest/Crafting/Miscellaneous/Mini-game/Event), localização `Mapa @(x, y)` (pode ser
   `@(?, ?)` ou `@(various)`), descrição e lista de venda com preço em Zen (e linha de opções `[+3] [+Luck]`).
   Receitas de crafting (Chaos Goblin Machine etc.) ainda não são extraídas.
@@ -248,7 +254,12 @@ o que foi mapeado antes do bloqueio.
   spots). Grafias diferentes viram o id do Fanz (`GMO_MAP_ALIASES`); andares numerados ganham `parent_id`.
 - Guias de classe (`/guides/<classe>/`): linha de evolução até a 5ª classe, pontos por nível, imagens `tN` e requisitos
   de skill; usados pelo `scrapers.planner build`. A zona de spawn traz a quantidade como "N here" ou "N per spot".
-- Drops (`/drop/location`) do GMO ainda não são extraídos.
+- Listas de drop por mapa (`/drop/location/<Mapa>`, `fetch-drops`): um painel por monstro com todos os itens que ele
+  dropa naquele mapa (a lista inteira vem no HTML). Viram `drop_lists.json` (compacto; o expandido teria 40 MB) e, no
+  cruzamento, registros de drop com `map_id` e `season: "S21"`. **Só completam itens sem nenhum drop nas tabelas do
+  Fanz** (o oficial vem primeiro; e o `drops.json` fica abaixo do limite de 25 MB por arquivo do Cloudflare): ~250
+  itens. Nomes casam com `item_resolver` (igual, "Helmet" = "Helm", nome do MuEmu, ou difflib ≥ 0,9 com a mesma última
+  palavra). O site marca esses drops com a etiqueta "S21" (pode diferir do servidor oficial).
 - muonline.fandom.com responde com desafio anti-bot da Cloudflare: não coletamos.
 
 ### 5. Outras (referência, não prioritárias)
@@ -278,17 +289,23 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
   MuEmu (grade 256×256, índice y×256+x; flags 1 = zona segura, 4 = bloqueado, 8 = fora do mapa). O pareamento arquivo →
   mapa (`scrapers/terrain.py: FILES`) foi conferido contra os spawns (Aida e Kanturu Ruins da S21 mudaram: ficam com a
   imagem do minimapa). É o fundo padrão do mapa interativo; a imagem do minimapa vira camada opcional.
-  `drop`: monster_id, item_id, item_name, kind
+  `drop`: monster_id, item_id, item_name, map_id (null quando a tabela vale para o monstro em qualquer mapa), kind
   (normal/excellent/ancient/socket/unknown), table, category, quantity, rate (null se a fonte não informa).
   Um drop do Fanz significa "o monstro pode dropar este item"; não há taxa.
 - `source`: id, name, url, scraped_at, credit, revision (commit da fonte, quando houver; ex.: MuEmu).
-- Builds **não existem como dado** nas fontes: serão curadoria nossa (referência: guias por
-  classe e Stat Planner do Fanz). As distribuições de pontos sugeridas pelo Fanz são curadoria do autor e
-  **não são copiadas**.
-- `builds` (`data/curated/builds.json`, schema `builds.schema.json`): builds prontas por classe, curadoria nossa em
-  regras (fases por nível; metas: número, `gear` = requisito do equipamento escolhido, ou `{per_level}`; resto
-  dividido por `split`). Pisos de skill são fatos do jogo; cada build cita referências. 35 builds, 16 classes. Os pontos
-  de atributo acabam no nível 400: degraus finais começam antes (250/300) para fechar até lá (há teste).
+- `builds` (`data/curated/builds.json`, schema `builds.schema.json`, gerado por `python -m scrapers.planner builds` em
+  `scrapers/planner/builds.py`): builds prontas para seguir, **só do MU Online oficial da Webzen** (pedido do dono:
+  nada de servidor modificado; há teste que só aceita fontes do Fanz e da Webzen). 29 builds, 16 classes:
+  - distribuição (`ratio`, % dos pontos ganhos) das 13 classes do Fanz = presets do Stat Planner do Fanz (os mesmos da
+    página Stat Builds), lidos de `data/raw/fanz/tools/stat-planner.html` (publicação autorizada, out/2026);
+  - IK, Alchemist e Crusader não têm distribuição publicada: proporção nossa (`basis: "nossa"`), a partir do atributo
+    principal e dos requisitos de skill dos guias oficiais da Webzen; a página diz isso;
+  - `status: "antiga"` quando uma renovação oficial mudou o atributo do dano depois da distribuição (RF e Slayer de
+    Força depois da S18; DL de Força antes da S19); a 1ª nota explica;
+  - `skills` (requisitos oficiais), `videos` (YouTube de jogadores do oficial), `gear_variant` (ATK/ENE/WIZ/Belief);
+  - regras do planner: fase única, primeiro o que o equipamento pede de Força/Agilidade, o resto na proporção.
+  Fontes do oficial: guias da Webzen (`muonline.webzen.com/en/gameinfo/guide/detail/N`, só fatos, parafraseados) e do
+  Fanz. Fontes de servidor privado (globalmuonline, muonline.net/.ai/.eu, wikis de privados) não entram em builds.
 - `map`: também `level_required`, `level_recommended_min/max` (Quick Facts do Fanz; nível do warp no GMO) e
   `minimap_url` (Fanz `graphics/<Mapa>/map.jpg`, 1024×1024 = 4 px por casa; **horizontal = y, vertical = x**, conferido
   com os NPCs de Devias/Lorencia). Os pontos dos Hot Spots do Fanz ficam no php bloqueado: não coletamos.
@@ -302,9 +319,10 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
   guia delas: base de guias citados em `sources`, evolução e pontos dos guias de classe do GMO). Do GMO vêm também a
   5ª classe (S21, nível null) e `image_url` da classe e de cada evolução.
 
-**Planner de builds (`/planner/`):** escolhe regras, classe (Gun Crusher, Slayer e Grow Lancer primeiro),
-nível e pontos extras; distribui pontos de atributo; escolhe equipamento (itens de `planner-items.json`, por
-classe e slot) e confere requisitos; o estado vai no endereço (`#...`) para compartilhar a build. Pontos por
+**Planner de builds (`/planner/`, ferramenta para criar a própria build):** escolhe regras, classe (Gun Crusher, Slayer
+e Grow Lancer primeiro), nível e pontos extras; distribui pontos de atributo; escolhe equipamento (itens de
+`planner-items.json`: todo item equipável pelo tipo da taxonomia, inclusive sets sem categoria nos dados; slots arma,
+escudo, elmo, armadura, calça, luvas, botas, asas, colar e dois anéis; filtro por qualidade e por nível) e confere requisitos; o estado vai no endereço (`#...`) para compartilhar a build. Pontos por
 nível = soma das faixas de cada nível de 2 até `max_level_points` (400); tier 1: 5, e 6 a partir do nível 220
 (quest Hero Status); tier 2 (MG, DL, RF, GL): 7. Requisitos dos itens são os do item +0. Com uma build pronta,
 o planner simula nível a nível (`simulateBuild`) e mostra a curva de atributos. **Ainda não
@@ -326,7 +344,9 @@ justamente em Gun Crusher e Slayer; precisam de outra fonte ou de conferência n
    `/api/v1/index.json` e na tabela `meta` do SQLite. Mudança incompatível de formato vira `/api/v2/`.
 5. Site: páginas de itens, mobs e spots; builds com curadoria manual. Spots ficam numa área própria
    (`/spots/<mapa>/#spot-N`); a página do mapa só leva até lá. "Onde dropa" do item mostra, para cada monstro, o
-   spot com mais dele (para farmar até dropar).
+   spot com mais dele (para farmar até dropar): uma linha por monstro e mapa (relação direta item → monstro → mapa →
+   spot), quem vende (NPCs) e as frases de "como conseguir" das notas do item, traduzidas por `acquisitionNotes`
+   (loja de cash, combinação, evento, missão...). A lista de itens filtra por "Como conseguir" e "Dropa em" (mapa).
 6. Revisão do front-end (pedido do dono, feita depois dos mapas refeitos): tema do jogo, busca global, catálogos com
    facetas e nomes padronizados em português (`lib/taxonomy.ts`). **Regra:** texto exibido passa pela taxonomia
    (categoria, qualidade, classe, atributo, tabela de drop, tipo de NPC); nada de slug ou chave crua na tela. Os

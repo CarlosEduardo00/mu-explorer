@@ -7,8 +7,9 @@ Fontes (todas já em data/raw/, baixadas pelos outros scrapers):
 - Characters.xml e código do MuEmu (MIT): atributos base e pontos por nível de uma season clássica.
   Rótulo "classico".
 
-Só fatos de regra entram no arquivo (números e nomes de classe). As distribuições de pontos sugeridas pelo
-Stat Planner do Fanz são curadoria do autor e NÃO são copiadas.
+Só fatos de regra entram neste arquivo (números e nomes de classe). As distribuições de pontos do Stat Planner do
+Fanz entram nas builds prontas (`python -m scrapers.planner builds`, scrapers/planner/builds.py), com a publicação
+autorizada (out/2026) e crédito no rodapé.
 
 `publish`: o conjunto "global-atual" vem dos guias do Fanz e do GMO, publicados com autorização (out/2026); só fica de fora
 do build com dados abertos (SITE_DATA=muemu).
@@ -292,10 +293,14 @@ def main(argv: list[str] | None = None) -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("fetch", help="baixa os guias de classe e o Stat Planner do Fanz (~15 requisições a 1 req/s)")
     sub.add_parser("build", help="gera data/curated/planner.json a partir de data/raw (offline)")
+    sub.add_parser("builds", help="gera data/curated/builds.json: builds prontas do servidor oficial (offline)")
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s", stream=sys.stderr)
     if args.command == "fetch":
         return cmd_fetch(args)
+    if args.command == "builds":
+        from scrapers.planner import builds
+        return builds.main(args.data_dir)
     data, notes = build(args.data_dir / "raw")
     from scrapers.common.model import validate_file
     errors = validate_file("planner", data)

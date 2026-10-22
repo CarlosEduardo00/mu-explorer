@@ -1,0 +1,372 @@
+<!doctype html>
+<!-- Recorte real de https://muonlinefanz.com/tools/stat-planner/ (out/2026): presets do Dark Lord e do Slayer. -->
+<html><body>
+<script>
+var STRfactor1_dl = 0.40;
+var AGIfactor1_dl = 0.15;
+var STAfactor1_dl = 0.10;
+var ENEfactor1_dl = 0.25;
+var COMfactor1_dl = 0.10;
+var STRfactor2_dl = 0.20;
+var AGIfactor2_dl = 0.15;
+var STAfactor2_dl = 0.05;
+var ENEfactor2_dl = 0.20;
+var COMfactor2_dl = 0.40;
+var STRfactor3_dl = 0.15;
+var AGIfactor3_dl = 0.30;
+var STAfactor3_dl = 0.45;
+var ENEfactor3_dl = 0.10;
+var COMfactor3_dl = 0.00;
+var STRfactor1_slayer = 0.25;
+var AGIfactor1_slayer = 0.50;
+var STAfactor1_slayer = 0.15;
+var ENEfactor1_slayer = 0.10;
+var STRfactor2_slayer = 0.50;
+var AGIfactor2_slayer = 0.30;
+var STAfactor2_slayer = 0.15;
+var ENEfactor2_slayer = 0.05;
+</script>
+<text-subtitle>Dark Lord</text-subtitle><br />
+    <em>Set your character level?</em><br />
+    Level <input id="levelInput_dl" type="number" value="800" min="1" max="800" onchange="setLevel_dl();" /><br />    
+    
+    <script type="text/javascript">
+    var totalStats_dl = 2963;
+    var fruitPoints_dl = 100;
+    var STRbase_dl = 26;
+    var AGIbase_dl = 20;
+    var STAbase_dl = 20;
+    var ENEbase_dl = 15;
+    var COMbase_dl = 25;
+    
+    //BUILD 1
+    var STRfactor1_dl = 0.40;
+    var AGIfactor1_dl = 0.15;
+    var STAfactor1_dl = 0.10;
+    var ENEfactor1_dl = 0.25;
+    var COMfactor1_dl = 0.10;
+    
+    //BUILD 2
+    var STRfactor2_dl = 0.20;
+    var AGIfactor2_dl = 0.15;
+    var STAfactor2_dl = 0.05;
+    var ENEfactor2_dl = 0.20;
+    var COMfactor2_dl = 0.40;
+    
+    //BUILD 3
+    var STRfactor3_dl = 0.15;
+    var AGIfactor3_dl = 0.30;
+    var STAfactor3_dl = 0.45;
+    var ENEfactor3_dl = 0.10;
+    var COMfactor3_dl = 0.00;
+    
+    function setLevel_dl(){
+        var temp_dl = totalStats_dl;
+        var levelInput = document.getElementById("levelInput_dl").value;
+        if (
+            (levelInput > 0) &&
+            (levelInput < 2)
+            ){
+            temp_dl = 0;
+        }
+        else if (
+            (levelInput > 1) &&
+            (levelInput < 400)
+            ){
+            temp_dl = (levelInput * 7);
+        }
+        else if (
+            (levelInput > 399) &&
+            (levelInput < 800)
+            ){
+            temp_dl = (totalStats_dl - 100);
+        }
+        
+        updateData_dl(temp_dl);
+    }
+    
+    function updateData_dl(tempstats){
+        //1ST BUILD
+        //STRENGTH
+        var temp1_dl = tempstats;
+        var str1 = (Math.round(temp1_dl * STRfactor1_dl));
+        str1 = (str1 + STRbase_dl);
+        document.getElementById("str1_dl").innerHTML=str1;
+        document.getElementById("str1_factor_dl").innerHTML=(Math.round(STRfactor1_dl * 100));
+        document.getElementById("str1_fruitPoints_dl").innerHTML=(Math.round(STRfactor1_dl * fruitPoints_dl));
+        //AGILITY
+        var agi1 = (Math.round(temp1_dl * AGIfactor1_dl));
+        agi1 = (agi1 + AGIbase_dl);
+        document.getElementById("agi1_dl").innerHTML=agi1;
+        document.getElementById("agi1_factor_dl").innerHTML=(Math.round(AGIfactor1_dl * 100));
+        document.getElementById("agi1_fruitPoints_dl").innerHTML=(Math.round(AGIfactor1_dl * fruitPoints_dl));
+        //STAMINA
+        var sta1 = (Math.round(temp1_dl * STAfactor1_dl));
+        sta1 = (sta1 + STAbase_dl);
+        document.getElementById("sta1_dl").innerHTML=sta1;
+        document.getElementById("sta1_factor_dl").innerHTML=(Math.round(STAfactor1_dl * 100));
+        document.getElementById("sta1_fruitPoints_dl").innerHTML=(Math.round(STAfactor1_dl * fruitPoints_dl));
+        //ENERGY
+        var ene1 = (Math.round(temp1_dl * ENEfactor1_dl));
+        ene1 = (ene1 + ENEbase_dl);
+        document.getElementById("ene1_dl").innerHTML=ene1;
+        document.getElementById("ene1_factor_dl").innerHTML=(Math.round(ENEfactor1_dl * 100));
+        document.getElementById("ene1_fruitPoints_dl").innerHTML=(Math.round(ENEfactor1_dl * fruitPoints_dl));
+        //COMMAND
+        var com1 = (Math.round(temp1_dl * COMfactor1_dl));
+        com1 = (com1 + COMbase_dl);
+        document.getElementById("com1_dl").innerHTML=com1;
+        document.getElementById("com1_factor_dl").innerHTML=(Math.round(COMfactor1_dl * 100));
+        document.getElementById("com1_fruitPoints_dl").innerHTML=(Math.round(COMfactor1_dl * fruitPoints_dl));
+
+        //2ND BUILD
+        //STRENGTH
+        var temp2_dl = tempstats;
+        var str2 = (Math.round(temp2_dl * STRfactor2_dl));
+        str2 = (str2 + STRbase_dl);
+        document.getElementById("str2_dl").innerHTML=str2;
+        document.getElementById("str2_factor_dl").innerHTML=(Math.round(STRfactor2_dl * 100));
+        document.getElementById("str2_fruitPoints_dl").innerHTML=(Math.round(STRfactor2_dl * fruitPoints_dl));
+        //AGILITY
+        var agi2 = (Math.round(temp2_dl * AGIfactor2_dl));
+        agi2 = (agi2 + AGIbase_dl);
+        document.getElementById("agi2_dl").innerHTML=agi2;
+        document.getElementById("agi2_factor_dl").innerHTML=(Math.round(AGIfactor2_dl * 100));
+        document.getElementById("agi2_fruitPoints_dl").innerHTML=(Math.round(AGIfactor2_dl * fruitPoints_dl));
+        //STAMINA
+        var sta2 = (Math.round(temp2_dl * STAfactor2_dl));
+        sta2 = (sta2 + STAbase_dl);
+        document.getElementById("sta2_dl").innerHTML=sta2;
+        document.getElementById("sta2_factor_dl").innerHTML=(Math.round(STAfactor2_dl * 100));
+        document.getElementById("sta2_fruitPoints_dl").innerHTML=(Math.round(STAfactor2_dl * fruitPoints_dl));
+        //ENERGY
+        var ene2 = (Math.round(temp2_dl * ENEfactor2_dl));
+        ene2 = (ene2 + ENEbase_dl);
+        document.getElementById("ene2_dl").innerHTML=ene2;
+        document.getElementById("ene2_factor_dl").innerHTML=(Math.round(ENEfactor2_dl * 100));
+        document.getElementById("ene2_fruitPoints_dl").innerHTML=(Math.round(ENEfactor2_dl * fruitPoints_dl));
+        //COMMAND
+        var com2 = (Math.round(temp2_dl * COMfactor2_dl));
+        com2 = (com2 + COMbase_dl);
+        document.getElementById("com2_dl").innerHTML=com2;
+        document.getElementById("com2_factor_dl").innerHTML=(Math.round(COMfactor2_dl * 100));
+        document.getElementById("com2_fruitPoints_dl").innerHTML=(Math.round(COMfactor2_dl * fruitPoints_dl));
+
+        //3RD BUILD
+        //STRENGTH
+        var temp3_dl = tempstats;
+        var str3 = (Math.round(temp3_dl * STRfactor3_dl));
+        str3 = (str3 + STRbase_dl);
+        document.getElementById("str3_dl").innerHTML=str3;
+        document.getElementById("str3_factor_dl").innerHTML=(Math.round(STRfactor3_dl * 100));
+        document.getElementById("str3_fruitPoints_dl").innerHTML=(Math.round(STRfactor3_dl * fruitPoints_dl));
+        //AGILITY
+        var agi3 = (Math.round(temp3_dl * AGIfactor3_dl));
+        agi3 = (agi3 + AGIbase_dl);
+        document.getElementById("agi3_dl").innerHTML=agi3;
+        document.getElementById("agi3_factor_dl").innerHTML=(Math.round(AGIfactor3_dl * 100));
+        document.getElementById("agi3_fruitPoints_dl").innerHTML=(Math.round(AGIfactor3_dl * fruitPoints_dl));
+        //STAMINA
+        var sta3 = (Math.round(temp3_dl * STAfactor3_dl));
+        sta3 = (sta3 + STAbase_dl);
+        document.getElementById("sta3_dl").innerHTML=sta3;
+        document.getElementById("sta3_factor_dl").innerHTML=(Math.round(STAfactor3_dl * 100));
+        document.getElementById("sta3_fruitPoints_dl").innerHTML=(Math.round(STAfactor3_dl * fruitPoints_dl));
+        //ENERGY
+        var ene3 = (Math.round(temp3_dl * ENEfactor3_dl));
+        ene3 = (ene3 + ENEbase_dl);
+        document.getElementById("ene3_dl").innerHTML=ene3;
+        document.getElementById("ene3_factor_dl").innerHTML=(Math.round(ENEfactor3_dl * 100));
+        document.getElementById("ene3_fruitPoints_dl").innerHTML=(Math.round(ENEfactor3_dl * fruitPoints_dl));
+        //COMMAND
+        var com3 = (Math.round(temp3_dl * COMfactor3_dl));
+        com3 = (com3 + COMbase_dl);
+        document.getElementById("com3_dl").innerHTML=com3;
+        document.getElementById("com3_factor_dl").innerHTML=(Math.round(COMfactor3_dl * 100));
+        document.getElementById("com3_fruitPoints_dl").innerHTML=(Math.round(COMfactor3_dl * fruitPoints_dl));
+    }
+    </script>
+    
+    <div id="col3" class="noborder">
+        <text-subtitle>Attacker</text-subtitle><br />
+        <ul>
+            <li><em><span id="str1_factor_dl"></span>% STR:</em> <span id="str1_dl"></span> <em>(+<span id="str1_fruitPoints_dl"></span>)</em></li>
+            <li><em><span id="agi1_factor_dl"></span>% AGI:</em> <span id="agi1_dl"></span> <em>(+<span id="agi1_fruitPoints_dl"></span>)</em></li>
+            <li><em><span id="sta1_factor_dl"></span>% STA:</em> <span id="sta1_dl"></span> <em>(+<span id="sta1_fruitPoints_dl"></span>)</em></li>
+            <li><em><span id="ene1_factor_dl"></span>% ENE:</em> <span id="ene1_dl"></span> <em>(+<span id="ene1_fruitPoints_dl"></span>)</em></li>
+            <li><em><span id="com1_factor_dl"></span>% COM:</em> <span id="com1_dl"></span> <em>(+<span id="com1_fruitPoints_dl"></span>)</em></li>
+        </ul>
+    </div>
+
+    <div id="col3" class="noborder">
+        <text-subtitle>Commander</text-subtitle><br />
+        <ul>
+            <li><em><span id="str2_factor_dl"></span>% STR:</em> <span id="str2_dl"></span> <em>(+<span id="str2_fruitPoints_dl"></span>)</em></li>
+            <li><em><span id="agi2_factor_dl"></span>% AGI:</em> <span id="agi2_dl"></span> <em>(+<span id="agi2_fruitPoints_dl"></span>)</em></li>
+            <li><em><span id="sta2_factor_dl"></span>% STA:</em> <span id="sta2_dl"></span> <em>(+<span id="sta2_fruitPoints_dl"></span>)</em></li>
+            <li><em><span id="ene2_factor_dl"></span>% ENE:</em> <span id="ene2_dl"></span> <em>(+<span id="ene2_fruitPoints_dl"></span>)</em></li>
+            <li><em><span id="com2_factor_dl"></span>% COM:</em> <span id="com2_dl"></span> <em>(+<span id="com2_fruitPoints_dl"></span>)</em></li>
+        </ul>
+    </div>
+
+    <div id="col3" class="noborder">
+        <text-subtitle>PVP / Tank</text-subtitle><br />
+        <ul>
+            <li><em><span id="str3_factor_dl"></span>% STR:</em> <span id="str3_dl"></span> <em>(+<span id="str3_fruitPoints_dl"></span>)</em></li>
+            <li><em><span id="agi3_factor_dl"></span>% AGI:</em> <span id="agi3_dl"></span> <em>(+<span id="agi3_fruitPoints_dl"></span>)</em></li>
+            <li><em><span id="sta3_factor_dl"></span>% STA:</em> <span id="sta3_dl"></span> <em>(+<span id="sta3_fruitPoints_dl"></span>)</em></li>
+            <li><em><span id="ene3_factor_dl"></span>% ENE:</em> <span id="ene3_dl"></span> <em>(+<span id="ene3_fruitPoints_dl"></span>)</em></li>
+            <li><em><span id="com3_factor_dl"></span>% COM:</em> <span id="com3_dl"></span> <em>(+<span id="com3_fruitPoints_dl"></span>)</em></li>
+        </ul>
+    </div>
+    
+    <br /><em>*values in parentheses can be gained from stat fruits.</em>
+    <hr />
+</div>
+    	<div id="gl" class="textcenter" style="display:none;">
+    
+<text-subtitle>Slayer</text-subtitle><br />
+    <em>Set your character level?</em><br />
+    Level <input id="levelInput_slayer" type="number" value="800" min="1" max="800" onchange="setLevel_slayer();" /><br />    
+    
+    <script type="text/javascript">
+    var totalStats_slayer = 2365;
+    var fruitPoints_slayer = 127;
+    var STRbase_slayer = 28;
+    var AGIbase_slayer = 30;
+    var STAbase_slayer = 15;
+    var ENEbase_slayer = 10;
+    
+    //BUILD 1
+    var STRfactor1_slayer = 0.25;
+    var AGIfactor1_slayer = 0.50;
+    var STAfactor1_slayer = 0.15;
+    var ENEfactor1_slayer = 0.10;
+    
+    //BUILD 2
+    var STRfactor2_slayer = 0.50;
+    var AGIfactor2_slayer = 0.30;
+    var STAfactor2_slayer = 0.15;
+    var ENEfactor2_slayer = 0.05;
+    
+    function setLevel_slayer(){
+        var temp_slayer = totalStats_slayer;
+        var levelInput = document.getElementById("levelInput_slayer").value;
+        if (
+            (levelInput > 0) &&
+            (levelInput < 2)
+            ){
+            temp_slayer = 0;
+        }
+        else if (
+            (levelInput > 1) &&
+            (levelInput < 150)
+            ){
+            temp_slayer = (levelInput * 5);
+        }
+        else if (
+            (levelInput > 149) &&
+            (levelInput < 220)
+            ){
+            temp_slayer = ((levelInput * 5) + 20);
+        }
+        else if (
+            (levelInput > 219) &&
+            (levelInput < 400)
+            ){
+            temp_slayer = ((219 * 5) + ((levelInput - 219) * 6) + 20);
+        }
+        else if (
+            (levelInput > 399) &&
+            (levelInput < 800)
+            ){
+            temp_slayer = (totalStats_slayer - 100);
+        }
+        
+        updateData_slayer(temp_slayer);
+    }
+    
+    function updateData_slayer(tempstats){
+        //1ST BUILD
+        //STRENGTH
+        var temp1_slayer = tempstats;
+        var str1 = (Math.round(temp1_slayer * STRfactor1_slayer));
+        str1 = (str1 + STRbase_slayer);
+        document.getElementById("str1_slayer").innerHTML=str1;
+        document.getElementById("str1_factor_slayer").innerHTML=(Math.round(STRfactor1_slayer * 100));
+        document.getElementById("str1_fruitPoints_slayer").innerHTML=(Math.round(STRfactor1_slayer * fruitPoints_slayer));
+        //AGILITY
+        var agi1 = (Math.round(temp1_slayer * AGIfactor1_slayer));
+        agi1 = (agi1 + AGIbase_slayer);
+        document.getElementById("agi1_slayer").innerHTML=agi1;
+        document.getElementById("agi1_factor_slayer").innerHTML=(Math.round(AGIfactor1_slayer * 100));
+        document.getElementById("agi1_fruitPoints_slayer").innerHTML=(Math.round(AGIfactor1_slayer * fruitPoints_slayer));
+        //STAMINA
+        var sta1 = (Math.round(temp1_slayer * STAfactor1_slayer));
+        sta1 = (sta1 + STAbase_slayer);
+        document.getElementById("sta1_slayer").innerHTML=sta1;
+        document.getElementById("sta1_factor_slayer").innerHTML=(Math.round(STAfactor1_slayer * 100));
+        document.getElementById("sta1_fruitPoints_slayer").innerHTML=(Math.round(STAfactor1_slayer * fruitPoints_slayer));
+        //ENERGY
+        var ene1 = (Math.round(temp1_slayer * ENEfactor1_slayer));
+        ene1 = (ene1 + ENEbase_slayer);
+        document.getElementById("ene1_slayer").innerHTML=ene1;
+        document.getElementById("ene1_factor_slayer").innerHTML=(Math.round(ENEfactor1_slayer * 100));
+        document.getElementById("ene1_fruitPoints_slayer").innerHTML=(Math.round(ENEfactor1_slayer * fruitPoints_slayer));
+
+        //2ND BUILD
+        //STRENGTH
+        var temp2_slayer = tempstats;
+        var str2 = (Math.round(temp2_slayer * STRfactor2_slayer));
+        str2 = (str2 + STRbase_slayer);
+        document.getElementById("str2_slayer").innerHTML=str2;
+        document.getElementById("str2_factor_slayer").innerHTML=(Math.round(STRfactor2_slayer * 100));
+        document.getElementById("str2_fruitPoints_slayer").innerHTML=(Math.round(STRfactor2_slayer * fruitPoints_slayer));
+        //AGILITY
+        var agi2 = (Math.round(temp2_slayer * AGIfactor2_slayer));
+        agi2 = (agi2 + AGIbase_slayer);
+        document.getElementById("agi2_slayer").innerHTML=agi2;
+        document.getElementById("agi2_factor_slayer").innerHTML=(Math.round(AGIfactor2_slayer * 100));
+        document.getElementById("agi2_fruitPoints_slayer").innerHTML=(Math.round(AGIfactor2_slayer * fruitPoints_slayer));
+        //STAMINA
+        var sta2 = (Math.round(temp2_slayer * STAfactor2_slayer));
+        sta2 = (sta2 + STAbase_slayer);
+        document.getElementById("sta2_slayer").innerHTML=sta2;
+        document.getElementById("sta2_factor_slayer").innerHTML=(Math.round(STAfactor2_slayer * 100));
+        document.getElementById("sta2_fruitPoints_slayer").innerHTML=(Math.round(STAfactor2_slayer * fruitPoints_slayer));
+        //ENERGY
+        var ene2 = (Math.round(temp2_slayer * ENEfactor2_slayer));
+        ene2 = (ene2 + ENEbase_slayer);
+        document.getElementById("ene2_slayer").innerHTML=ene2;
+        document.getElementById("ene2_factor_slayer").innerHTML=(Math.round(ENEfactor2_slayer * 100));
+        document.getElementById("ene2_fruitPoints_slayer").innerHTML=(Math.round(ENEfactor2_slayer * fruitPoints_slayer));
+
+    }
+    </script>
+    
+    <div id="col3" class="noborder">
+        <text-subtitle>High DMG</text-subtitle><br />
+        <ul>
+            <li><em><span id="str1_factor_slayer"></span>% STR:</em> <span id="str1_slayer"></span> <em>(+<span id="str1_fruitPoints_slayer"></span>)</em></li>
+            <li><em><span id="agi1_factor_slayer"></span>% AGI:</em> <span id="agi1_slayer"></span> <em>(+<span id="agi1_fruitPoints_slayer"></span>)</em></li>
+            <li><em><span id="sta1_factor_slayer"></span>% STA:</em> <span id="sta1_slayer"></span> <em>(+<span id="sta1_fruitPoints_slayer"></span>)</em></li>
+            <li><em><span id="ene1_factor_slayer"></span>% ENE:</em> <span id="ene1_slayer"></span> <em>(+<span id="ene1_fruitPoints_slayer"></span>)</em></li>
+        </ul>
+    </div>
+
+    <div id="col3" class="noborder">
+        <text-subtitle>High Speed</text-subtitle><br />
+        <ul>
+            <li><em><span id="str2_factor_slayer"></span>% STR:</em> <span id="str2_slayer"></span> <em>(+<span id="str2_fruitPoints_slayer"></span>)</em></li>
+            <li><em><span id="agi2_factor_slayer"></span>% AGI:</em> <span id="agi2_slayer"></span> <em>(+<span id="agi2_fruitPoints_slayer"></span>)</em></li>
+            <li><em><span id="sta2_factor_slayer"></span>% STA:</em> <span id="sta2_slayer"></span> <em>(+<span id="sta2_fruitPoints_slayer"></span>)</em></li>
+            <li><em><span id="ene2_factor_slayer"></span>% ENE:</em> <span id="ene2_slayer"></span> <em>(+<span id="ene2_fruitPoints_slayer"></span>)</em></li>
+        </ul>
+    </div>
+    
+    <br /><em>*values in parentheses can be gained from stat fruits.</em>
+    <hr />
+</div>
+    	<div id="gun" class="textcenter" style="display:none;">
+    
+</body></html>

@@ -18,14 +18,22 @@ export interface Ruleset { id: string; name: string; description: string; publis
 
 /** Item de equipamento no formato compacto de /data/planner-items.json. */
 export interface GearItem {
-  id: string; name: string; slot: Slot; classes: string[];
+  id: string; name: string; slot: ItemSlot; classes: string[];
   req: Record<"level" | Stat, number>;
   def: number | null; dmg: [number, number] | null;
+  /** Qualidade (normal, excellent, ancient, socket...) e tipo em português, para agrupar e mostrar na escolha. */
+  grade?: string | null; kind?: string;
 }
-export type Slot = "weapon" | "shield" | "helm" | "armor" | "pants" | "gloves" | "boots";
-export const SLOTS: { id: Slot; label: string }[] = [
-  { id: "weapon", label: "Arma" }, { id: "shield", label: "Escudo" }, { id: "helm", label: "Capacete" },
-  { id: "armor", label: "Armadura" }, { id: "pants", label: "Calça" }, { id: "gloves", label: "Luvas" }, { id: "boots", label: "Botas" },
+/** Tipo de peça do item; o slot "ring2" (segundo anel) aceita os mesmos itens do "ring". */
+export type ItemSlot = "weapon" | "shield" | "helm" | "armor" | "pants" | "gloves" | "boots" | "wings" | "pendant" | "ring";
+export type Slot = ItemSlot | "ring2";
+export const SLOTS: { id: Slot; label: string; accepts: ItemSlot }[] = [
+  { id: "weapon", label: "Arma", accepts: "weapon" }, { id: "shield", label: "Escudo / segunda arma", accepts: "shield" },
+  { id: "helm", label: "Capacete", accepts: "helm" }, { id: "armor", label: "Armadura", accepts: "armor" },
+  { id: "pants", label: "Calça", accepts: "pants" }, { id: "gloves", label: "Luvas", accepts: "gloves" },
+  { id: "boots", label: "Botas", accepts: "boots" }, { id: "wings", label: "Asas / capa", accepts: "wings" },
+  { id: "pendant", label: "Colar", accepts: "pendant" }, { id: "ring", label: "Anel 1", accepts: "ring" },
+  { id: "ring2", label: "Anel 2", accepts: "ring" },
 ];
 
 export const emptyAllocation = (): Allocation => ({ str: 0, agi: 0, vit: 0, ene: 0, cmd: 0 });
@@ -155,9 +163,26 @@ export interface BuildPhase {
   split: Partial<Record<Stat, number>>;
 }
 export interface BuildSource { name: string; url: string }
+export interface BuildSkill { name: string; req: Partial<Record<Stat, number>> }
 export interface BuildTemplate {
   id: string; class_id: string; name: string; role: "pvm" | "pvp" | "suporte" | "híbrida";
   summary: string; phases: BuildPhase[]; notes: string[]; sources: BuildSource[];
+  /** "antiga": uma renovação oficial mudou o atributo do dano depois da distribuição (a 1ª nota explica). */
+  status?: "atual" | "antiga";
+  /** De onde vem a distribuição: preset publicado (Fanz) ou proporção nossa a partir dos guias oficiais. */
+  basis?: "fanz" | "nossa";
+  ratio?: Partial<Record<Stat, number>>;
+  skills?: BuildSkill[];
+  videos?: { title: string; url: string }[];
+  gear_variant?: "ATK" | "ENE" | "WIZ" | "Belief";
+}
+
+/** Primeiro nível em que a build cumpre o requisito (atributo total), simulando nível a nível; null se não chega. */
+export function levelForRequirement(curve: CurvePoint[], req: Partial<Record<Stat, number>>): number | null {
+  for (const point of curve) {
+    if (STATS.every((s) => (req[s] ?? 0) <= point.total[s])) return point.level;
+  }
+  return null;
 }
 
 export function resolveTarget(to: Target, level: number, gearNeed: Partial<Record<Stat, number>>, stat: Stat): number {

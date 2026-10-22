@@ -117,3 +117,45 @@ def test_gmo_completa_imagem_troca_spawns_do_mapa_e_traz_novidades():
     atlans = next(m for m in data["map"] if m["id"] == "atlans")
     assert (atlans["level_required"], atlans["image_url"], atlans["description"]) == (50, "x", "d")
     assert stats["mapas novos"] == 1 and stats["imagens"] == 1 and data["map_marker"] == gmo["map_marker"]
+
+
+# ---------------------------------------------------------------- listas de drop do GMO
+
+def test_mapa_da_lista_de_drop_do_gmo():
+    from scrapers.combine import gmo_drop_map_id
+    known = {"kalima-1", "devias", "abyss-of-atlans-3", "uruk-mountain", "kalima"}
+    assert gmo_drop_map_id("Kalima I", known) == "kalima-1"
+    assert gmo_drop_map_id("Devias", known) == "devias"
+    assert gmo_drop_map_id("AbyssOfAtlas 3", known) == "abyss-of-atlans-3"
+    assert gmo_drop_map_id("UrkMountain", known) == "uruk-mountain"
+    assert gmo_drop_map_id("Chaos Castle III", known) is None
+
+
+def test_casamento_de_nomes_de_item_entre_fontes():
+    from scrapers.combine import item_resolver
+    items = [fitem("Storm Zahard Armor", "normal"), fitem("Robust Helm", "normal"), fitem("Lord's Scepter", "normal"),
+             fitem("Legendary Gloves", "normal"), fitem("Excellent Storm Zahard Armor", "excellent")]
+    resolve = item_resolver(items, {"leather-gunner-helmet-x": "robust-helm"})
+    assert resolve("Robust Helmet")["id"] == "robust-helm"          # Helmet = Helm
+    assert resolve("Lord Scepter")["id"] == "lord-s-scepter"         # sem o 's
+    assert resolve("Storm Jahad Armor")["id"] == "storm-zahard-armor"  # grafia parecida, mesma peça, item base
+    assert resolve("Rune Legendary Gloves") is None                  # outro set: não casa por semelhança
+    assert resolve("Leather Gunner Helmet X")["id"] == "robust-helm"  # pelo nome do MuEmu
+
+
+def test_drops_do_gmo_so_completam_itens_sem_drop_do_fanz():
+    from scrapers.combine import add_gmo_drops, expand_drop_lists
+    lists = [{"map_name": "Devias", "source_url": "https://globalmuonline.com/drop/location/Devias",
+              "scraped_at": "2026-10-22T11:11:23Z", "season": "S21",
+              "monsters": [{"name": "Worm", "items": ["Kris", "Kenaz Armor", "Item Que Nao Existe"]},
+                           {"name": "Aegis 1", "items": ["Kenaz Armor"]}]}]
+    data = {"item": [fitem("Kris", "normal"), fitem("Kenaz Armor", "normal")],
+            "monster": [mon("worm", "Worm", 20), mon("aegis", "Aegis", 17)],
+            "map": [{"id": "devias"}],
+            "drop": [{"monster_id": "worm", "item_id": "kris", "map_id": None}]}
+    stats = add_gmo_drops(data, expand_drop_lists(lists), {})
+    new = [d for d in data["drop"] if d.get("source") == "gmo"]
+    assert {(d["monster_id"], d["item_id"], d["map_id"]) for d in new} == {("worm", "kenaz-armor", "devias"), ("aegis", "kenaz-armor", "devias")}
+    assert all(d["kind"] == "normal" and d["season"] == "S21" and "monster_name" not in d for d in new)
+    assert stats["drops do GMO não usados (o item já tem drop do Fanz)"] == 1
+    assert stats["drops do GMO com item que o site não tem"] == 1

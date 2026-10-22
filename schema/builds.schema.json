@@ -2,68 +2,256 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/carloseduardo00/mu-explorer/schema/builds.schema.json",
   "title": "Builds",
-  "description": "Builds prontas do planner (data/curated/builds.json): curadoria nossa, escrita como regras de distribuição por fase de nível. Não copia distribuições de guias; cita as referências.",
+  "description": "Builds prontas para seguir (data/curated/builds.json, gerado por `python -m scrapers.planner builds`), só do MU Online oficial: distribuição do Stat Planner do Fanz (publicação autorizada) ou nossa, a partir dos guias oficiais da Webzen (basis); escrita como regras de distribuição por fase de nível.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["builds"],
+  "required": [
+    "builds"
+  ],
   "properties": {
     "builds": {
       "type": "array",
-      "items": { "$ref": "#/$defs/build" }
+      "items": {
+        "$ref": "#/$defs/build"
+      }
     }
   },
   "$defs": {
-    "stat": { "enum": ["str", "agi", "vit", "ene", "cmd"] },
+    "stat": {
+      "enum": [
+        "str",
+        "agi",
+        "vit",
+        "ene",
+        "cmd"
+      ]
+    },
     "target": {
       "description": "Meta do atributo total (com a base): número, \"gear\" (o que o equipamento exige) ou proporcional ao nível.",
       "oneOf": [
-        { "type": "integer", "minimum": 0 },
-        { "const": "gear" },
         {
-          "type": "object", "additionalProperties": false, "required": ["per_level"],
-          "properties": { "per_level": { "type": "number", "exclusiveMinimum": 0 } }
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "const": "gear"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "per_level"
+          ],
+          "properties": {
+            "per_level": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
         }
       ]
     },
     "phase": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["from_level", "fill", "split"],
+      "required": [
+        "from_level",
+        "fill",
+        "split"
+      ],
       "properties": {
-        "from_level": { "type": "integer", "minimum": 1 },
+        "from_level": {
+          "type": "integer",
+          "minimum": 1
+        },
         "fill": {
           "type": "array",
           "items": {
-            "type": "object", "additionalProperties": false, "required": ["stat", "to"],
-            "properties": { "stat": { "$ref": "#/$defs/stat" }, "to": { "$ref": "#/$defs/target" } }
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "stat",
+              "to"
+            ],
+            "properties": {
+              "stat": {
+                "$ref": "#/$defs/stat"
+              },
+              "to": {
+                "$ref": "#/$defs/target"
+              }
+            }
           }
         },
         "split": {
           "type": "object",
-          "propertyNames": { "$ref": "#/$defs/stat" },
-          "additionalProperties": { "type": "number", "exclusiveMinimum": 0 }
+          "propertyNames": {
+            "$ref": "#/$defs/stat"
+          },
+          "additionalProperties": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
         }
       }
     },
     "build": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "class_id", "name", "role", "summary", "phases", "notes", "sources"],
+      "required": [
+        "id",
+        "class_id",
+        "name",
+        "role",
+        "summary",
+        "phases",
+        "notes",
+        "sources"
+      ],
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-        "class_id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-        "name": { "type": "string", "minLength": 1 },
-        "role": { "enum": ["pvm", "pvp", "suporte", "híbrida"] },
-        "summary": { "type": "string", "minLength": 1 },
-        "phases": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/phase" } },
-        "notes": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "class_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "enum": [
+            "pvm",
+            "pvp",
+            "suporte",
+            "híbrida"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "phases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/phase"
+          }
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
         "sources": {
           "type": "array",
           "minItems": 1,
           "items": {
-            "type": "object", "additionalProperties": false, "required": ["name", "url"],
-            "properties": { "name": { "type": "string", "minLength": 1 }, "url": { "type": "string", "pattern": "^https?://" } }
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "url"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "url": {
+                "type": "string",
+                "pattern": "^https?://"
+              }
+            }
           }
+        },
+        "status": {
+          "enum": [
+            "atual",
+            "antiga"
+          ],
+          "description": "antiga: uma renovação oficial mudou o atributo do dano depois que a distribuição foi publicada (a primeira nota explica)."
+        },
+        "basis": {
+          "enum": [
+            "fanz",
+            "nossa"
+          ],
+          "description": "De onde vem a distribuição: preset do Stat Planner do Fanz, ou proporção nossa a partir do atributo principal e dos requisitos oficiais de skill."
+        },
+        "ratio": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/stat"
+          },
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0
+          },
+          "description": "Distribuição em % dos pontos ganhos (para exibir)."
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "req"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "req": {
+                "type": "object",
+                "propertyNames": {
+                  "$ref": "#/$defs/stat"
+                },
+                "additionalProperties": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          },
+          "description": "Skills que marcam a build, com o requisito oficial de atributo total."
+        },
+        "videos": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "url"
+            ],
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1
+              },
+              "url": {
+                "type": "string",
+                "pattern": "^https://(www\\.)?youtube\\.com/"
+              }
+            }
+          },
+          "description": "Vídeos de jogadores do servidor oficial."
+        },
+        "gear_variant": {
+          "enum": [
+            "ATK",
+            "ENE",
+            "WIZ",
+            "Belief"
+          ],
+          "description": "Variante das peças de set que combina com a build."
         }
       }
     }

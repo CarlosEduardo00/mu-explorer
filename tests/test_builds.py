@@ -40,3 +40,38 @@ def test_comando_so_em_dark_lord(builds):
         if b["class_id"] != "dark-lord":
             stats = {r["stat"] for p in b["phases"] for r in p["fill"]} | {s for p in b["phases"] for s in p["split"]}
             assert "cmd" not in stats, b["id"]
+
+
+OFFICIAL = ("https://muonlinefanz.com/", "https://muonline.webzen.com/")
+
+
+def test_so_fontes_do_servidor_oficial(builds):
+    """Builds são do MU oficial da Webzen: fontes só do Fanz (recurso do oficial) e dos guias da Webzen; vídeos do YouTube."""
+    for b in builds:
+        assert b["sources"], b["id"]
+        for s in b["sources"]:
+            assert s["url"].startswith(OFFICIAL), f"{b['id']}: fonte fora do oficial: {s['url']}"
+        for v in b.get("videos", []):
+            assert v["url"].startswith(("https://www.youtube.com/", "https://youtube.com/")), b["id"]
+
+
+def test_distribuicao_soma_100_e_e_a_mesma_do_split(builds):
+    for b in builds:
+        assert sum(b["ratio"].values()) == 100, b["id"]
+        assert b["phases"][0]["split"] == b["ratio"], b["id"]
+
+
+def test_build_antiga_explica_a_renovacao(builds):
+    for b in builds:
+        if b["status"] == "antiga":
+            assert b["notes"] and "renovação" in b["notes"][0], b["id"]
+
+
+def test_presets_do_stat_planner():
+    from scrapers.planner.builds import parse_presets
+    html = (REPO_ROOT / "tests" / "fixtures" / "planner" / "stat-planner-presets.html").read_text(encoding="utf-8")
+    presets = parse_presets(html)
+    assert [p["title"] for p in presets["dl"]] == ["Attacker", "Commander", "PVP / Tank"]
+    assert presets["dl"][1]["ratio"] == {"str": 20, "agi": 15, "vit": 5, "ene": 20, "cmd": 40}   # COMfactor = Comando
+    assert presets["dl"][2]["ratio"] == {"str": 15, "agi": 30, "vit": 45, "ene": 10}               # 0% fica de fora
+    assert presets["slayer"][0] == {"title": "High DMG", "ratio": {"str": 25, "agi": 50, "vit": 15, "ene": 10}}

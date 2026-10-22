@@ -1,11 +1,11 @@
 # Relatório da coleta — MU Online Fanz
 
-Gerado em 2026-10-21T21:52:29Z.
+Gerado em 2026-10-22T11:26:39Z.
 
 ## Resumo
 
 - Páginas parseadas: 3458 (falhas: 53)
-- Itens: 3074 · Monstros: 291 · Mapas: 49 · Spawns: 341 · Drops: 23759
+- Itens: 3074 · Monstros: 291 · Mapas: 45 · Spawns: 337 · Drops: 23759
 - Drops que apontam para itens fora do conjunto coletado: 397 (esperado na amostra; na coleta completa deve ser 0)
 - Erros de schema: 0 · IDs duplicados: 0
 
@@ -121,35 +121,35 @@ Gerado em 2026-10-21T21:52:29Z.
 | `scraped_at` | 291 | 100% |  |
 | `page_updated_at` | 290 | 99% |  |
 
-### Mapas (49)
+### Mapas (45)
 
 | campo | preenchido | % | obs. |
 |---|---:|---:|---|
-| `id` | 49 | 100% |  |
-| `name` | 49 | 100% |  |
+| `id` | 45 | 100% |  |
+| `name` | 45 | 100% |  |
 | `parent_id` | 1 | 2% |  |
-| `description` | 36 | 73% |  |
-| `quick_facts` | 35 | 71% |  |
-| `valued_drops.monster` | 30 | 61% |  |
-| `valued_drops.boss` | 22 | 44% |  |
-| `monsters` | 32 | 65% |  |
-| `special_monsters` | 15 | 30% |  |
-| `bosses` | 23 | 46% |  |
-| `npcs` | 17 | 34% |  |
-| `connections` | 15 | 30% |  |
-| `notes` | 34 | 69% |  |
-| `image_url` | 36 | 73% |  |
+| `description` | 36 | 80% |  |
+| `quick_facts` | 35 | 77% |  |
+| `valued_drops.monster` | 30 | 66% |  |
+| `valued_drops.boss` | 22 | 48% |  |
+| `monsters` | 32 | 71% |  |
+| `special_monsters` | 15 | 33% |  |
+| `bosses` | 23 | 51% |  |
+| `npcs` | 17 | 37% |  |
+| `connections` | 15 | 33% |  |
+| `notes` | 34 | 75% |  |
+| `image_url` | 36 | 80% |  |
 | `season` | 0 | 0% | season alvo ainda é decisão em aberto |
-| `source` | 49 | 100% |  |
-| `source_url` | 49 | 100% |  |
-| `scraped_at` | 49 | 100% |  |
+| `source` | 45 | 100% |  |
+| `source_url` | 45 | 100% |  |
+| `scraped_at` | 45 | 100% |  |
 | `page_updated_at` | 0 | 0% |  |
-| `level_required` | 26 | 53% |  |
-| `level_recommended_min` | 28 | 57% |  |
-| `level_recommended_max` | 26 | 53% |  |
-| `minimap_url` | 33 | 67% |  |
+| `level_required` | 26 | 57% |  |
+| `level_recommended_min` | 28 | 62% |  |
+| `level_recommended_max` | 26 | 57% |  |
+| `minimap_url` | 33 | 73% |  |
 | `valued_drops.elite` | 1 | 2% |  |
-| `valued_drops.special` | 8 | 16% |  |
+| `valued_drops.special` | 8 | 17% |  |
 
 ### NPCs (57)
 
@@ -185,8 +185,8 @@ Gerado em 2026-10-21T21:52:29Z.
 
 - Notes & links (3074)
 - Related items (3073)
-- Requirements (2689)
 - Possible additional options (2689)
+- Requirements (2689)
 - Item details (2533)
 - Excellent option (1122)
 - Additional option (856)
@@ -198,14 +198,14 @@ Gerado em 2026-10-21T21:52:29Z.
 - +Siege option (40)
 - Possible rewards (28)
 - Errtel bonus (15)
-- Base option (12)
 - Elemental option (12)
+- Base option (12)
 - Set bonus (6)
-- Wizardry items (5)
-- Weapon items (5)
-- Other items (5)
 - Shield items (5)
 - Armor items (5)
+- Weapon items (5)
+- Wizardry items (5)
+- Other items (5)
 - Accessory items (4)
 - *can toggle the New Year character skin (2)
 - *can toggle the Christmas character skin (1)
@@ -246,9 +246,9 @@ Nenhuma.
 - Boss Monster List # (22)
 - NPC List # (17)
 - Special Monster List # (15)
+- Monster list... # (1)
 - Notes & Tips... # (1)
 - Hot spots... # (1)
-- Monster list... # (1)
 - Boss zone... # (1)
 
 ## Linhas não aproveitadas — NPCs
@@ -260,40 +260,40 @@ Nenhuma.
 | Required ingredients: | 6 |
 | Jewel of Chaos | 6 |
 | Difficulty: moderate | 6 |
+| All other items in the combination are consumed. | 4 |
+| Click to jump 👇 | 4 |
+| Crafting Failure | 4 |
 | Crafting Success | 4 |
 | 100% Success Rate | 4 |
-| If the combination succeeds: | 4 |
-| Crafting Failure | 4 |
-| Click to jump 👇 | 4 |
 | Possible Combinations | 4 |
-| All other items in the combination are consumed. | 4 |
+| If the combination succeeds: | 4 |
 | Discontinued NPC. | 4 |
 | Jewel of Creation | 4 |
-| All items in the combination are destroyed. | 3 |
-| Zen x150,000 | 3 |
-| 80% Success Rate | 3 |
 | The combination cannot fail. | 3 |
-| This NPC is currently not available in the game. | 3 |
+| All items in the combination are destroyed. | 3 |
+| 80% Success Rate | 3 |
+| Zen x150,000 | 3 |
 | This NPC has been discontinued. | 3 |
+| This NPC is currently not available in the game. | 3 |
 | Jewel of Bless x5 | 3 |
-| Crafting Recipes | 3 |
 | Jewel of Soul x5 | 3 |
-| The Mercenary Guild is a strong Guild which has been known for ultimately preventing Kundun from breeching MU's main cities, several times. Since then, several Guild Members have retired and now the Guild needs extra assistance slaying monsters. The Guild is actively recruiting players, as a Free Mercenary, to kill monsters. A Free Mercenary is not technically a part of the Guild, but it is an established rank amongst the Mercenary Guild, and, as such, you will earn respect from it. It will cost Zen (x1,000,000) to register with the Guild. | 3 |
+| Crafting Recipes | 3 |
 | Daily Quests | 3 |
-| All items in the combination are consumed. | 2 |
-| Possible Crafted Items List | 2 |
-| 70% Success Rate | 2 |
-| If the combination fails: | 2 |
+| The Mercenary Guild is a strong Guild which has been known for ultimately preventing Kundun from breeching MU's main cities, several times. Since then, several Guild Members have retired and now the Guild needs extra assistance slaying monsters. The Guild is actively recruiting players, as a Free Mercenary, to kill monsters. A Free Mercenary is not technically a part of the Guild, but it is an established rank amongst the Mercenary Guild, and, as such, you will earn respect from it. It will cost Zen (x1,000,000) to register with the Guild. | 3 |
+| Zen x450,000 | 2 |
 | Zen x300,000 | 2 |
 | Jewel of Bless | 2 |
-| Zen x450,000 | 2 |
+| 70% Success Rate | 2 |
+| Possible Crafted Items List | 2 |
 | 60% Success Rate | 2 |
+| All items in the combination are consumed. | 2 |
 | 90% Success Rate | 2 |
-| Zen x100,000 | 2 |
+| If the combination fails: | 2 |
 | +10 Upgrade | 2 |
-| Evidence of Strength - Task 1 | 2 |
+| Zen x100,000 | 2 |
 | Requires completion of the Hero Status quest. | 2 |
 | "Go to the northern graveyard of Crywolf and find the soldier that escaped from the Balgass' Barrack. Lugard's blessing has allowed him to have the intelligence to get you inside of the Barracks. He calls himself Werewolf Guardsman." | 2 |
+| Evidence of Strength - Task 1 | 2 |
 | This NPC is basically pointless. 😐 | 2 |
 
 ## Seções vistas — NPCs
@@ -329,41 +329,63 @@ Nenhuma.
 - `death-spirit-trainee-soldier.html`
   - mapa sem link: 'Barracks of Balgass'
 - `destructive-ogre-archer.html`
-  - mapa sem link: 'Lorencia, Noria, or Devias'
+  - mapa sem link: 'Lorencia'
+  - mapa sem link: 'Noria'
+  - mapa sem link: 'Devias'
 - `destructive-ogre-soldier.html`
-  - mapa sem link: 'Lorencia, Noria, or Devias'
+  - mapa sem link: 'Lorencia'
+  - mapa sem link: 'Noria'
+  - mapa sem link: 'Devias'
 - `elite-orc.html`
   - mapa sem link: 'Devil Square Mini-game'
 - `fire-flame-ghost.html`
-  - mapa sem link: 'Raklion, Swamp of Peace, Kanturu Ruins, & Kalima 7'
+  - mapa sem link: 'Raklion'
+  - mapa sem link: 'Swamp of Peace'
+  - mapa sem link: 'Kanturu Ruins'
+  - mapa sem link: 'Kalima 7'
 - `giant-ogre.html`
   - mapa sem link: 'Blood Castle 1'
 - `golden-derkon.html`
-  - mapa sem link: 'Lorencia, Noria, Devias, or Lost Tower'
+  - mapa sem link: 'Lorencia'
+  - mapa sem link: 'Noria'
+  - mapa sem link: 'Devias'
+  - mapa sem link: 'Lost Tower'
 - `great-golden-dragon.html`
-  - mapa sem link: 'Kanturu or Raklion'
+  - mapa sem link: 'Kanturu'
+  - mapa sem link: 'Raklion'
 - `magic-skeleton.html`
   - mapa sem link: 'Blood Castle 1'
 - `metal-balrog.html`
   - mapa sem link: 'Devil Square Mini-game'
 - `moon-rabbit.html`
-  - mapa sem link: 'Lorencia, Noria, Elveland, & Devias'
+  - mapa sem link: 'Lorencia'
+  - mapa sem link: 'Noria'
+  - mapa sem link: 'Elveland'
+  - mapa sem link: 'Devias'
 - `orc-archer.html`
   - mapa sem link: 'Blood Castle 1'
 - `orc-warrior.html`
   - mapa sem link: 'Blood Castle 1'
 - `pouch-of-blessing.html`
-  - mapa sem link: 'Lost Tower, Icarus, Kalima 5, & Adia'
+  - mapa sem link: 'Lost Tower'
+  - mapa sem link: 'Icarus'
+  - mapa sem link: 'Kalima 5'
+  - mapa sem link: 'Aida'
 - `red-dragon.html`
-  - mapa sem link: 'Lorencia, Noria, or Devias'
+  - mapa sem link: 'Lorencia'
+  - mapa sem link: 'Noria'
+  - mapa sem link: 'Devias'
 - `red-skeleton-knight.html`
   - mapa sem link: 'Blood Castle 1'
 - `skeleton.html`
-  - mapa sem link: 'Lorencia & Dungeon'
+  - mapa sem link: 'Lorencia'
+  - mapa sem link: 'Dungeon'
 - `soram-trainee-soldier.html`
   - mapa sem link: 'Barracks of Balgass'
 - `white-wizard.html`
-  - mapa sem link: 'Lorencia, Noria, or Devias'
+  - mapa sem link: 'Lorencia'
+  - mapa sem link: 'Noria'
+  - mapa sem link: 'Devias'
 
 ## Falhas
 

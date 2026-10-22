@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/carloseduardo00/mu-explorer/schema/drop.schema.json",
   "title": "Drop",
-  "description": "Monstro dropa um item.",
+  "description": "Monstro dropa um item (opcionalmente num mapa).",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -31,6 +31,14 @@
     "item_name": {
       "type": "string",
       "minLength": 1
+    },
+    "map_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Mapa em que o monstro dropa o item, quando a fonte informa por mapa (listas de drop por mapa); null quando a tabela vale para o monstro em geral."
     },
     "kind": {
       "enum": [

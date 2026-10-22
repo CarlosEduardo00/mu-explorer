@@ -1,0 +1,146 @@
+---
+import Base from "../../layouts/Base.astro";
+import PageHead from "../../components/PageHead.astro";
+import { builds, rulesets, fmt } from "../../lib/data";
+import { setProgression } from "../../lib/view";
+import { simulateBuild, levelForRequirement, STAT_LABELS, encodeState, emptyAllocation, type Stat } from "../../lib/planner";
+
+export function getStaticPaths() {
+  const ids = new Set((rulesets[0]?.classes ?? []).map((c) => c.id));
+  return builds.filter((b) => ids.has(b.class_id)).map((b) => ({ params: { id: b.id }, props: { build: b } }));
+}
+const { build } = Astro.props;
+const ruleset = rulesets[0];
+const cls = ruleset.classes.find((c) => c.id === build.class_id)!;
+const ROLE: Record<string, string> = { pvm: "PvM", pvp: "PvP", suporte: "Suporte", "híbrida": "PvM e PvP" };
+const stats = (["str", "agi", "vit", "ene", "cmd"] as Stat[]).filter((s) => s !== "cmd" || cls.base.cmd > 0);
+const ratioStats = stats.filter((s) => (build.ratio?.[s] ?? 0) > 0);
+const lastLevel = Math.min(cls.max_level_points ?? 400, cls.max_level);
+// Simulação nível a nível (a mesma do planner): checkpoints a cada 50 níveis e o nível de cada skill.
+const perLevel = simulateBuild(cls, build, lastLevel, 0, {}, 1).curve;
+const checkpoints = perLevel.filter((p) => p.level === 1 || p.level % 50 === 0 || p.level === lastLevel);
+const final = perLevel[perLevel.length - 1];
+const skills = (build.skills ?? []).map((sk) => ({ ...sk, level: levelForRequirement(perLevel, sk.req) }))
+  .sort((a, b) => (a.level ?? 9999) - (b.level ?? 9999));
+// Em cada 20 pontos, quanto vai para cada atributo (arredondado): o jeito fácil de seguir a proporção no jogo.
+const per20 = ratioStats.map((s) => [s, Math.round(((build.ratio?.[s] ?? 0) / 100) * 20)] as const);
+const sets = setProgression(build.class_id, build.gear_variant);
+const others = builds.filter((b) => b.class_id === build.class_id && b.id !== build.id);
+const plannerUrl = `/planner/#${encodeState({ ruleset: ruleset.id, classId: cls.id, level: lastLevel, extra: 0, added: emptyAllocation(), gear: {}, build: build.id })}`;
+const reqText = (req: Partial<Record<Stat, number>>) => stats.filter((s) => req[s]).map((s) => `${STAT_LABELS[s]} ${fmt(req[s])}`).join(" · ");
+---
+<Base title={`${build.name} · ${cls.name}`} description={`Build ${build.name} de ${cls.name} no MU Online oficial: como distribuir os pontos, skills e sets por nível.`}>
+  <PageHead crumbs={[{ href: "/builds/", label: "Builds" }, { href: `/builds/#${cls.id}`, label: cls.name }, { label: build.name }]}
+    title={build.name} image={cls.image_url ?? null} lead={build.summary}>
+    <ul class="chips">
+      <li class="chip gold">{cls.name}</li>
+      <li class="chip">{ROLE[build.role] ?? build.role}</li>
+      {build.status === "antiga" ? <li class="chip old-tag">antiga</li> : <li class="chip ok-tag">atual</li>}
+      {build.basis === "nossa" && <li class="chip" title="Não há distribuição publicada para esta classe">proporção sugerida pelo site</li>}
+    </ul>
+  </PageHead>
+
+  {build.status === "antiga" && build.notes[0] && <p class="panel warn-panel">{build.notes[0]}</p>}
+
+  <p><a class="btn" href={plannerUrl}>Abrir no planner e ajustar</a></p>
+
+  <h2>Como distribuir os pontos</h2>
+  <p>A cada nível, coloque primeiro a Força e a Agilidade que o seu equipamento pede; o resto, nesta proporção:</p>
+  <div class="ratio-rows">
+    {ratioStats.map((s) => (
+      <div class="ratio-row">
+        <span class="rr-label">{STAT_LABELS[s]}</span>
+        <span class="rr-bar"><i class={`st-${s}`} style={`width:${build.ratio?.[s]}%`}></i></span>
+        <span class="rr-val">{build.ratio?.[s]}%</span>
+      </div>
+    ))}
+  </div>
+  <p class="muted">Na prática: a cada 20 pontos, {per20.map(([s, n], i) => <>{i > 0 && (i === per20.length - 1 ? " e " : ", ")}<strong>{n} em {STAT_LABELS[s]}</strong></>)}.
+    {build.basis === "nossa" && " Não há distribuição publicada para esta classe: a proporção é nossa, a partir do atributo principal e dos requisitos de skill do guia oficial."}</p>
+
+  {skills.length > 0 && (
+    <>
+      <h2>Skills que marcam a build</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Skill</th><th>Requisito</th><th class="num">Nível nesta build</th></tr></thead>
+          <tbody>
+            {skills.map((sk) => (
+              <tr><td>{sk.name}</td><td>{reqText(sk.req)}</td>
+                <td class="num">{sk.level != null ? `nível ${fmt(sk.level)}` : <span class="muted">só com pontos extras</span>}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="muted small">"Só com pontos extras": os pontos por nível não bastam; precisa dos pontos de quests (4ª classe, 5ª classe +200) ou frutas.</p>
+    </>
+  )}
+
+  <h2>Atributos por nível</h2>
+  <p class="muted">Atributos totais (com a base da classe) seguindo a build, sem equipamento que exija mais. Os pontos por nível
+    vão até o {fmt(lastLevel)}; depois entram os pontos de quests e frutas, na mesma proporção.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th class="num">Nível</th>{stats.map((s) => <th class="num">{STAT_LABELS[s]}</th>)}<th class="num">Pontos ganhos</th></tr></thead>
+      <tbody>
+        {checkpoints.map((p) => (
+          <tr><td class="num">{fmt(p.level)}</td>{stats.map((s) => <td class="num">{fmt(p.total[s])}</td>)}<td class="num">{fmt(p.points)}</td></tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  {sets.length > 0 && (
+    <>
+      <h2>Sets por nível</h2>
+      <p class="muted">Os sets de mastery que {cls.name} veste, em ordem de nível{build.gear_variant && <>, na versão {build.gear_variant}</>}.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="num">Nível</th><th>Set</th><th>Peças</th></tr></thead>
+          <tbody>
+            {sets.map((st) => (
+              <tr>
+                <td class="num">{st.level != null ? fmt(st.level) : "—"}</td>
+                <td><strong>{st.name}</strong></td>
+                <td>{st.pieces.map((p, i) => <>{i > 0 && ", "}<a href={`/itens/${p.id}/`} class:list={["gname", p.grade ? `grade-${p.grade}` : null]}>{p.name}</a></>)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  )}
+
+  {build.notes.slice(build.status === "antiga" ? 1 : 0).length > 0 && (
+    <>
+      <h2>Notas</h2>
+      <ul class="panel lines">{build.notes.slice(build.status === "antiga" ? 1 : 0).map((n) => <li>{n}</li>)}</ul>
+    </>
+  )}
+
+  {build.videos && build.videos.length > 0 && (
+    <>
+      <h2>Vídeos de jogadores do servidor oficial</h2>
+      <ul class="lines">{build.videos.map((v) => <li><a href={v.url} rel="noopener" target="_blank">{v.title}</a></li>)}</ul>
+    </>
+  )}
+
+  {others.length > 0 && (
+    <>
+      <h2>Outras builds de {cls.name}</h2>
+      <ul class="chips">{others.map((b) => <li><a class="chip" href={`/builds/${b.id}/`}>{b.name}{b.status === "antiga" && " (antiga)"}</a></li>)}</ul>
+    </>
+  )}
+  <p class="muted small">Pontos no fim da simulação: {fmt(final.points)}, com a base da classe ({stats.map((s) => `${STAT_LABELS[s]} ${cls.base[s]}`).join(", ")}).</p>
+</Base>
+
+<style>
+  .ratio-rows { display: grid; gap: .35rem; max-width: 34rem; margin: .5rem 0; }
+  .ratio-row { display: grid; grid-template-columns: 6.5rem 1fr 3rem; gap: .6rem; align-items: center; }
+  .rr-label { color: var(--muted); }
+  .rr-bar { height: .7rem; background: var(--bg-2); border-radius: .35rem; overflow: hidden; }
+  .rr-bar i { display: block; height: 100%; }
+  .rr-val { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+  .warn-panel { border-color: rgba(252,165,165,.45); color: #fecaca; }
+  .chip.ok-tag { color: var(--g-excellent); }
+</style>

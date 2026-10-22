@@ -9,6 +9,7 @@ const nav = [
   { href: "/mapas/", label: "Mapas" },
   { href: "/spots/", label: "Spots" },
   { href: "/npcs/", label: "NPCs" },
+  { href: "/builds/", label: "Builds" },
   { href: "/planner/", label: "Planner" },
 ];
 const path = Astro.url.pathname;
@@ -266,6 +267,13 @@ const path = Astro.url.pathname;
   code { font-size: .88em; color: var(--accent-2); background: var(--panel-2); padding: .05rem .3rem; border-radius: .25rem; }
   pre { overflow-x: auto; padding: .75rem 1rem; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); font-size: .85rem; }
   pre code { background: none; padding: 0; color: var(--fg); }
+
+  /* Builds: cores dos atributos e etiqueta de build antiga */
+  .chip.old-tag { color: #fca5a5; border-color: rgba(252,165,165,.45); }
+  .ratio-bar { display: flex; height: .55rem; border-radius: .3rem; overflow: hidden; background: var(--bg-2); }
+  .ratio-bar i { display: block; height: 100%; }
+  .st-str { background: #ef4444; } .st-agi { background: #22c55e; } .st-vit { background: #f59e0b; }
+  .st-ene { background: #3b82f6; } .st-cmd { background: #a855f7; }
 
   /* Hot spots */
   .heat-tag { display: inline-block; padding: 0 .45rem; border-radius: .3rem; color: #111; font-size: .8rem; font-weight: 600; text-transform: capitalize; }

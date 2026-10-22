@@ -1,4 +1,4 @@
-"""CLI: python -m scrapers.gmo {fetch,parse}."""
+"""CLI: python -m scrapers.gmo {fetch,fetch-drops,parse}."""
 from __future__ import annotations
 
 import argparse
@@ -68,6 +68,51 @@ def cmd_fetch(args: argparse.Namespace) -> int:
     return 0
 
 
+DROP_INDEX = f"{BASE}/drop/location"
+
+
+def drop_location_urls(index_html: str) -> list[str]:
+    """Páginas de drop por mapa listadas em /drop/location (cada uma traz monstro -> itens)."""
+    urls = re.findall(r'href="(https://globalmuonline\.com/drop/location/[^"#?]+)"', index_html)
+    return sorted(dict.fromkeys(urls))
+
+
+def drop_key(url: str) -> str:
+    return url.removeprefix(DROP_INDEX + "/").strip("/").replace("+", "-").replace("/", "--") or "index"
+
+
+def cmd_fetch_drops(args: argparse.Namespace) -> int:
+    """Listas de drop por mapa (/drop/location/<Mapa>): ~110 páginas, 1 req/s."""
+    session = PoliteSession(min_interval=max(1.0, args.interval))
+    store = RawStore(args.data_dir / "raw")
+    try:
+        index = session.get(DROP_INDEX)
+    except RobotsUnavailable as exc:
+        log.error("robots.txt indisponível, coleta abortada: %s", exc)
+        return 2
+    store.save(SOURCE, "drops", "index", index)
+    if not index.ok:
+        log.error("%s respondeu HTTP %s", DROP_INDEX, index.status)
+        return 1
+    urls = drop_location_urls(index.text)
+    log.info("%d mapas com lista de drop", len(urls))
+    done = cached = failed = 0
+    for url in urls:
+        key = drop_key(url)
+        if not args.refresh and store.exists(SOURCE, "drops", key, url):
+            cached += 1
+            continue
+        page = session.get(url)
+        store.save(SOURCE, "drops", key, page)
+        if page.ok:
+            done += 1
+        else:
+            failed += 1
+            log.warning("HTTP %s em %s", page.status, url)
+    log.info("baixadas: %d · já em disco: %d · falhas: %d · requisições: %d", done, cached, failed, session.request_count)
+    return 0
+
+
 def cmd_parse(args: argparse.Namespace) -> int:
     from scrapers.gmo.parse import parse_store
     return parse_store(args.data_dir)
@@ -81,7 +126,10 @@ def main(argv: list[str] | None = None) -> int:
     fetch.add_argument("--refresh", action="store_true")
     fetch.add_argument("--interval", type=float, default=1.0)
     fetch.add_argument("--only", help="chaves separadas por vírgula (ex.: atlans,slayer)")
+    drops = sub.add_parser("fetch-drops", help="/drop/location -> listas de drop por mapa em data/raw/gmo/drops (1 req/s)")
+    drops.add_argument("--refresh", action="store_true")
+    drops.add_argument("--interval", type=float, default=1.0)
     sub.add_parser("parse", help="data/raw/gmo -> data/processed/gmo/*.json (offline)")
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s", stream=sys.stderr)
-    return {"fetch": cmd_fetch, "parse": cmd_parse}[args.command](args)
+    return {"fetch": cmd_fetch, "fetch-drops": cmd_fetch_drops, "parse": cmd_parse}[args.command](args)

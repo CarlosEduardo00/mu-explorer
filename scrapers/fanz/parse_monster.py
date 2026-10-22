@@ -190,10 +190,21 @@ def _maps(details: list[Line], provenance: dict, warnings: list[str]) -> list[di
                     map_name = where
                 found.setdefault(slugify(map_name), {"name": map_name, "url": urls.canonical(link.href)})
         else:
-            warnings.append(f"mapa sem link: {where!r}")
-            found.setdefault(slugify(where), {"name": where, "url": None})
+            # "Lorencia, Noria, Devias, or Lost Tower." sem link: um mapa por nome da lista.
+            for name in _split_maps(where):
+                warnings.append(f"mapa sem link: {name!r}")
+                found.setdefault(slugify(name), {"name": name, "url": None})
     return [empty_map(map_id, m["name"], {**provenance, "source_url": m["url"] or provenance["source_url"]})
             for map_id, m in found.items() if map_id]
+
+
+MAP_TYPOS = {"Adia": "Aida"}
+
+
+def _split_maps(where: str) -> list[str]:
+    """'Lorencia, Noria, Devias, or Lost Tower' -> ['Lorencia', 'Noria', 'Devias', 'Lost Tower'] (também '&' e 'and')."""
+    parts = re.split(r"\s*,\s*(?:or\s+|and\s+|&\s*)?|\s+(?:or|and|&)\s+", where)
+    return [MAP_TYPOS.get(p.strip(), p.strip()) for p in parts if p.strip()]
 
 
 def _map_name(text: str) -> str:
