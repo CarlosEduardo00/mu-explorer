@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { items, monsters, maps, npcs, spotsUrl, spotsByMap, guides } from "../../lib/data";
-import { SERIES, translated } from "../../lib/guides";
+import { SERIES, translated, guideCover } from "../../lib/guides";
 import { itemView, mapLevels } from "../../lib/view";
 import { gradeLabel, npcTypeLabel } from "../../lib/taxonomy";
 
@@ -19,7 +19,7 @@ export const GET: APIRoute = () => {
     ...maps.filter((m) => spotsByMap.has(m.id)).map((m): Entry => ["Spots", `Spots de ${m.name}`, spotsUrl(m.id), null, `${spotsByMap.get(m.id)!.length} spots`]),
     ...monsters.map((m): Entry => ["Monstro", m.name, `/monstros/${m.id}/`, m.image_url, level(m.level)]),
     ...npcs.map((n): Entry => ["NPC", n.name, `/npcs/${n.id}/`, n.image_url, [npcTypeLabel(n.type), n.locations[0]?.map_name].filter(Boolean).join(" · ")]),
-    ...guides.map((g): Entry => ["Guia", plain(translated(g.title) ?? g.title.t, g), `/guias/${g.id}/`, g.image_urls[0] ?? null,
+    ...guides.map((g): Entry => ["Guia", plain(translated(g.title) ?? g.title.t, g), `/guias/${g.id}/`, guideCover(g),
       SERIES.find((s) => s.id === g.series)?.label ?? "", plain(g.title.t, g).replace(/^\[Guide\]\s*/, "")]),
     ...items.map((i): Entry => ["Item", i.name, `/itens/${i.id}/`, i.image_url, [itemView(i).kindLabel, gradeLabel(i.grade)].filter(Boolean).join(" · ")]),
   ];

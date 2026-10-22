@@ -33,6 +33,10 @@ export const SERIES: { id: string; label: string; text: string }[] = [
   { id: "systems", label: "Sistemas do jogo", text: "Pandora's Jewels, Guardian e Artifact." },
 ];
 
+/** Imagem de capa do guia: nos de asas, a primeira asa (a primeira imagem é a Chaos Goblin Machine em todos). */
+export const guideCover = (g: { series: string; image_urls: string[] }): string | null =>
+  (g.series === "wings" ? g.image_urls.find((u) => /items(\/|%2F)wings(\/|%2F)/.test(u)) : undefined) ?? g.image_urls[0] ?? null;
+
 const escapeHtml = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 
 /** HTML de um texto: o modelo (traduzido ou original) com os termos no lugar dos marcadores. */
