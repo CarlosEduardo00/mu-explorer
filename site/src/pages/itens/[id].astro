@@ -160,7 +160,7 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
                 {first && (
                   <td rowspan={span}><a href={`/monstros/${d.monster.id}/`} class="name-cell">{d.monster.image_url && <img class="thumb" src={d.monster.image_url} alt="" loading="lazy" />}{d.monster.name}</a></td>
                 )}
-                {first && <td class="num" rowspan={span}>{fmt(d.monster.level)}</td>}
+                {first && <td class="num" rowspan={span}><span class="m-only">nv </span>{fmt(d.monster.level)}</td>}
                 <td>{place ? <a href={`/mapas/${place.map.id}/`}>{place.map.name}</a> : <span class="muted">mapa não informado</span>}</td>
                 <td>
                   {place?.spot
@@ -218,6 +218,24 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
   h3.sub { margin: 1.25rem 0 .5rem; font-size: .95rem; color: var(--accent-2); }
   .drops-table td[rowspan] { vertical-align: top; }
   .drops-table tr.cont td { border-top: 0; }
+  .m-only { display: none; }
+  /* Celular: cada monstro vira um cartão (nome e nível; tabela; uma linha por mapa com o spot à direita). */
+  @media (max-width: 40rem) {
+    .m-only { display: inline; color: var(--muted); font-weight: 400; }
+    .drops-table thead { display: none; }
+    .drops-table, .drops-table tbody { display: block; }
+    .drops-table tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .25rem .75rem; padding: .6rem .8rem .2rem; border-top: 1px solid var(--line); }
+    .drops-table tr.cont { border-top: 0; padding-top: .2rem; }
+    .drops-table tr:last-child, .drops-table tr:has(+ tr:not(.cont)) { padding-bottom: .6rem; }
+    .drops-table td { display: block; padding: 0; border: 0; }
+    .drops-table tr:not(.cont) > td:nth-child(1) { grid-row: 1; grid-column: 1; font-weight: 600; }
+    .drops-table tr:not(.cont) > td:nth-child(2) { grid-row: 1; grid-column: 2; align-self: center; }
+    .drops-table tr:not(.cont) > td:nth-child(5) { grid-row: 2; grid-column: 1 / -1; font-size: .8rem; color: var(--muted); }
+    .drops-table tr:not(.cont) > td:nth-child(3) { grid-row: 3; grid-column: 1; }
+    .drops-table tr:not(.cont) > td:nth-child(4) { grid-row: 3; grid-column: 2; text-align: right; }
+    .drops-table tr.cont > td:nth-child(2) { text-align: right; }
+    .drops-table tr > td:nth-child(3), .drops-table tr.cont > td:nth-child(1) { padding-left: 2.6rem; }
+  }
   .cols > section > h2 { margin-top: 1.25rem; }
   .chip .muted { font-size: .75rem; }
 </style>

@@ -852,5 +852,10 @@
  "If you decide to collect the jewels, move the character to another coordinate and a message will appear for you to decide.": "Se decidir pegar as joias, mova o personagem para outra coordenada e vai aparecer uma mensagem para você decidir.",
  "If you complete all the levels of the mining area, there is a small chance that you will get Pandora's Gift, a huge amount of Jewel of Bless.": "Se você concluir todos os níveis da área de mineração, há uma pequena chance de ganhar o Pandora's Gift, uma quantidade enorme de Jewel of Bless.",
  "Accumulated jewels": "Joias acumuladas",
- "If you log out of the game before you can claim the mined Jewel of Bless, you will lose all the Jewel of Bless that were mined.": "Se você sair do jogo antes de pegar as Jewel of Bless mineradas, perde todas as Jewel of Bless que minerou."
+ "If you log out of the game before you can claim the mined Jewel of Bless, you will lose all the Jewel of Bless that were mined.": "Se você sair do jogo antes de pegar as Jewel of Bless mineradas, perde todas as Jewel of Bless que minerou.",
+ "After Leveling Up": "Depois de subir o nível",
+ "Before Leveling Up": "Antes de subir o nível",
+ "Level": "Nível",
+ "Probability": "Chance",
+ "Probability (+ Talisman of Luck)": "Chance (+ Talisman of Luck)"
 }

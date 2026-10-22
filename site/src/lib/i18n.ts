@@ -19,7 +19,7 @@ export const EN: Record<string, string> = {
   "Itens": "Items", "Monstros": "Monsters", "Mapas": "Maps", "Guias": "Guides",
   "MU Explorer, início": "MU Explorer, home", "Seções": "Sections", "Trilha": "Breadcrumb",
   "Buscar item, monstro, mapa…": "Search items, monsters, maps…", "Buscar no site": "Search the site",
-  "Nada encontrado.": "Nothing found.", "Guia": "Guide",
+  "Nada encontrado.": "Nothing found.", "nv": "lv", "Guia": "Guide", "Mais": "More", "Mais seções": "More sections",
   "Idioma": "Language", "Idioma do site": "Site language",
   "Projeto de fãs, sem vínculo com a Webzen. MU Online é marca da Webzen Inc.":
     "Fan project, not affiliated with Webzen. MU Online is a trademark of Webzen Inc.",
@@ -46,7 +46,7 @@ export const EN: Record<string, string> = {
   "Classes no planner": "Classes in the planner",
 
   // ------------------------------------------------------------ catálogos (filtros, ordenação)
-  "Filtros": "Filters", "Limpar filtros": "Clear filters", "Limpar tudo": "Clear all", "Ordenar": "Sort",
+  "Filtros": "Filters", "Ver resultados": "Show results", "Limpar filtros": "Clear filters", "Limpar tudo": "Clear all", "Ordenar": "Sort",
   "Ordem padrão": "Default order", "Nome (A–Z)": "Name (A–Z)", "Mostrar mais": "Show more", "Mostrar": "Show",
   "Nada encontrado com esses filtros.": "Nothing found with these filters.", "mostrar menos": "show less",
   "Tipo": "Type", "de": "from", "a": "to", "até": "up to", "Classe": "Class", "Qualidade": "Quality", "Categoria": "Category",

@@ -199,3 +199,14 @@ def test_traducao_dos_guias_mantem_termos_e_marcacao():
     assert not bad, bad[:5]
     texts = [t["t"] for name in ("sebina", "second-wings") for t in _texts(_guide(name)["blocks"])]
     assert sum(t in pt for t in texts) / len(texts) > 0.6
+
+
+def test_tabela_com_cabecalho_dentro_do_tbody():
+    """O site não usa <thead>: a primeira linha só de <th> é o cabeçalho (antes era descartada)."""
+    from selectolax.lexbor import LexborHTMLParser
+    from scrapers.guidemu.guides import GuideParser
+    node = LexborHTMLParser("<table><tbody><tr><th><small>Level</small></th><th>Rank 1</th></tr>"
+                            "<tr><td>0</td><td>Impossible</td></tr><tr><td>1</td><td>85%</td></tr></tbody></table>").css_first("table")
+    [table] = GuideParser({}).block(node)
+    assert table["head"] == [{"t": "Level"}, {"t": "Rank 1"}]
+    assert table["rows"] == [[{"t": "0"}, {"t": "Impossible"}], [{"t": "1"}, {"t": "85%"}]]

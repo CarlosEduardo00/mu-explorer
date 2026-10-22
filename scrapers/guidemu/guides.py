@@ -180,8 +180,17 @@ class GuideParser:
             return [{"type": "list", "items": items}] if items else []
         if tag == "table":
             head = [rich(th) for th in node.css("thead th")]
-            rows = [[rich(td) for td in tr.css("td")] for tr in node.css("tbody tr")]
-            rows = [r for r in rows if any(r)]
+            rows = []
+            for tr in node.css("tr"):
+                if tr.parent is not None and tr.parent.tag == "thead":
+                    continue
+                cells = [c for c in tr.iter() if c.tag in ("td", "th")]
+                values = [rich(c) for c in cells]
+                # linha só de <th> no começo do <tbody>: é o cabeçalho (o site não usa <thead>)
+                if not head and not rows and cells and all(c.tag == "th" for c in cells):
+                    head = values
+                elif any(values):
+                    rows.append(values)
             return [{"type": "table", "head": head, "rows": rows}] if rows else []
         if "accordionGuide" in cls:
             title = node.css_first(".accordion-button")
