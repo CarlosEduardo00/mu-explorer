@@ -39,8 +39,6 @@ const rows = droppers.flatMap((d) => (d.places.length ? d.places : [null]).map((
 const levelText = (min: number | null, max: number | null) =>
   min == null ? "" : min === max ? `nv ${fmt(min)}` : `nv ${fmt(min)}–${fmt(max)}`;
 const plural = (n: number, one: string, many: string) => `${fmt(n)} ${n === 1 ? one : many}`;
-const s21 = droppers.some((d) => d.s21Only);
-const s21Of = new Set(droppers.filter((d) => d.s21Only).map((d) => d.monster.id));
 // Nomes de NPC citados nas frases de "como conseguir" viram link para a página do NPC.
 const npcNames = [...npcs].sort((a, b) => b.name.length - a.name.length);
 const linkNpcs = (text: string): (string | { id: string; name: string })[] => {
@@ -136,7 +134,7 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
               <a class="farm-card" href={spotsUrl(ref.map_id, ref.n)}>
                 {monster.image_url && <img src={monster.image_url} alt="" loading="lazy" />}
                 <span>
-                  <strong>{ref.map_name} · spot {ref.n}{s21Of.has(monster.id) && <span class="chip s21">S21</span>}</strong>
+                  <strong>{ref.map_name} · spot {ref.n}</strong>
                   <span>×{ref.count} {monster.name}{monster.level != null && <> (nv {fmt(monster.level)})</>}</span>
                   <span class="muted">{levelText(ref.level_min, ref.level_max) && <>spot {levelText(ref.level_min, ref.level_max)} · </>}ver no mapa →</span>
                 </span>
@@ -147,7 +145,6 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
       )}
       <h3 class="sub" id="onde-dropa-tabela">Monstros que dropam, por mapa</h3>
       <p class="muted small">Cada linha é um lugar para farmar: o monstro, o mapa em que ele aparece e o spot com mais dele nesse mapa.</p>
-      {s21 && <p class="muted small s21-note"><span class="chip s21">S21</span> lista de drop de um servidor da Season 21, usada quando as tabelas do jogo oficial não trazem o item; no servidor oficial o drop pode ser diferente.</p>}
       <div class="table-wrap">
         <table class="drops-table">
           <thead><tr><th>Monstro</th><th class="num">Nível</th><th>Mapa</th><th>Spot</th><th>Tabela</th></tr></thead>
@@ -166,7 +163,7 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
                   {place?.spot && <span class="muted"> ×{place.spot.count}</span>}
                 </td>
                 {first && (
-                  <td rowspan={span}>{d.tables.join(", ")}{d.s21Only && <span class="chip s21" title="Lista de drop de servidor da Season 21: o jogo oficial pode ser diferente">S21</span>}</td>
+                  <td rowspan={span}>{d.tables.join(", ")}</td>
                 )}
               </tr>
             ))}
@@ -215,8 +212,6 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
   h3.sub { margin: 1.25rem 0 .5rem; font-size: .95rem; color: var(--accent-2); }
   .drops-table td[rowspan] { vertical-align: top; }
   .drops-table tr.cont td { border-top: 0; }
-  .chip.s21 { margin-left: .4rem; font-size: .7rem; padding: 0 .4rem; color: var(--muted); vertical-align: middle; }
-  .s21-note .chip.s21 { margin: 0 .3rem 0 0; }
   .cols > section > h2 { margin-top: 1.25rem; }
   .chip .muted { font-size: .75rem; }
 </style>

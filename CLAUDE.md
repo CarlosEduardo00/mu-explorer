@@ -256,10 +256,12 @@ o que foi mapeado antes do bloqueio.
   de skill; usados pelo `scrapers.planner build`. A zona de spawn traz a quantidade como "N here" ou "N per spot".
 - Listas de drop por mapa (`/drop/location/<Mapa>`, `fetch-drops`): um painel por monstro com todos os itens que ele
   dropa naquele mapa (a lista inteira vem no HTML). Viram `drop_lists.json` (compacto; o expandido teria 40 MB) e, no
-  cruzamento, registros de drop com `map_id` e `season: "S21"`. **Só completam itens sem nenhum drop nas tabelas do
-  Fanz** (o oficial vem primeiro; e o `drops.json` fica abaixo do limite de 25 MB por arquivo do Cloudflare): ~250
-  itens. Nomes casam com `item_resolver` (igual, "Helmet" = "Helm", nome do MuEmu, ou difflib ≥ 0,9 com a mesma última
-  palavra). O site marca esses drops com a etiqueta "S21" (pode diferir do servidor oficial).
+  cruzamento, registros de drop com `season: "S21"`. **Os drops de itens não mudam entre seasons** (dono do projeto,
+  out/2026): as listas valem como as tabelas do jogo atual, sem aviso no site. Entram os pares monstro → item que as
+  tabelas do Fanz não trazem (~31 mil pares, 839 itens), **um registro por par** (`map_id` null quando o monstro tem
+  spawn num dos mapas da lista; senão o primeiro mapa), para o `drops.json` ficar abaixo do limite de 25 MB por arquivo
+  do Cloudflare (hoje ~18 MB; por mapa daria ~25,6 MB). Nomes casam com `item_resolver` (igual, "Helmet" = "Helm",
+  nome do MuEmu, ou difflib ≥ 0,9 com a mesma última palavra).
 - muonline.fandom.com responde com desafio anti-bot da Cloudflare: não coletamos.
 
 ### 5. Outras (referência, não prioritárias)
