@@ -46,6 +46,8 @@ const facts = map.quick_facts.filter((f) => !/^(Requires character level|Recomme
     </a>
   )}
 
+  <p class="map-links"><a class="chip gold" href={`/itens/?map=${map.parent_id ?? map.id}`}>Itens que dropam neste mapa →</a></p>
+
   {floors.length > 0 && (
     <>
       <h2>Andares</h2>
@@ -104,5 +106,6 @@ const facts = map.quick_facts.filter((f) => !/^(Requires character level|Recomme
   )}
 </Base>
 <style>
+  .map-links { margin: -.5rem 0 1rem; }
   .boss-line { color: #ffb44a !important; font-weight: 600; }
 </style>

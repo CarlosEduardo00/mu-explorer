@@ -1,12 +1,18 @@
 ---
 import Base from "../../layouts/Base.astro";
 ---
-<Base title="Planner de builds" description="Distribua pontos de atributo e confira os requisitos do equipamento em MU Online.">
+<Base title="Planner de builds" description="Monte a sua build de MU Online: classe, nível, pontos de atributo e equipamento, com os requisitos conferidos.">
   <h1>Planner de builds</h1>
   <p class="lead">
-    Distribua os pontos de atributo, escolha o equipamento e veja se os requisitos são cumpridos.
-    Os requisitos dos itens são os do item +0, sem opções ou joias. Confira no jogo antes de gastar pontos.
+    Ferramenta para <strong>criar a sua build</strong>: escolha a classe e o nível, distribua os pontos de atributo
+    (do zero ou a partir de uma build pronta), monte o equipamento e veja na hora se dá para usar cada peça.
+    No fim, copie o link para salvar ou compartilhar a build.
   </p>
+  <ol class="steps">
+    <li><strong>Classe e nível</strong>: as regras de pontos por nível e a evolução da classe.</li>
+    <li><strong>Pontos</strong>: digite quanto colocar em cada atributo, ou escolha uma build pronta para distribuir por nível.</li>
+    <li><strong>Equipamento</strong>: arma, escudo, armadura, asas, colar e anéis; os requisitos são os do item +0, sem opções nem joias.</li>
+  </ol>
 
   <noscript><p class="warn">O planner precisa de JavaScript.</p></noscript>
   <p id="planner-loading" class="muted">Carregando…</p>
@@ -40,6 +46,15 @@ import Base from "../../layouts/Base.astro";
     <p id="points-summary" class="points"></p>
 
     <h2>Equipamento</h2>
+    <div class="planner-controls gear-filters">
+      <label><span>Qualidade</span>
+        <select id="gear-grade">
+          <option value="">Todas</option><option value="normal">Normal</option><option value="excellent">Excellent</option>
+          <option value="ancient">Ancient</option><option value="socket">Socket</option>
+        </select>
+      </label>
+      <label class="check"><input id="gear-level" type="checkbox" /> Só o que dá para usar no nível escolhido</label>
+    </div>
     <div id="gear" class="gear"></div>
     <div id="gear-check"></div>
 
@@ -72,6 +87,11 @@ import Base from "../../layouts/Base.astro";
   .btn.small { padding: .15rem .5rem; font-size: .8rem; }
   .points { font-size: 1.05rem; }
   .points strong.neg { color: #b3261e; }
+  .steps { margin: 0 0 1rem; padding-left: 1.25rem; color: var(--muted); font-size: .92rem; }
+  .steps strong { color: var(--fg); }
+  .gear-filters { margin-top: 0; }
+  #gear-check { margin-top: 1rem; }
+  .gear-filters .check { flex-direction: row; align-items: center; gap: .4rem; align-self: flex-end; }
   .gear { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: .6rem 1rem; }
   .gear label { display: flex; flex-direction: column; gap: .2rem; font-size: .85rem; color: var(--muted); }
   .gear select { width: 100%; }
@@ -199,17 +219,26 @@ import Base from "../../layouts/Base.astro";
         .join("");
     }
 
+    const GRADE_GROUPS: [string, string][] = [["normal", "Normal"], ["excellent", "Excellent"], ["ancient", "Ancient"],
+      ["socket", "Socket"], ["siege", "Castle Siege"], ["", "Outros"]];
     function renderGearSelects() {
       const c = cls();
-      const html = SLOTS.map(({ id, label }) => {
+      const grade = ($("gear-grade") as HTMLSelectElement).value;
+      const onlyLevel = ($("gear-level") as HTMLInputElement).checked;
+      const html = SLOTS.map(({ id, label, accepts }) => {
+        const chosen = state.gear[id];
+        // O item já escolhido continua na lista mesmo que o filtro o esconda.
         const options = items
-          .filter((i) => i.slot === id && usableBy(i, c.names))
+          .filter((i) => i.slot === accepts && usableBy(i, c.names))
+          .filter((i) => i.id === chosen || ((!grade || (i.grade ?? "") === grade) && (!onlyLevel || i.req.level <= state.level)))
           .sort((a, b) => a.req.level - b.req.level || a.name.localeCompare(b.name));
-        const body = options
-          .map((i) => `<option value="${i.id}" ${state.gear[id] === i.id ? "selected" : ""}>${i.name}${i.req.level ? ` · nv ${i.req.level}` : ""}</option>`)
-          .join("");
+        const opt = (i: GearItem) => `<option value="${i.id}" ${chosen === i.id ? "selected" : ""}>${esc(i.name)}${i.req.level ? ` · nv ${i.req.level}` : ""}</option>`;
+        const body = GRADE_GROUPS.map(([g, name]) => {
+          const list = options.filter((i) => (i.grade ?? "") === g || (g === "" && !GRADE_GROUPS.some(([x]) => x && x === i.grade)));
+          return list.length ? `<optgroup label="${name} (${list.length})">${list.map(opt).join("")}</optgroup>` : "";
+        }).join("");
         return `<label>${label}<select data-slot="${id}" ${options.length ? "" : "disabled"}>
-          <option value="">${options.length ? "— nenhum —" : "sem itens"}</option>${body}</select></label>`;
+          <option value="">${options.length ? `— nenhum (${options.length} opções) —` : "sem itens"}</option>${body}</select></label>`;
       }).join("");
       $("gear").innerHTML = html;
     }
@@ -314,7 +343,13 @@ import Base from "../../layouts/Base.astro";
     }
 
     rulesetSelect.addEventListener("change", () => { state.ruleset = rulesetSelect.value; fullRender(); });
-    $("level").addEventListener("input", (e) => { state.level = Number((e.target as HTMLInputElement).value); normalize(); update(); });
+    $("level").addEventListener("input", (e) => {
+      state.level = Number((e.target as HTMLInputElement).value); normalize();
+      if (($("gear-level") as HTMLInputElement).checked) renderGearSelects();
+      update();
+    });
+    $("gear-grade").addEventListener("change", () => renderGearSelects());
+    $("gear-level").addEventListener("change", () => renderGearSelects());
     $("extra").addEventListener("input", (e) => { state.extra = Math.max(0, Math.floor(Number((e.target as HTMLInputElement).value) || 0)); update(); });
     $("classes").addEventListener("click", (e) => {
       const button = (e.target as HTMLElement).closest<HTMLElement>("[data-class]");

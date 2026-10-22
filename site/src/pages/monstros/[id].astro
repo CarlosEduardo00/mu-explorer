@@ -15,8 +15,11 @@ const spawnCount = (mapId: string) => spawnList.filter((s) => s.map_id === mapId
 const drops = dropsByMonster.get(monster.id) ?? [];
 // Tabelas na ordem: ancient, excellent, socket, normal (as raras primeiro).
 const tableOrder = (kind: string) => ({ ancient: 0, excellent: 1, socket: 2, normal: 3 } as Record<string, number>)[kind] ?? 4;
-const tables = [...new Map(drops.map((d) => [d.table ?? d.kind, d.kind])).entries()]
+// Tabelas pelo nome exibido (a "General Drop Table" e a lista do mapa viram a mesma "Normal"), sem item repetido.
+const groupKey = (d: (typeof drops)[number]) => dropTableLabel(d.table, d.kind);
+const tables = [...new Map(drops.map((d) => [groupKey(d), d.kind])).entries()]
   .sort((a, b) => tableOrder(a[1]) - tableOrder(b[1]) || a[0].localeCompare(b[0]));
+const rowsOf = (label: string) => [...new Map(drops.filter((d) => groupKey(d) === label).map((d) => [d.item_id, d])).values()];
 const respawn = monster.respawn_seconds != null
   ? (monster.respawn_seconds >= 3600 ? `${fmt(monster.respawn_seconds / 3600)} h` : monster.respawn_seconds >= 60 ? `${fmt(Math.round(monster.respawn_seconds / 60))} min` : `${monster.respawn_seconds} s`)
   : monster.respawn_raw;
@@ -65,10 +68,10 @@ const boss = isBoss(monster);
 
   {tables.length > 0 && <h2 id="drops">Drops <span class="muted small">({fmt(new Set(drops.map((d) => d.item_id)).size)})</span></h2>}
   {tables.map(([table, kind]) => {
-    const rows = drops.filter((d) => (d.table ?? d.kind) === table);
+    const rows = rowsOf(table);
     return (
       <details class="drop-table" open={tableOrder(kind) < 3 || tables.length === 1}>
-        <summary><span class:list={["chip", `grade-${kind}`]}>{dropTableLabel(table, kind)}</span> <span class="muted small">{rows.length} itens</span></summary>
+        <summary><span class:list={["chip", `grade-${kind}`]}>{table}</span>{rows.every((d) => d.season === "S21") && <span class="chip s21" title="Lista de drop de servidor da Season 21: o jogo oficial pode ser diferente">S21</span>} <span class="muted small">{rows.length} itens</span></summary>
         <ul class="drop-list">
           {rows.map((d) => {
             const item = itemById.get(d.item_id);
@@ -97,4 +100,5 @@ const boss = isBoss(monster);
   .drop-list small { margin-left: auto; font-size: .72rem; white-space: nowrap; }
   .drop-list .name-cell { display: flex; }
   .notes { margin-top: 1rem; }
+  .chip.s21 { font-size: .7rem; padding: 0 .4rem; color: var(--muted); }
 </style>

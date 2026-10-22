@@ -19,8 +19,8 @@ Base: Fanz. O MuEmu só preenche campos vazios; os valores do Fanz nunca são so
 
 ## Mapas
 
-- Só no Fanz: atlans-abyss, balgass-barracks, balgass-resting-place, barracks-of-balgass, crimson-flame-s-icarus, crywolf, cubera-mine, debenter, deep-dungeon, devil-square-mini-game, event-square, ferea, kalima, kanturu-or-raklion, kanturu-relics, kanturu-ruins, karutan, land-of-trials, loren-market, lorencia-dungeon, lorencia-noria-devias-or-lost-tower, lorencia-noria-elveland-devias, lorencia-noria-or-devias, lost-tower-icarus-kalima-5-adia, nars, nixies-lake, raklion-swamp-of-peace-kanturu-ruins-kalima-7, scorched-canyon, swamp-of-darkness, swamp-of-peace, uruk-mountain, valley-of-loren
-- Só no MuEmu: blood-castle-2, blood-castle-3, blood-castle-4, blood-castle-5, blood-castle-6, blood-castle-7, blood-castle-8, chaos-castle-2, chaos-castle-3, chaos-castle-4, chaos-castle-5, chaos-castle-6, chaos-castle-7, devil-square, devil-square-2, illusion-temple-1, illusion-temple-2, illusion-temple-3, illusion-temple-4, illusion-temple-5, illusion-temple-6, kalima-2, kalima-3, kalima-4, kalima-5, kalima-6, kalima-7, kanturu-1, kanturu-2, selupan
+- Só no Fanz: atlans-abyss, balgass-barracks, balgass-resting-place, barracks-of-balgass, crimson-flame-s-icarus, crywolf, cubera-mine, debenter, deep-dungeon, devil-square-mini-game, event-square, ferea, kalima, kanturu, kanturu-relics, kanturu-ruins, karutan, land-of-trials, loren-market, nars, nixies-lake, scorched-canyon, swamp-of-darkness, swamp-of-peace, uruk-mountain, valley-of-loren
+- Só no MuEmu: blood-castle-2, blood-castle-3, blood-castle-4, blood-castle-5, blood-castle-6, blood-castle-7, blood-castle-8, chaos-castle-2, chaos-castle-3, chaos-castle-4, chaos-castle-5, chaos-castle-6, chaos-castle-7, devil-square, devil-square-2, illusion-temple-1, illusion-temple-2, illusion-temple-3, illusion-temple-4, illusion-temple-5, illusion-temple-6, kalima-2, kalima-3, kalima-4, kalima-6, kanturu-1, kanturu-2, selupan
 
 ## Itens do Fanz sem par no MuEmu (1211)
 
@@ -193,3 +193,8 @@ servidor privado; o Fanz acompanha o global. Diferença aqui não é erro de par
 - spawns do MuEmu trocados: 1443
 - spawns do GMO: 991
 - mapas novos: 24
+- drops do GMO não usados (o item já tem drop do Fanz): 84932
+- drops do GMO com item que o site não tem: 16356
+- drops do GMO com monstro desconhecido: 304
+- drops do GMO (monstro -> item por mapa): 5350
+- itens com drop do GMO: 247

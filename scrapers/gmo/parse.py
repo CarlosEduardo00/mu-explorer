@@ -10,6 +10,11 @@ Estrutura real (out/2026), dentro de `.guideContent`:
   ..., Respawn, On map).
 - FAQ "What level do I need for <Mapa>?" com o nível do warp.
 Páginas sem zonas nem tabela de monstros (classes, NPCs, sistemas) são ignoradas aqui.
+
+Listas de drop por mapa (/drop/location/<Mapa>, coletadas com `fetch-drops`): título "<Mapa> - Drop List, ...",
+um `div.panel-red-heading` por monstro (`.panel-heading` = nome) com uma tabela de links para os itens que ele dropa
+(a lista inteira vem no HTML; "Show More" só expande na tela). Não diz o grau (excellent/ancient): fica "unknown" e o
+cruzamento preenche pelo item.
 """
 from __future__ import annotations
 
@@ -212,6 +217,33 @@ def merge_monsters(rows: list[dict]) -> list[dict]:
     return list(out.values())
 
 
+def parse_drop_location(html: str, meta: dict) -> dict | None:
+    """Lista de drop de um mapa, compacta: {"map_name", "source_url", "scraped_at", "season", "monsters":
+    [{"name", "items": [nomes]}]}; None se a página não for uma lista. O cruzamento (scrapers.combine) expande em
+    registros de drop (monstro -> item no mapa) com os ids do site."""
+    tree = LexborHTMLParser(html)
+    title = tree.css_first("title")
+    match = re.match(r"\s*(.+?)\s+-\s+Drop List", title.text() if title else "")
+    if not match:
+        return None
+    map_name = _clean(match.group(1))
+    url = meta.get("url") or ""
+    prov = {"season": SEASON, "source": SOURCE, "source_url": url, "scraped_at": meta.get("fetched_at")}
+    monsters: dict[str, list[str]] = {}
+    for panel in tree.css("div.panel-red-heading"):
+        head = panel.css_first(".panel-heading")
+        monster = _clean(head.text(strip=True)) if head else None
+        if not monster:
+            continue
+        names = monsters.setdefault(monster, [])
+        for link in panel.css("table td a"):
+            item = _clean(link.text(strip=True))
+            if item and item not in names:
+                names.append(item)
+    return {"map_name": map_name, "source_url": prov["source_url"], "scraped_at": prov["scraped_at"], "season": SEASON,
+            "monsters": [{"name": k, "items": v} for k, v in monsters.items() if v]}
+
+
 def parse_store(data_dir: Path) -> int:
     store = RawStore(data_dir / "raw")
     maps, monsters, spawns, markers, skipped = [], [], [], [], 0
@@ -227,6 +259,13 @@ def parse_store(data_dir: Path) -> int:
         spawns += result["spawns"]
         markers += result["markers"]
     monsters = merge_monsters(monsters)
+    drop_lists = []
+    for page in sorted(store.iter(SOURCE, "drops"), key=lambda p: p.path.name):
+        if not 200 <= page.meta.get("status", 0) < 300:
+            continue
+        parsed = parse_drop_location(page.html, page.meta)
+        if parsed and parsed["monsters"]:
+            drop_lists.append(parsed)
     out = data_dir / "processed" / SOURCE
     out.mkdir(parents=True, exist_ok=True)
     data = {"map": maps, "monster": monsters, "spawn": spawns, "map_marker": markers}
@@ -235,6 +274,7 @@ def parse_store(data_dir: Path) -> int:
     for name, rows in (("maps", maps), ("monsters", monsters), ("spawns", spawns), ("map_markers", markers)):
         dump_records(out / f"{name}.json", rows)
     dump_records(out / "drops.json", [])
+    dump_records(out / "drop_lists.json", drop_lists)
     dump_records(out / "sources.json", [{
         "id": SOURCE, "name": "Global MU Online", "url": BASE,
         "credit": "Guias de mapas do Global MU Online (globalmuonline.com), servidor privado Season 21. Uso só local até haver autorização.",
@@ -245,4 +285,6 @@ def parse_store(data_dir: Path) -> int:
     with_img = sum(1 for m in monsters if m["image_url"])
     log.info("mapas: %d · monstros: %d (%d com imagem) · spawns: %d · marcadores: %d · outras páginas: %d · erros de schema: %d",
              len(maps), len(monsters), with_img, len(spawns), len(markers), skipped, len(errors))
+    log.info("listas de drop: %d mapas · %d pares monstro -> item", len(drop_lists),
+             sum(len(m["items"]) for d in drop_lists for m in d["monsters"]))
     return 1 if errors else 0

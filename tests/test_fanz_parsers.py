@@ -280,3 +280,11 @@ def test_niveis_do_mapa_nos_quick_facts():
         "level_required": None, "level_recommended_min": 980, "level_recommended_max": None}
     assert map_levels(["Recommended for characters less than level 20."])["level_recommended_max"] == 19
     assert map_levels([]) == {"level_required": None, "level_recommended_min": None, "level_recommended_max": None}
+
+
+def test_spawns_em_varios_mapas_sem_link_viram_um_mapa_cada():
+    from scrapers.fanz.parse_monster import _split_maps
+    assert _split_maps("Lorencia, Noria, Devias, or Lost Tower") == ["Lorencia", "Noria", "Devias", "Lost Tower"]
+    assert _split_maps("Kanturu or Raklion") == ["Kanturu", "Raklion"]
+    assert _split_maps("Lost Tower, Icarus, Kalima 5, & Adia") == ["Lost Tower", "Icarus", "Kalima 5", "Aida"]
+    assert _split_maps("Devias") == ["Devias"]

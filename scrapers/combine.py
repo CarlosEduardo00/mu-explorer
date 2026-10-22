@@ -15,11 +15,13 @@ Regras:
 from __future__ import annotations
 
 import argparse
+import difflib
 import json
 import logging
 import re
 import sys
 from collections import Counter
+from collections.abc import Callable
 from pathlib import Path
 
 from scrapers.common import qa
@@ -153,7 +155,8 @@ def combine(fanz: dict[str, list[dict]], muemu: dict[str, list[dict]]) -> tuple[
     data = {
         "item": items, "monster": monsters, "map": [maps[k] for k in sorted(maps)], "npc": fanz.get("npc", []),
         "spawn": spawns,
-        "drop": fanz["drop"], "source": fanz.get("source", []) + muemu.get("source", []),
+        "drop": [{**d, "map_id": d.get("map_id")} for d in fanz["drop"]],
+        "source": fanz.get("source", []) + muemu.get("source", []),
     }
     matches = {"item": item_matches, "monster": monster_matches}
     return data, matches, item_diffs + monster_diffs
@@ -173,7 +176,134 @@ def _gmo_map_id(map_id: str, known: set[str]) -> tuple[str, str | None]:
     return map_id, (base if base != map_id and base in known else None)
 
 
-def add_gmo(data: dict, gmo: dict) -> dict:
+ROMAN = {"i": "1", "ii": "2", "iii": "3", "iv": "4", "v": "5", "vi": "6", "vii": "7"}
+# Nomes das listas de drop do GMO (/drop/location) -> id do mapa no site, quando o slug não bate.
+GMO_DROP_MAP_ALIASES = {
+    "abyss-of-atlas-1": "abyss-of-atlans", "abyss-of-atlas-2": "abyss-of-atlans-2", "abyss-of-atlas-3": "abyss-of-atlans-3",
+    "barracks-of-balgass": "balgass-barracks", "land-of-trial": "land-of-trials", "deepdungeon-1": "deep-dungeon-1",
+    "deepdungeon-2": "deep-dungeon-2", "deepdungeon-3": "deep-dungeon-3", "deepdungeon-4": "deep-dungeon-4",
+    "deepdungeon-5": "deep-dungeon-5", "urkmountain": "uruk-mountain", "urk-mountain": "uruk-mountain",
+    "swamp-of-calmness": "swamp-of-calmness", "kanturu-remain": "kanturu-relics", "kanturu-ruins": "kanturu-1",
+}
+
+
+def gmo_drop_map_id(name: str, known: set[str]) -> str | None:
+    """'Kalima I' -> 'kalima-1'; 'AbyssOfAtlas 3' -> 'abyss-of-atlans-3'; mapa desconhecido -> None."""
+    spaced = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", name)
+    slug = slugify(spaced)
+    parts = slug.split("-")
+    if parts and parts[-1] in ROMAN:
+        parts[-1] = ROMAN[parts[-1]]
+    slug = "-".join(parts)
+    for candidate in (slug, GMO_DROP_MAP_ALIASES.get(slug), GMO_MAP_ALIASES.get(slug), slug.replace("-1", "") if slug.endswith("-1") else None):
+        if candidate and candidate in known:
+            return candidate
+    return None
+
+
+def _name_key(name: str) -> str:
+    """Chave de nome para casar grafias: minúsculas, sem pontuação, sem "'s", "Helmet" = "Helm"."""
+    text = re.sub(r"\bhelmet\b", "helm", name.lower().replace("'s", "").replace("’s", ""))
+    return re.sub(r"[^a-z0-9]", "", text)
+
+
+def item_resolver(items: list[dict], muemu_names: dict[str, str] | None = None) -> "Callable[[str], dict | None]":
+    """Acha o item do site pelo nome de outra fonte: igual (slug ou chave de nome), pelo nome do MuEmu (mesmo
+    grupo/índice), ou parecido (difflib ≥ 0,9 com a mesma última palavra: "Storm Jahad Armor" -> "Storm Zahard Armor").
+    Só itens de grau normal (ou sem grau) entram no casamento aproximado: as listas trazem o item base."""
+    by_id = {i["id"]: i for i in items}
+    by_key = {}
+    for i in items:
+        by_key.setdefault(_name_key(i["name"]), i)
+    base = {k: i for k, i in by_key.items() if i.get("grade") in ("normal", None)}
+    base_keys = list(base)
+    cache: dict[str, dict | None] = {}
+
+    def resolve(name: str) -> dict | None:
+        if name in cache:
+            return cache[name]
+        found = by_id.get(slugify(name)) or by_key.get(_name_key(name))
+        if found is None and muemu_names:
+            found = by_id.get(muemu_names.get(slugify(name), ""))
+        if found is None:
+            key = _name_key(name)
+            last = name.lower().split()[-1] if name.split() else ""
+            for cand in difflib.get_close_matches(key, base_keys, n=3, cutoff=0.9):
+                if base[cand]["name"].lower().split()[-1].rstrip("s") == last.rstrip("s"):
+                    found = base[cand]
+                    break
+        cache[name] = found
+        return found
+    return resolve
+
+
+def expand_drop_lists(lists: list[dict]) -> list[dict]:
+    """drop_lists.json do GMO (mapa -> monstro -> nomes) -> registros de drop ainda com os nomes da fonte."""
+    out = []
+    for lst in lists:
+        prov = {"season": lst.get("season"), "source": "gmo", "source_url": lst["source_url"], "scraped_at": lst["scraped_at"]}
+        for monster in lst["monsters"]:
+            for name in monster["items"]:
+                out.append({"monster_id": slugify(monster["name"]), "item_id": slugify(name), "item_name": name, "kind": "unknown",
+                            "table": None, "category": None, "quantity": None, "rate": None, "map_id": None,
+                            "monster_name": monster["name"], "map_name": lst["map_name"], **prov})
+    return out
+
+
+def add_gmo_drops(data: dict, drops: list[dict], to_id: dict[str, str], muemu_names: dict[str, str] | None = None) -> Counter:
+    """Listas de drop por mapa do GMO (servidor S21): monstro -> item no mapa. Só completam itens sem nenhum drop nas
+    tabelas do Fanz (o jogo oficial vem primeiro; e o arquivo de drops não passa do limite de 25 MB por arquivo do
+    Cloudflare). Liga aos ids do site: monstro pelo nome (também sem o número de variante, "Aegis 1"), item pelo nome
+    (item_resolver) e mapa pelo nome. Item que o site não tem fica de fora (contado no relatório)."""
+    stats = Counter()
+    if not drops:
+        return stats
+    resolve_item = item_resolver(data["item"], muemu_names)
+    by_slug = _index(data["monster"])
+    monsters = {m["id"] for m in data["monster"]}
+    known_maps = {m["id"] for m in data["map"]}
+
+    def monster_id(raw_id: str) -> str | None:
+        for slug in (raw_id, re.sub(r"-?\d+$", "", raw_id)):
+            if slug in to_id:
+                return to_id[slug]
+            if slug in by_slug:
+                return by_slug[slug][0]["id"]
+            if slug in monsters:
+                return slug
+        return None
+
+    covered = {d["item_id"] for d in data["drop"]}
+    seen = set()
+    out = []
+    for d in drops:
+        item = resolve_item(d["item_name"])
+        mid = monster_id(d["monster_id"])
+        if item is None:
+            stats["drops do GMO com item que o site não tem"] += 1
+            continue
+        if item["id"] in covered:
+            stats["drops do GMO não usados (o item já tem drop do Fanz)"] += 1
+            continue
+        if mid is None:
+            stats["drops do GMO com monstro desconhecido"] += 1
+            continue
+        map_id = gmo_drop_map_id(d.get("map_name") or "", known_maps)
+        key = (mid, item["id"], map_id)
+        if key in seen:
+            continue
+        seen.add(key)
+        record = {k: v for k, v in d.items() if k not in ("monster_name", "map_name")}
+        record.update(monster_id=mid, item_id=item["id"], item_name=item["name"], map_id=map_id,
+                      kind=item["grade"] if item.get("grade") in ("normal", "excellent", "ancient", "socket") else "unknown")
+        out.append(record)
+    data["drop"] = data["drop"] + out
+    stats["drops do GMO (monstro -> item por mapa)"] = len(out)
+    stats["itens com drop do GMO"] = len({r["item_id"] for r in out})
+    return stats
+
+
+def add_gmo(data: dict, gmo: dict, muemu_names: dict[str, str] | None = None) -> dict:
     """Global MU Online (S21, só local): imagens de monstros que faltam, monstros e mapas novos, e as zonas de
     spawn. Nos mapas que o GMO cobre, os spawns dele substituem os do MuEmu (S21 e mais recentes; evita spots
     duplicados). Valores que já existem não são sobrescritos. Devolve contagens para o relatório."""
@@ -222,6 +352,7 @@ def add_gmo(data: dict, gmo: dict) -> dict:
     data["map"] = [maps[k] for k in sorted(maps)]
     data["map_marker"] = gmo.get("map_marker", [])
     data["source"] = data["source"] + gmo.get("source", [])
+    stats.update(add_gmo_drops(data, gmo.get("drop", []), to_id, muemu_names))
     return stats
 
 
@@ -282,7 +413,13 @@ def main(argv: list[str] | None = None) -> int:
     if gmo_dir.exists():
         markers = gmo_dir / "map_markers.json"
         gmo["map_marker"] = json.loads(markers.read_text(encoding="utf-8")) if markers.exists() else []
-    gmo_stats = add_gmo(data, gmo)
+        lists = gmo_dir / "drop_lists.json"
+        gmo["drop"] = expand_drop_lists(json.loads(lists.read_text(encoding="utf-8"))) if lists.exists() else []
+    # Nome do MuEmu -> item do site (mesmo grupo/índice), para casar grafias de outras fontes de emulador.
+    muemu_by_id = {m["id"]: m for m in muemu["item"]}
+    muemu_names = {slugify(muemu_by_id[match["muemu_id"]]["name"]): match["fanz_id"]
+                   for match in matches["item"] if match["muemu_id"] in muemu_by_id}
+    gmo_stats = add_gmo(data, gmo, muemu_names)
     out = processed / "combined"
     out.mkdir(parents=True, exist_ok=True)
     for entity, filename in OUTPUT.items():

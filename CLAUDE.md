@@ -31,7 +31,9 @@ python -m scrapers.planner fetch                     # guias de classe + Stat Pl
 python -m scrapers.planner build                     # data/raw -> data/curated/planner.json (regras de classes)
 python -m scrapers.spots [--set combined]            # spawns -> data/processed/<conjunto>/farm_spots.json (spots de farm)
 python -m scrapers.gmo fetch                         # guias do Global MU Online (sitemap, 210 páginas, ~4 min)
-python -m scrapers.gmo parse                         # -> data/processed/gmo/ (mapas, monstros c/ imagem, spawns, marcadores)
+python -m scrapers.gmo fetch-drops                   # listas de drop por mapa do GMO (/drop/location, 111 páginas, ~2 min)
+python -m scrapers.gmo parse                         # -> data/processed/gmo/ (mapas, monstros c/ imagem, spawns, marcadores,
+                                                     #    drop_lists.json = mapa -> monstro -> itens, formato compacto)
 python -m scrapers.terrain                           # terreno do MuEmu (.att) -> data/processed/terrain/terrains.json (mapas vetoriais)
 python -m scrapers.media list|fetch                  # imagens usadas pelo site -> site/public/media/ + data/media.json (1 req/s)
 ```
@@ -197,6 +199,7 @@ wrangler.jsonc     Workers (env prod = mu-explorer, env hml = mu-explorer-hml; a
   coletamos. Coordenadas de spots vêm do MuEmu.
 - Mapas citados só em páginas de monstro ("Spawns in Kalima 1." com link para Kalima.php) viram variantes
   com `parent_id` (kalima-1 -> kalima).
+- "Spawns in Lorencia, Noria, or Devias." sem link vira um mapa para cada nome (antes virava um mapa falso).
 - NPC: tipo (Merchant/Quest/Crafting/Miscellaneous/Mini-game/Event), localização `Mapa @(x, y)` (pode ser
   `@(?, ?)` ou `@(various)`), descrição e lista de venda com preço em Zen (e linha de opções `[+3] [+Luck]`).
   Receitas de crafting (Chaos Goblin Machine etc.) ainda não são extraídas.
@@ -248,7 +251,12 @@ o que foi mapeado antes do bloqueio.
   spots). Grafias diferentes viram o id do Fanz (`GMO_MAP_ALIASES`); andares numerados ganham `parent_id`.
 - Guias de classe (`/guides/<classe>/`): linha de evolução até a 5ª classe, pontos por nível, imagens `tN` e requisitos
   de skill; usados pelo `scrapers.planner build`. A zona de spawn traz a quantidade como "N here" ou "N per spot".
-- Drops (`/drop/location`) do GMO ainda não são extraídos.
+- Listas de drop por mapa (`/drop/location/<Mapa>`, `fetch-drops`): um painel por monstro com todos os itens que ele
+  dropa naquele mapa (a lista inteira vem no HTML). Viram `drop_lists.json` (compacto; o expandido teria 40 MB) e, no
+  cruzamento, registros de drop com `map_id` e `season: "S21"`. **Só completam itens sem nenhum drop nas tabelas do
+  Fanz** (o oficial vem primeiro; e o `drops.json` fica abaixo do limite de 25 MB por arquivo do Cloudflare): ~250
+  itens. Nomes casam com `item_resolver` (igual, "Helmet" = "Helm", nome do MuEmu, ou difflib ≥ 0,9 com a mesma última
+  palavra). O site marca esses drops com a etiqueta "S21" (pode diferir do servidor oficial).
 - muonline.fandom.com responde com desafio anti-bot da Cloudflare: não coletamos.
 
 ### 5. Outras (referência, não prioritárias)
@@ -278,7 +286,7 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
   MuEmu (grade 256×256, índice y×256+x; flags 1 = zona segura, 4 = bloqueado, 8 = fora do mapa). O pareamento arquivo →
   mapa (`scrapers/terrain.py: FILES`) foi conferido contra os spawns (Aida e Kanturu Ruins da S21 mudaram: ficam com a
   imagem do minimapa). É o fundo padrão do mapa interativo; a imagem do minimapa vira camada opcional.
-  `drop`: monster_id, item_id, item_name, kind
+  `drop`: monster_id, item_id, item_name, map_id (null quando a tabela vale para o monstro em qualquer mapa), kind
   (normal/excellent/ancient/socket/unknown), table, category, quantity, rate (null se a fonte não informa).
   Um drop do Fanz significa "o monstro pode dropar este item"; não há taxa.
 - `source`: id, name, url, scraped_at, credit, revision (commit da fonte, quando houver; ex.: MuEmu).
@@ -302,9 +310,10 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
   guia delas: base de guias citados em `sources`, evolução e pontos dos guias de classe do GMO). Do GMO vêm também a
   5ª classe (S21, nível null) e `image_url` da classe e de cada evolução.
 
-**Planner de builds (`/planner/`):** escolhe regras, classe (Gun Crusher, Slayer e Grow Lancer primeiro),
-nível e pontos extras; distribui pontos de atributo; escolhe equipamento (itens de `planner-items.json`, por
-classe e slot) e confere requisitos; o estado vai no endereço (`#...`) para compartilhar a build. Pontos por
+**Planner de builds (`/planner/`, ferramenta para criar a própria build):** escolhe regras, classe (Gun Crusher, Slayer
+e Grow Lancer primeiro), nível e pontos extras; distribui pontos de atributo; escolhe equipamento (itens de
+`planner-items.json`: todo item equipável pelo tipo da taxonomia, inclusive sets sem categoria nos dados; slots arma,
+escudo, elmo, armadura, calça, luvas, botas, asas, colar e dois anéis; filtro por qualidade e por nível) e confere requisitos; o estado vai no endereço (`#...`) para compartilhar a build. Pontos por
 nível = soma das faixas de cada nível de 2 até `max_level_points` (400); tier 1: 5, e 6 a partir do nível 220
 (quest Hero Status); tier 2 (MG, DL, RF, GL): 7. Requisitos dos itens são os do item +0. Com uma build pronta,
 o planner simula nível a nível (`simulateBuild`) e mostra a curva de atributos. **Ainda não
@@ -326,7 +335,9 @@ justamente em Gun Crusher e Slayer; precisam de outra fonte ou de conferência n
    `/api/v1/index.json` e na tabela `meta` do SQLite. Mudança incompatível de formato vira `/api/v2/`.
 5. Site: páginas de itens, mobs e spots; builds com curadoria manual. Spots ficam numa área própria
    (`/spots/<mapa>/#spot-N`); a página do mapa só leva até lá. "Onde dropa" do item mostra, para cada monstro, o
-   spot com mais dele (para farmar até dropar).
+   spot com mais dele (para farmar até dropar): uma linha por monstro e mapa (relação direta item → monstro → mapa →
+   spot), quem vende (NPCs) e as frases de "como conseguir" das notas do item, traduzidas por `acquisitionNotes`
+   (loja de cash, combinação, evento, missão...). A lista de itens filtra por "Como conseguir" e "Dropa em" (mapa).
 6. Revisão do front-end (pedido do dono, feita depois dos mapas refeitos): tema do jogo, busca global, catálogos com
    facetas e nomes padronizados em português (`lib/taxonomy.ts`). **Regra:** texto exibido passa pela taxonomia
    (categoria, qualidade, classe, atributo, tabela de drop, tipo de NPC); nada de slug ou chave crua na tela. Os

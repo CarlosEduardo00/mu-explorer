@@ -11,7 +11,7 @@ const types = [...new Set(npcs.map((n) => n.type).filter((t): t is string => !!t
 const mapIds = new Set(npcs.flatMap((n) => n.locations.map((l) => l.map_id)));
 const facets = [
   { key: "type", label: "Tipo", options: [...new Map(types.map((t) => [typeKey(t), npcTypeLabel(t)!])).entries()].map(([value, label]) => ({ value, label })) },
-  { key: "map", label: "Mapa", options: maps.filter((m) => mapIds.has(m.id)).map((m) => ({ value: m.id, label: m.name })) },
+  { key: "map", label: "Mapa", collapse: 8, options: maps.filter((m) => mapIds.has(m.id)).map((m) => ({ value: m.id, label: m.name })) },
   { key: "has", label: "Mostrar", options: [{ value: "shop", label: "Vende itens" }] },
 ];
 const sorts = [{ value: "name", label: "Nome (A–Z)", attr: "name", dir: 1 as const }];

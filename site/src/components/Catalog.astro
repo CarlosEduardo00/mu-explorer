@@ -7,9 +7,12 @@
  *   data-f              "faceta:valor faceta:valor ..." (ex.: "group:weapons kind:bow grade:excellent class:dark-knight")
  *   data-level, data-name e outros data-* usados na ordenação (sorts[].attr)
  * O estado vai no endereço (?q=&group=&kind=&min=&max=&sort=) para compartilhar a busca.
+ * A busca aceita várias palavras (todas precisam aparecer, em qualquer ordem). Facetas longas (`collapse`) mostram as
+ * primeiras opções, um "mais N" e, acima de 12 opções, uma busca dentro da faceta. Os filtros ativos aparecem como
+ * etiquetas acima dos resultados, cada uma com um × para tirar.
  */
 export interface FacetOption { value: string; label: string; parent?: string }
-export interface Facet { key: string; label: string; options: FacetOption[]; dependsOn?: string }
+export interface Facet { key: string; label: string; options: FacetOption[]; dependsOn?: string; collapse?: number }
 export interface Sort { value: string; label: string; attr: string; dir: 1 | -1; numeric?: boolean }
 interface Props { facets: Facet[]; sorts: Sort[]; noun: string; placeholder: string; levelLabel?: string | null; page?: number }
 const { facets, sorts, noun, placeholder, levelLabel = "Nível", page = 60 } = Astro.props;
@@ -19,8 +22,9 @@ const { facets, sorts, noun, placeholder, levelLabel = "Nível", page = 60 } = A
     <details class="cat-filters" open>
       <summary>Filtros <span class="cat-active" data-active></span></summary>
       {facets.map((f) => (
-        <fieldset class="facet" data-facet={f.key} data-depends={f.dependsOn ?? ""}>
+        <fieldset class="facet" data-facet={f.key} data-depends={f.dependsOn ?? ""} data-label={f.label} data-collapse={f.collapse ?? ""}>
           <legend>{f.label}</legend>
+          {f.collapse && f.options.length > 12 && <input type="search" class="facet-search" placeholder={`Filtrar ${f.label.toLowerCase()}`} aria-label={`Filtrar opções de ${f.label}`} data-facet-search />}
           <div class="facet-opts">
             {f.options.map((o) => (
               <button type="button" class="fopt" data-value={o.value} data-parent={o.parent ?? ""} aria-pressed="false">
@@ -28,6 +32,7 @@ const { facets, sorts, noun, placeholder, levelLabel = "Nível", page = 60 } = A
               </button>
             ))}
           </div>
+          {f.collapse && f.options.length > f.collapse && <button type="button" class="facet-more" data-facet-more aria-expanded="false"></button>}
         </fieldset>
       ))}
       {levelLabel && (
@@ -51,6 +56,7 @@ const { facets, sorts, noun, placeholder, levelLabel = "Nível", page = 60 } = A
         {sorts.map((s) => <option value={s.value}>{s.label}</option>)}
       </select>
     </div>
+    <div class="cat-active-bar" data-active-bar hidden></div>
     <p class="count" data-total aria-live="polite"></p>
     <div class="grid cat-grid" data-results><slot /></div>
     <p class="cat-more"><button type="button" class="btn ghost" data-more hidden>Mostrar mais</button></p>
@@ -72,9 +78,13 @@ const { facets, sorts, noun, placeholder, levelLabel = "Nível", page = 60 } = A
       level: el.dataset.level ? Number(el.dataset.level) : null,
     }));
     const facets = [...root.querySelectorAll<HTMLElement>("[data-facet]")].map((el) => ({
-      el, key: el.dataset.facet!, depends: el.dataset.depends || "",
+      el, key: el.dataset.facet!, depends: el.dataset.depends || "", label: el.dataset.label || "",
+      collapse: Number(el.dataset.collapse) || 0, expanded: false, query: "",
       opts: [...el.querySelectorAll<HTMLButtonElement>(".fopt")],
+      more: el.querySelector<HTMLButtonElement>("[data-facet-more]"),
+      search: el.querySelector<HTMLInputElement>("[data-facet-search]"),
     }));
+    const activeBar = root.querySelector<HTMLElement>("[data-active-bar]")!;
     const search = root.querySelector<HTMLInputElement>("[data-search]")!;
     const sortSel = root.querySelector<HTMLSelectElement>("[data-sort]")!;
     const minIn = root.querySelector<HTMLInputElement>("[data-min]");
@@ -109,8 +119,55 @@ const { facets, sorts, noun, placeholder, levelLabel = "Nível", page = 60 } = A
       if ((min != null || max != null) && card.level == null) return false;
       if (min != null && card.level! < min) return false;
       if (max != null && card.level! > max) return false;
-      const q = norm(search.value.trim());
-      return !q || card.q.includes(q);
+      const words = norm(search.value.trim()).split(/\s+/).filter(Boolean);
+      return words.every((w) => card.q.includes(w));
+    }
+
+    // Opções visíveis de uma faceta: as escolhidas sempre; as outras conforme a busca da faceta e o "mais N".
+    function layoutFacet(f: (typeof facets)[number]) {
+      const set = selected.get(f.key)!;
+      let shown = 0, hiddenByCollapse = 0;
+      for (const o of f.opts) {
+        if (o.dataset.parentHidden === "1") { o.hidden = true; continue; }
+        const label = norm(o.textContent ?? "");
+        const pressed = set.has(o.dataset.value!);
+        let visible = pressed || !f.query || label.includes(f.query);
+        if (visible && f.collapse && !f.expanded && !f.query && !pressed && shown >= f.collapse) { visible = false; hiddenByCollapse++; }
+        o.hidden = !visible;
+        if (visible) shown++;
+      }
+      if (f.more) {
+        f.more.hidden = !!f.query || (!f.expanded && hiddenByCollapse === 0);
+        f.more.textContent = f.expanded ? "mostrar menos" : `mais ${hiddenByCollapse}`;
+        f.more.setAttribute("aria-expanded", String(f.expanded));
+      }
+    }
+
+    function renderActive() {
+      const parts: { label: string; clear: () => void }[] = [];
+      const q = search.value.trim();
+      if (q) parts.push({ label: `Busca: ${q}`, clear: () => { search.value = ""; } });
+      for (const f of facets) {
+        for (const v of selected.get(f.key)!) {
+          const o = f.opts.find((x) => x.dataset.value === v);
+          const name = o ? (o.childNodes[0]?.textContent ?? v).trim() : v;
+          parts.push({ label: `${f.label}: ${name}`, clear: () => { selected.get(f.key)!.delete(v); } });
+        }
+      }
+      if (minIn?.value || maxIn?.value) {
+        parts.push({ label: `Nível ${minIn?.value || "0"}–${maxIn?.value || "∞"}`, clear: () => { if (minIn) minIn.value = ""; if (maxIn) maxIn.value = ""; } });
+      }
+      activeBar.hidden = parts.length === 0;
+      activeBar.replaceChildren(...parts.map((p) => {
+        const b = document.createElement("button");
+        b.type = "button"; b.className = "chip active-chip"; b.textContent = `${p.label} ×`;
+        b.setAttribute("aria-label", `Tirar filtro ${p.label}`);
+        b.addEventListener("click", () => { p.clear(); apply(); });
+        return b;
+      }), ...(parts.length > 1 ? [Object.assign(document.createElement("button"), {
+        type: "button", className: "chip clear-all", textContent: "Limpar tudo",
+        onclick: () => (root.querySelector("[data-clear]") as HTMLButtonElement).click(),
+      })] : []));
     }
 
     function apply(resetLimit = true) {
@@ -122,7 +179,7 @@ const { facets, sorts, noun, placeholder, levelLabel = "Nível", page = 60 } = A
         f.el.hidden = parents.size === 0;
         for (const o of f.opts) {
           const visible = parents.size === 0 || parents.has(o.dataset.parent ?? "");
-          o.hidden = !visible;
+          o.dataset.parentHidden = visible ? "" : "1";
           if (!visible) selected.get(f.key)!.delete(o.dataset.value!);
         }
       }
@@ -137,6 +194,8 @@ const { facets, sorts, noun, placeholder, levelLabel = "Nível", page = 60 } = A
           o.classList.toggle("zero", n === 0);
         }
       }
+      for (const f of facets) layoutFacet(f);
+      renderActive();
       const list = cards.filter((c) => matches(c));
       const sort = sorts.find((s) => s.value === sortSel.value);
       if (sort) {
@@ -181,6 +240,10 @@ const { facets, sorts, noun, placeholder, levelLabel = "Nível", page = 60 } = A
         });
       }
     }
+    for (const f of facets) {
+      f.more?.addEventListener("click", () => { f.expanded = !f.expanded; layoutFacet(f); });
+      f.search?.addEventListener("input", () => { f.query = norm(f.search!.value.trim()); layoutFacet(f); });
+    }
     let timer: number | undefined;
     search.addEventListener("input", () => { clearTimeout(timer); timer = window.setTimeout(() => apply(), 120); });
     sortSel.addEventListener("change", () => apply());
@@ -216,6 +279,13 @@ const { facets, sorts, noun, placeholder, levelLabel = "Nível", page = 60 } = A
   .range { display: flex; align-items: center; gap: .4rem; }
   .range input { width: 5.5rem; }
   .cat-clear { margin-top: .9rem; width: 100%; justify-content: center; font-size: .85rem; padding: .3rem .6rem; }
+  .facet-search { width: 100%; font-size: .8rem; padding: .3rem .5rem; margin-bottom: .35rem; }
+  .facet-more { margin-top: .3rem; background: none; border: 0; padding: 0; color: var(--link); font-size: .8rem; cursor: pointer; }
+  .facet-more:hover { text-decoration: underline; }
+  .cat-active-bar { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0 0 .5rem; }
+  .active-chip { cursor: pointer; border-color: rgba(214,165,74,.55); color: var(--accent-2); background: var(--panel-2); }
+  .active-chip:hover { border-color: var(--accent); }
+  .clear-all { cursor: pointer; background: none; color: var(--muted); }
   .cat-bar { display: flex; gap: .5rem; margin-bottom: .5rem; }
   .cat-bar input { flex: 1; min-width: 0; }
   .cat-grid { grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr)); }

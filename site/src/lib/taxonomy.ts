@@ -235,3 +235,58 @@ export const npcTypeLabel = (type: string | null) => {
 /** Grupos de "drops valiosos" do mapa (Fanz). */
 const VALUED_GROUPS: Record<string, string> = { monster: "Monstros comuns", special: "Monstros especiais", boss: "Chefes", elite: "Elites" };
 export const valuedGroupLabel = (key: string) => VALUED_GROUPS[key] ?? key.replaceAll("_", " ");
+
+// ---------------------------------------------------------------- como conseguir
+
+export type AcquisitionKind = "cash" | "npc" | "craft" | "event" | "quest" | "drop" | "box" | "unobtainable" | "other";
+export interface Acquisition { kind: AcquisitionKind; text: string; original: string; translated: boolean }
+
+export const ACQUISITION_LABELS: Record<AcquisitionKind, string> = {
+  drop: "Dropa de monstros", npc: "Vendido por NPC", craft: "Combinação", cash: "Loja de cash", event: "Evento",
+  quest: "Missão", box: "Caixa de recompensa", unobtainable: "Não obtível", other: "Outros",
+};
+
+/** Frases das notas do item que dizem como consegui-lo, traduzidas quando o padrão é conhecido. */
+const ACQUISITION_RULES: [RegExp, AcquisitionKind, (m: RegExpMatchArray) => string][] = [
+  [/^This item (?:is obtained from|can be purchased from) the cash item shop\.?$/i, "cash", () => "Vendido na loja de cash."],
+  [/^This item is (?:currently )?unobtainable\.?$|^It cannot be obtained/i, "unobtainable", () => "Não pode ser obtido atualmente."],
+  [/^This item doesn't drop by any monster/i, "other", () => "Não dropa de monstros."],
+  [/^This item is sold by any general merchant, such as NPC (.+?)\.?$/i, "npc", (m) => `Vendido por qualquer mercador geral (ex.: ${m[1]}).`],
+  [/^You can purchase (?:a |an )?(.+?) (?:item )?from NPC (.+?)\.?$/i, "npc", (m) => `Vendido pela NPC ${m[2]}.`],
+  [/^This item can be crafted from (.+?) through (?:the )?(?:NPC )?(.+?)\.?$/i, "craft", (m) => `Combinação: ${m[1].replace(/ and /g, " + ")} na ${m[2]}.`],
+  [/^This item can be crafted by transforming (?:a |an )?(.+?) through (?:the )?(?:NPC )?(.+?)\.?$/i, "craft", (m) => `Combinação: transformar ${m[1]} na ${m[2]}.`],
+  [/^(?:Seed spheres|This item) (?:are|is|can be) crafted (?:from (.+?) )?through NPC (.+?)\.?$/i, "craft", (m) => `Combinação na NPC ${m[2]}${m[1] ? ` (a partir de ${m[1]})` : ""}.`],
+  [/^This item can be obtained by collecting (\w+) (.+?),? and stacking them together\.?$/i, "craft", (m) => `Junte ${m[1]} ${m[2]} para formar este item.`],
+  [/^Collecting and stacking x(\d+) of these items will create (?:a |an )?(.+?)(?:,.*)?\.?$/i, "craft", (m) => `Juntando ${m[1]} destes você forma ${m[2]}.`],
+  [/^This item can be obtained during the (.+?) event[.!]?$/i, "event", (m) => `Obtido no evento ${m[1]}.`],
+  [/^This item can be obtained during special promotional events\.?$/i, "event", () => "Obtido em eventos promocionais."],
+  [/^This item was obtainable during the (.+?) event\.?$/i, "event", (m) => `Era obtido no evento ${m[1]} (encerrado).`],
+  [/^Event item; it is used to summon (.+?)\.?$/i, "event", (m) => `Item de evento: invoca ${m[1]}.`],
+  [/^This is a quest item; .*only drops from monsters if you have accepted the quest/i, "quest", () => "Item de missão: só dropa com a missão aceita."],
+  [/^Quest item; it is obtained during the (.+?) quest\.?$/i, "quest", (m) => `Item da missão ${m[1]}.`],
+  [/^This item can be obtained through daily quests\.?$/i, "quest", () => "Recompensa de missões diárias."],
+  [/^This item can be obtained through the Gens ranking system\.?$/i, "event", () => "Recompensa do ranking de Gens."],
+  [/^This item can be dropped by any elemental monsters, such as all monsters in (.+?)\.?$/i, "drop", (m) => `Dropa de qualquer monstro elemental (ex.: todos de ${m[1]}).`],
+  [/^Reward box; right-click the item to claim a reward\.?$/i, "box", () => "Caixa de recompensa: clique com o botão direito para abrir."],
+];
+/** Frases genéricas que não dizem como conseguir este item específico. */
+const ACQUISITION_SKIP = /grade item|items guide|Lucky Tickets|cannot be traded|toss|sold to NPC|buff is also lost/i;
+const ACQUISITION_HINT = /\b(obtain|obtained|sold|purchas|crafted|reward|exchang|cash item shop|quest item|event item)\b/i;
+
+export function acquisitionNotes(notes: string[]): Acquisition[] {
+  const out: Acquisition[] = [];
+  for (const note of notes) {
+    for (const sentence of note.split(/(?<=[.!])\s+/)) {
+      const s = sentence.trim();
+      if (!s || ACQUISITION_SKIP.test(s)) continue;
+      const rule = ACQUISITION_RULES.find(([re]) => re.test(s));
+      if (rule) {
+        const m = s.match(rule[0])!;
+        out.push({ kind: rule[1], text: rule[2](m), original: s, translated: true });
+      } else if (ACQUISITION_HINT.test(s)) {
+        out.push({ kind: "other", text: s, original: s, translated: false });
+      }
+    }
+  }
+  return out;
+}
