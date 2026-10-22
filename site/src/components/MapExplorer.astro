@@ -1,16 +1,21 @@
 ---
-// Mapa interativo de um mapa do jogo: spots de farm (toque para ver monstros, atributos e drops), spots e hot
-// spots marcados no minimapa do jogo, e portais. Coordenadas do jogo (x, y) desenhadas na orientação do minimapa:
-// horizontal = y, vertical = x (conferido com os NPCs de Devias e Lorencia sobre o minimapa do Fanz).
-// Sem imagem do minimapa (build público), o fundo é liso; sem drops/imagens na fonte, o painel mostra só o que há.
-import type { FarmSpot, MapMarker, Terrain } from "../lib/data";
-import { monsterById, dropsByMonster, itemById } from "../lib/data";
+// Mapa interativo de um mapa do jogo, na orientação do minimapa do jogo (girado 45°): spots de farm (etiquetas com a
+// quantidade de monstros, o nível ou o número), spots marcados no minimapa do jogo e portais. Zoom e arrasto (mouse,
+// Ctrl + rolagem, pinça no celular), dica ao passar o mouse, coordenada sob o cursor, abas das zonas do mapa
+// (andares, áreas) e painel com a lista de spots e o detalhe de cada um. Geometria em lib/mapview.ts.
+import type { FarmSpot, MapMarker, Terrain, SpotGroup } from "../lib/data";
+import { maps, monsterById, dropsByMonster, itemById, spotMapIds, spotsUrl, zoneSlug, fmt } from "../lib/data";
+import { heatLabel, HEAT_LABELS, markerText } from "../lib/taxonomy";
+import { rot, ROTATE, fitBox, pathPoints } from "../lib/mapview";
 
-interface Props { mapName: string; spots: FarmSpot[]; markers?: MapMarker[]; minimap?: string | null; terrain?: Terrain | null }
-const { mapName, spots, markers = [], minimap = null, terrain = null } = Astro.props;
+interface Props {
+  mapId: string; mapName: string; spots: FarmSpot[]; markers?: MapMarker[]; minimap?: string | null;
+  terrain?: Terrain | null; entries?: SpotGroup["entries"];
+}
+const { mapId, mapName, spots, markers = [], minimap = null, terrain = null, entries = [] } = Astro.props;
 
 const KIND_ORDER: Record<string, number> = { ancient: 0, excellent: 1, socket: 2, normal: 3, unknown: 4 };
-const MAX_DROPS = 10;
+const MAX_DROPS = 8;
 const monsterIds = [...new Set(spots.flatMap((s) => s.monsters.map((m) => m.monster_id)))];
 const monsters = Object.fromEntries(monsterIds.map((id) => {
   const m = monsterById.get(id);
@@ -19,185 +24,757 @@ const monsters = Object.fromEntries(monsterIds.map((id) => {
   return [id, {
     name: m?.name ?? id, level: m?.level ?? null, hp: m?.hp ?? null, atk: m && m.atk_min != null ? [m.atk_min, m.atk_max] : null,
     def: m?.def ?? null, img: m?.image_url ?? null, page: !!m,
-    drops: all.slice(0, MAX_DROPS).map((d) => ({ id: d.item_id, name: d.item_name, kind: d.kind, img: itemById.get(d.item_id)?.image_url ?? null, page: itemById.has(d.item_id) })),
+    drops: all.slice(0, MAX_DROPS).map((d) => ({ id: d.item_id, name: d.item_name, kind: d.kind, page: itemById.has(d.item_id) })),
     dropsTotal: all.length,
   }];
 }));
-const payload = {
-  map: mapName,
-  spots: spots.map((s, i) => ({ n: i + 1, x: s.x, y: s.y, box: [s.x_min, s.y_min, s.x_max, s.y_max], lv: [s.level_min, s.level_max], total: s.total, heat: s.heat ?? "mid",
-    monsters: s.monsters.map((m) => [m.monster_id, m.count]) })),
-  monsters,
+
+// Destino dos portais: nome do mapa (como na fonte) -> página de spots (ou do mapa).
+const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "");
+const mapByName = new Map(maps.flatMap((m) => [[norm(m.name), m], [norm(m.id), m]]));
+const destHref = (name: string | null) => {
+  const m = name ? mapByName.get(norm(name)) : undefined;
+  return m ? (spotMapIds.includes(m.id) ? spotsUrl(m.id) : `/mapas/${m.id}/`) : null;
 };
-const shownMarkers = markers.filter((m) => m.x != null && m.y != null && ["spot", "hot_spot", "gate", "warp"].includes(m.kind));
-const radius = (total: number) => Math.min(8, 4.5 + Math.sqrt(total) / 3);
-const HEAT_LABEL: Record<string, string> = { hot: "Hot spot", mid: "Mid spot", low: "Low spot", boss: "Boss spot" };
+const MARK_KIND: Record<string, string> = { spot: "spot", hot_spot: "hot", gate: "gate", warp: "warp" };
+const marks = markers.filter((m) => m.x != null && m.y != null && MARK_KIND[m.kind]).map((m) => {
+  const t = markerText(m);
+  const [u, v] = rot(m.x as number, m.y as number);
+  return { k: MARK_KIND[m.kind], x: m.x as number, y: m.y as number, u, v, t: t.title, d: t.detail, href: destHref(t.dest), dn: t.dest };
+});
+
+// Zonas do mapa (andares, áreas) na ordem em que aparecem; enquadramento do mapa inteiro e de cada zona.
+const zones = [...new Map(spots.filter((s) => s.zone).map((s) => [zoneSlug(s.zone!), s.zone!])).entries()].map(([slug, label]) => ({ slug, label }));
+const spotPoints = spots.map((s) => rot(s.x, s.y));
+const terrainPoints = terrain ? pathPoints(terrain.walk || terrain.land) : [];
+const base = fitBox(terrainPoints.length ? terrainPoints : [...spotPoints, ...marks.map((m) => [m.u, m.v] as [number, number])], 4, 48)
+  ?? { x: -53, y: -53, size: 362 };
+// A zona é enquadrada pela área da imagem dela no guia (frame); sem ela, pelos spots da zona.
+const frames = new Map(entries.filter((e) => e.map_id === mapId && e.zone && e.frame).map((e) => [zoneSlug(e.zone!), e.frame!]));
+const zoneBoxes = Object.fromEntries(zones.map((z) => [z.slug, frames.has(z.slug)
+  ? fitBox(frames.get(z.slug)!.map(([x, y]) => rot(x, y)), 2, 48)
+  : fitBox(spots.filter((s) => s.zone && zoneSlug(s.zone) === z.slug).map((s) => rot(s.x, s.y)), 16, 56)]));
+
+const levelText = (lo: number | null, hi: number | null) => (lo == null ? "?" : lo === hi || hi == null ? fmt(lo) : `${fmt(lo)}–${fmt(hi)}`);
+const payload = {
+  map: mapName, base, zoneBoxes,
+  spots: spots.map((s, i) => {
+    const [u, v] = spotPoints[i];
+    return { n: i + 1, x: s.x, y: s.y, u, v, lv: [s.level_min, s.level_max], total: s.total, heat: s.heat ?? "mid",
+      z: s.zone ? zoneSlug(s.zone) : "", zl: s.zone ?? "", monsters: s.monsters.map((m) => [m.monster_id, m.count]) };
+  }),
+  monsters,
+  marks,
+  heat: HEAT_LABELS,
+};
 const heats = (["hot", "mid", "low", "boss"] as const).filter((h) => spots.some((s) => (s.heat ?? "mid") === h));
+const has = (k: string) => marks.some((m) => m.k === k);
+const PILL_H = 20;
+const pillW = (label: string) => Math.max(PILL_H + 2, label.length * 7 + 12);
+// Abas: zonas deste mapa (no próprio mapa) e mapas irmãos do grupo (links).
+const tabs = entries.length > 1 || zones.length > 0;
 ---
 <div class="mx" data-mx>
-  <div class="mx-layers" role="group" aria-label="Camadas do mapa">
-    <label><input type="checkbox" data-layer="spots" checked /> Spots de farm ({spots.length})</label>
-    {terrain && minimap && <label><input type="checkbox" data-layer="minimap" /> Imagem do minimapa</label>}
-    {shownMarkers.some((m) => m.kind === "spot" || m.kind === "hot_spot") && <label><input type="checkbox" data-layer="game" checked /> <span class="mk-spot-i">▲</span> Spots do minimapa do jogo</label>}
-    {shownMarkers.some((m) => m.kind === "gate" || m.kind === "warp") && <label><input type="checkbox" data-layer="gates" checked /> <span class="mk-gate-i">■</span> Portais</label>}
-  </div>
-  {heats.length > 0 && (
-    <p class="mx-heat-legend">{heats.map((h) => <span><i class={`heat-dot-i heat-${h}`}></i>{HEAT_LABEL[h]}</span>)}</p>
-  )}
-  <div class="mx-body">
-    <svg class:list={["mx-svg", { "has-minimap": minimap || terrain, "has-terrain": terrain }]} viewBox="0 0 256 256" role="img" aria-label={`Mapa de ${mapName} com spots de farm`}>
-      <rect x="0" y="0" width="256" height="256" class="mx-bg" />
-      {terrain && (
-        <g class="mx-terrain">
-          <path class="t-land" d={terrain.land} fill-rule="evenodd" />
-          <path class="t-walk" d={terrain.walk} fill-rule="evenodd" />
-          <path class="t-safe" d={terrain.safe} fill-rule="evenodd" />
-        </g>
+  <div class="mx-top">
+    {tabs && (
+      <nav class="mx-zones" aria-label={`Áreas de ${mapName}`}>
+        {zones.length > 0 && <button type="button" data-zone="" aria-pressed="true">Mapa inteiro</button>}
+        {entries.map((e) => e.map_id === mapId && e.zone
+          ? <button type="button" data-zone={zoneSlug(e.zone)} aria-pressed="false">{e.label}</button>
+          : <a href={`${spotsUrl(e.map_id)}${e.zone ? `?zona=${zoneSlug(e.zone)}` : ""}`} aria-current={e.map_id === mapId && !e.zone ? "page" : undefined}>{e.label}</a>)}
+      </nav>
+    )}
+    <div class="mx-bar">
+      {spots.length > 0 && (
+        <div class="mx-seg" role="group" aria-label="Número nas etiquetas dos spots">
+          <button type="button" data-label="n" aria-pressed="true">Monstros</button>
+          <button type="button" data-label="lv" aria-pressed="false">Nível</button>
+          <button type="button" data-label="id" aria-pressed="false">Nº</button>
+        </div>
       )}
-      {minimap && <g data-group="minimap" class:list={{ off: !!terrain }}><image href={minimap} x="0" y="0" width="256" height="256" preserveAspectRatio="none" /></g>}
-      <g data-group="game">
-        {shownMarkers.filter((m) => m.kind === "spot" || m.kind === "hot_spot").map((m) => (
-          <path class={m.kind === "hot_spot" ? "mk-hot" : "mk-spot"} d={`M${m.y},${(m.x as number) - 4.5} L${(m.y as number) + 4},${(m.x as number) + 3.5} L${(m.y as number) - 4},${(m.x as number) + 3.5} Z`}><title>{m.name} ({m.x}, {m.y})</title></path>
-        ))}
-      </g>
-      <g data-group="gates">
-        {shownMarkers.filter((m) => m.kind === "gate" || m.kind === "warp").map((m) => (
-          <rect class="mk-gate" x={(m.y as number) - 3} y={(m.x as number) - 3} width="6" height="6"><title>{m.name}{m.description ? ` — ${m.description}` : ""}</title></rect>
-        ))}
-      </g>
-      <g data-group="spots">
-        {spots.map((s, i) => (
-          <rect class="mx-area" data-area={i + 1} x={s.y_min} y={s.x_min} width={Math.max(2, s.y_max - s.y_min)} height={Math.max(2, s.x_max - s.x_min)} />
-        ))}
-        {spots.map((s, i) => (
-          <g class={`mx-spot heat-${s.heat ?? "mid"}`} data-spot={i + 1} tabindex="0" role="button" aria-label={`${HEAT_LABEL[s.heat ?? "mid"]} ${i + 1}: ${s.total} monstros (${s.monsters.map((m) => m.name).join(", ")})`}>
-            <circle cx={s.y} cy={s.x} r={radius(s.total)} />
-            <text x={s.y} y={s.x + 2.3} text-anchor="middle">x{s.total}</text>
-          </g>
-        ))}
-      </g>
-    </svg>
-    <div class="mx-panel" data-panel aria-live="polite">
-      <p class="muted">Toque num número do mapa (ou numa linha da tabela) para ver os monstros, os atributos e os drops do spot.</p>
+      <details class="mx-layers">
+        <summary>Camadas</summary>
+        <div class="mx-layers-pop">
+          {spots.length > 0 && <label><input type="checkbox" data-layer="spots" checked /> <i class="lg lg-pill"></i> Spots de farm <small>{spots.length}</small></label>}
+          {(has("spot") || has("hot")) && <label><input type="checkbox" data-layer="game" /> <i class="lg lg-game"></i> Marcados no minimapa do jogo</label>}
+          {(has("gate") || has("warp")) && <label><input type="checkbox" data-layer="gates" checked /> <i class="lg lg-gate"></i> Portais e chegadas</label>}
+          {minimap && <label><input type="checkbox" data-layer="minimap" checked={!terrain} /> <i class="lg lg-img"></i> Imagem do minimapa</label>}
+        </div>
+      </details>
     </div>
+  </div>
+  <div class="mx-body">
+    <div class="mx-mapcol">
+      <div class="mx-stage" data-stage tabindex="0" aria-label={`Mapa de ${mapName}. Use + e − para zoom e as setas para mover.`}>
+        <svg class:list={["mx-svg", { "has-terrain": terrain }]} viewBox={`${base.x} ${base.y} ${base.size} ${base.size}`} role="img" aria-label={`Mapa de ${mapName} com spots de farm`}>
+          <defs>
+            <pattern id="mx-hatch" width="1.2" height="1.2" patternUnits="userSpaceOnUse">
+              <rect width="1.2" height="1.2" class="hatch-bg" /><rect width=".4" height="1.2" class="hatch-line" />
+            </pattern>
+          </defs>
+          <rect x="-1000" y="-1000" width="2256" height="2256" class="mx-bg" />
+          <g transform={ROTATE}>
+            {terrain && (
+              <g class="mx-terrain">
+                <path class="t-land" d={terrain.land} fill-rule="evenodd" />
+                <path class="t-walk" d={terrain.walk} fill-rule="evenodd" />
+                {terrain.safe && <path class="t-safe" d={terrain.safe} fill-rule="evenodd" />}
+              </g>
+            )}
+            {minimap && <g data-group="minimap" class:list={{ off: !!terrain }}><image href={minimap} x="-0.5" y="-0.5" width="256" height="256" preserveAspectRatio="none" /></g>}
+            <g data-group="areas">
+              {spots.map((s, i) => (
+                <rect class="mx-area" data-area={i + 1} x={s.y_min - 0.5} y={s.x_min - 0.5} width={s.y_max - s.y_min + 1} height={s.x_max - s.x_min + 1} />
+              ))}
+            </g>
+          </g>
+          <g data-group="game" class="off">
+            {marks.map((m, i) => (m.k === "spot" || m.k === "hot") && (
+              <g class={`mk mk-${m.k}`} data-mark={i} data-u={m.u} data-v={m.v} transform={`translate(${m.u} ${m.v}) scale(.3)`}>
+                <path d="M0,-6 L5.5,4 L-5.5,4 Z" />
+              </g>
+            ))}
+          </g>
+          <g data-group="gates">
+            {marks.map((m, i) => (m.k === "gate" || m.k === "warp") && (
+              <g class={`mk mk-${m.k}`} data-mark={i} data-u={m.u} data-v={m.v} transform={`translate(${m.u} ${m.v}) scale(.3)`} tabindex="0" role="button" aria-label={`${m.t}${m.d ? `, ${m.d}` : ""}`}>
+                {m.k === "gate" ? <path d="M0,-7 L7,0 L0,7 L-7,0 Z" /> : <><circle r="6" /><circle class="mk-dot" r="2.2" /></>}
+              </g>
+            ))}
+          </g>
+          <g data-group="spots">
+            <g class="mx-leads" data-leads></g>
+            {spots.map((s, i) => {
+              const label = fmt(s.total);
+              const w = pillW(label);
+              const [u, v] = spotPoints[i];
+              return (
+                <g class={`pin heat-${s.heat ?? "mid"}`} data-spot={i + 1} data-u={u} data-v={v} transform={`translate(${u} ${v}) scale(.3)`}
+                  tabindex="0" role="button" aria-label={`Spot ${i + 1}${s.zone ? ` (${s.zone})` : ""}: ${s.total} monstros, nível ${levelText(s.level_min, s.level_max)} (${s.monsters.map((m) => m.name).join(", ")})`}>
+                  <rect class="pin-bg" x={-w / 2} y={-PILL_H / 2} width={w} height={PILL_H} rx="6" />
+                  <text y="4.2">{label}</text>
+                </g>
+              );
+            })}
+          </g>
+        </svg>
+        <div class="mx-zoom" role="group" aria-label="Zoom">
+          <button type="button" data-zoom="in" aria-label="Aproximar">+</button>
+          <button type="button" data-zoom="out" aria-label="Afastar">−</button>
+          <button type="button" data-zoom="reset" aria-label="Ver tudo">⤢</button>
+        </div>
+        <div class="mx-coord" data-coord aria-hidden="true"></div>
+        <div class="mx-tip" data-tip hidden></div>
+        <div class="mx-hint" data-hint hidden>Use Ctrl + rolagem para dar zoom</div>
+        <div class="mx-peek" data-peek hidden></div>
+      </div>
+      <div class="mx-legend">
+        {heats.length > 0 && <span class="mx-legend-t">Monstros no spot:</span>}
+        {heats.map((h) => <span><i class={`lg lg-pill heat-${h}`}></i>{heatLabel(h)}</span>)}
+        {has("gate") && <span><i class="lg lg-gate"></i>Portal</span>}
+        {has("warp") && <span><i class="lg lg-warp"></i>Chegada</span>}
+        {terrain?.safe && <span><i class="lg lg-safe"></i>Zona segura</span>}
+      </div>
+    </div>
+
+    <aside class="mx-panel" data-panel aria-live="polite">
+      {spots.length > 0 ? (
+        <div class="mx-list-view">
+          <div class="mx-list-head"><h3>Spots <small>{spots.length}</small></h3></div>
+          <ul class="mx-list">
+            {spots.map((s, i) => (
+              <li><a class={`mx-row heat-${s.heat ?? "mid"}`} href={`#spot-${i + 1}`}>
+                <span class="mx-row-n">{fmt(s.total)}</span>
+                <span class="mx-row-main"><b>{s.monsters.map((m) => m.name).join(", ")}</b><small>Spot {i + 1}{s.zone ? ` · ${s.zone}` : ""} · ({s.x}, {s.y})</small></span>
+                <span class="mx-row-lv">nv {levelText(s.level_min, s.level_max)}</span>
+              </a></li>
+            ))}
+          </ul>
+        </div>
+      ) : <p class="muted">Sem spots de farm conhecidos neste mapa.</p>}
+    </aside>
   </div>
   <script type="application/json" data-mx-data set:html={JSON.stringify(payload)} />
 </div>
 
 <script>
-  type Data = {
-    map: string;
-    spots: { n: number; x: number; y: number; box: number[]; lv: (number | null)[]; total: number; heat: string; monsters: [string, number][] }[];
-    monsters: Record<string, { name: string; level: number | null; hp: number | null; atk: number[] | null; def: number | null; img: string | null; page: boolean;
-      drops: { id: string; name: string; kind: string; img: string | null; page: boolean }[]; dropsTotal: number }>;
-  };
+  import { unrot } from "../lib/mapview";
+  type Spot = { n: number; x: number; y: number; u: number; v: number; lv: (number | null)[]; total: number; heat: string; z: string; zl: string; monsters: [string, number | null][] };
+  type Mark = { k: string; x: number; y: number; u: number; v: number; t: string; d: string | null; href: string | null; dn: string | null };
+  type Mon = { name: string; level: number | null; hp: number | null; atk: number[] | null; def: number | null; img: string | null; page: boolean;
+    drops: { id: string; name: string; kind: string; page: boolean }[]; dropsTotal: number };
+  type Box = { x: number; y: number; size: number };
+  type Data = { map: string; base: Box; zoneBoxes: Record<string, Box | null>; spots: Spot[]; monsters: Record<string, Mon>; marks: Mark[]; heat: Record<string, string> };
+
   const fmt = (n: number | null | undefined) => (n == null ? "—" : n.toLocaleString("pt-BR"));
   const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
-  const img = (src: string | null, cls: string) => (src ? `<img class="${cls}" src="${esc(src)}" alt="" loading="lazy" />` : "");
-  const KIND: Record<string, string> = { ancient: "ancient", excellent: "excellent", socket: "socket", normal: "normal" };
+  const lvText = (s: Spot) => (s.lv[0] == null ? "?" : s.lv[0] === s.lv[1] || s.lv[1] == null ? fmt(s.lv[0]) : `${fmt(s.lv[0])}–${fmt(s.lv[1])}`);
+  const store = { get: (k: string) => { try { return localStorage.getItem(k); } catch { return null; } },
+    set: (k: string, v: string) => { try { localStorage.setItem(k, v); } catch { /* sem armazenamento */ } } };
+  const MAX_Z = 10, PILL_H = 20, GAP = 3;
 
   for (const root of document.querySelectorAll<HTMLElement>("[data-mx]")) {
     const data = JSON.parse(root.querySelector("[data-mx-data]")!.textContent || "{}") as Data;
+    const stage = root.querySelector<HTMLElement>("[data-stage]")!;
+    const svg = stage.querySelector("svg")!;
     const panel = root.querySelector<HTMLElement>("[data-panel]")!;
+    const tip = root.querySelector<HTMLElement>("[data-tip]")!;
+    const hint = root.querySelector<HTMLElement>("[data-hint]")!;
+    const coord = root.querySelector<HTMLElement>("[data-coord]")!;
+    const peek = root.querySelector<HTMLElement>("[data-peek]")!;
+    const leads = svg.querySelector<SVGGElement>("[data-leads]")!;
+    const pins = [...svg.querySelectorAll<SVGGElement>(".pin")];
+    const markEls = [...svg.querySelectorAll<SVGGElement>(".mk")];
+    const spotByN = new Map(data.spots.map((s) => [s.n, s]));
+    const heatName = (h: string) => data.heat[h] ?? "";
+    let box: Box = data.base;
+    const view = { cx: box.x + box.size / 2, cy: box.y + box.size / 2, z: 1 };
+    let selected: number | null = null;
+    let zone = "";
+    let labelMode = store.get("mx-label2") ?? "n";
+    let sortBy = store.get("mx-sort") ?? "n";
+    const inZone = (s: Spot) => !zone || s.z === zone;
 
-    function render(n: number) {
-      const s = data.spots.find((x) => x.n === n);
-      if (!s) return;
-      root.querySelectorAll(".mx-spot").forEach((g) => g.classList.toggle("on", Number((g as HTMLElement).dataset.spot) === n));
-      root.querySelectorAll(".mx-area").forEach((r) => r.classList.toggle("on", Number((r as SVGElement).dataset.area) === n));
-      document.querySelectorAll("tr[data-spot-row]").forEach((tr) => tr.classList.toggle("on", Number((tr as HTMLElement).dataset.spotRow) === n));
-      const lv = s.lv[0] == null ? "" : s.lv[0] === s.lv[1] ? ` · nível ${fmt(s.lv[0])}` : ` · nível ${fmt(s.lv[0])}–${fmt(s.lv[1])}`;
+    // ---------- vista (zoom e arrasto) ----------
+    const vs = () => box.size / view.z;
+    const pxPerUnit = () => stage.clientWidth / vs();
+    function clamp() {
+      view.z = Math.min(MAX_Z, Math.max(1, view.z));
+      const half = vs() / 2;
+      view.cx = Math.min(box.x + box.size - half, Math.max(box.x + half, view.cx));
+      view.cy = Math.min(box.y + box.size - half, Math.max(box.y + half, view.cy));
+    }
+    function apply() {
+      clamp();
+      const s = vs();
+      svg.setAttribute("viewBox", `${view.cx - s / 2} ${view.cy - s / 2} ${s} ${s}`);
+      stage.classList.toggle("zoomed", view.z > 1.01);
+      layout();
+    }
+    function toUser(clientX: number, clientY: number) {
+      const r = stage.getBoundingClientRect(), s = vs();
+      return { u: view.cx - s / 2 + ((clientX - r.left) / r.width) * s, v: view.cy - s / 2 + ((clientY - r.top) / r.height) * s };
+    }
+    function zoomAt(factor: number, clientX?: number, clientY?: number) {
+      const r = stage.getBoundingClientRect();
+      const cx = clientX ?? r.left + r.width / 2, cy = clientY ?? r.top + r.height / 2;
+      const before = toUser(cx, cy);
+      view.z *= factor;
+      clamp();
+      const s = vs();
+      view.cx = before.u - ((cx - r.left) / r.width - 0.5) * s;
+      view.cy = before.v - ((cy - r.top) / r.height - 0.5) * s;
+      apply();
+    }
+    function reset() { view.z = 1; view.cx = box.x + box.size / 2; view.cy = box.y + box.size / 2; apply(); }
+    function focusSpot(s: Spot, minZoom = 1) {
+      view.z = Math.max(view.z, minZoom);
+      const half = vs() / 2;
+      const inView = Math.abs(s.u - view.cx) < half * 0.8 && Math.abs(s.v - view.cy) < half * 0.8;
+      if (!inView || minZoom > 1) { view.cx = s.u; view.cy = s.v; }
+      apply();
+    }
+
+    // ---------- etiquetas (tamanho fixo na tela, sem sobreposição) ----------
+    const label = (s: Spot) => (labelMode === "lv" ? lvText(s) : labelMode === "id" ? String(s.n) : fmt(s.total));
+    function relabel() {
+      for (const g of pins) {
+        const s = spotByN.get(Number(g.dataset.spot))!;
+        const text = g.querySelector("text")!;
+        text.textContent = label(s);
+        const w = Math.max(PILL_H + 2, text.getComputedTextLength() + 13);
+        const rect = g.querySelector("rect")!;
+        rect.setAttribute("width", String(w));
+        rect.setAttribute("x", String(-w / 2));
+        g.dataset.w = String(w);
+      }
+      layout();
+    }
+    function layout() {
+      const k = pxPerUnit();
+      if (!k) return;
+      const s = vs(), ox = view.cx - s / 2, oy = view.cy - s / 2;
+      const items = pins.filter((g) => !g.classList.contains("off")).map((g) => {
+        const x0 = (Number(g.dataset.u) - ox) * k, y0 = (Number(g.dataset.v) - oy) * k;
+        const on = Number(g.dataset.spot) === selected;
+        return { g, x0, y0, x: x0, y: y0, w: Number(g.dataset.w || PILL_H) * (on ? 1.2 : 1), h: PILL_H * (on ? 1.2 : 1) };
+      });
+      const visible = items.filter((p) => p.x > -40 && p.y > -40 && p.x < stage.clientWidth + 40 && p.y < stage.clientHeight + 40);
+      for (let it = 0; it < 14; it++) {
+        let moved = false;
+        for (let i = 0; i < visible.length; i++) {
+          for (let j = i + 1; j < visible.length; j++) {
+            const a = visible[i], b = visible[j];
+            let dx = b.x - a.x, dy = b.y - a.y;
+            const ox2 = (a.w + b.w) / 2 + GAP - Math.abs(dx), oy2 = (a.h + b.h) / 2 + GAP - Math.abs(dy);
+            if (ox2 <= 0 || oy2 <= 0) continue;
+            moved = true;
+            if (dx === 0 && dy === 0) dy = j % 2 ? 1 : -1;
+            if (ox2 < oy2) { const m = (ox2 / 2) * Math.sign(dx || 1); a.x -= m; b.x += m; }
+            else { const m = (oy2 / 2) * Math.sign(dy || 1); a.y -= m; b.y += m; }
+          }
+        }
+        if (!moved) break;
+      }
+      let lines = "";
+      for (const p of items) {
+        const ux = ox + p.x / k, uy = oy + p.y / k;
+        p.g.setAttribute("transform", `translate(${ux.toFixed(3)} ${uy.toFixed(3)}) scale(${(1 / k).toFixed(5)})`);
+        if (Math.hypot(p.x - p.x0, p.y - p.y0) > 6) {
+          const x0 = ox + p.x0 / k, y0 = oy + p.y0 / k;
+          lines += `<line x1="${x0}" y1="${y0}" x2="${ux}" y2="${uy}"/><circle cx="${x0}" cy="${y0}" r="${2.2 / k}"/>`;
+        }
+      }
+      leads.innerHTML = lines;
+      for (const g of markEls) g.setAttribute("transform", `translate(${g.dataset.u} ${g.dataset.v}) scale(${(1 / k).toFixed(5)})`);
+    }
+
+    // ---------- estado ----------
+    function paint() {
+      for (const g of pins) {
+        const n = Number(g.dataset.spot);
+        g.classList.toggle("on", n === selected);
+        g.classList.toggle("off", !inZone(spotByN.get(n)!));
+      }
+      const on = pins.find((g) => Number(g.dataset.spot) === selected);
+      if (on) on.parentNode!.appendChild(on);
+      svg.querySelectorAll<SVGRectElement>(".mx-area").forEach((r) => r.classList.toggle("on", Number(r.dataset.area) === selected));
+      layout();
+    }
+    function setUrl() {
+      const p = new URLSearchParams(location.search);
+      if (zone) p.set("zona", zone); else p.delete("zona");
+      history.replaceState(null, "", `${location.pathname}${p.toString() ? `?${p}` : ""}${selected != null ? `#spot-${selected}` : ""}`);
+    }
+    function setZone(slug: string) {
+      zone = data.zoneBoxes[slug] ? slug : "";
+      box = (zone && data.zoneBoxes[zone]) || data.base;
+      root.querySelectorAll<HTMLButtonElement>("[data-zone]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.zone === zone)));
+      if (selected != null && !inZone(spotByN.get(selected)!)) selected = null;
+      reset();
+      if (selected == null) listView();
+      paint();
+      setUrl();
+    }
+
+    // ---------- painel ----------
+    function listView() {
+      const rows = data.spots.filter(inZone).sort((a, b) =>
+        sortBy === "lv" ? (a.lv[0] ?? 9e9) - (b.lv[0] ?? 9e9) || a.n - b.n : sortBy === "total" ? b.total - a.total || a.n - b.n : a.n - b.n);
+      const zones = !zone && sortBy === "n" && data.spots.some((s) => s.z);
+      let last = "";
+      panel.innerHTML = `<div class="mx-list-view">
+        <div class="mx-list-head">
+          <h3>Spots <small>${rows.length}</small></h3>
+          <label class="mx-sort">Ordem <select data-sort>
+            <option value="n"${sortBy === "n" ? " selected" : ""}>Número</option>
+            <option value="total"${sortBy === "total" ? " selected" : ""}>Mais monstros</option>
+            <option value="lv"${sortBy === "lv" ? " selected" : ""}>Nível</option>
+          </select></label>
+        </div>
+        <ul class="mx-list">${rows.map((s) => {
+          const head = zones && s.zl !== last ? `<li class="mx-list-zone">${esc(s.zl || "Outros")}</li>` : "";
+          last = s.zl;
+          return `${head}<li><a class="mx-row heat-${s.heat}" href="#spot-${s.n}" data-pick="${s.n}">
+          <span class="mx-row-n">${fmt(s.total)}</span>
+          <span class="mx-row-main"><b>${s.monsters.map(([id]) => esc(data.monsters[id]?.name ?? id)).join(", ")}</b><small>Spot ${s.n}${s.zl && !zones ? ` · ${esc(s.zl)}` : ""} · (${s.x}, ${s.y})</small></span>
+          <span class="mx-row-lv">nv ${lvText(s)}</span></a></li>`;
+        }).join("")}</ul>
+      </div>`;
+    }
+    const stat = (label: string, value: string) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
+    function spotView(s: Spot) {
+      const order = data.spots.filter(inZone).sort((a, b) => a.n - b.n);
+      const idx = order.findIndex((x) => x.n === s.n);
+      const mixed = s.monsters.length > 1;
       const cards = s.monsters.map(([id, count]) => {
         const m = data.monsters[id];
         if (!m) return "";
         const name = m.page ? `<a href="/monstros/${id}/">${esc(m.name)}</a>` : esc(m.name);
-        const stats = [`nv ${fmt(m.level)}`, `HP ${fmt(m.hp)}`, m.atk ? `dano ${fmt(m.atk[0])}–${fmt(m.atk[1])}` : "", m.def != null ? `def ${fmt(m.def)}` : ""].filter(Boolean).join(" · ");
+        const img = m.img ? `<img src="${esc(m.img)}" alt="" loading="lazy" />` : `<span class="ph"></span>`;
+        const stats = [stat("Nível", fmt(m.level)), stat("HP", fmt(m.hp)), stat("Dano", m.atk ? `${fmt(m.atk[0])}–${fmt(m.atk[1])}` : "—"), stat("Defesa", fmt(m.def))].join("");
+        const more = m.dropsTotal - m.drops.length;
         const drops = m.drops.length
-          ? `<ul class="mx-drops">${m.drops.map((d) => `<li class="k-${KIND[d.kind] ?? "normal"}">${img(d.img, "mx-drop-img")}${d.page ? `<a href="/itens/${d.id}/">${esc(d.name)}</a>` : esc(d.name)}</li>`).join("")}</ul>
-             ${m.dropsTotal > m.drops.length && m.page ? `<a class="mx-more" href="/monstros/${id}/#drops">ver os ${fmt(m.dropsTotal)} drops</a>` : ""}`
-          : `<p class="muted mx-nodrops">Sem tabela de drops nesta fonte.</p>`;
-        return `<article class="mx-card">
-          <header>${img(m.img, "mx-mob-img")}<div><strong>${name}</strong> <span class="mx-count">×${count}</span><br><small>${stats}</small></div></header>
-          ${drops}
-        </article>`;
+          ? `<p class="mx-drops-h">Drops</p><ul class="mx-drops">${m.drops.map((d) => `<li class="k-${esc(d.kind)}">${d.page ? `<a href="/itens/${d.id}/">${esc(d.name)}</a>` : esc(d.name)}</li>`).join("")}${more > 0 && m.page ? `<li class="more"><a href="/monstros/${id}/#drops">+${fmt(more)}</a></li>` : ""}</ul>`
+          : `<p class="mx-nodrops">Sem tabela de drops conhecida.</p>`;
+        return `<article class="mx-mob">
+          <div class="mx-mob-top"><span class="mx-mob-img">${img}</span>
+            <div class="mx-mob-name"><strong>${name}</strong>${count != null ? `<span class="mx-mob-count">×${fmt(count)} no spot</span>` : ""}</div></div>
+          <dl class="mx-mob-stats">${stats}</dl>${drops}</article>`;
       }).join("");
-      const heatName: Record<string, string> = { hot: "Hot spot", mid: "Mid spot", low: "Low spot", boss: "Boss spot" };
-      panel.innerHTML = `<h3><span class="heat-tag heat-${s.heat}">${heatName[s.heat] ?? "Spot"}</span> (#${n})</h3>
-        <p class="mx-sub">x${fmt(s.total)} monstros · coordenadas (${s.x}, ${s.y})${lv}</p>${cards}`;
-      history.replaceState(null, "", `#spot-${n}`);
+      panel.innerHTML = `<div class="mx-detail">
+        <div class="mx-dnav">
+          <button type="button" class="mx-back" data-back>‹ Todos os spots</button>
+          <span class="mx-step"><button type="button" data-step="-1" aria-label="Spot anterior"${idx <= 0 ? " disabled" : ""}>‹</button>
+          <span>${idx + 1} / ${order.length}</span>
+          <button type="button" data-step="1" aria-label="Próximo spot"${idx >= order.length - 1 ? " disabled" : ""}>›</button></span>
+        </div>
+        <header class="mx-dhead">
+          <span class="mx-badge heat-${s.heat}">${fmt(s.total)}</span>
+          <div><h3>Spot ${s.n}${s.zl ? ` <small>${esc(s.zl)}</small>` : ""}</h3>
+          <p>${fmt(s.total)} monstros${mixed ? " (juntos)" : ""} · nível ${lvText(s)} · (${s.x}, ${s.y})</p></div>
+          <button type="button" class="mx-focus" data-focus>Aproximar</button>
+        </header>
+        ${cards}
+      </div>`;
+    }
+    function markView(m: Mark) {
+      panel.innerHTML = `<div class="mx-detail">
+        <div class="mx-dnav"><button type="button" class="mx-back" data-back>‹ Todos os spots</button></div>
+        <header class="mx-dhead"><span class="mx-badge mk-${m.k}"></span>
+          <div><h3>${esc(m.t)}</h3><p>${m.d ? `${esc(m.d)} · ` : ""}(${m.x}, ${m.y})</p></div></header>
+        ${m.href ? `<p><a class="btn ghost" href="${esc(m.href)}">Abrir ${esc(m.dn ?? "o mapa")} →</a></p>` : ""}
+      </div>`;
+    }
+    function select(n: number | null, opts: { pan?: boolean } = {}) {
+      const s = n == null ? null : spotByN.get(n) ?? null;
+      if (s && !inZone(s)) setZone(s.z);
+      selected = s ? s.n : null;
+      if (s) { spotView(s); if (opts.pan !== false) focusSpot(s); } else listView();
+      peek.hidden = !s;
+      if (s) peek.innerHTML = `<span class="mx-badge heat-${s.heat}">${fmt(s.total)}</span><span><b>Spot ${s.n}</b> · ${fmt(s.total)} monstros · nv ${lvText(s)}</span><button type="button" data-peek-go>Detalhes ↓</button>`;
+      paint();
+      setUrl();
     }
 
-    root.addEventListener("click", (e) => {
-      const g = (e.target as Element).closest<SVGGElement>(".mx-spot");
-      if (g) render(Number(g.dataset.spot));
+    // ---------- eventos ----------
+    let drag: { x: number; y: number; cx: number; cy: number; moved: boolean } | null = null;
+    stage.addEventListener("pointerdown", (e) => {
+      if (e.pointerType !== "mouse" || e.button !== 0 || (e.target as Element).closest("button")) return;
+      drag = { x: e.clientX, y: e.clientY, cx: view.cx, cy: view.cy, moved: false };
     });
+    window.addEventListener("pointermove", (e) => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      if (!drag.moved && Math.hypot(dx, dy) < 4) return;
+      drag.moved = true;
+      stage.classList.add("dragging");
+      const k = pxPerUnit();
+      view.cx = drag.cx - dx / k; view.cy = drag.cy - dy / k;
+      apply();
+    });
+    window.addEventListener("pointerup", () => {
+      if (drag?.moved) setTimeout(() => { drag = null; }, 0); else drag = null;
+      stage.classList.remove("dragging");
+    });
+    stage.addEventListener("click", (e) => {
+      if (drag?.moved) return;
+      const t = e.target as Element;
+      const pin = t.closest<SVGGElement>(".pin");
+      if (pin) { select(Number(pin.dataset.spot), { pan: false }); return; }
+      const mk = t.closest<SVGGElement>(".mk-gate, .mk-warp");
+      if (mk) { selected = null; markView(data.marks[Number(mk.dataset.mark)]); paint(); setUrl(); return; }
+      const b = t.closest<HTMLButtonElement>("[data-zoom]");
+      if (b) { if (b.dataset.zoom === "in") zoomAt(1.6); else if (b.dataset.zoom === "out") zoomAt(1 / 1.6); else reset(); }
+      if (t.closest("[data-peek-go]")) panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    stage.addEventListener("dblclick", (e) => { if (!(e.target as Element).closest("button, .pin")) zoomAt(2, e.clientX, e.clientY); });
+    let hintTimer = 0;
+    stage.addEventListener("wheel", (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        zoomAt(Math.exp(-e.deltaY * 0.0025), e.clientX, e.clientY);
+      } else {
+        hint.hidden = false;
+        clearTimeout(hintTimer);
+        hintTimer = window.setTimeout(() => { hint.hidden = true; }, 1200);
+      }
+    }, { passive: false });
+    stage.addEventListener("keydown", (e) => {
+      const t = e.target as Element;
+      const pin = t.closest<SVGGElement>(".pin"), mk = t.closest<SVGGElement>(".mk");
+      if ((e.key === "Enter" || e.key === " ") && (pin || mk)) {
+        e.preventDefault();
+        if (pin) select(Number(pin.dataset.spot), { pan: false }); else if (mk) markView(data.marks[Number(mk.dataset.mark)]);
+        return;
+      }
+      const step = vs() / 6;
+      const keys: Record<string, () => void> = {
+        "+": () => zoomAt(1.6), "=": () => zoomAt(1.6), "-": () => zoomAt(1 / 1.6), "0": reset,
+        ArrowLeft: () => { view.cx -= step; apply(); }, ArrowRight: () => { view.cx += step; apply(); },
+        ArrowUp: () => { view.cy -= step; apply(); }, ArrowDown: () => { view.cy += step; apply(); },
+      };
+      if (keys[e.key] && !pin && !mk) { e.preventDefault(); keys[e.key](); }
+    });
+
+    // toque: um dedo move (com zoom), dois dedos fazem pinça; sem zoom, um dedo rola a página
+    let touch: { d: number; z: number; u: number; v: number; x: number; y: number; cx: number; cy: number } | null = null;
+    const mid = (t: TouchList) => ({ x: (t[0].clientX + (t[1]?.clientX ?? t[0].clientX)) / 2, y: (t[0].clientY + (t[1]?.clientY ?? t[0].clientY)) / 2 });
+    const dist = (t: TouchList) => (t.length > 1 ? Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY) : 0);
+    const startTouch = (t: TouchList) => { const m = mid(t), p = toUser(m.x, m.y); touch = { d: dist(t), z: view.z, u: p.u, v: p.v, x: m.x, y: m.y, cx: view.cx, cy: view.cy }; };
+    stage.addEventListener("touchstart", (e) => startTouch(e.touches), { passive: true });
+    stage.addEventListener("touchmove", (e) => {
+      if (!touch) return;
+      if (e.touches.length === 1 && view.z <= 1.01) return;
+      e.preventDefault();
+      const m = mid(e.touches), r = stage.getBoundingClientRect();
+      if (e.touches.length > 1 && touch.d > 0) {
+        view.z = touch.z * (dist(e.touches) / touch.d);
+        clamp();
+        const s = vs();
+        view.cx = touch.u - ((m.x - r.left) / r.width - 0.5) * s;
+        view.cy = touch.v - ((m.y - r.top) / r.height - 0.5) * s;
+      } else {
+        const k = pxPerUnit();
+        view.cx = touch.cx - (m.x - touch.x) / k; view.cy = touch.cy - (m.y - touch.y) / k;
+      }
+      apply();
+    }, { passive: false });
+    stage.addEventListener("touchend", (e) => { if (e.touches.length) startTouch(e.touches); else touch = null; });
+
+    // dica ao passar o mouse e coordenada sob o cursor
+    function showTip(el: Element) {
+      const r = stage.getBoundingClientRect(), b = el.getBoundingClientRect();
+      let html;
+      if (el.matches(".pin")) {
+        const s = spotByN.get(Number((el as SVGGElement).dataset.spot))!;
+        html = `<b>Spot ${s.n}</b>${s.zl ? ` · ${esc(s.zl)}` : ""} <span class="heat-tag heat-${s.heat}">${heatName(s.heat)}</span><br>
+          ${fmt(s.total)} monstros · nível ${lvText(s)}<br><small>${s.monsters.map(([id, c]) => `${esc(data.monsters[id]?.name ?? id)}${c != null ? ` ×${c}` : ""}`).join(" · ")}</small>`;
+      } else {
+        const m = data.marks[Number((el as SVGGElement).dataset.mark)];
+        html = `<b>${esc(m.t)}</b>${m.d ? `<br><small>${esc(m.d)}</small>` : ""}`;
+      }
+      tip.innerHTML = html;
+      tip.hidden = false;
+      const x = b.left + b.width / 2 - r.left, y = b.top - r.top;
+      tip.style.left = `${Math.min(r.width - 8, Math.max(8, x))}px`;
+      tip.classList.toggle("below", y < 80);
+      tip.style.top = `${y < 80 ? b.bottom - r.top : y}px`;
+    }
+    stage.addEventListener("pointerover", (e) => {
+      if (e.pointerType !== "mouse" || drag?.moved) return;
+      const el = (e.target as Element).closest(".pin, .mk");
+      if (el) showTip(el); else tip.hidden = true;
+    });
+    stage.addEventListener("pointerleave", () => { tip.hidden = true; coord.textContent = ""; });
+    stage.addEventListener("pointermove", (e) => {
+      if (e.pointerType !== "mouse") return;
+      const p = toUser(e.clientX, e.clientY);
+      const [x, y] = unrot(p.u, p.v).map(Math.round);
+      coord.textContent = x >= 0 && y >= 0 && x < 256 && y < 256 ? `(${x}, ${y})` : "";
+    });
+    stage.addEventListener("focusin", (e) => { const el = (e.target as Element).closest(".pin, .mk"); if (el) showTip(el); });
+    stage.addEventListener("focusout", () => { tip.hidden = true; });
+
+    panel.addEventListener("click", (e) => {
+      const t = e.target as Element;
+      const row = t.closest<HTMLAnchorElement>("[data-pick]");
+      if (row) { e.preventDefault(); select(Number(row.dataset.pick)); return; }
+      if (t.closest("[data-back]")) { select(null); return; }
+      const step = t.closest<HTMLButtonElement>("[data-step]");
+      if (step && selected != null) {
+        const order = data.spots.filter(inZone).sort((a, b) => a.n - b.n);
+        const next = order[order.findIndex((s) => s.n === selected) + Number(step.dataset.step)];
+        if (next) select(next.n);
+        return;
+      }
+      if (t.closest("[data-focus]") && selected != null) focusSpot(spotByN.get(selected)!, 3);
+    });
+    panel.addEventListener("change", (e) => {
+      const sel = (e.target as Element).closest<HTMLSelectElement>("[data-sort]");
+      if (sel) { sortBy = sel.value; store.set("mx-sort", sortBy); listView(); }
+    });
+    panel.addEventListener("pointerover", (e) => {
+      const row = (e.target as Element).closest<HTMLElement>("[data-pick]");
+      pins.forEach((g) => g.classList.toggle("hl", !!row && g.dataset.spot === row.dataset.pick));
+    });
+    panel.addEventListener("pointerleave", () => pins.forEach((g) => g.classList.remove("hl")));
     root.addEventListener("keydown", (e) => {
-      const g = (e.target as Element).closest<SVGGElement>(".mx-spot");
-      if (g && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); render(Number(g.dataset.spot)); }
+      if (selected != null && e.key === "Escape" && !(e.target as Element).closest("input, select")) select(null);
     });
-    root.querySelectorAll<HTMLInputElement>("[data-layer]").forEach((box) => box.addEventListener("change", () => {
-      root.querySelector<SVGGElement>(`[data-group="${box.dataset.layer}"]`)?.classList.toggle("off", !box.checked);
-    }));
-    document.querySelectorAll<HTMLElement>("tr[data-spot-row]").forEach((tr) => tr.addEventListener("click", (e) => {
-      if ((e.target as Element).closest("a")) return;
-      render(Number(tr.dataset.spotRow));
-      root.scrollIntoView({ behavior: "smooth", block: "start" });
-    }));
-    const fromHash = location.hash.match(/^#spot-(\d+)$/);
-    if (fromHash) render(Number(fromHash[1]));
+    root.querySelectorAll<HTMLButtonElement>("[data-zone]").forEach((b) => b.addEventListener("click", () => { selected = null; setZone(b.dataset.zone ?? ""); }));
+    root.querySelectorAll<HTMLButtonElement>("[data-label]").forEach((b) => {
+      b.setAttribute("aria-pressed", String(b.dataset.label === labelMode));
+      b.addEventListener("click", () => {
+        labelMode = b.dataset.label!;
+        store.set("mx-label2", labelMode);
+        root.querySelectorAll<HTMLButtonElement>("[data-label]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+        relabel();
+      });
+    });
+    root.querySelectorAll<HTMLInputElement>("[data-layer]").forEach((input) => {
+      const sync = () => {
+        svg.querySelector(`[data-group="${input.dataset.layer}"]`)?.classList.toggle("off", !input.checked);
+        if (input.dataset.layer === "spots") leads.classList.toggle("off", !input.checked);
+      };
+      input.addEventListener("change", sync);
+      sync();
+    });
+    new ResizeObserver(() => layout()).observe(stage);
+    window.addEventListener("hashchange", () => {
+      const m = location.hash.match(/^#spot-(\d+)$/);
+      if (m && Number(m[1]) !== selected) select(Number(m[1]));
+    });
+
+    // estado inicial: zona (?zona=) e spot (#spot-N) do endereço
+    const fromHash = location.hash.match(/^#spot-(\d+)$/);   // lido antes: setZone reescreve o endereço
+    relabel();
+    setZone(new URLSearchParams(location.search).get("zona") ?? "");
+    if (fromHash && spotByN.has(Number(fromHash[1]))) select(Number(fromHash[1]));
   }
 </script>
 
 <style is:global>
-  .mx { margin: .5rem 0 1.25rem; }
-  .mx-layers { display: flex; flex-wrap: wrap; gap: .25rem 1rem; font-size: .85rem; color: var(--muted); margin-bottom: .4rem; }
-  .mx-body { display: grid; grid-template-columns: minmax(0, 40rem) minmax(0, 1fr); gap: 1.25rem; align-items: start; }
-  .mx-panel { position: sticky; top: 4.5rem; max-height: calc(100vh - 5.5rem); overflow: auto; scrollbar-width: thin; }
-  @media (max-width: 56rem) { .mx-body { grid-template-columns: minmax(0, 1fr); } .mx-panel { position: static; max-height: none; } }
-  .mx-svg { width: 100%; height: auto; display: block; border-radius: .5rem; border: 1px solid var(--line); background: var(--panel); }
-  .mx-bg { fill: var(--panel); }
-  .has-terrain .mx-bg { fill: #0b0d12; }
-  .t-land { fill: #2b2f3a; }
-  .t-walk { fill: #c9c3a8; }
-  .t-safe { fill: #6fa8dc; fill-opacity: .55; }
+  .mx {
+    /* Terreno no estilo do minimapa do jogo: chão cinza com contorno claro sobre fundo escuro. */
+    --t-out: #0c0e12; --t-land: transparent; --t-walk: #3a404c; --t-walk-2: #3f4552; --t-edge: rgba(176, 186, 204, .55);
+    --t-safe: rgba(56, 189, 248, .2); --t-safe-edge: rgba(125, 211, 252, .55);
+    margin: .25rem 0 1.5rem;
+  }
+  /* Abas das zonas (andares, áreas) e dos mapas irmãos */
+  .mx-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; margin-bottom: .6rem; }
+  .mx-zones { display: flex; gap: .35rem; overflow-x: auto; scrollbar-width: thin; min-width: 0; flex: 1 1 auto; }
+  .mx-zones > * { flex: none; padding: .35rem .8rem; border-radius: .5rem; border: 1px solid var(--line-2); background: var(--panel); color: var(--muted); font: 600 .85rem/1.2 var(--sans); text-decoration: none; cursor: pointer; white-space: nowrap; }
+  .mx-zones > *:hover { color: var(--fg); border-color: rgba(214,165,74,.5); }
+  .mx-zones > [aria-pressed="true"], .mx-zones > [aria-current="page"] { color: #1a1407; background: linear-gradient(#e2b45c, #c79a45); border-color: var(--accent); }
+  /* Barra de controles do mapa */
+  .mx-bar { display: flex; align-items: center; gap: .5rem; margin-left: auto; }
+  .mx-seg { display: inline-flex; }
+  .mx-seg button { padding: .28rem .7rem; border: 1px solid var(--line-2); background: var(--panel); color: var(--muted); cursor: pointer; font: 600 .82rem/1.3 var(--sans); }
+  .mx-seg button + button { border-left: 0; }
+  .mx-seg button:first-child { border-radius: .45rem 0 0 .45rem; }
+  .mx-seg button:last-child { border-radius: 0 .45rem .45rem 0; }
+  .mx-seg button[aria-pressed="true"] { background: var(--panel-2); color: var(--accent-2); }
+  .mx-seg button:hover { color: var(--fg); }
+  .mx-layers { position: relative; }
+  .mx-layers summary { list-style: none; cursor: pointer; padding: .28rem .75rem; border: 1px solid var(--line-2); border-radius: .45rem; background: var(--panel); font: 600 .82rem/1.3 var(--sans); color: var(--fg); user-select: none; }
+  .mx-layers summary::-webkit-details-marker { display: none; }
+  .mx-layers summary::after { content: "▾"; margin-left: .4rem; color: var(--muted); }
+  .mx-layers[open] summary { border-color: var(--accent); }
+  .mx-layers-pop { position: absolute; right: 0; top: calc(100% + .35rem); z-index: 6; min-width: 16rem; padding: .5rem; background: var(--panel); border: 1px solid var(--line-2); border-radius: .6rem; box-shadow: 0 12px 30px rgba(0,0,0,.5); display: flex; flex-direction: column; gap: .15rem; }
+  .mx-layers-pop label { display: flex; align-items: center; gap: .5rem; padding: .3rem .4rem; border-radius: .35rem; font-size: .9rem; cursor: pointer; }
+  .mx-layers-pop label:hover { background: var(--panel-2); }
+  .mx-layers-pop small { margin-left: auto; color: var(--muted); }
+
+  /* Ícones da legenda e das camadas */
+  .lg { display: inline-block; flex: none; width: .95rem; height: .65rem; vertical-align: -1px; margin-right: .35rem; }
+  .lg-pill { border-radius: .2rem; background: var(--heat-mid); box-shadow: 0 0 0 1.5px #0b0d12; width: 1.1rem; }
+  .lg-pill.heat-hot { background: var(--heat-hot); } .lg-pill.heat-low { background: var(--heat-low); } .lg-pill.heat-boss { background: var(--heat-boss); }
+  .lg-game { width: .7rem; height: .65rem; background: #4ade80; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+  .lg-gate { width: .65rem; height: .65rem; background: #c084fc; transform: rotate(45deg) scale(.85); }
+  .lg-warp { width: .7rem; height: .7rem; border-radius: 50%; background: radial-gradient(circle, #fff 30%, #a78bfa 32%); }
+  .lg-safe { background: var(--t-safe); box-shadow: inset 0 0 0 1px var(--t-safe-edge); border-radius: .15rem; }
+  .lg-img { background: linear-gradient(135deg, #5b6b4a, #2b3324); border-radius: .15rem; }
+
+  /* Mapa + painel */
+  .mx-body { display: grid; grid-template-columns: minmax(0, min(48rem, max(26rem, calc(100svh - 15rem)))) minmax(18rem, 1fr); gap: 1.25rem; align-items: start; }
+  .mx-mapcol { position: sticky; top: 4.25rem; min-width: 0; }
+  @media (max-width: 60rem) { .mx-body { grid-template-columns: minmax(0, 1fr); } .mx-mapcol { position: static; } }
+  .mx-stage { position: relative; aspect-ratio: 1; border-radius: .75rem; overflow: hidden; border: 1px solid var(--line-2); background: radial-gradient(circle at 50% 45%, #141821, var(--t-out) 75%); box-shadow: var(--shadow); outline: none; touch-action: pan-x pan-y; }
+  .mx-stage.zoomed { cursor: grab; touch-action: none; }
+  .mx-stage.dragging { cursor: grabbing; }
+  .mx-stage:focus-visible { border-color: var(--accent); }
+  .mx-svg { display: block; width: 100%; height: 100%; user-select: none; -webkit-user-select: none; }
+  .mx-bg { fill: transparent; }
+  .t-land { fill: var(--t-land); }
+  .t-walk { fill: url(#mx-hatch); stroke: var(--t-edge); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+  .hatch-bg { fill: var(--t-walk); } .hatch-line { fill: var(--t-walk-2); }
+  .t-safe { fill: var(--t-safe); stroke: var(--t-safe-edge); stroke-width: 1; vector-effect: non-scaling-stroke; }
   .mx .off { display: none; }
-  .mx-area { fill: #ffd166; fill-opacity: 0; stroke: none; pointer-events: none; }
-  .mx-area.on { fill-opacity: .25; stroke: #ffd166; stroke-width: .8; }
-  .mx-spot { cursor: pointer; outline: none; }
-  /* Cores dos hot spots: hot vermelho, mid amarelo, low branco, boss laranja. */
-  .mx-spot circle { stroke: #111; stroke-width: .7; }
-  .heat-hot circle { fill: #ef4444; }
-  .heat-mid circle { fill: #facc15; }
-  .heat-low circle { fill: #f1f5f9; }
-  .heat-boss circle { fill: #f59e0b; }
-  .mx-spot text { fill: #111; font-size: 5.2px; font-weight: 800; pointer-events: none; }
-  .mx-spot.heat-hot text { fill: #fff; }
-  .mx-spot:hover circle, .mx-spot:focus circle { stroke: #fff; stroke-width: 1.4; }
-  .mx-spot.on circle { stroke: #22d3ee; stroke-width: 1.8; }
-  .mx-heat-legend { display: flex; flex-wrap: wrap; gap: .25rem 1rem; font-size: .8rem; color: var(--muted); margin: 0 0 .4rem; }
-  .heat-dot-i { display: inline-block; width: .75rem; height: .75rem; border-radius: 50%; border: 1px solid #111; margin-right: .3rem; vertical-align: -1px; }
-  .heat-dot-i.heat-hot { background: #ef4444; } .heat-dot-i.heat-mid { background: #facc15; }
-  .heat-dot-i.heat-low { background: #f1f5f9; } .heat-dot-i.heat-boss { background: #f59e0b; }
-  .mx-sub { margin: -.25rem 0 .6rem; color: var(--muted); font-size: .9rem; }
-  .mk-spot { fill: #22c55e; stroke: #000; stroke-width: .5; } .mk-hot { fill: #ef4444; stroke: #000; stroke-width: .5; }
-  .mk-gate { fill: #38bdf8; stroke: #000; stroke-width: .5; }
-  .mk-spot-i { color: #22c55e; } .mk-gate-i { color: #38bdf8; }
+  .mx-area { fill: var(--accent-2); fill-opacity: 0; stroke: none; pointer-events: none; }
+  .mx-area.on { fill-opacity: .16; stroke: var(--accent-2); stroke-width: 1.5; stroke-dasharray: 4 3; vector-effect: non-scaling-stroke; }
+
+  /* Etiquetas dos spots: tamanho fixo na tela (o script aplica a escala) */
+  .pin { cursor: pointer; outline: none; }
+  .pin-bg { fill: var(--heat-mid); stroke: #0b0d12; stroke-width: 1.5; filter: drop-shadow(0 1px 2px rgba(0,0,0,.6)); }
+  .pin text { fill: var(--heat-mid-fg); font: 700 12px/1 var(--sans); text-anchor: middle; font-variant-numeric: tabular-nums; pointer-events: none; }
+  .pin.heat-hot .pin-bg { fill: var(--heat-hot); } .pin.heat-hot text { fill: var(--heat-hot-fg); }
+  .pin.heat-low .pin-bg { fill: var(--heat-low); } .pin.heat-low text { fill: var(--heat-low-fg); }
+  .pin.heat-boss .pin-bg { fill: var(--heat-boss); } .pin.heat-boss text { fill: var(--heat-boss-fg); }
+  .pin:hover .pin-bg, .pin:focus-visible .pin-bg, .pin.hl .pin-bg { stroke: #fff; stroke-width: 2; }
+  .pin.on .pin-bg { stroke: #fff; stroke-width: 2.5; filter: drop-shadow(0 0 6px rgba(242,205,125,.95)); }
+  .pin rect { transform-box: fill-box; transform-origin: center; }
+  .pin.on rect { transform: scale(1.2); }
+  .pin.on text { font-size: 14px; }
+  .mx-leads line { stroke: rgba(226,232,240,.55); stroke-width: 1.25; vector-effect: non-scaling-stroke; }
+  .mx-leads circle { fill: #e2e8f0; }
+  /* Marcações do jogo e portais */
+  .mk path, .mk circle { stroke: #0b0d12; stroke-width: 1.25; }
+  .mk-spot path { fill: #4ade80; } .mk-hot path { fill: #f87171; }
+  .mk-gate, .mk-warp { cursor: pointer; outline: none; }
+  .mk-gate path { fill: #c084fc; }
+  .mk-warp circle { fill: #a78bfa; } .mk-warp .mk-dot { fill: #fff; stroke: none; }
+  .mk-gate:hover path, .mk-gate:focus-visible path, .mk-warp:hover circle:first-child, .mk-warp:focus-visible circle:first-child { stroke: #fff; stroke-width: 2; }
+
+  /* Controles sobre o mapa */
+  .mx-zoom { position: absolute; top: .6rem; right: .6rem; display: flex; flex-direction: column; border-radius: .5rem; overflow: hidden; border: 1px solid var(--line-2); box-shadow: 0 4px 12px rgba(0,0,0,.4); }
+  .mx-zoom button { width: 2.1rem; height: 2.1rem; border: 0; background: rgba(21,25,34,.92); color: var(--fg); font-size: 1.15rem; line-height: 1; cursor: pointer; }
+  .mx-zoom button + button { border-top: 1px solid var(--line-2); }
+  .mx-zoom button:hover { background: var(--panel-2); color: var(--accent-2); }
+  .mx-coord { position: absolute; left: .6rem; bottom: .6rem; padding: .1rem .45rem; border-radius: .35rem; background: rgba(10,12,17,.85); color: var(--fg); font: 600 .8rem/1.5 var(--sans); font-variant-numeric: tabular-nums; pointer-events: none; }
+  .mx-coord:empty { display: none; }
+  .mx-tip { position: absolute; z-index: 5; transform: translate(-50%, calc(-100% - 10px)); max-width: 17rem; padding: .45rem .6rem; border-radius: .5rem; background: rgba(16,19,26,.97); border: 1px solid var(--line-2); box-shadow: 0 8px 24px rgba(0,0,0,.5); font-size: .85rem; line-height: 1.4; pointer-events: none; }
+  .mx-tip.below { transform: translate(-50%, 10px); }
+  .mx-tip small { color: var(--muted); }
+  .mx-tip .heat-tag { font-size: .7rem; }
+  .mx-hint { position: absolute; inset: auto 0 45% 0; margin: auto; width: max-content; padding: .45rem .8rem; border-radius: .5rem; background: rgba(10,12,17,.85); color: var(--fg); font-size: .88rem; pointer-events: none; }
+  .mx-peek { display: none; }
+  @media (max-width: 60rem) {
+    .mx-peek:not([hidden]) { position: absolute; left: .5rem; right: .5rem; bottom: .5rem; display: flex; align-items: center; gap: .5rem; padding: .4rem .5rem; border-radius: .6rem; background: rgba(16,19,26,.95); border: 1px solid var(--line-2); font-size: .85rem; }
+    .mx-peek > span:nth-child(2) { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .mx-peek button { border: 1px solid var(--accent); background: transparent; color: var(--accent-2); border-radius: .4rem; padding: .2rem .5rem; font-size: .8rem; }
+    .mx-coord { display: none; }
+  }
+  .mx-legend { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem 1rem; margin: .6rem 0 0; font-size: .85rem; color: var(--muted); }
+  .mx-legend span { display: inline-flex; align-items: center; }
+  .mx-legend-t { font-weight: 600; }
+
+  /* Painel */
   .mx-panel { min-width: 0; }
-  .mx-panel h3 { margin: 0 0 .5rem; font-size: 1rem; }
-  .mx-card { background: var(--panel); border: 1px solid var(--line); border-radius: .5rem; padding: .6rem .75rem; margin-bottom: .6rem; }
-  .mx-card header { display: flex; gap: .6rem; align-items: center; }
-  .mx-mob-img { width: 52px; height: 52px; object-fit: contain; background: #12131a; border-radius: .4rem; flex: none; }
-  .mx-count { color: var(--muted); }
-  .mx-drops { list-style: none; padding: 0; margin: .5rem 0 0; display: flex; flex-wrap: wrap; gap: .3rem; }
-  .mx-drops li { display: inline-flex; align-items: center; gap: .3rem; font-size: .8rem; padding: .1rem .5rem .1rem .2rem; border: 1px solid var(--line); border-radius: 1rem; }
-  /* Cores de qualidade iguais às do resto do site (--g-*). */
+  .mx-list-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .5rem; }
+  .mx-list-head h3 { margin: 0; font-size: 1.05rem; }
+  .mx-list-head h3 small { font-family: var(--sans); color: var(--muted); font-weight: 400; font-size: .9rem; margin-left: .25rem; }
+  .mx-sort { font-size: .82rem; color: var(--muted); display: inline-flex; align-items: center; gap: .35rem; }
+  .mx-sort select { padding: .2rem .4rem; font-size: .88rem; }
+  .mx-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .3rem; }
+  .mx-list-zone { margin: .5rem 0 .1rem; font: 700 .75rem/1.2 var(--sans); text-transform: uppercase; letter-spacing: .06em; color: var(--accent); }
+  .mx-list-zone:first-child { margin-top: 0; }
+  .mx-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: .65rem; align-items: center; padding: .45rem .6rem; border-radius: .55rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg); text-decoration: none; transition: border-color .12s, background .12s; }
+  .mx-row:hover { border-color: rgba(214,165,74,.6); background: var(--panel-2); color: var(--fg); }
+  .mx-row-n, .mx-badge { display: inline-grid; place-items: center; min-width: 1.8rem; height: 1.5rem; padding: 0 .35rem; border-radius: .35rem; font: 700 .85rem/1 var(--sans); font-variant-numeric: tabular-nums; background: var(--heat-mid); color: var(--heat-mid-fg); box-shadow: 0 0 0 1.5px #0b0d12; }
+  .mx-row.heat-hot .mx-row-n, .mx-badge.heat-hot { background: var(--heat-hot); color: var(--heat-hot-fg); }
+  .mx-row.heat-low .mx-row-n, .mx-badge.heat-low { background: var(--heat-low); color: var(--heat-low-fg); }
+  .mx-row.heat-boss .mx-row-n, .mx-badge.heat-boss { background: var(--heat-boss); color: var(--heat-boss-fg); }
+  .mx-row-main { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
+  .mx-row-main b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mx-row-main small { color: var(--muted); font-size: .8rem; font-variant-numeric: tabular-nums; }
+  .mx-row-lv { font-size: .85rem; color: var(--accent-2); font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+  .mx-detail { display: flex; flex-direction: column; gap: .6rem; }
+  .mx-dnav { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+  .mx-back, .mx-step button, .mx-focus { border: 1px solid var(--line-2); background: var(--panel); color: var(--fg); border-radius: .45rem; padding: .25rem .6rem; font: 600 .85rem/1.3 var(--sans); cursor: pointer; }
+  .mx-back:hover, .mx-step button:hover:not(:disabled), .mx-focus:hover { border-color: var(--accent); color: var(--accent-2); }
+  .mx-step { display: inline-flex; align-items: center; gap: .4rem; font-size: .82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .mx-step button:disabled { opacity: .35; cursor: default; }
+  .mx-dhead { display: flex; align-items: center; gap: .7rem; padding: .7rem .8rem; border-radius: .7rem; border: 1px solid rgba(214,165,74,.35); background: linear-gradient(160deg, #1d2232, var(--panel)); }
+  .mx-dhead .mx-badge { min-width: 2.3rem; height: 2.3rem; font-size: 1.1rem; border-radius: .5rem; }
+  .mx-badge.mk-gate { background: #c084fc; transform: rotate(45deg) scale(.7); }
+  .mx-badge.mk-warp { background: radial-gradient(circle, #fff 28%, #a78bfa 30%); border-radius: 50%; }
+  .mx-dhead > div { flex: 1; min-width: 0; }
+  .mx-dhead h3 { margin: 0; font-size: 1.1rem; }
+  .mx-dhead h3 small { font: 600 .8rem/1 var(--sans); color: var(--accent); margin-left: .35rem; }
+  .mx-dhead p { margin: .15rem 0 0; color: var(--muted); font-size: .88rem; font-variant-numeric: tabular-nums; }
+  .mx-mob { padding: .7rem .8rem; border: 1px solid var(--line); border-radius: .7rem; background: var(--panel); }
+  .mx-mob-top { display: flex; align-items: center; gap: .7rem; }
+  .mx-mob-img { width: 60px; height: 60px; flex: none; border-radius: .5rem; overflow: hidden; display: grid; place-items: center; background: radial-gradient(circle at 50% 40%, #222a3d, #0b0d12 75%); }
+  .mx-mob-img img { width: 100%; height: 100%; object-fit: contain; }
+  .mx-mob-img img[src*="/tools/mobs/"] { object-fit: cover; }
+  .mx-mob-name { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
+  .mx-mob-name strong { font-size: 1.05rem; }
+  .mx-mob-name strong a { color: var(--accent-2); text-decoration: none; } .mx-mob-name strong a:hover { text-decoration: underline; }
+  .mx-mob-count { color: var(--muted); font-size: .85rem; }
+  .mx-mob-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .3rem; margin: .6rem 0 0; }
+  .mx-mob-stats div { background: var(--bg-2); border: 1px solid var(--line); border-radius: .4rem; padding: .25rem .4rem; min-width: 0; }
+  .mx-mob-stats dt { font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .mx-mob-stats dd { margin: 0; font-weight: 600; font-size: .92rem; font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mx-drops-h { margin: .6rem 0 .3rem; font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .mx-drops { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .3rem; }
+  .mx-drops li { font-size: .82rem; padding: .1rem .55rem; border: 1px solid var(--line-2); border-radius: 1rem; background: var(--bg-2); }
   .mx-drops li a { color: var(--fg); text-decoration: none; } .mx-drops li a:hover { text-decoration: underline; }
   .mx-drops li.k-excellent { border-color: color-mix(in srgb, var(--g-excellent) 45%, transparent); } .mx-drops li.k-excellent a { color: var(--g-excellent); }
   .mx-drops li.k-ancient { border-color: color-mix(in srgb, var(--g-ancient) 45%, transparent); } .mx-drops li.k-ancient a { color: var(--g-ancient); }
   .mx-drops li.k-socket { border-color: color-mix(in srgb, var(--g-socket) 45%, transparent); } .mx-drops li.k-socket a { color: var(--g-socket); }
-  .mx-drop-img { width: 20px; height: 20px; object-fit: contain; }
-  .mx-more { display: inline-block; margin-top: .35rem; font-size: .85rem; }
-  .mx-nodrops { margin: .4rem 0 0; font-size: .85rem; }
-  tr[data-spot-row] { cursor: pointer; }
-  tr[data-spot-row].on td { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .mx-drops li.more { border-style: dashed; } .mx-drops li.more a { color: var(--accent-2); }
+  .mx-nodrops { margin: .5rem 0 0; font-size: .88rem; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) { .mx-row { transition: none; } }
 </style>

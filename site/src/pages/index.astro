@@ -10,7 +10,7 @@ const sections = [
   { href: "/itens/", n: items.length, label: "itens", text: "armas, sets, asas, joias e o que dropa cada um", img: items.find((i) => i.name === "Wings of Dragon")?.image_url },
   { href: "/monstros/", n: monsters.length, label: "monstros", text: "atributos, mapas e drops", img: monsters.find((m) => m.id === "kundun")?.image_url ?? monsters.find((m) => m.image_url)?.image_url },
   { href: "/mapas/", n: maps.length, label: "mapas", text: "nível, monstros, NPCs e ligações", img: mapById.get("lorencia") ? mapThumb(mapById.get("lorencia")!) : null },
-  { href: "/spots/", n: farmSpots.length, label: "spots de farm", text: "onde upar no seu nível", img: mapById.get("devias") ? mapThumb(mapById.get("devias")!) : null },
+  { href: "/spots/", n: farmSpots.length, label: "spots de farm", text: "spots de cada mapa, com os monstros", img: mapById.get("devias") ? mapThumb(mapById.get("devias")!) : null },
   { href: "/npcs/", n: npcs.length, label: "NPCs", text: "onde ficam e o que vendem", img: npcs.find((n) => n.image_url)?.image_url },
   { href: "/planner/", n: builds.length, label: "builds prontas", text: `planner de pontos para ${classes.length} classes`, img: classes[0]?.image_url },
 ].filter((s) => s.n > 0);
@@ -18,12 +18,7 @@ const sections = [
 <Base title="MU Explorer" wide>
   <section class="hero">
     <h1>MU Explorer</h1>
-    <p class="lead">Base de dados de MU Online: itens, monstros, mapas com hot spots de farm e um planner de builds para todas as classes.</p>
-    <form class="hero-level" action="/spots/" method="get">
-      <label for="hero-level">Onde upar no nível</label>
-      <input id="hero-level" name="nivel" type="number" min="1" max="1200" inputmode="numeric" placeholder="ex.: 150" required />
-      <button class="btn" type="submit">Ver spots</button>
-    </form>
+    <p class="lead">Base de dados de MU Online: itens, monstros, mapas com os spots de farm de cada um, builds prontas e um planner de builds para todas as classes.</p>
   </section>
 
   <ul class="tiles home-tiles">
@@ -40,7 +35,7 @@ const sections = [
 
   {featured.length > 0 && (
     <>
-      <h2>Mapas com hot spots</h2>
+      <h2>Mapas com spots</h2>
       <div class="grid map-grid">
         {featured.map((m) => (
           <a class="map-card" href={spotsUrl(m.id)}>
@@ -70,9 +65,6 @@ const sections = [
   .home-tiles { grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr)); }
   .hero h1 { font-size: clamp(2rem, 6vw, 3.2rem); }
   .hero .lead { font-size: 1.1rem; }
-  .hero-level { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; margin-top: 1rem; padding: .8rem 1rem; background: var(--panel); border: 1px solid rgba(214,165,74,.4); border-radius: var(--radius); max-width: 34rem; }
-  .hero-level label { font-family: var(--display); font-weight: 700; color: var(--accent-2); }
-  .hero-level input { width: 8rem; }
   .class-strip { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr)); gap: .5rem; }
   .class-strip a { display: flex; flex-direction: column; align-items: center; gap: .35rem; padding: .6rem .4rem; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; color: var(--fg); font-size: .82rem; text-align: center; line-height: 1.2; }
   .class-strip a:hover { border-color: var(--accent); color: var(--accent-2); }

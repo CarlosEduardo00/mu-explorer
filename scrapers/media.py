@@ -29,7 +29,8 @@ log = logging.getLogger("scrapers.media")
 
 MEDIA_DIR = REPO_ROOT / "site" / "public" / "media"
 MANIFEST = REPO_ROOT / "data" / "media.json"
-HOSTS = {"muonlinefanz.com": "fanz", "www.muonlinefanz.com": "fanz", "globalmuonline.com": "gmo"}
+HOSTS = {"muonlinefanz.com": "fanz", "www.muonlinefanz.com": "fanz", "globalmuonline.com": "gmo",
+         "firebasestorage.googleapis.com": "guidemu"}   # imagens do Guide MU Online
 IMAGE_TYPES = ("image/jpeg", "image/png", "image/webp", "image/gif")
 
 
@@ -52,6 +53,8 @@ def local_path(url: str) -> str:
     """Caminho público estável: /media/<fonte>/<caminho da URL, sem espaços nem caracteres estranhos>."""
     parts = urlsplit(url)
     path = unquote(parts.path).lstrip("/")
+    if "/o/" in path and parts.netloc == "firebasestorage.googleapis.com":   # .../o/<objeto>?alt=media
+        path = path.split("/o/", 1)[1]
     safe = re.sub(r"[^A-Za-z0-9._/-]+", "-", path).strip("-")
     if safe != path:  # nomes diferentes que viram o mesmo slug não colidem
         stem, dot, ext = safe.rpartition(".")

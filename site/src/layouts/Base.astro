@@ -24,6 +24,7 @@ const path = Astro.url.pathname;
     <meta name="theme-color" content="#0c0e13" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 30 16 16 30 2 16Z' fill='%23d6a54a'/%3E%3Cpath d='M16 8 24 16 16 24 8 16Z' fill='%230c0e13'/%3E%3C/svg%3E" />
     <link rel="preload" href="/fonts/cinzel-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/source-sans-3-latin.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <header class="top">
@@ -53,7 +54,7 @@ const path = Astro.url.pathname;
             {datasetName !== "combined" && <> Conjunto “{datasetName}”.</>}
           </p>
         )}
-        <p class="credits"><a href="/api/">API e dados abertos</a> · fonte Cinzel (SIL OFL)</p>
+        <p class="credits"><a href="/api/">API e dados abertos</a> · fontes Cinzel e Source Sans 3 (SIL OFL)</p>
       </div>
     </footer>
     <script>
@@ -108,6 +109,7 @@ const path = Astro.url.pathname;
 
 <style is:global>
   @font-face { font-family: "Cinzel"; src: url("/fonts/cinzel-latin.woff2") format("woff2"); font-weight: 400 900; font-display: swap; }
+  @font-face { font-family: "Source Sans 3"; src: url("/fonts/source-sans-3-latin.woff2") format("woff2"); font-weight: 200 900; font-display: swap; }
   /* Tema escuro, no clima do jogo: pedra azulada, ouro nos destaques; cores de qualidade como no MU. */
   :root {
     color-scheme: dark;
@@ -116,6 +118,10 @@ const path = Astro.url.pathname;
     --g-normal: #e8e6df; --g-excellent: #5ee38a; --g-ancient: #4cc3ff; --g-socket: #c792ff; --g-siege: #ff9f4a;
     --radius: .6rem; --shadow: 0 1px 0 rgba(255,255,255,.03) inset, 0 6px 20px rgba(0,0,0,.25);
     --display: "Cinzel", "Trajan Pro", Georgia, serif;
+    --sans: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    /* Volume de monstros do spot (alto, médio, baixo) e chefe: as mesmas cores no mapa, nas etiquetas e nas listas. */
+    --heat-hot: #fbbf24; --heat-hot-fg: #1c1303; --heat-mid: #2dd4bf; --heat-mid-fg: #04201c;
+    --heat-low: #9aa6b8; --heat-low-fg: #0b1220; --heat-boss: #fb7185; --heat-boss-fg: #2a0610;
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
@@ -123,7 +129,7 @@ const path = Astro.url.pathname;
   body {
     margin: 0; min-height: 100vh; display: flex; flex-direction: column; color: var(--fg);
     background: radial-gradient(1200px 500px at 50% -200px, #1a2033 0%, transparent 70%), var(--bg);
-    font: 15.5px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font: 16.5px/1.55 var(--sans); font-optical-sizing: auto; -webkit-font-smoothing: antialiased;
   }
   a { color: var(--link); text-decoration-color: rgba(231,187,99,.35); text-underline-offset: 2px; }
   a:hover { color: var(--accent-2); text-decoration-color: currentColor; }
@@ -276,9 +282,10 @@ const path = Astro.url.pathname;
   .st-ene { background: #3b82f6; } .st-cmd { background: #a855f7; }
 
   /* Hot spots */
-  .heat-tag { display: inline-block; padding: 0 .45rem; border-radius: .3rem; color: #111; font-size: .8rem; font-weight: 600; text-transform: capitalize; }
-  .heat-tag.heat-hot { background: #ef4444; color: #fff; } .heat-tag.heat-mid { background: #facc15; }
-  .heat-tag.heat-low { background: #e2e8f0; } .heat-tag.heat-boss { background: #f59e0b; }
+  .heat-tag { display: inline-block; padding: 0 .45rem; border-radius: .3rem; font-size: .78rem; font-weight: 700; line-height: 1.5; background: var(--heat-mid); color: var(--heat-mid-fg); }
+  .heat-tag.heat-hot { background: var(--heat-hot); color: var(--heat-hot-fg); }
+  .heat-tag.heat-low { background: var(--heat-low); color: var(--heat-low-fg); }
+  .heat-tag.heat-boss { background: var(--heat-boss); color: var(--heat-boss-fg); }
   .farm-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: .6rem; margin: .75rem 0 1rem; }
   .farm-card { display: flex; gap: .6rem; align-items: center; padding: .6rem .75rem; border: 1px solid rgba(214,165,74,.35); border-radius: var(--radius); background: linear-gradient(160deg, #1d2232, var(--panel)); text-decoration: none; color: var(--fg); }
   .farm-card:hover { border-color: var(--accent); color: var(--fg); }

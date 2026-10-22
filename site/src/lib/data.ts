@@ -45,8 +45,10 @@ export interface Drop {
   quantity: number | null; map_id?: string | null; season?: string | null; source?: string;
 }
 export interface FarmSpot {
-  id: string; map_id: string; map_name: string; x: number; y: number; x_min: number; y_min: number; x_max: number; y_max: number;
-  monsters: { monster_id: string; name: string; level: number | null; count: number }[];
+  id: string; map_id: string; map_name: string; zone?: string | null;
+  x: number; y: number; x_min: number; y_min: number; x_max: number; y_max: number;
+  /** count null: a fonte só dá o total do spot (spot com mais de um monstro). */
+  monsters: { monster_id: string; name: string; level: number | null; count: number | null }[];
   total: number; level_min: number | null; level_max: number | null; source: string | null; source_url: string | null;
   heat?: "hot" | "mid" | "low" | "boss";
 }
@@ -112,11 +114,24 @@ export const rulesets: Ruleset[] = plannerFile.rulesets.filter((r) => r.publish 
 const buildsPath = resolve(process.cwd(), "data", "curated", "builds.json");
 export const builds: BuildTemplate[] = existsSync(buildsPath) ? JSON.parse(readFileSync(buildsPath, "utf-8")).builds : [];
 
-/** Mapas vetoriais próprios (scrapers.terrain): caminhos SVG de terreno, chão andável e zona segura por mapa. */
-export interface Terrain { land: string; walk: string; safe: string }
+/** Mapas vetoriais próprios (scrapers.terrain): caminhos SVG de terreno, chão andável e zona segura por mapa.
+ *  `source` diz de onde veio o desenho; só entram os das fontes do conjunto (o build só com dados abertos fica com
+ *  os do MuEmu). */
+export interface Terrain { land: string; walk: string; safe: string; source?: string }
 const terrainPath = resolve(process.cwd(), "data", "processed", "terrain", "terrains.json");
+const datasetSources = new Set(sources.map((s) => s.id));
 export const terrainByMap: Map<string, Terrain> = new Map(
-  Object.entries(existsSync(terrainPath) ? JSON.parse(readFileSync(terrainPath, "utf-8")).maps : {}) as [string, Terrain][]);
+  (Object.entries(existsSync(terrainPath) ? JSON.parse(readFileSync(terrainPath, "utf-8")).maps : {}) as [string, Terrain][])
+    .filter(([, t]) => !t.source || datasetSources.has(t.source)));
+
+/** Barra de mapas da área de spots (spot_groups.json, de scrapers.spots): mapas na ordem do guia, cada um com as
+ *  entradas (zona do mesmo mapa ou mapa próprio). Vazio no conjunto sem o guia. */
+export interface SpotGroup {
+  id: string; name: string; level: string | null;
+  /** frame: cantos (x, y) da área da zona no guia, para enquadrar a zona no mapa. */
+  entries: { label: string; map_id: string; zone: string | null; frame?: [number, number][] | null }[];
+}
+export const spotGroups = load<SpotGroup>("spot_groups.json");
 
 export const itemById = new Map(items.map((i) => [i.id, i]));
 export const monsterById = new Map(monsters.map((m) => [m.id, m]));
@@ -131,13 +146,18 @@ export const spotsByMap = groupBy(farmSpots, (s) => s.map_id);
 export const markersByMap = groupBy(mapMarkers, (m) => m.map_id);
 
 /** Spots onde o monstro aparece: mapa e número do spot (o mesmo da página de spots, /spots/<mapa>/#spot-<n>). */
-export interface SpotRef { map_id: string; map_name: string; n: number; count: number; level_min: number | null; level_max: number | null }
+export interface SpotRef {
+  map_id: string; map_name: string; n: number; level_min: number | null; level_max: number | null;
+  /** monstros desse tipo no spot; com `shared`, a fonte só dá o total do spot (que tem outros monstros). */
+  count: number; shared: boolean;
+}
 export const spotRefsByMonster = new Map<string, SpotRef[]>();
 for (const [mapId, list] of spotsByMap) {
   list.forEach((s, i) => {
     for (const m of s.monsters) {
       const refs = spotRefsByMonster.get(m.monster_id) ?? [];
-      refs.push({ map_id: mapId, map_name: s.map_name, n: i + 1, count: m.count, level_min: s.level_min, level_max: s.level_max });
+      refs.push({ map_id: mapId, map_name: s.map_name, n: i + 1, count: m.count ?? s.total, shared: m.count == null,
+        level_min: s.level_min, level_max: s.level_max });
       spotRefsByMonster.set(m.monster_id, refs);
     }
   });
@@ -147,6 +167,8 @@ for (const refs of spotRefsByMonster.values()) refs.sort((a, b) => b.count - a.c
 
 /** Endereço da página de spots de um mapa (área separada do site), opcionalmente já no spot N. */
 export const spotsUrl = (mapId: string, n?: number) => `/spots/${mapId}/${n ? `#spot-${n}` : ""}`;
+/** Zona como parâmetro do endereço (?zona=atlans-2). */
+export const zoneSlug = (zone: string) => zone.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 /** Mapas com página de spots: têm spots ou mapa vetorial/minimapa para mostrar. */
 export const spotMapIds = maps.filter((m) => spotsByMap.has(m.id) || terrainByMap.has(m.id) || m.minimap_url).map((m) => m.id);
 

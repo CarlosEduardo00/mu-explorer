@@ -290,3 +290,52 @@ export function acquisitionNotes(notes: string[]): Acquisition[] {
   }
   return out;
 }
+
+/** Marcadores do mapa (portais, chegadas de warp, spots marcados no minimapa do jogo) em português. As frases da
+ *  fonte viram título + detalhe; `dest` é o mapa de destino (nome como na fonte), para virar link. */
+export interface MarkerText { title: string; detail: string | null; dest: string | null }
+const num = (s: string) => Number(s.replace(/,/g, "")).toLocaleString("pt-BR");
+const coord = (x: string, y: string) => `(${x}, ${y})`;
+
+export function markerText(m: { kind: string; name: string; description: string | null }): MarkerText {
+  const d = (m.description ?? "").replace(/\s+/g, " ");
+  const lv = d.match(/Level (\d+)\+? required/i)?.[1];
+  const level = lv ? `nível ${lv}+` : null;
+  const join = (...parts: (string | null)[]) => parts.filter(Boolean).join(" · ") || null;
+  if (m.kind === "gate") {
+    let r = d.match(/you arrive at (.+?)\s+(\d+)(?:,\s*|\s+)(\d+)\.?\s*$/);
+    if (r) {
+      const dest = r[1].replace(/\s*\([^)]*\)/g, "").trim();
+      return { title: `Portal para ${dest}`, detail: join(level, `chega em ${coord(r[2], r[3])}`), dest };
+    }
+    r = d.match(/Leads to (?:the )?(.+?) \(level (\d+)\+?\)/);
+    if (r) return { title: `Portal para ${r[1].split(" / ")[0]}`, detail: `nível ${r[2]}+`, dest: r[1].split(" / ")[0] };
+    r = d.match(/(?:leave|go) back to ([A-Za-z' ]+?)(?:\.| \(arrive at [A-Za-z' ]+? (\d+)[ ,]+(\d+)\))/);
+    if (r) return { title: `Saída para ${r[1].trim()}`, detail: r[2] ? `chega em ${coord(r[2], r[3])}` : null, dest: r[1].trim() };
+    r = d.match(/walk in from ([A-Za-z' ]+?) \(/);
+    if (r) return { title: `Chegada vindo de ${r[1]}`, detail: level ?? (d.match(/Level (\d+) required/) ? `nível ${d.match(/Level (\d+) required/)![1]}` : null), dest: r[1] };
+    const label = m.name.match(/^Portal (\w+)/)?.[1];
+    const kind = /^One-way/i.test(d) ? "só de ida" : /^Return/i.test(d) ? "volta" : null;
+    r = d.match(/come out at (\d+),\s*(\d+)\b(?!–)/);
+    return { title: label ? `Portal ${label}` : "Portal", detail: join(kind, r ? `leva a ${coord(r[1], r[2])}` : null), dest: null };
+  }
+  if (m.kind === "warp") {
+    const w = d.match(/\(([\d,]+) Zen, level (\d+)\+?\)/);
+    const price = w ? `warp: ${num(w[1])} Zen, nível ${w[2]}+` : null;
+    let r = d.match(/gate from ([A-Za-z' ]+?) ?\d* \(/) ?? d.match(/walk-in gate from ([A-Za-z' ]+?) \(/);
+    if (r && /Both the warp/.test(d)) return { title: "Chegada (warp e portal)", detail: join(price, `portal de ${r[1]}`), dest: r[1] };
+    if (r) return { title: `Chegada vindo de ${r[1]}`, detail: null, dest: r[1] };
+    const safe = /safe zone/i.test(d) ? "zona segura" : null;
+    return { title: "Chegada do warp", detail: join(price, safe), dest: null };
+  }
+  if (m.kind === "spot" || m.kind === "hot_spot") {
+    const mob = m.name.match(/^(.+?) (?:hot spot|spot|\(minimap\))$/i)?.[1];
+    const who = mob && !/^minimap/i.test(mob) ? mob : null;
+    return { title: m.kind === "hot_spot" ? "Hot spot do minimapa do jogo" : "Spot do minimapa do jogo", detail: who, dest: null };
+  }
+  return { title: "Marcação", detail: null, dest: null };
+}
+
+/** Volume de monstros do spot (heat dos dados) em português. */
+export const HEAT_LABELS: Record<string, string> = { hot: "Alto", mid: "Médio", low: "Baixo", boss: "Chefe" };
+export const heatLabel = (heat: string | null | undefined) => HEAT_LABELS[heat ?? "mid"] ?? "Médio";

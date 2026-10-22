@@ -1,67 +1,48 @@
 ---
-// Spots de farm de um mapa: mapa interativo (hot spots) e a lista dos spots. Área separada da página do mapa.
+// Spots de um mapa: barra de mapas, abas das zonas (andares, áreas) e o mapa interativo com a lista de spots.
 import Base from "../../layouts/Base.astro";
+import SpotBar from "../../components/SpotBar.astro";
 import MapExplorer from "../../components/MapExplorer.astro";
-import { maps, mapById, monsterById, spotsByMap, markersByMap, terrainByMap, spotMapIds, spotsUrl, fmt } from "../../lib/data";
+import { maps, mapById, spotsByMap, markersByMap, terrainByMap, spotMapIds, spotsUrl, fmt } from "../../lib/data";
+import { spotBarGroups } from "../../lib/view";
 
 export function getStaticPaths() {
   return spotMapIds.map((id) => ({ params: { map: id } }));
 }
 const map = mapById.get(Astro.params.map as string)!;
 const spots = spotsByMap.get(map.id) ?? [];
-const markers = markersByMap.get(map.id) ?? [];
-const terrain = terrainByMap.get(map.id) ?? null;
+const group = spotBarGroups().groups.find((g) => g.entries.some((e) => e.map_id === map.id));
 const parent = map.parent_id && spotMapIds.includes(map.parent_id) ? mapById.get(map.parent_id) : undefined;
-const floors = maps.filter((m) => m.parent_id === map.id && spotMapIds.includes(m.id));
-const levelText = (min: number | null, max: number | null) =>
-  min == null ? "—" : min === max ? fmt(min) : `${fmt(min)}–${fmt(max)}`;
+// Sem grupo do guia, os andares (mapas filhos) viram as abas.
+const entries = group?.entries ?? (() => {
+  const floors = maps.filter((m) => m.parent_id === map.id && spotMapIds.includes(m.id));
+  return floors.length ? [{ label: map.name, map_id: map.id, zone: null }, ...floors.map((f) => ({ label: f.name, map_id: f.id, zone: null }))] : [];
+})();
 const levels = spots.flatMap((s) => [s.level_min, s.level_max]).filter((v): v is number => v != null);
-const recommended = map.level_recommended_min != null
-  ? `${fmt(map.level_recommended_min)}${map.level_recommended_max != null ? `–${fmt(map.level_recommended_max)}` : "+"}` : null;
+const range = (a: number, b: number) => (a === b ? fmt(a) : `${fmt(a)}–${fmt(b)}`);
+const monsterCount = spots.reduce((n, s) => n + s.total, 0);
 ---
-<Base title={`Spots de ${map.name}`} description={`Hot spots de farm em ${map.name}: onde ficam, quantos monstros, nível e drops.`} wide>
-  <nav class="crumbs" aria-label="Trilha"><a href="/spots/">Spots</a>{parent && <a href={spotsUrl(parent.id)}>{parent.name}</a>}<span>{map.name}</span></nav>
-  <h1>Spots de {map.name}</h1>
-  <p class="lead">
-    {spots.length > 0
-      ? <>{fmt(spots.length)} spots{levels.length > 0 && <>, monstros de nível {levelText(Math.min(...levels), Math.max(...levels))}</>}.</>
-      : <>Sem spots de farm conhecidos neste mapa.</>}
-    {map.level_required != null && <> Entrada: nível {fmt(map.level_required)}.</>}
-    {recommended && <> Recomendado: nível {recommended}.</>}
-    {" "}<a href={`/mapas/${map.id}/`}>Informações do mapa</a>.
-  </p>
+<Base title={`Spots de ${map.name}`} description={`Spots de farm em ${map.name}: onde ficam, quantos monstros há em cada um, nível e drops.`} wide>
+  <SpotBar mapId={map.id} />
+  <header class="spot-head">
+    <div class="spot-title">
+      <h1>{group && group.name !== map.name && <span class="spot-group">{group.name} ›</span>}{!group && parent && <span class="spot-group">{parent.name} ›</span>}{map.name}</h1>
+      <ul class="chips">
+        <li class="chip">{spots.length > 0 ? `${fmt(spots.length)} spots · ${fmt(monsterCount)} monstros` : "Sem spots de farm conhecidos"}</li>
+        {levels.length > 0 && <li class="chip">Monstros: nível {range(Math.min(...levels), Math.max(...levels))}</li>}
+        {map.level_required != null && <li class="chip gold">Entrada: nível {fmt(map.level_required)}</li>}
+      </ul>
+    </div>
+    <a class="btn ghost" href={`/mapas/${map.id}/`}>Informações do mapa →</a>
+  </header>
 
-  {floors.length > 0 && <ul class="chips floors">{floors.map((f) => <li><a class="chip" href={spotsUrl(f.id)}>{f.name}</a></li>)}</ul>}
-
-  <MapExplorer mapName={map.name} spots={spots} markers={markers} minimap={map.minimap_url} terrain={terrain} />
-
-  {spots.length > 0 && (
-    <>
-      <h2>Todos os spots</h2>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th class="num">#</th><th>Tipo</th><th>Coordenadas</th><th class="num">Nível</th><th>Monstros</th></tr></thead>
-          <tbody>
-            {spots.map((s, i) => (
-              <tr id={`spot-row-${i + 1}`} data-spot-row={i + 1}>
-                <td class="num">{i + 1}</td>
-                <td><span class={`heat-tag heat-${s.heat ?? "mid"}`}>{s.heat ?? "mid"}</span> x{s.total}</td>
-                <td>{s.x}, {s.y}</td>
-                <td class="num">{levelText(s.level_min, s.level_max)}</td>
-                <td>{s.monsters.map((m, j) => <>{j > 0 && ", "}<a href={`/monstros/${m.monster_id}/`} class="name-cell">{monsterById.get(m.monster_id)?.image_url && <img class="thumb" src={monsterById.get(m.monster_id)?.image_url} alt="" loading="lazy" />}{m.name}</a> ×{m.count}</>)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </>
-  )}
-  <p class="muted">
-    Mapa desenhado a partir do terreno do jogo: chão (claro), obstáculos (escuro) e zona segura (azul). Spots:
-    spawns próximos agrupados (até 10 casas); a cor compara o volume de monstros com os outros spots do mapa (hot ≥
-    1,5× a mediana, low ≤ 0,75×) e boss indica chefe. A coordenada (x, y) é a do jogo.
-  </p>
+  <MapExplorer mapId={map.id} mapName={map.name} spots={spots} markers={markersByMap.get(map.id) ?? []}
+    minimap={map.minimap_url} terrain={terrainByMap.get(map.id) ?? null} entries={entries} />
 </Base>
 <style>
-  .floors { margin: -.25rem 0 1rem; }
+  .spot-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .6rem 1.5rem; margin-bottom: .8rem; }
+  .spot-title { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem 1rem; }
+  .spot-head h1 { margin: 0; font-size: clamp(1.5rem, 3.5vw, 2rem); }
+  .spot-group { color: var(--muted); font-size: .7em; margin-right: .4rem; }
+  @media (max-width: 36rem) { .spot-head .btn { padding: .3rem .7rem; font-size: .88rem; } }
 </style>

@@ -1,4 +1,12 @@
-"""Spots de farm gerados a partir dos spawns com coordenadas (hoje, do MuEmu).
+"""Spots de farm: os do Guide MU Online (MU oficial) nos mapas que ele cobre; nos outros, gerados dos spawns do MuEmu.
+
+Guia: um spot por spot publicado (coordenada, quantidade de monstros, tipo low/medium/high -> heat low/mid/hot,
+monstros; a quantidade de cada monstro só é conhecida quando o spot tem um monstro só). As zonas do guia (andares,
+áreas) viram `zone` no spot ou, quando são mapas próprios no site (Kalima 2...), o próprio mapa (scrapers.guidemu.places).
+Também grava spot_groups.json: a organização dos mapas do guia (mapa -> zonas), usada na barra de mapas do site.
+Os spawns do Global MU Online (servidor privado) não geram spots: a quantidade por spot de lá não vale para o oficial.
+
+MuEmu:
 
 Não copia guias de spots: agrupa os spawns próximos do mesmo mapa (até 10 casas entre centros, spot de no máximo 24 × 24) e descreve cada grupo
 (centro, área, monstros, quantidade e faixa de nível). Eventos (Blood Castle...) e monstros dourados ficam de fora.
@@ -17,6 +25,7 @@ import logging
 import sys
 from pathlib import Path
 
+from scrapers.common.ids import slugify
 from scrapers.common.model import REPO_ROOT, validate
 from scrapers.common.storage import dump_records
 
@@ -160,6 +169,70 @@ def build_spots(spawns: list[dict], monsters: list[dict], maps: list[dict]) -> l
     return spots
 
 
+GUIDE_RADIUS = 3   # o guia dá só o ponto do spot: área de 7 × 7 casas em volta, para destacar no mapa
+
+
+def guide_spots(rows: list[dict], guide_monsters: list[dict], monsters: list[dict], maps: list[dict]) -> list[dict]:
+    """Spots do Guide MU Online já nos mapas do site, numerados por mapa na ordem do guia."""
+    from scrapers.guidemu.places import place
+    by_slug: dict[str, list[dict]] = {}
+    for m in monsters:
+        by_slug.setdefault(slugify(m["name"]), []).append(m)
+    guide_level = {slugify(m["name"]): m.get("level") for m in guide_monsters}
+    map_names = {m["id"]: m["name"] for m in maps}
+    boss_ids = {m["id"] for m in monsters if (m.get("respawn_seconds") or 0) >= BOSS_RESPAWN}
+    for m in maps:
+        boss_ids.update(m.get("bosses") or [])
+
+    def resolve(name: str) -> dict | None:
+        found = by_slug.get(slugify(name)) or []
+        lv = guide_level.get(slugify(name)) or 0
+        return min(found, key=lambda m: abs((m.get("level") or 0) - lv)) if found else None
+
+    out, numbered = [], {}
+    for row in rows:
+        map_id, zone = place(row["map"], row["zone"])
+        mons = [m for m in (resolve(n) for n in row["monsters"]) if m]
+        if map_id not in map_names or not mons or not row.get("count"):
+            continue
+        numbered[map_id] = numbered.get(map_id, 0) + 1
+        levels = [m["level"] for m in mons if m.get("level") is not None]
+        x, y = row["x"], row["y"]
+        out.append({
+            "id": f"{map_id}-{numbered[map_id]}", "map_id": map_id, "map_name": map_names[map_id], "zone": zone,
+            "x": x, "y": y, "x_min": max(0, x - GUIDE_RADIUS), "y_min": max(0, y - GUIDE_RADIUS),
+            "x_max": min(255, x + GUIDE_RADIUS), "y_max": min(255, y + GUIDE_RADIUS),
+            "monsters": [{"monster_id": m["id"], "name": m["name"], "level": m.get("level"),
+                          "count": row["count"] if len(mons) == 1 else None} for m in mons],
+            "total": row["count"], "level_min": min(levels) if levels else None, "level_max": max(levels) if levels else None,
+            "season": None, "source": row["source"], "source_url": row["source_url"], "scraped_at": row["scraped_at"],
+            "heat": "boss" if any(m["id"] in boss_ids for m in mons) else row["heat"],
+        })
+    return out
+
+
+def guide_groups(groups: list[dict], maps: list[dict], images: list[dict] | None = None) -> list[dict]:
+    """Barra de mapas: grupos do guia na ordem dele, com as entradas (zona do mapa ou mapa próprio). Zonas do mesmo
+    mapa levam `frame`: os cantos da área da imagem da zona no guia (enquadramento da zona no mapa interativo)."""
+    from scrapers.guidemu.places import place
+    map_names = {m["id"]: m["name"] for m in maps}
+    frames = {(i["map"], i["zone"]): i.get("frame") for i in images or []}
+    out = []
+    for g in groups:
+        main_id = place(g["name"], None)[0]
+        entries = []
+        for zone in g["zones"]:
+            map_id, area = place(g["name"], zone)
+            if map_id in map_names:
+                entries.append({"label": area or map_names[map_id], "map_id": map_id, "zone": area,
+                                "frame": frames.get((g["name"], zone)) if area else None})
+        if not entries and main_id not in map_names:
+            continue
+        out.append({"id": main_id, "name": map_names.get(main_id, g["name"]), "level": g.get("level"),
+                    "entries": entries or [{"label": map_names[main_id], "map_id": main_id, "zone": None}]})
+    return out
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m scrapers.spots", description="Spots de farm a partir dos spawns")
     parser.add_argument("--set", default="muemu", help="conjunto em data/processed (padrão: muemu)")
@@ -168,7 +241,18 @@ def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s", stream=sys.stderr)
     folder = args.data_dir / "processed" / args.set
     load = lambda name: json.loads((folder / name).read_text(encoding="utf-8")) if (folder / name).exists() else []
-    spots = build_spots(load("spawns.json"), load("monsters.json"), load("maps.json"))
+    monsters, maps = load("monsters.json"), load("maps.json")
+    guide_dir = args.data_dir / "processed" / "guidemu"
+    guide_rows = json.loads((guide_dir / "spots.json").read_text(encoding="utf-8")) if args.set == "combined" and (guide_dir / "spots.json").exists() else []
+    spots = guide_spots(guide_rows, json.loads((guide_dir / "monsters.json").read_text(encoding="utf-8")) if guide_rows else [], monsters, maps)
+    covered = {s["map_id"] for s in spots}
+    spawns = [s for s in load("spawns.json") if s["map_id"] not in covered and s.get("source") != "gmo"]
+    spots += [dict(s, zone=None) for s in build_spots(spawns, monsters, maps)]
+    if guide_rows:
+        images = json.loads((guide_dir / "map_images.json").read_text(encoding="utf-8")) if (guide_dir / "map_images.json").exists() else []
+        groups = guide_groups(json.loads((guide_dir / "groups.json").read_text(encoding="utf-8")), maps, images)
+        dump_records(folder / "spot_groups.json", groups)
+        log.info("barra de mapas: %d grupos · spots do guia em %d mapas", len(groups), len(covered))
     errors = [f"{s['id']}: {e}" for s in spots for e in validate("farm_spot", s)]
     dump_records(folder / "farm_spots.json", spots)
     for error in errors[:20]:
