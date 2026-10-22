@@ -483,7 +483,8 @@ def main(argv: list[str] | None = None) -> int:
     guidemu = {}
     if guidemu_dir.exists():
         read = lambda name: json.loads((guidemu_dir / name).read_text(encoding="utf-8")) if (guidemu_dir / name).exists() else []
-        guidemu = {"monster": read("monsters.json"), "group": read("groups.json"), "source": read("sources.json")}
+        guidemu = {"monster": read("monsters.json"), "group": read("groups.json"), "source": read("sources.json"),
+                   "guide": read("guides.json")}
         guidemu["scraped_at"] = next((s.get("last_scraped_at") for s in guidemu["source"]), None)
     guidemu_stats = add_guidemu(data, guidemu)
     out = processed / "combined"
@@ -493,6 +494,7 @@ def main(argv: list[str] | None = None) -> int:
     for entity in ("item", "monster"):
         dump_records(out / f"{entity}_matches.json", matches[entity])
     dump_records(out / "map_markers.json", data.get("map_marker", []))
+    dump_records(out / "guides.json", guidemu.get("guide", []))   # guias do Guide MU Online (páginas /guias/)
     report = build_report(data, matches, diffs, fanz, muemu)
     if gmo_stats:
         report += "\n## Global MU Online (S21, só local)\n\n" + "\n".join(f"- {k}: {v}" for k, v in gmo_stats.items()) + "\n"

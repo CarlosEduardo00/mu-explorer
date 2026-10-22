@@ -17,6 +17,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+render = ["playwright>=1.56"]   # guias do Guide MU Online (páginas montadas por JavaScript)
 
 [tool.setuptools.packages.find]
 include = ["scrapers*"]

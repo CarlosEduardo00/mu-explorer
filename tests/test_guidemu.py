@@ -1,6 +1,7 @@
 """Guide MU Online: leitura dos JS do site, parse de mapas/spots/monstros, correspondência com os mapas do site,
-spots de farm e terreno a partir das imagens."""
+spots de farm, terreno a partir das imagens e guias (páginas renderizadas)."""
 import json
+import re
 from pathlib import Path
 
 from scrapers.guidemu.bundle import chunk_files, find_json, main_script, unescape_js
@@ -120,3 +121,81 @@ def test_mascara_do_terreno_pela_imagem(tmp_path):
     m = image_mask(img, [[0, 1 / 2.56, 0], [1 / 2.56, 0, 0]])
     assert m[70, 70] and not m[10, 10] and not m[70, 120]
     assert 0.03 < m.mean() < 0.05
+
+
+def _guide(name: str) -> dict:
+    from scrapers.guidemu.guides import parse_guide
+    html = (FIX / f"guide-{name}.html").read_text(encoding="utf-8")
+    meta = json.loads((FIX / f"guide-{name}.meta.json").read_text(encoding="utf-8"))
+    return parse_guide(html, meta)
+
+
+def _texts(blocks: list[dict]):
+    """Todos os textos ({t, m}) dos blocos, inclusive dentro de cartões, grades, abas e acordeões."""
+    for b in blocks:
+        for key in ("text", "title", "label"):
+            if isinstance(b.get(key), dict):
+                yield b[key]
+        yield from b.get("items", []) if b["type"] == "list" else ()
+        for row in ([b.get("head", [])] + b.get("rows", [])) if b["type"] == "table" else ():
+            yield from (c for c in row if c)
+        yield from _texts(b.get("blocks", []))
+        yield from _texts(b.get("items", []) if b["type"] == "grid" else [])
+        for part in b.get("tabs", []) + (b.get("items", []) if b["type"] == "accordion" else []):
+            if part.get("label") or part.get("title"):
+                yield part.get("label") or part.get("title")
+            yield from _texts(part["blocks"])
+
+
+def test_guia_de_quest_cartoes_e_termos_do_jogo():
+    g = _guide("sebina")
+    assert g["id"] == "quest-2nd-class-sebina-the-priest" and g["series"] == "class-change"
+    assert g["title"] == {"t": "[Quest 2nd Class] Sebina The Priest"}
+    assert [s["id"] for s in g["siblings"]][:2] == ["quest-2nd-class-sebina-the-priest", "quest-marlon"]
+    first = g["blocks"][0]
+    assert first["type"] == "card" and first["kind"] == "quest" and first["blocks"][0]["type"] == "image"
+    assert first["blocks"][0]["src"] in g["image_urls"]
+    # Nomes entre aspas simples viram termos (não se traduzem); "Muren Reksmilon's" não.
+    intro = first["blocks"][2]["text"]
+    assert intro["t"].startswith("NPC {0} is a great priestess of the {1}.")
+    assert "'Scroll of the Emperor'" in intro["m"] and "Reksmilon's battle" in intro["t"]
+    sections = [b["text"]["t"] for b in g["blocks"] if b["type"] == "heading" and b.get("style") == "section"]
+    assert sections[0] == "[Part 1] FIND THE SCROLL OF THE EMPEROR"
+    texts = list(_texts(g["blocks"]))
+    assert len(texts) > 80 and all(t["t"].strip() for t in texts)
+
+
+def test_guia_com_abas_guarda_o_conteudo_de_cada_aba():
+    g = _guide("second-wings")
+    assert g["id"] == "second-wings" and g["series"] == "wings"
+    tabs = next(b for b in g["blocks"] if b["type"] == "tabs")["tabs"]
+    assert [t["label"]["t"] for t in tabs] == ["Season 12 or below", "Season 13 or higher"]
+    assert all(t["blocks"] for t in tabs)
+    first = tabs[0]["blocks"][0]["items"][0]["blocks"]
+    assert first[0] == {"type": "heading", "level": 2, "text": {"t": "Wings &amp; Cloaks"}}
+    assert first[2]["text"] == {"t": "For the wings we will need the {0} and for the cloaks the {1}.",
+                                "m": ["Loch's Feather", "Crest of Monarch"]}
+
+
+def test_texto_com_termos_negrito_e_destaque():
+    from selectolax.lexbor import LexborHTMLParser
+    from scrapers.guidemu.guides import guide_id, is_term, rich
+    node = LexborHTMLParser('<p>Find the <span class="text-accent">Ring of Honor</span> near <b>Tarkan</b> '
+                            "(Giaon's revolt) &amp; give it to 'Marlon'. <span class=\"text-accent\">Successful "
+                            'Result:</span> done</p>').css_first("p")
+    assert rich(node) == {"t": 'Find the {0} near <b>Tarkan</b> (Giaon\'s revolt) &amp; give it to {1}. '
+                               '<em class="accent">Successful Result:</em> done',
+                          "m": ["Ring of Honor", "'Marlon'"]}
+    assert is_term("Scroll of the Emperor") and not is_term("Successful Result:")
+    assert guide_id("elemental-system/errtels-guide") == "errtels" and guide_id("artifact-system") == "artifact-system"
+
+
+def test_traducao_dos_guias_mantem_termos_e_marcacao():
+    """data/curated/translations/guides.pt-BR.json: mesmos {n}, <b>, <em> e <br> do original (senão o site ignora)."""
+    path = Path(__file__).resolve().parents[1] / "data" / "curated" / "translations" / "guides.pt-BR.json"
+    pt = json.loads(path.read_text(encoding="utf-8"))
+    marks = lambda t: sorted(re.findall(r"\{\d+\}|</?(?:b|em)\b[^>]*>|<br>", t))
+    bad = [k for k, v in pt.items() if marks(k) != marks(v) or not v.strip()]
+    assert not bad, bad[:5]
+    texts = [t["t"] for name in ("sebina", "second-wings") for t in _texts(_guide(name)["blocks"])]
+    assert sum(t in pt for t in texts) / len(texts) > 0.6

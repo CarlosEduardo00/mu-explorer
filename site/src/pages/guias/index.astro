@@ -1,0 +1,36 @@
+---
+// Guias: quests de troca de classe, criação de asas, sistema elemental e outros sistemas do jogo.
+import Base from "../../layouts/Base.astro";
+import GuideText from "../../components/GuideText.astro";
+import { guides } from "../../lib/data";
+import { SERIES } from "../../lib/guides";
+
+const bySeries = SERIES.map((s) => ({ ...s, list: guides.filter((g) => g.series === s.id) })).filter((s) => s.list.length);
+---
+<Base title="Guias" description="Guias de MU Online: quests de troca de classe, como criar asas, sistema elemental, Guardian, Pandora e Artifact.">
+  <h1>Guias</h1>
+  <p class="lead">Passo a passo das quests e dos sistemas do jogo. Os textos estão em português (tradução aproximada); os nomes de itens e termos do jogo ficam como no jogo.</p>
+  {bySeries.length === 0 && <p class="muted">Nenhum guia neste conjunto de dados.</p>}
+  {bySeries.map((s) => (
+    <section class="g-series">
+      <h2>{s.label}</h2>
+      <p class="muted small">{s.text}</p>
+      <ul class="grid guide-grid">
+        {s.list.map((g) => (
+          <li>
+            <a class="card guide-card" href={`/guias/${g.id}/`}>
+              <span class="card-img">{g.image_urls[0] ? <img src={g.image_urls[0]} alt="" loading="lazy" /> : <span class="ph"></span>}</span>
+              <span class="card-body"><GuideText as="b" text={g.title} /></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</Base>
+<style>
+  .g-series { margin-top: 1.5rem; }
+  .g-series h2 { margin-bottom: .2rem; }
+  .guide-grid { margin-top: .6rem; }
+  .guide-card .card-img img { object-fit: contain; }
+</style>
