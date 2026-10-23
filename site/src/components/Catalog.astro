@@ -20,7 +20,7 @@ const { facets, sorts, noun, placeholder, levelLabel = "Nível", page = 60 } = A
 <div class="catalog" data-catalog data-noun={noun} data-page={page}>
   <aside class="cat-side">
     <details class="cat-filters" open>
-      <summary>Filtros <span class="cat-active" data-active></span></summary>
+      <summary>Filtros <span class="cat-active" data-active></span><span class="cat-x" aria-hidden="true">✕</span></summary>
       {facets.map((f) => (
         <fieldset class="facet" data-facet={f.key} data-depends={f.dependsOn ?? ""} data-label={f.label} data-collapse={f.collapse ?? ""}>
           <legend>{f.label}</legend>
@@ -46,7 +46,9 @@ const { facets, sorts, noun, placeholder, levelLabel = "Nível", page = 60 } = A
         </fieldset>
       )}
       <button type="button" class="btn ghost cat-clear" data-clear>Limpar filtros</button>
+      <button type="button" class="btn cat-apply" data-apply>Ver resultados</button>
     </details>
+    <div class="cat-backdrop" data-cat-backdrop hidden></div>
   </aside>
   <section class="cat-main">
     <div class="cat-bar">
@@ -103,8 +105,20 @@ const { facets, sorts, noun, placeholder, levelLabel = "Nível", page = 60 } = A
     if (minIn) minIn.value = params.get("min") ?? "";
     if (maxIn) maxIn.value = params.get("max") ?? "";
     if (sorts.some((s) => s.value === params.get("sort"))) sortSel.value = params.get("sort")!;
-    // Em telas pequenas os filtros começam fechados.
-    if (matchMedia("(max-width: 52rem)").matches) root.querySelector("details")!.open = false;
+    // Em telas pequenas os filtros começam fechados e abrem num painel que sobe de baixo (com fundo escurecido).
+    const mobile = matchMedia("(max-width: 52rem)");
+    const details = root.querySelector("details")!;
+    const backdrop = root.querySelector<HTMLElement>("[data-cat-backdrop]")!;
+    if (mobile.matches) details.open = false;
+    const sheet = () => {
+      const on = details.open && mobile.matches;
+      backdrop.hidden = !on;
+      document.documentElement.classList.toggle("sheet-open", on);
+    };
+    details.addEventListener("toggle", sheet);
+    backdrop.addEventListener("click", () => { details.open = false; });
+    root.querySelector("[data-apply]")!.addEventListener("click", () => { details.open = false; window.scrollTo({ top: root.offsetTop - 70 }); });
+    document.addEventListener("keydown", (ev) => { if (ev.key === "Escape" && details.open && mobile.matches) details.open = false; });
 
     const fmt = (n: number) => n.toLocaleString("pt-BR");
     function matches(card: (typeof cards)[number], skip?: string) {
@@ -291,8 +305,26 @@ const { facets, sorts, noun, placeholder, levelLabel = "Nível", page = 60 } = A
   .cat-grid { grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr)); }
   .cat-grid > [hidden] { display: none; }
   .cat-more { text-align: center; margin: 1rem 0 0; }
+  .cat-apply, .cat-backdrop, .cat-x { display: none; }
   @media (max-width: 52rem) {
     .catalog { grid-template-columns: minmax(0, 1fr); }
-    .cat-side { position: static; max-height: none; }
+    .cat-side { position: static; max-height: none; overflow: visible; }
+    .cat-filters summary { display: flex; align-items: center; gap: .5rem; min-height: 2.75rem; list-style: none; }
+    .cat-filters summary::-webkit-details-marker { display: none; }
+    .cat-filters summary::before { content: "▸"; font-size: .9em; color: var(--accent); }
+    .cat-filters[open] summary::before { content: "▾"; }
+    .cat-filters:not([open]) { padding-bottom: .4rem; }
+    /* aberto: painel fixo embaixo, acima da barra de abas, com o título fixo no topo do painel */
+    .cat-filters[open] { position: fixed; left: 0; right: 0; bottom: 0; z-index: 46; max-height: 86dvh; overflow-y: auto; overscroll-behavior: contain;
+      padding: 0 1rem calc(1rem + env(safe-area-inset-bottom)); border-radius: 1rem 1rem 0 0; border-bottom: 0; box-shadow: 0 -16px 40px rgba(0,0,0,.6); animation: sheet-up .16s ease-out; }
+    .cat-filters[open] summary { position: sticky; top: 0; z-index: 1; margin: 0 -1rem .2rem; padding: .7rem 1rem; background: var(--panel); border-bottom: 1px solid var(--line); }
+    .cat-filters[open] .cat-x { display: inline-flex; align-items: center; justify-content: center; margin-left: auto; width: 2.25rem; height: 2.25rem; border-radius: 50%; border: 1px solid var(--line-2); color: var(--muted); font: 400 1rem/1 var(--sans); }
+    .cat-backdrop:not([hidden]) { display: block; position: fixed; inset: 0; z-index: 44; background: rgba(0,0,0,.55); }
+    .cat-apply { display: flex; width: 100%; justify-content: center; margin-top: .6rem; min-height: 2.9rem; font-size: 1rem; }
+    .cat-clear { min-height: 2.6rem; }
+    .fopt { min-height: 2.3rem; padding-inline: .7rem; }
+    .cat-bar { flex-wrap: wrap; }
+    .cat-bar input { flex: 1 1 100%; }
+    .cat-bar select { flex: 1 1 auto; }
   }
 </style>

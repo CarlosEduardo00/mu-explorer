@@ -22,3 +22,12 @@ test("dicionário dos guias: toda tradução mantém os termos", () => {
   assert.deepEqual(bad, []);
   assert.ok(Object.keys(PT).length > 500);
 });
+
+test("cartão muito mais longo que os da linha ocupa a linha inteira; parecidos ficam lado a lado", async () => {
+  const { wideCards } = await import("./guides.ts");
+  const card = (chars: number) => ({ type: "card" as const, kind: "guide", blocks: [{ type: "paragraph" as const, text: { t: "x".repeat(chars) } }] });
+  assert.deepEqual(wideCards([card(400), card(600), card(2000)]), [false, false, true]);
+  assert.deepEqual(wideCards([card(900), card(950), card(500)]), [false, false, false]);
+  assert.deepEqual(wideCards([card(2300), card(1100)]), [false, false]);   // 2,1×: larguras proporcionais resolvem
+  assert.deepEqual(wideCards([card(200)]), [false]);
+});
