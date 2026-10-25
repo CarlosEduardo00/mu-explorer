@@ -2,73 +2,337 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/carloseduardo00/mu-explorer/schema/skill.schema.json",
   "title": "Skill",
-  "description": "Skill de uma classe (scrapers/skills): árvore de skills do guia de classe do Fanz ou tabela de skills do guia do GMO, com o item que ensina a skill.",
+  "description": "Skill de uma classe (scrapers/skills): guia oficial (Guide MU Online) como base, completado pela árvore de skills do guia de classe do Fanz e pela tabela de skills do GMO, com o item que ensina a skill.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "skill_id", "class_id", "order", "name", "tree", "stage", "unlocked_as", "kind", "description",
-               "effects", "mana_cost", "ag_cost", "element", "imprint_dmg_pct", "range", "base_dmg", "requirements",
-               "learn", "slot", "season", "source", "source_url", "scraped_at", "page_updated_at"],
+  "required": [
+    "id",
+    "skill_id",
+    "class_id",
+    "order",
+    "name",
+    "tree",
+    "stage",
+    "unlocked_as",
+    "kind",
+    "description",
+    "effects",
+    "mana_cost",
+    "ag_cost",
+    "element",
+    "imprint_dmg_pct",
+    "range",
+    "base_dmg",
+    "requirements",
+    "learn",
+    "slot",
+    "season",
+    "source",
+    "source_url",
+    "scraped_at",
+    "page_updated_at",
+    "aliases",
+    "cooldown_s",
+    "levels",
+    "image_url",
+    "preview_url"
+  ],
   "$defs": {
-    "count": {"type": ["integer", "null"], "minimum": 0},
-    "slug": {"type": "string", "pattern": "^[a-z0-9-]+$"}
+    "count": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    }
   },
   "properties": {
-    "id": {"type": "string", "pattern": "^[a-z0-9-]+--[a-z0-9-]+$", "description": "<classe>--<skill>"},
-    "skill_id": {"$ref": "#/$defs/slug"},
-    "class_id": {"$ref": "#/$defs/slug"},
-    "order": {"type": "integer", "minimum": 0, "description": "Posição na árvore (Fanz) ou na tabela (GMO)."},
-    "name": {"type": "string", "minLength": 1},
-    "tree": {"enum": ["basic", "special", "item", null], "description": "Árvore do guia do Fanz: básica, especial (Castle Siege) ou skills de item/montaria."},
-    "stage": {"enum": ["class", "enhanced"], "description": "enhanced = melhoria da 4ª classe ou skill da 5ª (tabela do GMO)."},
-    "unlocked_as": {"type": ["string", "null"], "description": "Evolução da classe que libera a skill (GMO)."},
-    "kind": {"enum": ["attack", "buff", "debuff", "utility", "summon", "combo", "passive", null]},
-    "description": {"type": ["string", "null"], "description": "Texto original da fonte (inglês)."},
-    "effects": {"type": "array", "items": {"type": "string"}, "description": "Linhas de efeito como na fonte (Skill DMG, Range, Duration...)."},
-    "mana_cost": {"$ref": "#/$defs/count"},
-    "ag_cost": {"$ref": "#/$defs/count"},
-    "element": {"enum": ["fire", "water", "earth", "wind", "darkness", "light", "lightning", "ice", "poison", "none", null]},
-    "imprint_dmg_pct": {"$ref": "#/$defs/count"},
-    "range": {"$ref": "#/$defs/count"},
-    "base_dmg": {"$ref": "#/$defs/count"},
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+--[a-z0-9-]+$",
+      "description": "<classe>--<skill>"
+    },
+    "skill_id": {
+      "$ref": "#/$defs/slug"
+    },
+    "class_id": {
+      "$ref": "#/$defs/slug"
+    },
+    "order": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Posição na árvore (Fanz) ou na tabela (GMO)."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tree": {
+      "enum": [
+        "basic",
+        "special",
+        "item",
+        null
+      ],
+      "description": "Árvore do guia do Fanz: básica, especial (Castle Siege) ou skills de item/montaria."
+    },
+    "stage": {
+      "enum": [
+        "class",
+        "enhanced"
+      ],
+      "description": "enhanced = melhoria da 4ª classe ou skill da 5ª (tabela do GMO)."
+    },
+    "unlocked_as": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Evolução da classe que libera a skill (GMO)."
+    },
+    "kind": {
+      "enum": [
+        "attack",
+        "buff",
+        "debuff",
+        "utility",
+        "summon",
+        "combo",
+        "passive",
+        null
+      ]
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Texto original da fonte (inglês)."
+    },
+    "effects": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Linhas de efeito como na fonte (Skill DMG, Range, Duration...)."
+    },
+    "mana_cost": {
+      "$ref": "#/$defs/count"
+    },
+    "ag_cost": {
+      "$ref": "#/$defs/count"
+    },
+    "element": {
+      "enum": [
+        "fire",
+        "water",
+        "earth",
+        "wind",
+        "darkness",
+        "light",
+        "lightning",
+        "ice",
+        "poison",
+        "none",
+        null
+      ]
+    },
+    "imprint_dmg_pct": {
+      "$ref": "#/$defs/count"
+    },
+    "range": {
+      "$ref": "#/$defs/count"
+    },
+    "base_dmg": {
+      "$ref": "#/$defs/count"
+    },
     "requirements": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["level", "str", "agi", "vit", "ene", "cmd", "other"],
+      "required": [
+        "level",
+        "str",
+        "agi",
+        "vit",
+        "ene",
+        "cmd",
+        "other"
+      ],
       "properties": {
-        "level": {"$ref": "#/$defs/count"},
-        "str": {"$ref": "#/$defs/count"},
-        "agi": {"$ref": "#/$defs/count"},
-        "vit": {"$ref": "#/$defs/count"},
-        "ene": {"$ref": "#/$defs/count"},
-        "cmd": {"$ref": "#/$defs/count"},
-        "other": {"type": "array", "items": {"type": "string"}, "description": "Requisitos em texto (skill anterior, mestre, quest, montaria)."}
+        "level": {
+          "$ref": "#/$defs/count"
+        },
+        "str": {
+          "$ref": "#/$defs/count"
+        },
+        "agi": {
+          "$ref": "#/$defs/count"
+        },
+        "vit": {
+          "$ref": "#/$defs/count"
+        },
+        "ene": {
+          "$ref": "#/$defs/count"
+        },
+        "cmd": {
+          "$ref": "#/$defs/count"
+        },
+        "other": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Requisitos em texto (skill anterior, mestre, quest, montaria)."
+        }
       }
     },
     "learn": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["method", "item_name", "item_id", "drops"],
+      "required": [
+        "method",
+        "item_name",
+        "item_id",
+        "drops",
+        "item_from_class"
+      ],
       "properties": {
-        "method": {"enum": ["item", "weapon", "mount", "master", "quest", "castle-siege", null]},
-        "item_name": {"type": ["string", "null"], "description": "Item como a fonte escreve."},
-        "item_id": {"type": ["string", "null"], "pattern": "^[a-z0-9-]+$", "description": "Item do site (items.json)."},
+        "method": {
+          "enum": [
+            "item",
+            "weapon",
+            "mount",
+            "master",
+            "quest",
+            "castle-siege",
+            "default",
+            "enhance-tree",
+            null
+          ]
+        },
+        "item_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Item como a fonte escreve."
+        },
+        "item_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-z0-9-]+$",
+          "description": "Item do site (items.json)."
+        },
         "drops": {
           "type": "array",
           "description": "Só para item que o site não tem: monstro e mapa das listas de drop do GMO.",
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["monster_id", "map_id"],
-            "properties": {"monster_id": {"$ref": "#/$defs/slug"}, "map_id": {"type": ["string", "null"]}}
+            "required": [
+              "monster_id",
+              "map_id"
+            ],
+            "properties": {
+              "monster_id": {
+                "$ref": "#/$defs/slug"
+              },
+              "map_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
           }
+        },
+        "item_from_class": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Classe de onde veio o item quando a fonte só o cita para outra classe que usa a mesma skill."
         }
       }
     },
-    "slot": {"type": ["string", "null"], "description": "Posição na imagem da árvore do Fanz (b23 = básica, linha 2, coluna 3)."},
-    "season": {"type": ["string", "null"]},
-    "source": {"enum": ["fanz", "gmo"]},
-    "source_url": {"type": ["string", "null"]},
-    "scraped_at": {"type": ["string", "null"]},
-    "page_updated_at": {"type": ["string", "null"]}
+    "slot": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Posição na imagem da árvore do Fanz (b23 = básica, linha 2, coluna 3)."
+    },
+    "season": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source": {
+      "enum": [
+        "guidemu",
+        "fanz",
+        "gmo"
+      ]
+    },
+    "source_url": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "scraped_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "page_updated_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Outros nomes da skill (ex.: o do guia do Fanz)."
+    },
+    "cooldown_s": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "levels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Árvore de melhorias: valor por ponto investido."
+    },
+    "image_url": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Ícone da skill (guia oficial)."
+    },
+    "preview_url": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Prévia animada da skill (guia de classe do Fanz)."
+    }
   }
 }

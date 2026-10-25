@@ -1,0 +1,117 @@
+---
+// Skills de uma classe, agrupadas por como se aprendem. Cada skill abre a página dela (/skills/<classe>/<skill>/) com a
+// descrição, os requisitos, onde dropa o item e o vídeo. O id de cada cartão mantém os endereços antigos (#<skill>).
+import Base from "../../../layouts/Base.astro";
+import PageHead from "../../../components/PageHead.astro";
+import { rulesets, skills, itemById, fmt } from "../../../lib/data";
+import { itemSources, droppersFor } from "../../../lib/view";
+import { LEARN_GROUPS, learnGroup, skillUrl, KIND_LABELS, ELEMENT_LABELS, METHOD_TEXT } from "../../../lib/skills";
+import { STAT_LABELS, type Stat } from "../../../lib/planner";
+
+export function getStaticPaths() {
+  const classes = rulesets[0]?.classes ?? [];
+  return classes.filter((c) => skills.some((s) => s.class_id === c.id)).map((c) => ({ params: { classe: c.id }, props: { cls: c } }));
+}
+const { cls } = Astro.props;
+const all = rulesets[0].classes.filter((c) => skills.some((s) => s.class_id === c.id));
+const list = skills.filter((s) => s.class_id === cls.id).sort((a, b) => a.order - b.order);
+const groups = LEARN_GROUPS.map((g) => ({ ...g, list: list.filter((s) => learnGroup(s) === g.id) })).filter((g) => g.list.length);
+const withItem = list.filter((s) => s.learn.method === "item").length;
+const fromSeason = list.some((s) => s.season);
+const STATS: Stat[] = ["str", "agi", "vit", "ene", "cmd"];
+const reqLine = (s: (typeof list)[number]) => [
+  ...(s.requirements.level != null ? [`Nível ${fmt(s.requirements.level)}`] : []),
+  ...STATS.filter((k) => s.requirements[k] != null).map((k) => `${STAT_LABELS[k]} ${fmt(s.requirements[k])}`),
+];
+// Onde conseguir o item, resumido: mapas onde dropa e se algum NPC vende.
+const learnLine = (s: (typeof list)[number]) => {
+  const item = s.learn.item_id ? itemById.get(s.learn.item_id) : undefined;
+  if (s.learn.method !== "item") return { item: null, maps: 0, npc: false, text: s.learn.method ? METHOD_TEXT[s.learn.method] ?? null : null };
+  const src = item ? itemSources(item) : { droppers: droppersFor(s.learn.drops), sellers: [] };
+  const maps = new Set(src.droppers.flatMap((d) => d.places.map((p) => p.map.id))).size;
+  return { item: item?.name ?? s.learn.item_name, maps, npc: src.sellers.length > 0, text: null };
+};
+---
+<Base title={`Skills · ${cls.name}`} description={`Skills de ${cls.name} em MU Online: requisitos, como aprender e onde dropa o item de cada skill.`} wide>
+  <PageHead crumbs={[{ href: "/skills/", label: "Skills" }, { label: cls.name }]} title={cls.name} image={cls.image_url}>
+    <ul class="chips">
+      <li class="chip">{fmt(list.length)} skills</li>
+      {withItem > 0 && <li class="chip gold">{fmt(withItem)} aprendidas com item</li>}
+    </ul>
+  </PageHead>
+
+  <nav class="class-pick" aria-label="Classes">
+    {all.map((c) => (
+      <a href={`/skills/${c.id}/`} aria-current={c.id === cls.id ? "page" : undefined}>
+        {c.image_url ? <img src={c.image_url} alt="" loading="lazy" /> : <span class="ph"></span>}<span>{c.name}</span>
+      </a>
+    ))}
+  </nav>
+
+  {groups.length > 1 && (
+    <nav class="group-jump" aria-label="Grupos">
+      {groups.map((g) => <a class="chip" href={`#g-${g.id}`}>{g.label} <span class="muted">{g.list.length}</span></a>)}
+    </nav>
+  )}
+  <p class="muted small"><span>Toque numa skill para ver a descrição, os requisitos para usar, onde o item dropa e o vídeo.</span>
+    {fromSeason && <span>Skills com a etiqueta S21: requisitos e custos da Season 21; podem variar um pouco entre seasons.</span>}</p>
+
+  {groups.map((g) => (
+    <section class="skill-group" id={`g-${g.id}`}>
+      <h2>{g.label}</h2>
+      <p class="muted small">{g.text}</p>
+      <ul class="sk-tiles">
+        {g.list.map((s) => {
+          const req = reqLine(s);
+          const how = learnLine(s);
+          return (
+            <li id={s.skill_id}>
+              <a class="sk-tile" href={skillUrl(s)}>
+                {s.image_url ? <img class="sk-ico" src={s.image_url} alt="" loading="lazy" /> : <span class="sk-ico ph"></span>}
+                <span class="sk-body">
+                  <b lang="en" translate="no">{s.name}</b>
+                  <span class="sk-meta">
+                    {[s.kind && KIND_LABELS[s.kind], s.element && s.element !== "none" && ELEMENT_LABELS[s.element]].filter(Boolean).join(" · ")}
+                    {s.season && <span class="s21">{s.season}</span>}
+                  </span>
+                  {req.length > 0 && <span class="sk-req">{req.join(" · ")}</span>}
+                  {how.item
+                    ? <span class="sk-how"><span lang="en" translate="no">{how.item}</span>{how.maps > 0 && <span>{` · dropa em ${fmt(how.maps)} ${how.maps === 1 ? "mapa" : "mapas"}`}</span>}{how.npc && <span> · vendido por NPC</span>}</span>
+                    : how.text && <span class="sk-how muted">{how.text}</span>}
+                </span>
+                <span class="sk-go" aria-hidden="true">›</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  ))}
+</Base>
+
+<style>
+  .class-pick { display: flex; gap: .4rem; overflow-x: auto; padding: .1rem 0 .5rem; margin: 0 0 .75rem; scrollbar-width: thin; }
+  .class-pick a { display: inline-flex; flex: none; align-items: center; gap: .35rem; padding: .2rem .6rem .2rem .25rem; border: 1px solid var(--line); border-radius: 2rem; background: var(--panel); color: var(--fg); text-decoration: none; font-size: .85rem; white-space: nowrap; }
+  .class-pick a:hover { border-color: var(--accent); }
+  .class-pick a[aria-current] { border-color: var(--accent); color: var(--accent-2); }
+  .class-pick img, .class-pick .ph { width: 26px; height: 26px; object-fit: contain; }
+  .group-jump { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0 0 .5rem; }
+  .group-jump .muted { font-size: .75rem; }
+  .skill-group { margin-top: 1.25rem; scroll-margin-top: 5rem; }
+  .skill-group h2 { margin-bottom: .15rem; }
+  .sk-tiles { list-style: none; margin: .6rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr)); gap: .5rem; }
+  .sk-tiles li { scroll-margin-top: 5rem; }
+  .sk-tile { display: flex; align-items: center; gap: .7rem; height: 100%; padding: .6rem .7rem; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); color: var(--fg); text-decoration: none; }
+  .sk-tile:hover { border-color: var(--accent); color: var(--fg); }
+  li:target .sk-tile { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .sk-ico { width: 44px; height: 44px; flex: none; object-fit: contain; border-radius: .35rem; background: radial-gradient(circle at 50% 40%, #222a3d, #0b0d12 75%); }
+  .sk-ico.ph { display: block; border: 1px dashed var(--line-2); background: none; }
+  .sk-body { display: flex; flex-direction: column; gap: .1rem; min-width: 0; flex: 1; }
+  .sk-body b { color: var(--accent-2); font-weight: 600; }
+  .sk-meta, .sk-req { font-size: .8rem; color: var(--muted); }
+  .sk-req { color: var(--fg); opacity: .85; }
+  .sk-how { font-size: .82rem; color: var(--accent-2); }
+  .s21 { margin-left: .35rem; padding: 0 .35rem; border: 1px solid var(--line-2); border-radius: .3rem; font-size: .7rem; }
+  .sk-go { color: var(--muted); font-size: 1.4rem; line-height: 1; }
+  @media (pointer: coarse) { .class-pick a { min-height: 2.5rem; } }
+</style>

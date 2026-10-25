@@ -2,7 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import PageHead from "../../components/PageHead.astro";
 import { builds, rulesets, skills as classSkills, fmt } from "../../lib/data";
-import { findSkill } from "../../lib/skills";
+import { findSkill, skillUrl } from "../../lib/skills";
 import { setProgression } from "../../lib/view";
 import { simulateBuild, levelForRequirement, STAT_LABELS, encodeState, emptyAllocation, type Stat } from "../../lib/planner";
 
@@ -21,10 +21,10 @@ const lastLevel = Math.min(cls.max_level_points ?? 400, cls.max_level);
 const perLevel = simulateBuild(cls, build, lastLevel, 0, {}, 1).curve;
 const checkpoints = perLevel.filter((p) => p.level === 1 || p.level % 50 === 0 || p.level === lastLevel);
 const final = perLevel[perLevel.length - 1];
-// Cada skill aponta para a descrição dela na página de skills da classe (/skills/<classe>/#<skill>).
+// Cada skill aponta para a página dela (/skills/<classe>/<skill>/): descrição, requisitos, onde dropa e vídeo.
 const skills = (build.skills ?? []).map((sk) => {
   const found = findSkill(classSkills, build.class_id, sk.name);
-  return { ...sk, level: levelForRequirement(perLevel, sk.req), href: found ? `/skills/${build.class_id}/#${found.skill_id}` : null };
+  return { ...sk, level: levelForRequirement(perLevel, sk.req), href: found ? skillUrl(found) : null };
 })
   .sort((a, b) => (a.level ?? 9999) - (b.level ?? 9999));
 // Em cada 20 pontos, quanto vai para cada atributo (arredondado): o jeito fácil de seguir a proporção no jogo.

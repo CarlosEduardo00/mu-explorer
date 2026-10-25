@@ -29,6 +29,8 @@ ELEMENTS = {"fire", "water", "earth", "wind", "darkness", "light", "lightning", 
 
 _DIV = re.compile(r'<div id="skill_([bsm])(\d+)">(.*?)</div>', re.S)
 _LI = re.compile(r"<li>(.*?)(?=<li>|</li>|<ul>|</ul>)", re.S)
+# Prévia animada da skill (GIF/JPG) que o script mostra ao clicar na árvore; nem toda skill tem.
+_PREVIEW = re.compile(r"getElementById\('skill_([bsm]\d+)'\)\.style\.display='block';\s*\w+\[0\]\.innerHTML=\s*'<img src=\"([^\"]+)\"", re.S)
 
 
 def _text(fragment: str) -> str:
@@ -152,11 +154,13 @@ def parse_skill(tree: str, number: str, body: str) -> tuple[dict, list[str]]:
 
 def parse_class_skills(html: str) -> tuple[list[dict], list[str]]:
     """HTML do guia de classe -> (skills na ordem da árvore, linhas de requisito não mapeadas)."""
+    previews = {sid: url.replace("http://", "https://") for sid, url in _PREVIEW.findall(html)}
     skills, unmapped, seen = [], [], set()
     for tree, number, body in _DIV.findall(html):
         if "<text-subtitle>" not in body:
             continue
         skill, lines = parse_skill(tree, number, body)
+        skill["preview_url"] = previews.get(f"{tree}{number}")
         if not skill["name"] or skill["id"] in seen:
             continue
         seen.add(skill["id"])

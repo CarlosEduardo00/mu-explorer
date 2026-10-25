@@ -2,9 +2,10 @@
 import Base from "../../layouts/Base.astro";
 import PageHead from "../../components/PageHead.astro";
 import Card from "../../components/Card.astro";
-import { items, itemById, npcs, skills, rulesets, spotMapIds, spotsUrl, fmt } from "../../lib/data";
+import DropSources from "../../components/DropSources.astro";
+import { items, itemById, skills, rulesets, fmt } from "../../lib/data";
 import { itemView, familyOf, familyName, itemSources } from "../../lib/view";
-import { gradeLabel, statRows, optionGroupLabel, ALL_CLASSES, ACQUISITION_LABELS } from "../../lib/taxonomy";
+import { gradeLabel, statRows, optionGroupLabel, ALL_CLASSES } from "../../lib/taxonomy";
 
 export function getStaticPaths() {
   return items.map((item) => ({ params: { id: item.id }, props: { item } }));
@@ -25,30 +26,6 @@ for (const c of item.classes) {
   const f = familyOf(c) ?? c;
   byFamily.set(f, [...(byFamily.get(f) ?? []), c]);
 }
-// De onde vem o item: monstros (com mapa e melhor spot), NPCs que vendem e as frases de "como conseguir".
-const sources = itemSources(item);
-const { droppers, sellers, notes } = sources;
-const placeCount = new Set(droppers.flatMap((d) => d.places.map((p) => p.map.id))).size;
-// Destaques para farmar: monstros de menor nível que têm spot conhecido; empate pelo spot com mais deles.
-const bestSpots = droppers.flatMap((d) => {
-  const best = d.places.map((p) => p.spot).filter((r) => r !== null).sort((x, y) => y!.count - x!.count)[0];
-  return best ? [{ monster: d.monster, ref: best }] : [];
-}).sort((a, b) => (a.monster.level ?? 0) - (b.monster.level ?? 0) || b.ref.count - a.ref.count).slice(0, 3);
-// Uma linha por monstro e mapa: a relação direta item -> monstro -> mapa -> spot.
-const rows = droppers.flatMap((d) => (d.places.length ? d.places : [null]).map((place, i) => ({ d, place, first: i === 0, span: Math.max(1, d.places.length) })));
-const levelText = (min: number | null, max: number | null) =>
-  min == null ? "" : min === max ? `nv ${fmt(min)}` : `nv ${fmt(min)}–${fmt(max)}`;
-const plural = (n: number, one: string, many: string) => `${fmt(n)} ${n === 1 ? one : many}`;
-// Nomes de NPC citados nas frases de "como conseguir" viram link para a página do NPC.
-const npcNames = [...npcs].sort((a, b) => b.name.length - a.name.length);
-const linkNpcs = (text: string): (string | { id: string; name: string })[] => {
-  for (const npc of npcNames) {
-    const i = text.toLowerCase().indexOf(npc.name.toLowerCase());
-    if (i >= 0) return [...linkNpcs(text.slice(0, i)), { id: npc.id, name: text.slice(i, i + npc.name.length) }, ...linkNpcs(text.slice(i + npc.name.length))];
-  }
-  return text ? [text] : [];
-};
-const noteKinds = [...new Set(notes.map((n) => n.kind))].filter((k) => !(k === "drop" && droppers.length) && !(k === "npc" && sellers.length));
 const related = item.related_items.map((id) => itemById.get(id)).filter((i) => i !== undefined);
 // Skills que o item ensina (orb, scroll, livro): link para a descrição na página de skills da classe.
 const teaches = skills.filter((s) => s.learn.item_id === item.id)
@@ -65,7 +42,7 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
       {item.season && <li class="chip">{item.season}</li>}
     </ul>
     {teaches.length > 0 && (
-      <p class="teaches">Ensina a skill {teaches.map(({ s, cls }, i) => <>{i > 0 && ", "}<a href={`/skills/${s.class_id}/#${s.skill_id}`}><span lang="en" translate="no">{s.name}</span> ({cls})</a></>)}</p>
+      <p class="teaches">Ensina a skill {teaches.map(({ s, cls }, i) => <>{i > 0 && ", "}<a href={`/skills/${s.class_id}/${s.skill_id}/`}><span lang="en" translate="no">{s.name}</span> ({cls})</a></>)}</p>
     )}
   </PageHead>
 
@@ -113,98 +90,7 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
     </>
   )}
 
-  <h2 id="onde-dropa">Onde conseguir</h2>
-  {(droppers.length > 0 || sellers.length > 0 || notes.length > 0)
-    ? (
-      <ul class="chips how">
-        {droppers.length > 0 && <li><a class="chip gold" href="#onde-dropa-tabela">Dropa de {plural(droppers.length, "monstro", "monstros")}{placeCount > 0 && <> em {plural(placeCount, "mapa", "mapas")}</>}</a></li>}
-        {sellers.length > 0 && <li><a class="chip gold" href="#vendido-por">Vendido por {plural(sellers.length, "NPC", "NPCs")}</a></li>}
-        {noteKinds.map((k) => <li><span class="chip">{ACQUISITION_LABELS[k]}</span></li>)}
-      </ul>
-    )
-    : <p class="muted">Nenhuma das fontes informa onde este item dropa ou como consegui-lo.</p>}
-
-  {notes.length > 0 && (
-    <ul class="panel lines how-notes">
-      {notes.map((n) => {
-        const linked = (text: string) => linkNpcs(text).map((part) => (typeof part === "string" ? part : <a href={`/npcs/${part.id}/`}>{part.name}</a>));
-        // Frase traduzida: português e o original em inglês (o seletor de idioma mostra uma).
-        return n.translated
-          ? <li><span class="tx" lang="pt-BR">{linked(n.text)}</span><span class="tx" lang="en">{linked(n.original)}</span></li>
-          : <li lang="en">{linked(n.text)}</li>;
-      })}
-    </ul>
-  )}
-
-  {droppers.length > 0 && (
-    <>
-      {bestSpots.length > 0 && (
-        <>
-          <h3 class="sub">Melhores lugares para farmar</h3>
-          <div class="farm-cards">
-            {bestSpots.map(({ monster, ref }) => (
-              <a class="farm-card" href={spotsUrl(ref.map_id, ref.n)}>
-                {monster.image_url && <img src={monster.image_url} alt="" loading="lazy" />}
-                <span>
-                  <strong>{ref.map_name} · spot {ref.n}</strong>
-                  <span>{ref.shared ? <>{monster.name}{monster.level != null && <> (nv {fmt(monster.level)})</>} · {ref.count} monstros no spot</> : <>×{ref.count} {monster.name}{monster.level != null && <> (nv {fmt(monster.level)})</>}</>}</span>
-                  <span class="muted">{levelText(ref.level_min, ref.level_max) && <>spot {levelText(ref.level_min, ref.level_max)} · </>}ver no mapa →</span>
-                </span>
-              </a>
-            ))}
-          </div>
-        </>
-      )}
-      <h3 class="sub" id="onde-dropa-tabela">Monstros que dropam, por mapa</h3>
-      <p class="muted small">Cada linha é um lugar para farmar: o monstro, o mapa em que ele aparece e o spot com mais dele nesse mapa.</p>
-      <div class="table-wrap">
-        <table class="drops-table">
-          <thead><tr><th>Monstro</th><th class="num">Nível</th><th>Mapa</th><th>Spot</th><th>Tabela</th></tr></thead>
-          <tbody>
-            {rows.map(({ d, place, first, span }) => (
-              <tr class:list={{ cont: !first }}>
-                {first && (
-                  <td rowspan={span}><a href={`/monstros/${d.monster.id}/`} class="name-cell">{d.monster.image_url && <img class="thumb" src={d.monster.image_url} alt="" loading="lazy" />}{d.monster.name}</a></td>
-                )}
-                {first && <td class="num" rowspan={span}><span class="m-only">nv </span>{fmt(d.monster.level)}</td>}
-                <td>{place ? <a href={`/mapas/${place.map.id}/`}>{place.map.name}</a> : <span class="muted">mapa não informado</span>}</td>
-                <td>
-                  {place?.spot
-                    ? <a href={spotsUrl(place.map.id, place.spot.n)}>spot {place.spot.n}</a>
-                    : place && spotMapIds.includes(place.map.id) ? <a class="muted" href={spotsUrl(place.map.id)}>ver mapa</a> : <span class="muted">—</span>}
-                  {place?.spot && <span class="muted"> {place.spot.shared ? `${place.spot.count} no spot` : `×${place.spot.count}`}</span>}
-                </td>
-                {first && (
-                  <td rowspan={span}>{d.tables.join(", ")}</td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </>
-  )}
-
-  {sellers.length > 0 && (
-    <>
-      <h3 class="sub" id="vendido-por">Vendido por</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>NPC</th><th>Onde fica</th><th>Detalhes</th><th class="num">Preço (Zen)</th></tr></thead>
-          <tbody>
-            {sellers.map((s) => (
-              <tr>
-                <td><a href={`/npcs/${s.npc.id}/`} class="name-cell">{s.npc.image_url && <img class="thumb" src={s.npc.image_url} alt="" loading="lazy" />}{s.npc.name}</a></td>
-                <td>{s.maps.map((m, i) => <>{i > 0 && ", "}<a href={`/mapas/${m.id}/`}>{m.name}</a></>)}</td>
-                <td>{s.details ?? "—"}</td>
-                <td class="num">{fmt(s.price)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </>
-  )}
+  <DropSources sources={itemSources(item)} />
 
   {related.length > 0 && (
     <>
@@ -219,29 +105,6 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
 </Base>
 <style>
   .opts { margin-bottom: .75rem; }
-  .how { margin-bottom: .75rem; }
-  .how-notes { list-style: disc; padding-left: 2rem; margin: 0 0 1rem; }
-  h3.sub { margin: 1.25rem 0 .5rem; font-size: .95rem; color: var(--accent-2); }
-  .drops-table td[rowspan] { vertical-align: top; }
-  .drops-table tr.cont td { border-top: 0; }
-  .m-only { display: none; }
-  /* Celular: cada monstro vira um cartão (nome e nível; tabela; uma linha por mapa com o spot à direita). */
-  @media (max-width: 40rem) {
-    .m-only { display: inline; color: var(--muted); font-weight: 400; }
-    .drops-table thead { display: none; }
-    .drops-table, .drops-table tbody { display: block; }
-    .drops-table tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .25rem .75rem; padding: .6rem .8rem .2rem; border-top: 1px solid var(--line); }
-    .drops-table tr.cont { border-top: 0; padding-top: .2rem; }
-    .drops-table tr:last-child, .drops-table tr:has(+ tr:not(.cont)) { padding-bottom: .6rem; }
-    .drops-table td { display: block; padding: 0; border: 0; }
-    .drops-table tr:not(.cont) > td:nth-child(1) { grid-row: 1; grid-column: 1; font-weight: 600; }
-    .drops-table tr:not(.cont) > td:nth-child(2) { grid-row: 1; grid-column: 2; align-self: center; }
-    .drops-table tr:not(.cont) > td:nth-child(5) { grid-row: 2; grid-column: 1 / -1; font-size: .8rem; color: var(--muted); }
-    .drops-table tr:not(.cont) > td:nth-child(3) { grid-row: 3; grid-column: 1; }
-    .drops-table tr:not(.cont) > td:nth-child(4) { grid-row: 3; grid-column: 2; text-align: right; }
-    .drops-table tr.cont > td:nth-child(2) { text-align: right; }
-    .drops-table tr > td:nth-child(3), .drops-table tr.cont > td:nth-child(1) { padding-left: 2.6rem; }
-  }
   .cols > section > h2 { margin-top: 1.25rem; }
   .chip .muted { font-size: .75rem; }
   .teaches { margin: .5rem 0 0; }

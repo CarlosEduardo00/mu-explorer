@@ -52,16 +52,18 @@ export interface FarmSpot {
   total: number; level_min: number | null; level_max: number | null; source: string | null; source_url: string | null;
   heat?: "hot" | "mid" | "low" | "boss";
 }
-/** Skill de uma classe (scrapers.skills): árvore do guia de classe do Fanz ou tabela do GMO (season S21). */
+/** Skill de uma classe (scrapers.skills): guia oficial (Guide MU Online) como base, com o Fanz e o GMO (season S21). */
 export interface Skill {
-  id: string; skill_id: string; class_id: string; order: number; name: string;
+  id: string; skill_id: string; class_id: string; order: number; name: string; aliases: string[];
   tree: "basic" | "special" | "item" | null; stage: "class" | "enhanced"; unlocked_as: string | null;
-  kind: string | null; description: string | null; effects: string[];
+  kind: string | null; description: string | null; effects: string[]; levels: string[];
   mana_cost: number | null; ag_cost: number | null; element: string | null; imprint_dmg_pct: number | null;
-  range: number | null; base_dmg: number | null;
+  range: number | null; cooldown_s: number | null; base_dmg: number | null; image_url: string | null; preview_url: string | null;
   requirements: { level: number | null; str: number | null; agi: number | null; vit: number | null; ene: number | null; cmd: number | null; other: string[] };
-  /** method: como se aprende; item_id: item do site; drops: só para item que o site não tem (listas do GMO). */
-  learn: { method: string | null; item_name: string | null; item_id: string | null; drops: { monster_id: string; map_id: string | null }[] };
+  /** method: como se aprende; item_id: item do site; drops: só para item que o site não tem (listas do GMO);
+   *  item_from_class: o item veio da mesma skill em outra classe. */
+  learn: { method: string | null; item_name: string | null; item_id: string | null; item_from_class: string | null;
+    drops: { monster_id: string; map_id: string | null }[] };
   season: string | null; source: string; source_url: string | null;
 }
 export interface MapMarker { map_id: string; kind: string; name: string; x: number | null; y: number | null; description: string | null }
@@ -108,8 +110,15 @@ export const farmSpots = load<FarmSpot>("farm_spots.json");
 /** Guias (aba de guias do Guide MU Online); vazio no conjunto sem essa fonte. */
 export const guides = load<import("./guides").Guide>("guides.json").map((g) => ({ ...g, image_urls: g.image_urls.map((u) => localImage(u) ?? u) }));
 export const mapMarkers = load<MapMarker>("map_markers.json");
-/** Skills por classe; vazio no conjunto sem o Fanz e o GMO. */
-export const skills = load<Skill>("skills.json");
+/** Skills por classe; vazio no conjunto sem o Fanz e o GMO. Ícones e prévias pela cópia local. */
+export const skills = load<Skill>("skills.json").map((s) => ({ ...s, image_url: localImage(s.image_url), preview_url: localImage(s.preview_url) }));
+/** Vídeos do YouTube com a skill em uso (curadoria nossa): por skill (<classe>/<skill>) e um por classe. */
+export interface Video { youtube: string; title: string }
+const videosPath = resolve(process.cwd(), "data", "curated", "skill_videos.json");
+const videosFile: { classes: Record<string, Video>; skills: Record<string, Video> } = existsSync(videosPath)
+  ? JSON.parse(readFileSync(videosPath, "utf-8")) : { classes: {}, skills: {} };
+export const skillVideo = (classId: string, skillId: string): Video | null => videosFile.skills[`${classId}/${skillId}`] ?? null;
+export const classVideo = (classId: string): Video | null => videosFile.classes[classId] ?? null;
 /** Tradução aproximada (nossa) das descrições das skills: original em inglês -> português. */
 const skillsPtPath = resolve(process.cwd(), "data", "curated", "translations", "skills.pt-BR.json");
 export const skillDescriptionsPt: Record<string, string> = existsSync(skillsPtPath) ? JSON.parse(readFileSync(skillsPtPath, "utf-8")).descriptions : {};

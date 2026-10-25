@@ -1,0 +1,343 @@
+{
+ "_about": "Vídeos do YouTube com a skill em uso, escolhidos por nós (busca na web, out/2026; muitos do servidor de teste oficial). `classes`: vídeo com as skills da classe, usado quando a skill não tem vídeo próprio. Chave das skills: <classe>/<skill>.",
+ "classes": {
+  "gun-crusher": {
+   "youtube": "nyfF9Wca4tc",
+   "title": "Gun Crusher Skills Mu Online"
+  },
+  "slayer": {
+   "youtube": "8qOwK4Z94ig",
+   "title": "MuOnline - Slayer Test Skills"
+  },
+  "grow-lancer": {
+   "youtube": "I0KaQalQnds",
+   "title": "Best Grow Lancer skills - Mu Online Season 19"
+  },
+  "dark-wizard": {
+   "youtube": "PYLOjysK4JY",
+   "title": "Global MU Online - Soul Master's skills"
+  },
+  "dark-knight": {
+   "youtube": "NcnqOG7dh1Y",
+   "title": "Class Renewal Dark Knight LvL 1226 - Mu Online Webzen S18.2.2"
+  },
+  "magic-gladiator": {
+   "youtube": "ReFnbDT413c",
+   "title": "Season 16 Part 2-2 Update - Magic Gladiator Renewal"
+  },
+  "dark-lord": {
+   "youtube": "DnGCCb-SbNs",
+   "title": "Dark Lord Renewal Mu Online S19 P2-1"
+  },
+  "summoner": {
+   "youtube": "cMGNFHGF3nQ",
+   "title": "Skill de Summoner"
+  },
+  "rage-fighter": {
+   "youtube": "xYSqTBO04Rc",
+   "title": "Rage Fighter Skills en Mu Online"
+  },
+  "rune-mage": {
+   "youtube": "YlAZ1TG8kDQ",
+   "title": "All Rune Mage Skills - Mu Online Renewal"
+  },
+  "white-wizard": {
+   "youtube": "LKHE53G-otQ",
+   "title": "Light Wizard (kundun) Mu Online Season 17 Skills"
+  },
+  "mage": {
+   "youtube": "YdQ_PHtkcr4",
+   "title": "Lemuria Mage Mu Online Season 17 Skills"
+  },
+  "illusion-knight": {
+   "youtube": "pzIHgjIWBe8",
+   "title": "Mu Online Season 18 Illusion Knight Skills"
+  },
+  "alchemist": {
+   "youtube": "MNgNZJcxKdo",
+   "title": "Mu Online Alchemist Skills"
+  },
+  "crusader": {
+   "youtube": "qzSRo2sp0vs",
+   "title": "Crusader Skills in Mu Online Season 21"
+  }
+ },
+ "skills": {
+  "alchemist/confusion-stone": {
+   "youtube": "YhG0gej2UZI",
+   "title": "Is Confusion Stone a Waste of Points? Testing Transmutation Rate - MU Online 2025 Webzen"
+  },
+  "crusader/divine-fall": {
+   "youtube": "SdMjFpJc7Cw",
+   "title": "Crusader Exclusive Skills (Mu Online Season 21)"
+  },
+  "crusader/holy-sweep": {
+   "youtube": "SdMjFpJc7Cw",
+   "title": "Crusader Exclusive Skills (Mu Online Season 21)"
+  },
+  "crusader/sacred-impact": {
+   "youtube": "SdMjFpJc7Cw",
+   "title": "Crusader Exclusive Skills (Mu Online Season 21)"
+  },
+  "dark-knight/blood-storm": {
+   "youtube": "GCWvAijr8Ck",
+   "title": "Nuevo Skill BM + COMBOS (Blood Storm Strengthener)"
+  },
+  "dark-knight/combo": {
+   "youtube": "Je0rLRdBooA",
+   "title": "Mu Online ::. Dark Knight Combo Skill"
+  },
+  "dark-knight/fire-blow": {
+   "youtube": "r1cptm_5nY4",
+   "title": "Mu Online Season 15.3 - Pure Strenght BM Fire Blow LVL 1200 PVM Guide (Test Server)"
+  },
+  "dark-knight/rageful-blow": {
+   "youtube": "R5V-BnM2D3Q",
+   "title": "bm rageful blow mu online webzen"
+  },
+  "dark-knight/solid-protection": {
+   "youtube": "5P4zx5vi5xM",
+   "title": "MU Online S15 Part2-2 Dragon Knight renewal"
+  },
+  "dark-knight/strike-of-destruction": {
+   "youtube": "9SU0SDL8Z-Q",
+   "title": "Webzen Mu Online eBM Blade Master Strike of Destruction skill"
+  },
+  "dark-knight/strong-belief": {
+   "youtube": "hPgYq9XLPZQ",
+   "title": "Mu Online - Dark Knight Belief!!!"
+  },
+  "dark-knight/sword-blow": {
+   "youtube": "VB9BmPlieUo",
+   "title": "Mu Online - New Skill Dark Knight - Sword blow"
+  },
+  "dark-knight/swords-fury": {
+   "youtube": "5P4zx5vi5xM",
+   "title": "MU Online S15 Part2-2 Dragon Knight renewal"
+  },
+  "dark-knight/twisting-slash": {
+   "youtube": "MJmEsg9QSoE",
+   "title": "Twisting Slash"
+  },
+  "dark-lord/chaotic-diseier": {
+   "youtube": "kuYwk1A5QAo",
+   "title": "Mu Online Season 15.1 - EDL Chaotic Disaeier PVM LVL 1200 Guide (Test Server)"
+  },
+  "dark-lord/fire-burst": {
+   "youtube": "Lsz32_Jqs3U",
+   "title": "Mu Online Season 15.1 - Stamper DL (Pure Vit) Fire Burst PVM LVL 1200 Guide (Test Server)"
+  },
+  "dark-lord/spirit-blast": {
+   "youtube": "ywhRfgNJ5nc",
+   "title": "Rework Dark Lord 1500+ Build Spirit Blast of Fury - Mu Online"
+  },
+  "dark-lord/wind-soul": {
+   "youtube": "Z31zQ2i0frE",
+   "title": "Wind Soul, a skill Master lvl do DL - Mu Global"
+  },
+  "dark-wizard/evil-spirit": {
+   "youtube": "TWsiHW1xgeg",
+   "title": "Mu Online Season 15.3 - Agility SM (Support) Evil Spirit PVM LVL 1200 Guide (Test Server)"
+  },
+  "dark-wizard/expansion-of-wizardry": {
+   "youtube": "JFUoOFESs4o",
+   "title": "EXPANSION OF WIZARDRY MASTERY"
+  },
+  "dark-wizard/meteor-storm": {
+   "youtube": "0Q3cVcydvW8",
+   "title": "MU Online: Season 11 Dark Wizard - Meteor Storm skill"
+  },
+  "dark-wizard/meteor-strike": {
+   "youtube": "3OIcG03T6SU",
+   "title": "Mu Online Season 15.3 - SM Meteor Strike PVM LVL 1200 Guide (Test Server)"
+  },
+  "dark-wizard/soul-barrier": {
+   "youtube": "DNDPkU4ySb4",
+   "title": "Builds - 100% Soul Barrier Agility Wizard."
+  },
+  "fairy-elf/dex-booster": {
+   "youtube": "N7s788S40BA",
+   "title": "Dex Booster - Mu Online"
+  },
+  "fairy-elf/focus-shot": {
+   "youtube": "5QtlDtLFgjw",
+   "title": "Mu Online Season 15.1 - Agility Elf Focus Shot PVM LVL 1200 Guide (Test Server)"
+  },
+  "fairy-elf/holy-bolt": {
+   "youtube": "t7O383DDWzs",
+   "title": "New Energy Elf Holy Bolt Support Type - Mu Online Webzen S17.2.2"
+  },
+  "fairy-elf/ice-arrow": {
+   "youtube": "pqaGZyLt8lE",
+   "title": "[Mu Online] About Elf Skill Damage (Ice Arrow vs Focus Shot)"
+  },
+  "fairy-elf/infinity-arrow": {
+   "youtube": "GAEA81e-BTY",
+   "title": "Mu Online - Infinity Arrow Working"
+  },
+  "fairy-elf/multi-shot": {
+   "youtube": "cHWHdL3j7G0",
+   "title": "Mu Online Season 15.1 - Agility Elf Multi Shot vs Lord Silvester (Test Server)"
+  },
+  "fairy-elf/poison-arrow": {
+   "youtube": "93gNNNdTbBY",
+   "title": "Skill Poison Arrow - Nueva Elf Mu Online"
+  },
+  "fairy-elf/raining-arrow": {
+   "youtube": "C4aS25hC-TY",
+   "title": "Raining Arrow - Mu Online"
+  },
+  "fairy-elf/triple-shot": {
+   "youtube": "vY1D6hxykcI",
+   "title": "Mu Online Season 15.1 - Agility Elf Triple Shot PVM vs Nixie (Test Server)"
+  },
+  "grow-lancer/breche": {
+   "youtube": "UJcH0DdKu6E",
+   "title": "Mu Online Season 15.1 - SGL Breach PVM LVL 1200 - Guide (Test Server)"
+  },
+  "grow-lancer/magic-pin": {
+   "youtube": "O1OCAz_C3DI",
+   "title": "Mu Online Season 15.1 - AGL Magic Pin PVM LVL 1200 Guide (Test Server)"
+  },
+  "grow-lancer/oversting": {
+   "youtube": "ueBmWjy2iPM",
+   "title": "MuOnline lancer Oversting skill"
+  },
+  "grow-lancer/shining-peak": {
+   "youtube": "WmVVYU9r9BU",
+   "title": "Mu Online Season 15.1 - AGL Shinning Peak PVM LVL 1200 Guide (Test Server)"
+  },
+  "gun-crusher/bursting-flare": {
+   "youtube": "Z-zcfkFemtk",
+   "title": "Busting Flare - Master GunCrusher Mu online Season 16"
+  },
+  "gun-crusher/dark-plasma": {
+   "youtube": "I-n0HapKqhs",
+   "title": "Dark Plasma skill - GunBreaker Mu online Season 16"
+  },
+  "gun-crusher/death-fire": {
+   "youtube": "z5gu7U3wCys",
+   "title": "Death Fire and Death ice - GunBreaker Mu Online Season 16"
+  },
+  "gun-crusher/death-ice": {
+   "youtube": "z5gu7U3wCys",
+   "title": "Death Fire and Death ice - GunBreaker Mu Online Season 16"
+  },
+  "gun-crusher/fixed-fire": {
+   "youtube": "nLDPTcUFdXs",
+   "title": "Mu Online - Build/ Tree/ 4Tree GunCrusher - Ice Blast Skill - New Buff Fixed Fire - Season 16.2"
+  },
+  "gun-crusher/ice-blast": {
+   "youtube": "8PSJpvVQGlY",
+   "title": "Ice Blast mastery - Master GunCrusher Mu Online Season 16"
+  },
+  "gun-crusher/ice-break": {
+   "youtube": "3mKxYbeKJEU",
+   "title": "Ice Break Skill - GunCrusher Mu Online Season 16"
+  },
+  "illusion-knight/blade-storm": {
+   "youtube": "fhaLuYfGXYU",
+   "title": "Ilusion Knigth BladeStrom"
+  },
+  "illusion-knight/charge-slash": {
+   "youtube": "iatr75rXjUc",
+   "title": "Mu Webzen Season 18.1 - Illusion Knight Charging Slash Build"
+  },
+  "magic-gladiator/blood-storm": {
+   "youtube": "FZpavqo-QuY",
+   "title": "[Before Magic Gladiator Renewal] Testing Blood Storm & Earth Prison skills on Nars"
+  },
+  "magic-gladiator/chaos-blade": {
+   "youtube": "q8HGH18x4b8",
+   "title": "El Chaos Blade destruye todo!!"
+  },
+  "magic-gladiator/dark-blast": {
+   "youtube": "67l1ShvlW6o",
+   "title": "Mu Online Season 15.1 - Energy MG Dark Blast PVM LVL 1200 Guide (Test Server)"
+  },
+  "magic-gladiator/earth-prison": {
+   "youtube": "FZpavqo-QuY",
+   "title": "[Before Magic Gladiator Renewal] Testing Blood Storm & Earth Prison skills on Nars"
+  },
+  "magic-gladiator/fire-blood": {
+   "youtube": "5FnvEnqiv2Y",
+   "title": "Mu Online Season 15.1 - Strenght MG Fire Blood PVM LVL 1200 Guide (Test Server)"
+  },
+  "magic-gladiator/gigantic-storm": {
+   "youtube": "c8bRDkRG9YM",
+   "title": "Mu Online Season 15.1 - Pure Energy MG Gigantic Storm PVM LVL 1200 Guide (Test Server)"
+  },
+  "magic-gladiator/havok-spear": {
+   "youtube": "zLp8gOyEIj4",
+   "title": "MG Renewal - New Skill Havok Spear - MU Online Season 16 Part 2"
+  },
+  "rage-fighter/dark-phoenix-shot": {
+   "youtube": "PewksjiEPHU",
+   "title": "Dark phoenix shot season 11 Rage Fighter"
+  },
+  "rage-fighter/dark-side": {
+   "youtube": "SdQA-n5Eb8w",
+   "title": "Mu Online Rage Fighter Skill Dark Side"
+  },
+  "rage-fighter/dragon-roar": {
+   "youtube": "4yDXWuuEbQU",
+   "title": "Mu Online Season 15.3 - Hibrid Energy RF Dragon Roar PVM LVL 1200 Vs God of Darkness (Test Server)"
+  },
+  "rage-fighter/spirit-hook": {
+   "youtube": "3_TVLDEcoMo",
+   "title": "Mu Online Season 15.3 - Pure Vit RF Spirit Hook PVM LVL 1200 Guide (Test Server)"
+  },
+  "rune-mage/lightning-storm": {
+   "youtube": "oqWFZLs4yBo",
+   "title": "Lightning Storm Skill Rune Wizard Season 14 Mu Online"
+  },
+  "rune-mage/magic-arrow": {
+   "youtube": "gX4fbNUHQcE",
+   "title": "Magic Arrow Skill Rune Wizard Season 14 Mu Online"
+  },
+  "rune-mage/plasma-ball": {
+   "youtube": "ETc4E-HyLDA",
+   "title": "Plasma Ball Skill Rune Wizard Season 14 Mu Online"
+  },
+  "slayer/bat-flock": {
+   "youtube": "GyqxHkYQqc0",
+   "title": "Mu Online Season 15.3 - Hibrid Slayer Bat Flock PVM LVL 1200 Guide (Test Server)"
+  },
+  "slayer/demolish": {
+   "youtube": "PXwpkWqVq1g",
+   "title": "MMO RPG mu online season 15-2 Demolish Skill Slayer"
+  },
+  "slayer/detection": {
+   "youtube": "N8X1sL7sYKA",
+   "title": "Slayer Show the Detection skill"
+  },
+  "slayer/pierce-attack": {
+   "youtube": "WdnNtLn8DAY",
+   "title": "Mu Online Season 15.3 - Agi Slayer Pierce Attack PVM LVL 1200 Guide (Test Server)"
+  },
+  "slayer/sword-inertia": {
+   "youtube": "SxIZPrJ0gpw",
+   "title": "Mu Online Season 15.3 - Str Slayer Sword Inertia PVM LVL 1200 vs Nixie (Test Server)"
+  },
+  "summoner/aqua-beast": {
+   "youtube": "4rhP8rECNE4",
+   "title": "Build Summoner PVP-PVM With Aqua Beast Skill - MU Online Season 15"
+  },
+  "summoner/death-scythe": {
+   "youtube": "zCwAATY--Wo",
+   "title": "Death Scythe skill Master Level Summoner - Mu Online"
+  },
+  "summoner/fire-beast": {
+   "youtube": "FCjIdLJm3S0",
+   "title": "Mu Online Season 15.3 - Sum Fire Beast PVM LVL 1200 Guide (Test Server)"
+  },
+  "summoner/lightning-shock": {
+   "youtube": "BG1bovsErcU",
+   "title": "Mu Online Season 15.1 - Sum Lighting Shock PVM LVL 1200 Guide (Test Server)"
+  },
+  "white-wizard/spear-storm": {
+   "youtube": "SPgLeAzq1f0",
+   "title": "Kundun Mephis + 1 Point Spear Storm Skill MU ONLINE"
+  }
+ }
+}
