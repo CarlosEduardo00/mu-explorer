@@ -36,13 +36,17 @@ python -m scrapers.gmo fetch                         # guias do Global MU Online
 python -m scrapers.gmo fetch-drops                   # listas de drop por mapa do GMO (/drop/location, 111 páginas, ~2 min)
 python -m scrapers.gmo parse                         # -> data/processed/gmo/ (mapas, monstros c/ imagem, spawns, marcadores,
                                                      #    drop_lists.json = mapa -> monstro -> itens, formato compacto)
-python -m scrapers.guidemu fetch                     # Guide MU Online: JS com mapas/spots/monstros + 70 imagens de mapa (~1,5 min)
+python -m scrapers.guidemu fetch                     # Guide MU Online: JS com mapas/spots/monstros/skills + 70 imagens de mapa (~1,5 min)
 python -m scrapers.guidemu fetch-guides              # aba de guias (18 páginas, sitemap) renderizada no Chromium, ~1 min
                                                      #    (precisa de `pip install -e ".[render]"`: Playwright)
-python -m scrapers.guidemu parse                     # -> data/processed/guidemu/ (monsters, spots, groups, map_images, guides)
+python -m scrapers.guidemu parse                     # -> data/processed/guidemu/ (monsters, spots, groups, map_images, guides,
+                                                     #    skills e skill_tree = skills oficiais por classe)
 python -m scrapers.terrain                           # terreno (.att do MuEmu; imagens do guia nos mapas sem .att)
                                                      #    -> data/processed/terrain/terrains.json (mapas vetoriais)
 python -m scrapers.media list|fetch                  # imagens usadas pelo site -> site/public/media/ + data/media.json (1 req/s)
+                                                     #    (compact: prévias GIF das skills -> WebM + MP4 com ffmpeg, ~7x menor)
+python -m scrapers.skills                            # skills de cada classe (guia oficial + guias de classe do Fanz e do GMO já baixados)
+                                                     #    -> data/processed/combined/skills.json (rodar depois do combine)
 ```
 
 `parse` nunca acessa a rede: dá para refazer o parsing quantas vezes quiser sem rebaixar nada.
@@ -53,7 +57,7 @@ Site (Astro, Node 22, publicado no Cloudflare Workers com Static Assets; saída 
 npm install          # Astro e Wrangler (versões fixas em package.json)
 npm run dev          # servidor local em http://localhost:4321 (hot reload)
 npm run build        # gera ~3.500 páginas estáticas em site/dist (~8 s)
-npm run test:site    # testes do planner, da API, da taxonomia, dos guias e do inglês (node --test, sem dependências)
+npm run test:site    # testes do planner, da API, da taxonomia, dos guias, das skills e do inglês (node --test, sem dependências)
 npm run i18n:check   # depois do build: textos das páginas sem tradução para o inglês (também roda no CI)
 npm run check        # dry run do deploy dos dois ambientes (o Wrangler roda o build sozinho)
 npm run deploy:hml   # publicação manual (precisa de `npx wrangler login`); normalmente quem publica é o Git
@@ -96,12 +100,17 @@ scrapers/combine.py  cruzamento Fanz + MuEmu (Fanz é a base; MuEmu só preenche
 scrapers/planner/  build.py: regras de classes (pontos por nível, base, evolução) -> data/curated/planner.json
 scrapers/gmo/      cli.py (fetch pelo sitemap), parse.py (guias de mapa: zonas de spawn, cards, marcadores)
 scrapers/guidemu/  bundle.py (JS do site: tabela de chunks ofuscada, JSON em string), cli.py, parse.py, places.py
-                   (mapa/zona do guia -> mapa do site), render.py (Chromium headless para os guias), guides.py (guia -> blocos)
+                   (mapa/zona do guia -> mapa do site), render.py (Chromium headless para os guias), guides.py (guia -> blocos),
+                   skills.py (skills das páginas de classe e árvore de melhorias da 4ª classe)
 scrapers/terrain.py  mapas vetoriais: terreno .att do MuEmu (ou imagens do guia) -> contornos SVG (chão, zona segura)
 scrapers/media.py  cópia local das imagens do site (site/public/media + data/media.json)
+scrapers/skills/   fanz.py (árvore de skills dos guias de classe do Fanz), gmo.py (tabela de skills dos guias do GMO),
+                   build.py (junta guia oficial, Fanz e GMO, liga cada skill ao item que a ensina e, sem item no site, aos
+                   drops do GMO)
 scrapers/spots.py  spots de farm: os do Guide MU Online; fora dele, agrupa spawns do MuEmu -> farm_spots.json
-data/curated/      arquivos curados por nós, commitados: planner.json, builds.json e translations/guides.pt-BR.json
-                   (tradução aproximada dos guias, nossa)
+data/curated/      arquivos curados por nós, commitados: planner.json, builds.json, skill_videos.json (vídeo do YouTube por
+                   skill e por classe, escolhidos à mão) e translations/guides.pt-BR.json e translations/skills.pt-BR.json
+                   (traduções aproximadas dos guias e das descrições de skill, nossas)
 docs/              rascunhos e notas (ex.: pedido de acesso ao muonline.us)
 schema/            JSON Schema (draft 2020-12) de cada entidade publicada
 data/raw/          HTML bruto + .meta.json por página (fora do git)
@@ -121,7 +130,11 @@ site/src/          Astro: layouts/Base (tema escuro com dourado, Cinzel nos tít
                    drop, tipos de NPC; com testes), lib/view.ts (taxonomia aplicada aos dados), lib/planner.ts (lógica
                    pura do planner + testes), pages/ (início, itens, monstros, mapas, npcs: catálogo + página por
                    registro; mapas/<id>/mapa.svg = miniatura vetorial; spots/ = área separada: mapas em
-                   cartões com as subcategorias e spots/<mapa>/ (?zona=...) com o mapa interativo; builds/ = builds prontas do oficial para seguir (proporção,
+                   cartões com as subcategorias e spots/<mapa>/ (?zona=...) com o mapa interativo; skills/ = skills de cada classe (lib/skills.ts: tipo, elemento,
+                   efeitos e requisitos em português, nomes das builds -> skill; com testes): página da classe com as skills
+                   agrupadas por como se aprendem e uma página por skill (/skills/<classe>/<skill>/: descrição, requisitos,
+                   propriedades, item, onde dropa com components/DropSources, o mesmo da página do item, e vídeo com
+                   components/VideoEmbed, que só carrega o YouTube no clique); builds/ = builds prontas do oficial para seguir (proporção,
                    skills por nível, atributos por nível, sets de mastery por nível, vídeos); guias/ = guias do Guide MU Online
                    (lib/guides.ts, components/GuideBlocks + GuideText: texto em português ou inglês); planner/; data/ = JSON
                    estático; api/ = API estática)
@@ -285,7 +298,14 @@ o que foi mapeado antes do bloqueio.
 - Site em React: não há HTML com dados. Mapas (43, com zonas: andares e áreas) e monstros (331) vêm embutidos como JSON
   em strings dos chunks JS (`static/js/<id>.<hash>.chunk.js`). O `main.js` é ofuscado (javascript-obfuscator): a tabela
   id -> hash sai da tabela de strings rotacionada, usando 'static/js/' e '.chunk.js' como âncoras (`bundle.py`). Os ids
-  8413 (mapas) e 4972 (monstros) são tentados primeiro; se mudarem, o fetch varre os chunks (1 req/s).
+  8413 (mapas), 4972 (monstros), 2044 (skills) e 5606 (árvore de melhorias) são tentados primeiro; se mudarem, o fetch
+  varre os chunks (1 req/s) atrás dos marcadores `cantidadmobs`, `minattack`, `typeSkill` e `pagina` (sem aspas nem espaço:
+  no JS eles vêm escapados como \x22 e \x20).
+- Skills (páginas `/characters/<classe>`, chunk 2044): nome, ícone (Firebase), classes (`equipado`; "Lemuria" = Mage,
+  "Rune Wizard" = Rune Mage, "Kundun Mephis" = White Wizard; não tem Crusader), requisitos atuais, skill anterior, pontos de
+  mestre, mana/AG/alcance/recarga/dano base/imprint, descrição e tipo (`acquired` = item, weapon, master, pet, default, quest).
+  Árvore de melhorias da 4ª classe (chunk 5606): só os nós que são skills ("Bat Flock Enhancement", "<X> Enhancement
+  Skill"), com o valor por ponto. O guia não traz requisitos das skills do Illusion Knight (vêm do GMO).
 - Spot: coordenada, `cantidadmobs` (quantidade de monstros, 3 a 10), `tipo` low/medium/high (-> heat low/mid/hot) e os
   monstros; a quantidade de cada monstro só existe com um monstro no spot (`count` null quando há mais de um).
 - Imagens de spots (Firebase Storage do site): o minimapa do jogo, girado 45°, fundo transparente. A transformação
@@ -345,6 +365,29 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
   (normal/excellent/ancient/socket/unknown), table, category, quantity, rate (null se a fonte não informa).
   Um drop do Fanz significa "o monstro pode dropar este item"; não há taxa.
 - `source`: id, name, url, scraped_at, credit, revision (commit da fonte, quando houver; ex.: MuEmu).
+- `skill` (`skills.json`, schema `skill.schema.json`, gerado por `python -m scrapers.skills`): id `<classe>--<skill>`, class_id,
+  name, tree (basic/special/item do Fanz), stage (class ou enhanced = 4ª/5ª classe), unlocked_as, kind, description (inglês
+  da fonte), effects, mana/AG, element, requisitos (nível, atributos, `other` em texto) e `learn` {method: item/weapon/
+  mount/master/quest/castle-siege/default/enhance-tree/null, item_name, item_id, drops, item_from_class}, aliases, cooldown_s,
+  levels (árvore de melhorias), image_url (ícone do guia) e preview_url (GIF do Fanz). Ordem das fontes: **guia oficial**
+  (Guide MU Online: requisitos, custos, ícone, tipo; 15 classes) completado pelo **Fanz** (item que ensina, efeitos,
+  elemento, descrição; 10 classes; layout do MG diferente: "learned via <strong>X</strong>"; `FANZ_TO_GUIDE` = mesmo skill
+  com outro nome), depois a árvore de melhorias do guia e, por último, o **GMO** (S21, `season: "S21"`): Crusader inteiro e,
+  nas outras, só o que falta (`GMO_TO_GUIDE`/`GMO_TO_FANZ` evitam repetir, ex.: Anger Strike = Rageful Blow). Skill do guia
+  sem requisito em nenhuma fonte oficial (Illusion Knight, Fixed Fire) pega requisitos e custos do GMO e vira `season: "S21"`
+  (a página avisa). Skill que o guia lista para várias classes (Fire Ball) usa o item da mesma skill em outra classe quando
+  a classe não tem o dela (`item_from_class`, a página diz de qual classe).
+  O item da skill liga ao item do site pelo nome, por grafias (`ITEM_ALIASES`) e pelas variantes do cruzamento; nas classes
+  só do GMO, pelo nome da skill ("Orb of Ice Break"), só quando o item é da própria classe. Item que o site não tem e
+  que aparece nas listas de drop do GMO ("Shining Bird Law Book") guarda os drops em `learn.drops`. IK, Alchemist e
+  Crusader não têm item de skill nas fontes. Descrições em português: `data/curated/translations/skills.pt-BR.json`
+  (tradução nossa; o site mostra o original quando falta). Vídeos: `data/curated/skill_videos.json` (`skills`:
+  "<classe>/<skill>" -> YouTube; `classes`: vídeo geral da classe, usado quando a skill não tem um), vídeos de jogadores
+  achados na busca do YouTube, conferidos pelo título; a página também liga para a busca do YouTube. Builds ligam o nome da skill à descrição por `findSkill`
+  (apelidos conferidos pelos requisitos: Water Blow = Sword Blow, Retaliation = Luguard's Protection: Punishment...).
+- Itens de skill no cruzamento: o Fanz e o MuEmu escrevem itens de skill em outra ordem ("Healing Orb" = "Orb of Healing");
+  os que só o MuEmu tem (orbs do Slayer e do Gun Crusher, da 4ª classe do DK, livros do Rune Wizard) entram com os dados
+  dele; nas listas do GMO, "X Bead" = "Orb of X", "X Act" = "X Book" e grafias avulsas (`GMO_SKILL_ITEM_ALIASES`).
 - `builds` (`data/curated/builds.json`, schema `builds.schema.json`, gerado por `python -m scrapers.planner builds` em
   `scrapers/planner/builds.py`): builds prontas para seguir, **só do MU Online oficial da Webzen** (pedido do dono:
   nada de servidor modificado; há teste que só aceita fontes do Fanz e da Webzen). 29 builds, 16 classes:

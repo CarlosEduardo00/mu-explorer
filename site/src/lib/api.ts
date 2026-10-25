@@ -20,6 +20,7 @@ export const ENTITIES = [
   { key: "npcs", label: "NPCs", detail: true },
   { key: "spawns", label: "Spawns", detail: false },
   { key: "drops", label: "Drops", detail: false },
+  { key: "skills", label: "Skills", detail: false },
   { key: "sources", label: "Fontes", detail: false },
 ] as const;
 
@@ -113,6 +114,7 @@ const INDEXES: Partial<Record<EntityKey, string[]>> = {
   monsters: ["name", "level"],
   spawns: ["monster_id", "map_id"],
   drops: ["monster_id", "item_id"],
+  skills: ["class_id", "name"],
 };
 
 function flatten(row: Row): Row {

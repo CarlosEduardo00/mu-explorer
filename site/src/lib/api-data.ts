@@ -2,7 +2,7 @@
  * Liga os dados do build (lib/data.ts) à API (lib/api.ts). Só o conjunto do build entra: em hml/prod é o
  * `muemu`; o `combined` (com Fanz) só aparece em build local, como no resto do site.
  */
-import { sourceItems as items, sourceMonsters as monsters, sourceMaps as maps, sourceNpcs as npcs, spawns, drops, sources, datasetName, monsterById, mapById } from "./data";
+import { sourceItems as items, sourceMonsters as monsters, sourceMaps as maps, sourceNpcs as npcs, spawns, drops, skills, sources, datasetName, monsterById, mapById } from "./data";
 import { buildManifest, type Dataset } from "./api";
 
 type Row = Record<string, unknown>;
@@ -10,7 +10,7 @@ const rows = (list: object[]) => list as Row[];
 
 export const apiData: Dataset = {
   items: rows(items), monsters: rows(monsters), maps: rows(maps), npcs: rows(npcs),
-  spawns: rows(spawns), drops: rows(drops), sources: rows(sources),
+  spawns: rows(spawns), drops: rows(drops), skills: rows(skills), sources: rows(sources),
 };
 
 export const manifest = buildManifest(apiData, datasetName, new Date().toISOString().replace(/\.\d+Z$/, "Z"));

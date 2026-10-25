@@ -1,0 +1,182 @@
+---
+// Página de uma skill: o que faz, requisitos para usar, custos, como aprender e, quando vem de item, onde o item dropa
+// (melhores spots, monstros por mapa) e quem vende. Vídeo da skill em uso (YouTube) ou a prévia animada do guia.
+import Base from "../../../layouts/Base.astro";
+import PageHead from "../../../components/PageHead.astro";
+import DropSources from "../../../components/DropSources.astro";
+import VideoEmbed from "../../../components/VideoEmbed.astro";
+import { rulesets, skills, builds, itemById, skillDescriptionsPt, skillVideo, classVideo, fmt } from "../../../lib/data";
+import { itemSources, droppersFor } from "../../../lib/view";
+import {
+  KIND_LABELS, ELEMENT_LABELS, METHOD_TEXT, LEARN_GROUPS, learnGroup, skillUrl, findSkill, effectPt, requirementPt, descriptionPt,
+  prerequisiteName, extraEffects,
+} from "../../../lib/skills";
+import { STAT_LABELS, type Stat } from "../../../lib/planner";
+
+export function getStaticPaths() {
+  const classes = new Map((rulesets[0]?.classes ?? []).map((c) => [c.id, c]));
+  return skills.filter((s) => classes.has(s.class_id))
+    .map((s) => ({ params: { classe: s.class_id, skill: s.skill_id }, props: { skill: s, cls: classes.get(s.class_id)! } }));
+}
+const { skill: s, cls } = Astro.props;
+const classes = rulesets[0].classes;
+const group = LEARN_GROUPS.find((g) => g.id === learnGroup(s))!;
+const descPt = descriptionPt(s.description, skillDescriptionsPt);
+const STATS: Stat[] = ["str", "agi", "vit", "ene", "cmd"];
+const req = s.requirements;
+const reqRows: [string, number][] = [
+  ...(req.level != null ? [["Nível", req.level] as [string, number]] : []),
+  ...STATS.filter((k) => req[k] != null).map((k) => [STAT_LABELS[k], req[k]!] as [string, number]),
+];
+const props: [string, string][] = [
+  ...(s.mana_cost != null ? [["Mana", fmt(s.mana_cost)] as [string, string]] : []),
+  ...(s.ag_cost != null ? [["AG", fmt(s.ag_cost)] as [string, string]] : []),
+  ...(s.range != null ? [["Alcance", fmt(s.range)] as [string, string]] : []),
+  ...(s.cooldown_s != null ? [["Recarga", `${String(s.cooldown_s).replace(".", ",")} s`] as [string, string]] : []),
+  ...(s.base_dmg != null ? [["Dano base", fmt(s.base_dmg)] as [string, string]] : []),
+  ...(s.imprint_dmg_pct != null ? [["Imprint", `+${s.imprint_dmg_pct}%`] as [string, string]] : []),
+  ...(s.element && ELEMENT_LABELS[s.element] ? [["Elemento", ELEMENT_LABELS[s.element]] as [string, string]] : []),
+];
+// Requisitos em texto; a skill pedida antes vira link para a página dela quando a classe tem.
+const others = req.other.map((o) => {
+  const name = prerequisiteName(o);
+  const link = name ? findSkill(skills, s.class_id, name) : undefined;
+  return { en: o, pt: requirementPt(o), link };
+});
+const effects = extraEffects(s).map((e) => ({ en: e, pt: effectPt(e) }));
+const item = s.learn.item_id ? itemById.get(s.learn.item_id) ?? null : null;
+const fromClass = s.learn.item_from_class ? classes.find((c) => c.id === s.learn.item_from_class)?.name ?? null : null;
+const sources = item ? itemSources(item) : s.learn.drops.length ? { droppers: droppersFor(s.learn.drops), sellers: [], notes: [] } : null;
+const video = skillVideo(s.class_id, s.skill_id);
+const fallback = video ? null : classVideo(s.class_id);
+const search = `https://www.youtube.com/results?search_query=${encodeURIComponent(`MU Online ${s.name} skill`)}`;
+// Builds prontas que usam esta skill.
+const usedBy = builds.filter((b) => b.class_id === s.class_id && (b.skills ?? []).some((x) => findSkill(skills, b.class_id, x.name)?.skill_id === s.skill_id));
+const siblings = skills.filter((x) => x.class_id === s.class_id && x.skill_id !== s.skill_id && learnGroup(x) === learnGroup(s));
+const levels = s.levels.filter(Boolean);
+---
+<Base title={`${s.name} · ${cls.name}`} description={`${s.name} (${cls.name}) em MU Online: o que faz, requisitos, como aprender e onde dropa o item.`}>
+  <PageHead crumbs={[{ href: "/skills/", label: "Skills" }, { href: `/skills/${cls.id}/`, label: cls.name }, { label: s.name }]}
+    title={s.name} image={s.image_url}>
+    <ul class="chips">
+      <li><a class="chip" href={`/skills/${cls.id}/`}>{cls.image_url && <img src={cls.image_url} alt="" />}{cls.name}</a></li>
+      <li class="chip gold">{group.label}</li>
+      {s.kind && KIND_LABELS[s.kind] && <li class="chip">{KIND_LABELS[s.kind]}</li>}
+      {s.unlocked_as && <li class="chip" lang="en" translate="no">{s.unlocked_as}</li>}
+      {s.season && <li class="chip" title="Requisitos e custos desta season">{s.season}</li>}
+    </ul>
+    {s.aliases.length > 0 && <p class="muted small aka">Também chamada de <span lang="en" translate="no">{s.aliases.join(", ")}</span>.</p>}
+  </PageHead>
+
+  {s.description
+    ? (descPt
+      ? <p class="lead sk-desc"><span class="tx" lang="pt-BR">{descPt}</span><span class="tx" lang="en">{s.description}</span></p>
+      : <p class="lead sk-desc" lang="en">{s.description}</p>)
+    : <p class="muted">As fontes não trazem a descrição desta skill.</p>}
+  {levels.length > 1 && (
+    <p class="small">{`Valor por ponto investido: ${levels[0]} (1 ponto) a ${levels[levels.length - 1]} (${levels.length} pontos).`}</p>
+  )}
+
+  <div class="cols">
+    <section>
+      <h2>Requisitos para usar</h2>
+      {reqRows.length > 0
+        ? <dl class="stats">{reqRows.map(([k, v]) => <div><dt>{k}</dt><dd>{fmt(v)}</dd></div>)}</dl>
+        : others.length === 0 && <p class="muted">Sem requisito de nível ou atributo nas fontes.</p>}
+      {others.length > 0 && (
+        <ul class="lines req-lines">
+          {others.map((o) => o.link
+            ? <li><span>Skill anterior:</span> <a href={skillUrl(o.link)} lang="en" translate="no">{o.link.name}</a></li>
+            : o.pt ? <li><span class="tx" lang="pt-BR">{o.pt}</span><span class="tx" lang="en">{o.en}</span></li> : <li lang="en">{o.en}</li>)}
+        </ul>
+      )}
+      {s.season === "S21" && <p class="muted small">Requisitos e custos da Season 21; podem variar um pouco entre seasons.</p>}
+    </section>
+    {props.length > 0 && (
+      <section>
+        <h2>Propriedades</h2>
+        <dl class="stats">{props.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+      </section>
+    )}
+  </div>
+
+  {effects.length > 0 && (
+    <>
+      <h2>Efeitos</h2>
+      <ul class="panel lines">
+        {effects.map((e) => e.pt ? <li><span class="tx" lang="pt-BR">{e.pt}</span><span class="tx" lang="en">{e.en}</span></li> : <li lang="en" translate="no">{e.en}</li>)}
+      </ul>
+    </>
+  )}
+
+  <h2>Como aprender</h2>
+  {s.learn.method === "item" ? (
+    s.learn.item_name || item ? (
+      <div class="panel learn">
+        <a class="learn-item" href={item ? `/itens/${item.id}/` : undefined}>
+          {item?.image_url ? <img src={item.image_url} alt="" /> : <span class="ph"></span>}
+          <span><b lang="en" translate="no">{item?.name ?? s.learn.item_name}</b><small>Clique com o botão direito no item, no inventário, para aprender a skill.</small></span>
+        </a>
+        {fromClass && <p class="muted small">{`O guia oficial lista esta skill também para ${fromClass}; este é o item dela nessa classe.`}</p>}
+      </div>
+    ) : <p class="muted">Aprendida com um item de skill; as fontes não dizem qual.</p>
+  ) : <p>{(s.learn.method && METHOD_TEXT[s.learn.method]) ?? "As fontes não dizem como se aprende."}</p>}
+
+  {sources && <DropSources sources={sources} heading="Onde conseguir o item" />}
+
+  <h2>Vídeo</h2>
+  {video
+    ? <VideoEmbed id={video.youtube} title={video.title} />
+    : fallback && (
+      <>
+        <p class="muted small">{`Sem vídeo só desta skill: vídeo com as skills de ${cls.name}.`}</p>
+        <VideoEmbed id={fallback.youtube} title={fallback.title} />
+      </>
+    )}
+  {s.preview_url && (
+    <figure class="preview">
+      {s.preview_url.endsWith(".webm")
+        ? (
+          <video autoplay loop muted playsinline preload="metadata" aria-label={`Prévia da skill ${s.name}`}>
+            <source src={s.preview_url} type="video/webm" />
+            <source src={s.preview_url.replace(/\.webm$/, ".mp4")} type="video/mp4" />
+          </video>
+        )
+        : <img src={s.preview_url} alt={`Prévia da skill ${s.name}`} loading="lazy" />}
+      <figcaption class="muted small">Prévia animada da skill.</figcaption>
+    </figure>
+  )}
+  <p class="small"><a href={search} target="_blank" rel="noopener">Buscar mais vídeos desta skill no YouTube ↗</a></p>
+
+  {usedBy.length > 0 && (
+    <>
+      <h2>Builds que usam esta skill</h2>
+      <ul class="chips">{usedBy.map((b) => <li><a class="chip gold" href={`/builds/${b.id}/`}>{b.name}</a></li>)}</ul>
+    </>
+  )}
+
+  {siblings.length > 0 && (
+    <>
+      <h2>{`Mais skills de ${cls.name}`}</h2>
+      <p class="muted small">{group.label}</p>
+      <ul class="chips sib">{siblings.map((x) => <li><a class="chip" href={skillUrl(x)}>{x.image_url && <img src={x.image_url} alt="" loading="lazy" />}<span lang="en" translate="no">{x.name}</span></a></li>)}</ul>
+      <p class="small"><a href={`/skills/${cls.id}/`}>{`Todas as skills de ${cls.name} →`}</a></p>
+    </>
+  )}
+</Base>
+
+<style>
+  .aka { margin: .5rem 0 0; }
+  .sk-desc { max-width: 52rem; }
+  .req-lines { margin-top: .6rem; color: var(--fg); }
+  .learn { display: flex; flex-direction: column; gap: .5rem; max-width: 40rem; }
+  .learn-item { display: flex; align-items: center; gap: .8rem; text-decoration: none; color: var(--fg); }
+  .learn-item img, .learn-item .ph { width: 56px; height: 56px; object-fit: contain; flex: none; }
+  .learn-item b { color: var(--accent-2); font-size: 1.05rem; }
+  .learn-item > span { display: flex; flex-direction: column; gap: .15rem; }
+  .learn-item small { color: var(--muted); }
+  .preview { margin: .8rem 0 0; }
+  .preview img, .preview video { display: block; max-width: min(100%, 360px); height: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+  .preview figcaption { margin-top: .25rem; }
+  .sib .chip img { width: 20px; height: 20px; }
+</style>
