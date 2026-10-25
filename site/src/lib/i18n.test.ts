@@ -4,6 +4,7 @@ import { EN, EN_PATTERNS, translate, enNumber, ordinal } from "./i18n.ts";
 import { GROUPS, KINDS, GRADES, ACQUISITION_LABELS, HEAT_LABELS, statLabel } from "./taxonomy.ts";
 import { SLOTS } from "./planner.ts";
 import { SERIES } from "./guides.ts";
+import { KIND_LABELS, ELEMENT_LABELS, LEARN_GROUPS } from "./skills.ts";
 
 test("frase exata, modelo com lacunas, partes com · e pontuação nas pontas", () => {
   assert.equal(translate("Itens relacionados"), "Related items");
@@ -45,9 +46,10 @@ test("vocabulário da taxonomia, do planner e dos guias tem inglês", () => {
     ...GROUPS.map((g) => g.label), ...KINDS.map((k) => k.label), ...GRADES.map((g) => g.label),
     ...Object.values(ACQUISITION_LABELS), ...Object.values(HEAT_LABELS), ...SLOTS.map((s) => s.label),
     ...SERIES.flatMap((s) => [s.label, s.text]),
+    ...Object.values(KIND_LABELS), ...Object.values(ELEMENT_LABELS), ...LEARN_GROUPS.flatMap((g) => [g.label, g.text]),
     ...["defense", "attack_speed", "wiz_dmg_raise_pct", "ice_resistance", "seed_sphere_fire_lv"].map(statLabel),
   ];
-  const same = new Set(["Normal", "Excellent", "Ancient", "Socket", "Castle Siege", "Skills"]);
+  const same = new Set(["Normal", "Excellent", "Ancient", "Socket", "Castle Siege", "Skills", "Buff", "Debuff", "Combo"]);
   assert.deepEqual(labels.filter((l) => !same.has(l) && translate(l) === l), []);
 });
 

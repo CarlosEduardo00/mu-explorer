@@ -1,7 +1,8 @@
 ---
 import Base from "../../layouts/Base.astro";
 import PageHead from "../../components/PageHead.astro";
-import { builds, rulesets, fmt } from "../../lib/data";
+import { builds, rulesets, skills as classSkills, fmt } from "../../lib/data";
+import { findSkill } from "../../lib/skills";
 import { setProgression } from "../../lib/view";
 import { simulateBuild, levelForRequirement, STAT_LABELS, encodeState, emptyAllocation, type Stat } from "../../lib/planner";
 
@@ -20,7 +21,11 @@ const lastLevel = Math.min(cls.max_level_points ?? 400, cls.max_level);
 const perLevel = simulateBuild(cls, build, lastLevel, 0, {}, 1).curve;
 const checkpoints = perLevel.filter((p) => p.level === 1 || p.level % 50 === 0 || p.level === lastLevel);
 const final = perLevel[perLevel.length - 1];
-const skills = (build.skills ?? []).map((sk) => ({ ...sk, level: levelForRequirement(perLevel, sk.req) }))
+// Cada skill aponta para a descrição dela na página de skills da classe (/skills/<classe>/#<skill>).
+const skills = (build.skills ?? []).map((sk) => {
+  const found = findSkill(classSkills, build.class_id, sk.name);
+  return { ...sk, level: levelForRequirement(perLevel, sk.req), href: found ? `/skills/${build.class_id}/#${found.skill_id}` : null };
+})
   .sort((a, b) => (a.level ?? 9999) - (b.level ?? 9999));
 // Em cada 20 pontos, quanto vai para cada atributo (arredondado): o jeito fácil de seguir a proporção no jogo.
 const per20 = ratioStats.map((s) => [s, Math.round(((build.ratio?.[s] ?? 0) / 100) * 20)] as const);
@@ -66,7 +71,7 @@ const reqText = (req: Partial<Record<Stat, number>>) => stats.filter((s) => req[
           <thead><tr><th>Skill</th><th>Requisito</th><th class="num">Nível nesta build</th></tr></thead>
           <tbody>
             {skills.map((sk) => (
-              <tr><td>{sk.name}</td><td>{reqText(sk.req)}</td>
+              <tr><td>{sk.href ? <a href={sk.href}>{sk.name}</a> : sk.name}</td><td>{reqText(sk.req)}</td>
                 <td class="num">{sk.level != null ? `nível ${fmt(sk.level)}` : <span class="muted">só com pontos extras</span>}</td></tr>
             ))}
           </tbody>

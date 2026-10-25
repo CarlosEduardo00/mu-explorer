@@ -4,16 +4,17 @@ Base: Fanz. O MuEmu só preenche campos vazios; os valores do Fanz nunca são so
 
 ## Casamento
 
-- Itens: 1863 de 3074 casados ({'nome': 835, 'item base do ancient': 416, 'item base do excellent': 612}); 243 com mais de um candidato no MuEmu (usado o de menor grupo/índice).
+- Itens: 1873 de 3074 casados ({'nome': 835, 'item base do ancient': 416, 'item de skill em outra ordem': 8, 'item base do excellent': 612, 'item de skill sem espaços': 1, 'grafia do item de skill': 1}); 243 com mais de um candidato no MuEmu (usado o de menor grupo/índice).
+- Itens de skill que só o MuEmu tem (entram com os dados dele): Burst Book, Deathside Parchment, Haste Book, Lightning Storm Book, Magic Arrow Book, Orb of Bat Flock, Orb of Bursting Flare, Orb of Dark Plasma, Orb of Demolish, Orb of Detection, Orb of Fire Death, Orb of Ice Blast, Orb of Ice Break, Orb of Pierce Attack, Orb of Solid Protection, Orb of Strong Belief, Orb of Sword Blow, Orb of Sword Inertia, Orb of Sword Wrath, Plasma Ball Book.
 - Monstros: 158 de 291 casados ({'nome e nível': 136, 'nome (nível diferente)': 22}).
 - Spawns com coordenadas vindos do MuEmu: 1265.
 
 ## Campos preenchidos (antes → depois)
 
-- item.group: 0 → 1863 de 3074
-- item.index: 0 → 1863 de 3074
-- item.durability: 0 → 1678 de 3074
-- item.category: 0 → 1861 de 3074
+- item.group: 0 → 1893 de 3094
+- item.index: 0 → 1893 de 3094
+- item.durability: 0 → 1678 de 3094
+- item.category: 0 → 1891 de 3094
 - monster.respawn_seconds: 6 → 273 de 471
 - monster.number: 0 → 181 de 471
 
@@ -22,7 +23,7 @@ Base: Fanz. O MuEmu só preenche campos vazios; os valores do Fanz nunca são so
 - Só no Fanz: atlans-abyss, balgass-barracks, balgass-resting-place, barracks-of-balgass, crimson-flame-s-icarus, crywolf, cubera-mine, debenter, deep-dungeon, devil-square-mini-game, event-square, ferea, kalima, kanturu, kanturu-relics, kanturu-ruins, karutan, land-of-trials, loren-market, nars, nixies-lake, scorched-canyon, swamp-of-darkness, swamp-of-peace, uruk-mountain, valley-of-loren
 - Só no MuEmu: blood-castle-2, blood-castle-3, blood-castle-4, blood-castle-5, blood-castle-6, blood-castle-7, blood-castle-8, chaos-castle-2, chaos-castle-3, chaos-castle-4, chaos-castle-5, chaos-castle-6, chaos-castle-7, devil-square, devil-square-2, illusion-temple-1, illusion-temple-2, illusion-temple-3, illusion-temple-4, illusion-temple-5, illusion-temple-6, kalima-2, kalima-3, kalima-4, kalima-6, kanturu-1, kanturu-2, selupan
 
-## Itens do Fanz sem par no MuEmu (1211)
+## Itens do Fanz sem par no MuEmu (1201)
 
 AGI Fruit, Almandin Orb, Amis's Atlans Armor, Amis's Atlans Boots, Amis's Atlans Gloves, Amis's Atlans Pants, Apple +1, Apple +2, Archangel Scroll +1, Archangel Scroll +2, Archangel Scroll +3, Archangel Scroll +4, Archangel Scroll +5, Archangel Scroll +6, Archangel Scroll +7, Archangel Scroll +8, Arkajin Kenaz Armor, Arkajin Kenaz Boots, Arkajin Kenaz Gloves, Arkajin Kenaz Pants, Armor Splinter, Armor of Bravery, Armor of Destruction, Arrow +1, Arrow +2, Arrow +3, Assassin Summoning Orb, Atlans Armor, Atlans Boots, Atlans Gloves, Atlans Pants, Attribute Magic Book, Awakening Soul Elf Armor (ATK), Awakening Soul Elf Armor (ENE), Awakening Soul Elf Gloves (ATK), Awakening Soul Elf Gloves (ENE), Awakening Soul Elf Helm (ATK), Awakening Soul Elf Helm (ENE), Awakening Soul Elf Pants (ATK), Awakening Soul Elf Pants (ENE), Awakening Soul Gun Crusher Armor, Awakening Soul Gun Crusher Boots, Awakening Soul Gun Crusher Helm, Awakening Soul Gun Crusher Pants, Awakening Soul Knight Armor, Awakening Soul Knight Armor (Belief), Awakening Soul Knight Boots, Awakening Soul Knight Boots (Belief), Awakening Soul Knight Helm, Awakening Soul Knight Helm (Belief), Awakening Soul Knight Pants, Awakening Soul Knight Pants (Belief), Awakening Soul Lord Mask, Awakening Soul Magic Armor (ATK), Awakening Soul Magic Armor (WIZ), Awakening Soul Magic Boots (ATK), Awakening Soul Magic Boots (WIZ), Awakening Soul Magic Gloves (ATK), Awakening Soul Magic Gloves (WIZ), Awakening Soul Magic Pants (ATK), Awakening Soul Magic Pants (WIZ), Awakening Soul Rune Mage Armor, Awakening Soul Rune Mage Gloves, Awakening Soul Rune Mage Helm, Awakening Soul Rune Mage Pants, Baiwen Magic Gun, Bali Summoning Orb, Basic Magic Book, Battle Jasper Necklace, Beastly Claw, Blessed Divine Magic Gun of Archangel, Blessed Divine Rune Mace of Archangel, Blessing's Holyangel Elf Armor, Blessing's Holyangel Elf Gloves, Blessing's Holyangel Elf Helm, Blessing's Holyangel Elf Pants, Blood Bone +1, Blood Bone +2, Blood Bone +3, Blood Bone +4
 
@@ -193,11 +194,11 @@ servidor privado; o Fanz acompanha o global. Diferença aqui não é erro de par
 - spawns do MuEmu trocados: 1443
 - spawns do GMO: 991
 - mapas novos: 24
-- drops do GMO com item que o site não tem: 16356
-- drops do GMO já nas tabelas do Fanz: 21242
-- drops do GMO com monstro desconhecido: 2047
-- drops do GMO (pares monstro -> item): 31194
-- itens com drop do GMO: 839
+- drops do GMO com item que o site não tem: 15462
+- drops do GMO já nas tabelas do Fanz: 21461
+- drops do GMO com monstro desconhecido: 2050
+- drops do GMO (pares monstro -> item): 31820
+- itens com drop do GMO: 863
 
 ## Guide MU Online (MU oficial)
 

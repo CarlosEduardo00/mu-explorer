@@ -1,0 +1,41 @@
+---
+// Skills: uma página por classe (ordem do planner), com o item de cada skill e onde ele dropa.
+import Base from "../../layouts/Base.astro";
+import { rulesets, skills, fmt } from "../../lib/data";
+
+const classes = (rulesets[0]?.classes ?? []).map((c) => {
+  const list = skills.filter((s) => s.class_id === c.id);
+  return { c, total: list.length, items: list.filter((s) => s.learn.method === "item").length };
+}).filter((x) => x.total > 0);
+---
+<Base title="Skills" description="Skills de todas as classes de MU Online: requisitos, como aprender e onde dropa o item de cada skill (orb, scroll, livro, pergaminho)." wide>
+  <h1>Skills</h1>
+  <p class="lead">
+    Todas as skills de cada classe: o que fazem, os requisitos e como se aprendem. Nas que se aprendem com item (orb,
+    scroll, livro ou pergaminho), onde o item dropa: o monstro, o mapa e o spot com mais dele.
+  </p>
+  {classes.length === 0 && <p class="muted">Nenhuma skill neste conjunto de dados.</p>}
+  <ul class="skill-classes">
+    {classes.map(({ c, total, items }) => (
+      <li>
+        <a class="sc-card" href={`/skills/${c.id}/`}>
+          {c.image_url ? <img src={c.image_url} alt="" loading="lazy" /> : <span class="ph"></span>}
+          <span>
+            <b>{c.name}</b>
+            <small>{fmt(total)} skills{items > 0 && <> · {fmt(items)} com item</>}</small>
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</Base>
+
+<style>
+  .skill-classes { list-style: none; margin: 1rem 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr)); gap: .6rem; }
+  .sc-card { display: flex; align-items: center; gap: .7rem; padding: .6rem .8rem; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); color: var(--fg); text-decoration: none; }
+  .sc-card:hover { border-color: var(--accent); color: var(--fg); }
+  .sc-card img, .sc-card .ph { width: 3.2rem; height: 3.2rem; object-fit: contain; flex: none; }
+  .sc-card > span { display: flex; flex-direction: column; gap: .1rem; }
+  .sc-card b { font-weight: 600; }
+  .sc-card small { color: var(--muted); }
+</style>

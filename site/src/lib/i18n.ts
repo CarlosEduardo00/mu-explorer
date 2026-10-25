@@ -312,6 +312,31 @@ export const EN: Record<string, string> = {
   "Tradução aproximada, não oficial. Itens de quest e termos do jogo (em destaque) ficam como no jogo.":
     "Original English text. In Portuguese, the translation is approximate and unofficial; quest items and game terms stay as in the game.",
 
+  // ------------------------------------------------------------ skills
+  "Aprendidas com item": "Learned from an item",
+  "Clique com o botão direito no item (orb, scroll, livro ou pergaminho) para aprender a skill, se tiver os requisitos. Abaixo de cada uma, onde o item dropa.":
+    "Right-click the item (orb, scroll, book or parchment) to learn the skill, if you meet the requirements. Below each one, where the item drops.",
+  "Da arma ou do escudo": "From the weapon or shield", "Vêm do equipamento com a opção Skill: não precisam de item.": "They come from gear with the Skill option: no item needed.",
+  "4ª e 5ª classe": "4th and 5th class", "Melhorias da árvore de skills da 4ª classe e skills da 5ª classe.": "4th class skill tree enhancements and 5th class skills.",
+  "Árvore de mestre": "Master skill tree", "Liberadas com pontos da árvore de skills de mestre.": "Unlocked with master skill tree points.",
+  "De quest": "From quests", "Liberadas por uma quest.": "Unlocked by a quest.",
+  "De montaria ou pet": "From mounts or pets", "Vêm da montaria ou do pet equipado.": "They come from the equipped mount or pet.",
+  "Só no Castle Siege.": "Castle Siege only.", "Outras skills": "Other skills", "As fontes não dizem como se aprende.": "The sources don't say how it is learned.",
+  "Ataque": "Attack", "Invocação": "Summon", "Passiva": "Passive",
+  "Fogo": "Fire", "Água": "Water", "Terra": "Earth", "Vento": "Wind", "Trevas": "Darkness", "Luz": "Light", "Raio": "Lightning",
+  "Gelo": "Ice", "Veneno": "Poison", "Sem elemento": "No element",
+  "Alcance": "Range", "Dano base": "Base damage", "Efeitos": "Effects", "Aprende com": "Learned from", "Onde dropa": "Where it drops",
+  "Sem drop conhecido deste item nas fontes.": "No known drop for this item in the sources.",
+  "Vem da arma ou do escudo com a opção Skill.": "Comes from the weapon or shield with the Skill option.",
+  "Vem da montaria ou do pet.": "Comes from the mount or pet.", "Liberada na árvore de skills de mestre.": "Unlocked in the master skill tree.",
+  "Liberada por quest.": "Unlocked by a quest.", "Requisitos e custos desta season": "Requirements and costs of this season",
+  "Skills com a etiqueta S21: requisitos e custos da Season 21. Podem variar um pouco entre seasons.":
+    "Skills tagged S21: requirements and costs from Season 21. They may vary a little between seasons.",
+  "Todas as skills de cada classe: o que fazem, os requisitos e como se aprendem. Nas que se aprendem com item (orb, scroll, livro ou pergaminho), onde o item dropa: o monstro, o mapa e o spot com mais dele.":
+    "Every skill of each class: what it does, its requirements and how it is learned. For skills learned from an item (orb, scroll, book or parchment), where the item drops: the monster, the map and the spot with the most of it.",
+  "de todas as classes, com onde dropa o item de cada uma": "for every class, with where each skill item drops",
+  "Nenhuma skill neste conjunto de dados.": "No skills in this dataset.", "Ensina a skill": "Teaches the skill", "Grupos": "Groups",
+
   // ------------------------------------------------------------ API
   "API": "API", "Manifesto": "Manifest", "Endereços": "URLs", "entidade": "entity", "registros": "records", "lista": "list",
   "por registro": "per record", "Fontes": "Sources", "O": "The", "Exemplo": "Example", "SQLite": "SQLite",
@@ -336,6 +361,10 @@ export const EN: Record<string, string> = {
 export const EN_PATTERNS: [string, string][] = [
   // títulos e contagens
   ["Spots de {0}", "{0} spots"], ["Spots de farm em {0}: onde ficam, quantos monstros há em cada um, nível e drops.", "Farming spots in {0}: where they are, how many monsters each one has, level and drops."],
+  ["Dropa de {0} monstros em {1} mapas: ver todos →", "Dropped by {0} monsters in {1} maps: see all →"],
+  ["Dropa de {0} monstros em {1} mapa: ver todos →", "Dropped by {0} monsters in {1} map: see all →"],
+  ["Dropa de {0} monstros em {1} mapas.", "Dropped by {0} monsters in {1} maps."],
+  ["{0:n} skills", "{0} skills"], ["{0:n} aprendidas com item", "{0} learned from an item"], ["{0:n} com item", "{0} with an item"],
   ["{0:n} itens", "{0} items"], ["{0:n} item", "{0} item"], ["{0:n} mapas", "{0} maps"], ["{0:n} mapa", "{0} map"],
   ["{0:n} monstros", "{0} monsters"], ["{0:n} monstro", "{0} monster"], ["{0:n} guias", "{0} guides"],
   ["{0:n} spots de farm", "{0} farming spots"], ["{0:n} builds prontas", "{0} ready-made builds"],

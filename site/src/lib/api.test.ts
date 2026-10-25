@@ -21,6 +21,8 @@ const data: Dataset = {
   npcs: [],
   spawns: [{ monster_id: "spider", map_id: "lorencia", x: 10, y: 20, count: 5 }],
   drops: [{ monster_id: "spider", item_id: "jewel-of-bless", item_name: "Jewel of Bless", kind: "normal", rate: null }],
+  skills: [{ id: "dark-knight--twisting-slash", class_id: "dark-knight", name: "Twisting Slash",
+    requirements: { level: 80, str: null, other: [] }, learn: { method: "item", item_id: "orb-of-twisting-slash" } }],
   sources: [{ id: "muemu", name: "MuEmu", url: "https://github.com/x/y", credit: "MIT", revision: "abc123" }],
 };
 

@@ -52,6 +52,18 @@ export interface FarmSpot {
   total: number; level_min: number | null; level_max: number | null; source: string | null; source_url: string | null;
   heat?: "hot" | "mid" | "low" | "boss";
 }
+/** Skill de uma classe (scrapers.skills): árvore do guia de classe do Fanz ou tabela do GMO (season S21). */
+export interface Skill {
+  id: string; skill_id: string; class_id: string; order: number; name: string;
+  tree: "basic" | "special" | "item" | null; stage: "class" | "enhanced"; unlocked_as: string | null;
+  kind: string | null; description: string | null; effects: string[];
+  mana_cost: number | null; ag_cost: number | null; element: string | null; imprint_dmg_pct: number | null;
+  range: number | null; base_dmg: number | null;
+  requirements: { level: number | null; str: number | null; agi: number | null; vit: number | null; ene: number | null; cmd: number | null; other: string[] };
+  /** method: como se aprende; item_id: item do site; drops: só para item que o site não tem (listas do GMO). */
+  learn: { method: string | null; item_name: string | null; item_id: string | null; drops: { monster_id: string; map_id: string | null }[] };
+  season: string | null; source: string; source_url: string | null;
+}
 export interface MapMarker { map_id: string; kind: string; name: string; x: number | null; y: number | null; description: string | null }
 export interface Source { id: string; name: string; url: string; credit: string | null }
 
@@ -96,6 +108,11 @@ export const farmSpots = load<FarmSpot>("farm_spots.json");
 /** Guias (aba de guias do Guide MU Online); vazio no conjunto sem essa fonte. */
 export const guides = load<import("./guides").Guide>("guides.json").map((g) => ({ ...g, image_urls: g.image_urls.map((u) => localImage(u) ?? u) }));
 export const mapMarkers = load<MapMarker>("map_markers.json");
+/** Skills por classe; vazio no conjunto sem o Fanz e o GMO. */
+export const skills = load<Skill>("skills.json");
+/** Tradução aproximada (nossa) das descrições das skills: original em inglês -> português. */
+const skillsPtPath = resolve(process.cwd(), "data", "curated", "translations", "skills.pt-BR.json");
+export const skillDescriptionsPt: Record<string, string> = existsSync(skillsPtPath) ? JSON.parse(readFileSync(skillsPtPath, "utf-8")).descriptions : {};
 
 /**
  * Regras do planner (data/curated/planner.json), da season mais nova para a mais antiga.

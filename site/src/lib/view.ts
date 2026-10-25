@@ -78,10 +78,8 @@ for (const npc of npcs) {
 
 const mapOrder = (m: GameMap) => mapLevels(m).min ?? 9999;
 const sourcesCache = new Map<string, ItemSources>();
-export function itemSources(item: Item): ItemSources {
-  const cached = sourcesCache.get(item.id);
-  if (cached) return cached;
-  const rows = dropsByItem.get(item.id) ?? [];
+/** Monstros de uma lista de drops (um item), com os mapas onde estão e o melhor spot de cada; do menor nível ao maior. */
+export function droppersFor(rows: { monster_id: string; map_id?: string | null; table?: string | null; kind?: string }[]): Dropper[] {
   const byMonster = new Map<string, typeof rows>();
   for (const d of rows) byMonster.set(d.monster_id, [...(byMonster.get(d.monster_id) ?? []), d]);
   const droppers: Dropper[] = [];
@@ -97,10 +95,16 @@ export function itemSources(item: Item): ItemSources {
       .map((map) => ({ map, spot: refs.find((r) => r.map_id === map.id) ?? null }));
     droppers.push({
       monster, places,
-      tables: [...new Set(list.map((d) => dropTableLabel(d.table, d.kind)))],
+      tables: [...new Set(list.map((d) => dropTableLabel(d.table ?? null, d.kind ?? "unknown")))],
     });
   }
-  droppers.sort((a, b) => (a.monster.level ?? 0) - (b.monster.level ?? 0) || a.monster.name.localeCompare(b.monster.name));
+  return droppers.sort((a, b) => (a.monster.level ?? 0) - (b.monster.level ?? 0) || a.monster.name.localeCompare(b.monster.name));
+}
+
+export function itemSources(item: Item): ItemSources {
+  const cached = sourcesCache.get(item.id);
+  if (cached) return cached;
+  const droppers = droppersFor(dropsByItem.get(item.id) ?? []);
   const sellers = sellersByItem.get(item.id) ?? [];
   const notes = acquisitionNotes(item.notes);
   const kinds = new Set<AcquisitionKind>(notes.map((n) => n.kind));

@@ -2,7 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import PageHead from "../../components/PageHead.astro";
 import Card from "../../components/Card.astro";
-import { items, itemById, npcs, spotMapIds, spotsUrl, fmt } from "../../lib/data";
+import { items, itemById, npcs, skills, rulesets, spotMapIds, spotsUrl, fmt } from "../../lib/data";
 import { itemView, familyOf, familyName, itemSources } from "../../lib/view";
 import { gradeLabel, statRows, optionGroupLabel, ALL_CLASSES, ACQUISITION_LABELS } from "../../lib/taxonomy";
 
@@ -50,6 +50,9 @@ const linkNpcs = (text: string): (string | { id: string; name: string })[] => {
 };
 const noteKinds = [...new Set(notes.map((n) => n.kind))].filter((k) => !(k === "drop" && droppers.length) && !(k === "npc" && sellers.length));
 const related = item.related_items.map((id) => itemById.get(id)).filter((i) => i !== undefined);
+// Skills que o item ensina (orb, scroll, livro): link para a descrição na página de skills da classe.
+const teaches = skills.filter((s) => s.learn.item_id === item.id)
+  .map((s) => ({ s, cls: rulesets[0]?.classes.find((c) => c.id === s.class_id)?.name ?? s.class_id }));
 const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
 ---
 <Base title={item.name} description={`${item.name}: requisitos, atributos e onde dropa em MU Online.`}>
@@ -61,6 +64,9 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
       {item.group != null && <li class="chip">Grupo {item.group} · índice {item.index}</li>}
       {item.season && <li class="chip">{item.season}</li>}
     </ul>
+    {teaches.length > 0 && (
+      <p class="teaches">Ensina a skill {teaches.map(({ s, cls }, i) => <>{i > 0 && ", "}<a href={`/skills/${s.class_id}/#${s.skill_id}`}><span lang="en" translate="no">{s.name}</span> ({cls})</a></>)}</p>
+    )}
   </PageHead>
 
   <div class="cols">
@@ -238,4 +244,5 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
   }
   .cols > section > h2 { margin-top: 1.25rem; }
   .chip .muted { font-size: .75rem; }
+  .teaches { margin: .5rem 0 0; }
 </style>

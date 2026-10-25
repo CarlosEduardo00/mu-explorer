@@ -1,6 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
-import { items, monsters, maps, npcs, farmSpots, spotsByMap, mapById, spotsUrl, rulesets, builds, guides, fmt } from "../lib/data";
+import { items, monsters, maps, npcs, farmSpots, spotsByMap, mapById, spotsUrl, rulesets, builds, guides, skills, itemById, fmt } from "../lib/data";
 import { mapThumb } from "../lib/view";
 
 const featured = ["lorencia", "devias", "lost-tower", "atlans", "tarkan", "icarus", "kanturu-1", "raklion", "vulcanus", "acheron", "debenter", "nars"]
@@ -12,6 +12,7 @@ const sections = [
   { href: "/mapas/", n: maps.length, label: "mapas", text: "nível, monstros, NPCs e ligações", img: mapById.get("lorencia") ? mapThumb(mapById.get("lorencia")!) : null },
   { href: "/spots/", n: farmSpots.length, label: "spots de farm", text: "spots de cada mapa, com os monstros", img: mapById.get("devias") ? mapThumb(mapById.get("devias")!) : null },
   { href: "/npcs/", n: npcs.length, label: "NPCs", text: "onde ficam e o que vendem", img: npcs.find((n) => n.image_url)?.image_url },
+  { href: "/skills/", n: skills.length, label: "skills", text: "de todas as classes, com onde dropa o item de cada uma", img: itemById.get("orb-of-bat-flock")?.image_url ?? itemById.get("orb-of-twisting-slash")?.image_url },
   { href: "/guias/", n: guides.length, label: "guias", text: "quests de troca de classe, asas e sistemas do jogo", img: guides[0]?.image_urls[0] },
   { href: "/planner/", n: builds.length, label: "builds prontas", text: `planner de pontos para ${classes.length} classes`, img: classes[0]?.image_url },
 ].filter((s) => s.n > 0);
