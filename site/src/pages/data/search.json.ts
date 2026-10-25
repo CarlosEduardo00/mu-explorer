@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { items, monsters, maps, npcs, spotsUrl, spotsByMap, guides } from "../../lib/data";
+import { items, monsters, maps, npcs, spotsUrl, spotsByMap, guides, skills, rulesets } from "../../lib/data";
 import { SERIES, translated, guideCover } from "../../lib/guides";
 import { itemView, mapLevels } from "../../lib/view";
 import { gradeLabel, npcTypeLabel } from "../../lib/taxonomy";
@@ -21,6 +21,10 @@ export const GET: APIRoute = () => {
     ...npcs.map((n): Entry => ["NPC", n.name, `/npcs/${n.id}/`, n.image_url, [npcTypeLabel(n.type), n.locations[0]?.map_name].filter(Boolean).join(" · ")]),
     ...guides.map((g): Entry => ["Guia", plain(translated(g.title) ?? g.title.t, g), `/guias/${g.id}/`, guideCover(g),
       SERIES.find((s) => s.id === g.series)?.label ?? "", plain(g.title.t, g).replace(/^\[Guide\]\s*/, "")]),
+    ...skills.map((s): Entry => {
+      const cls = rulesets[0]?.classes.find((c) => c.id === s.class_id);
+      return ["Skill", s.name, `/skills/${s.class_id}/#${s.skill_id}`, cls?.image_url ?? null, cls?.name ?? ""];
+    }),
     ...items.map((i): Entry => ["Item", i.name, `/itens/${i.id}/`, i.image_url, [itemView(i).kindLabel, gradeLabel(i.grade)].filter(Boolean).join(" · ")]),
   ];
   return new Response(JSON.stringify(entries), { headers: { "Content-Type": "application/json; charset=utf-8" } });

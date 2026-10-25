@@ -1,0 +1,149 @@
+---
+// Cartão de uma skill na página da classe: descrição, custos, requisitos, efeitos e como aprender. Para skill de item,
+// onde o item dropa (monstro, mapa e o spot com mais dele), quem vende e as notas de "como conseguir" do item.
+import { itemById, skillDescriptionsPt, spotsUrl, fmt, type Skill } from "../lib/data";
+import { itemSources, droppersFor } from "../lib/view";
+import { KIND_LABELS, ELEMENT_LABELS, effectPt, requirementPt } from "../lib/skills";
+import { STAT_LABELS, type Stat } from "../lib/planner";
+
+interface Props { skill: Skill }
+const { skill: s } = Astro.props;
+const descPt = s.description ? skillDescriptionsPt[s.description] ?? null : null;
+const req = s.requirements;
+const reqStats = (["str", "agi", "vit", "ene", "cmd"] as Stat[]).filter((k) => req[k] != null);
+const facts: [string, string][] = [
+  ...(s.mana_cost != null ? [["Mana", fmt(s.mana_cost)] as [string, string]] : []),
+  ...(s.ag_cost != null ? [["AG", fmt(s.ag_cost)] as [string, string]] : []),
+  ...(s.range != null ? [["Alcance", fmt(s.range)] as [string, string]] : []),
+  ...(s.base_dmg != null ? [["Dano base", fmt(s.base_dmg)] as [string, string]] : []),
+  ...(s.imprint_dmg_pct != null ? [["Imprint", `+${s.imprint_dmg_pct}%`] as [string, string]] : []),
+];
+const item = s.learn.item_id ? itemById.get(s.learn.item_id) ?? null : null;
+const sources = item ? itemSources(item) : null;
+const droppers = sources ? sources.droppers : droppersFor(s.learn.drops);
+const sellers = sources?.sellers ?? [];
+const notes = sources?.notes.filter((n) => n.kind !== "drop" && n.kind !== "npc") ?? [];
+// Até 4 lugares para farmar: monstros de menor nível, com o spot onde há mais deles (ou só o mapa).
+const places = droppers.map((d) => {
+  const best = d.places.filter((p) => p.spot).sort((a, b) => b.spot!.count - a.spot!.count)[0] ?? d.places[0] ?? null;
+  return { monster: d.monster, place: best };
+}).sort((a, b) => Number(!a.place?.spot) - Number(!b.place?.spot) || (a.monster.level ?? 0) - (b.monster.level ?? 0)).slice(0, 4);
+const mapCount = new Set(droppers.flatMap((d) => d.places.map((p) => p.map.id))).size;
+const line = (en: string, pt: string | null) => ({ en, pt });
+const effects = s.effects.map((e) => line(e, effectPt(e)));
+const others = req.other.map((o) => line(o, requirementPt(o)));
+const METHOD_TEXT: Record<string, string> = {
+  weapon: "Vem da arma ou do escudo com a opção Skill.", mount: "Vem da montaria ou do pet.",
+  master: "Liberada na árvore de skills de mestre.", quest: "Liberada por quest.", "castle-siege": "Só no Castle Siege.",
+};
+---
+<article class="skill" id={s.skill_id}>
+  <header class="sk-head">
+    <h3><a href={`#${s.skill_id}`} lang="en" translate="no">{s.name}</a></h3>
+    <ul class="chips">
+      {s.kind && KIND_LABELS[s.kind] && <li class="chip">{KIND_LABELS[s.kind]}</li>}
+      {s.element && ELEMENT_LABELS[s.element] && <li class:list={["chip", `el-${s.element}`]}>{ELEMENT_LABELS[s.element]}</li>}
+      {s.unlocked_as && <li class="chip" lang="en" translate="no">{s.unlocked_as}</li>}
+      {s.season && <li class="chip muted-chip" title="Requisitos e custos desta season">{s.season}</li>}
+    </ul>
+  </header>
+  {s.description && (descPt
+    ? <p class="sk-desc"><span class="tx" lang="pt-BR">{descPt}</span><span class="tx" lang="en">{s.description}</span></p>
+    : <p class="sk-desc" lang="en">{s.description}</p>)}
+
+  {(facts.length > 0 || req.level != null || reqStats.length > 0) && (
+    <dl class="sk-facts">
+      {facts.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+      {req.level != null && <div class="req"><dt>Nível</dt><dd>{fmt(req.level)}</dd></div>}
+      {reqStats.map((k) => <div class="req"><dt>{STAT_LABELS[k]}</dt><dd>{fmt(req[k])}</dd></div>)}
+    </dl>
+  )}
+  {others.length > 0 && (
+    <ul class="sk-lines sk-req">
+      {others.map((o) => o.pt ? <li><span class="tx" lang="pt-BR">{o.pt}</span><span class="tx" lang="en">{o.en}</span></li> : <li lang="en">{o.en}</li>)}
+    </ul>
+  )}
+  {effects.length > 0 && (
+    <details class="sk-effects">
+      <summary>Efeitos</summary>
+      <ul class="sk-lines">
+        {effects.map((e) => e.pt ? <li><span class="tx" lang="pt-BR">{e.pt}</span><span class="tx" lang="en">{e.en}</span></li> : <li lang="en">{e.en}</li>)}
+      </ul>
+    </details>
+  )}
+
+  <div class="sk-learn">
+    {s.learn.method === "item" && s.learn.item_name ? (
+      <>
+        <p class="sk-item">
+          <span class="muted">Aprende com</span>
+          {item
+            ? <a href={`/itens/${item.id}/`}>{item.image_url && <img src={item.image_url} alt="" loading="lazy" />}<b lang="en" translate="no">{item.name}</b></a>
+            : <b lang="en" translate="no">{s.learn.item_name}</b>}
+        </p>
+        {places.length > 0 ? (
+          <div class="sk-drops">
+            <p class="sk-sub">Onde dropa</p>
+            <ul>
+              {places.map(({ monster, place }) => (
+                <li>
+                  <a href={`/monstros/${monster.id}/`} lang="en" translate="no">{monster.name}</a>
+                  {monster.level != null && <span class="muted"> nv {fmt(monster.level)}</span>}
+                  {place && <> · {place.spot
+                    ? <a href={spotsUrl(place.map.id, place.spot.n)}><span lang="en" translate="no">{place.map.name}</span> · spot {place.spot.n}</a>
+                    : <a href={`/mapas/${place.map.id}/`} lang="en" translate="no">{place.map.name}</a>}</>}
+                </li>
+              ))}
+            </ul>
+            {(droppers.length > places.length || mapCount > places.length) && (
+              item
+                ? <a class="more" href={`/itens/${item.id}/#onde-dropa-tabela`}>Dropa de {droppers.length} monstros em {mapCount} mapas: ver todos →</a>
+                : <p class="muted small">Dropa de {droppers.length} monstros em {mapCount} mapas.</p>
+            )}
+          </div>
+        ) : sellers.length === 0 && notes.length === 0 && <p class="muted small">Sem drop conhecido deste item nas fontes.</p>}
+        {sellers.length > 0 && (
+          <p class="small">Vendido por {sellers.map((x, i) => <>{i > 0 && ", "}<a href={`/npcs/${x.npc.id}/`} lang="en" translate="no">{x.npc.name}</a></>)}</p>
+        )}
+        {notes.length > 0 && (
+          <ul class="sk-lines small">
+            {notes.map((n) => n.translated ? <li><span class="tx" lang="pt-BR">{n.text}</span><span class="tx" lang="en">{n.original}</span></li> : <li lang="en">{n.text}</li>)}
+          </ul>
+        )}
+      </>
+    ) : s.learn.method && METHOD_TEXT[s.learn.method] ? (
+      <p class="muted small">{METHOD_TEXT[s.learn.method]}</p>
+    ) : null}
+  </div>
+</article>
+
+<style>
+  .skill { display: flex; flex-direction: column; gap: .5rem; padding: .85rem .95rem; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); scroll-margin-top: 5rem; min-width: 0; }
+  .skill:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), var(--shadow); }
+  .sk-head { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .6rem; }
+  .sk-head h3 { margin: 0; font-size: 1.05rem; }
+  .sk-head h3 a { color: var(--accent-2); text-decoration: none; }
+  .sk-head h3 a:hover { text-decoration: underline; }
+  .muted-chip { color: var(--muted); }
+  .sk-desc { margin: 0; color: var(--fg); }
+  .sk-facts { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0; }
+  .sk-facts > div { display: flex; gap: .3rem; align-items: baseline; padding: .15rem .5rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--bg-2); font-size: .82rem; }
+  .sk-facts > div.req { border-color: rgba(214,165,74,.35); }
+  .sk-facts dt { color: var(--muted); } .sk-facts dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .sk-lines { margin: 0; padding-left: 1.1rem; font-size: .88rem; } .sk-lines li { margin: .1rem 0; }
+  .sk-req { color: var(--muted); }
+  .sk-effects summary { cursor: pointer; color: var(--muted); font-size: .85rem; }
+  .sk-effects[open] summary { margin-bottom: .25rem; }
+  .sk-learn { border-top: 1px solid var(--line); padding-top: .5rem; display: flex; flex-direction: column; gap: .35rem; }
+  .sk-learn:empty { display: none; }
+  .sk-item { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+  .sk-item a { display: inline-flex; align-items: center; gap: .35rem; text-decoration: none; }
+  .sk-item img { width: 28px; height: 28px; object-fit: contain; }
+  .sk-sub { margin: 0; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  .sk-drops ul { margin: .15rem 0 0; padding-left: 1.1rem; font-size: .9rem; }
+  .sk-drops li { margin: .15rem 0; }
+  .sk-drops .more { display: inline-block; margin-top: .25rem; font-size: .85rem; }
+  .el-fire { color: #ff9f6b; } .el-water { color: #7cc4ff; } .el-earth { color: #d2b48c; } .el-wind { color: #9be7b0; }
+  .el-darkness { color: #c4a6ff; } .el-light, .el-lightning { color: #ffe27a; } .el-ice { color: #a8e9ff; } .el-poison { color: #b6e36b; }
+  @media (pointer: coarse) { .sk-drops li { margin: .4rem 0; } }
+</style>

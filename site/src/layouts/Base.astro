@@ -1,5 +1,5 @@
 ---
-import { sources, datasetName, guides } from "../lib/data";
+import { sources, datasetName, guides, skills } from "../lib/data";
 import Flag from "../components/Flag.astro";
 import Icon from "../components/Icon.astro";
 
@@ -13,6 +13,7 @@ const nav = [
   { href: "/spots/", label: "Spots" },
   { href: "/npcs/", label: "NPCs" },
   { href: "/builds/", label: "Builds" },
+  ...(skills.length ? [{ href: "/skills/", label: "Skills" }] : []),
   ...(guides.length ? [{ href: "/guias/", label: "Guias" }] : []),
   { href: "/planner/", label: "Planner" },
 ];
@@ -25,6 +26,7 @@ const TABS = [
   { href: "/builds/", label: "Builds", icon: "builds" },
 ];
 const MORE = [
+  ...(skills.length ? [{ href: "/skills/", label: "Skills", icon: "skills" }] : []),
   ...(guides.length ? [{ href: "/guias/", label: "Guias", icon: "guides" }] : []),
   { href: "/mapas/", label: "Mapas", icon: "maps" },
   { href: "/npcs/", label: "NPCs", icon: "npcs" },
@@ -254,7 +256,8 @@ const moreActive = MORE.some((m) => path.startsWith(m.href));
   .top nav a { padding: .35rem .65rem; border-radius: .4rem; text-decoration: none; color: var(--muted); white-space: nowrap; font-weight: 500; }
   .top nav a:hover { color: var(--fg); background: var(--panel); }
   .top nav a[aria-current] { color: var(--accent-2); background: var(--panel-2); }
-  .gsearch { position: relative; margin-left: auto; width: min(22rem, 100%); }
+  /* a busca encolhe antes de o topo quebrar em duas linhas (Skills, Guias e o seletor de idioma no mesmo topo) */
+  .gsearch { position: relative; margin-left: auto; flex: 1 1 14rem; max-width: 22rem; }
   .gsearch input { width: 100%; padding: .45rem .75rem; font-size: .9rem; }
   .gsearch-results { position: absolute; right: 0; left: 0; top: calc(100% + .35rem); margin: 0; padding: .3rem; list-style: none; background: var(--panel); border: 1px solid var(--line-2); border-radius: .6rem; box-shadow: 0 12px 30px rgba(0,0,0,.5); max-height: 70vh; overflow: auto; }
   .gsearch-results a { display: flex; gap: .6rem; align-items: center; padding: .35rem .45rem; border-radius: .4rem; text-decoration: none; color: var(--fg); }

@@ -51,6 +51,22 @@ def _index(rows: list[dict]) -> dict[str, list[dict]]:
     return by_name
 
 
+# Itens de skill: o Fanz e o MuEmu escrevem o mesmo item em outra ordem ("Healing Orb" = "Orb of Healing",
+# "Parchment of Spirit Hook" = "Spirit Hook Parchment") ou com outra grafia (nome do Fanz -> nome do MuEmu).
+SKILL_WORDS = ("Orb", "Scroll", "Parchment", "Crystal", "Book")
+ITEM_NAME_ALIASES = {"scroll-of-lightning": "scroll-of-lighting"}
+
+
+def reordered_name(name: str) -> str | None:
+    """'Scroll of Fire Burst' <-> 'Fire Burst Scroll' (itens de skill); None quando o nome não tem essa forma."""
+    words = "|".join(SKILL_WORDS)
+    if m := re.match(rf"^({words}) of (.+)$", name):
+        return f"{m.group(2)} {m.group(1)}"
+    if m := re.match(rf"^(.+) ({words})$", name):
+        return f"{m.group(2)} of {m.group(1)}"
+    return None
+
+
 def item_keys(item: dict) -> list[tuple[str, str]]:
     """Chaves de busca (método, slug) em ordem de preferência."""
     name = item["name"]
@@ -59,17 +75,29 @@ def item_keys(item: dict) -> list[tuple[str, str]]:
         keys.append(("item base do excellent", slugify(name[len("excellent "):])))
     elif item.get("grade") == "ancient" and len(name.split()) > 2:
         keys.append(("item base do ancient", slugify(name.split(" ", 1)[1])))
+    if slugify(name) in ITEM_NAME_ALIASES:
+        keys.append(("grafia do item de skill", ITEM_NAME_ALIASES[slugify(name)]))
+    if (other := reordered_name(name)) is not None:
+        keys.append(("item de skill em outra ordem", slugify(other)))
     return keys
 
 
 def match_items(fanz: list[dict], muemu: list[dict]) -> tuple[list[dict], list[dict], list[str]]:
     """(itens enriquecidos, casamentos, divergências)."""
     by_name = _index(muemu)
+    # "Scroll of Comet Fall" (Fanz) = "Scroll of Cometfall" (MuEmu): mesma chave sem os hífens.
+    compact: dict[str, list[dict]] = {}
+    for key, rows in by_name.items():
+        compact.setdefault(key.replace("-", ""), []).extend(rows)
     out, matches, diffs = [], [], []
     for item in fanz:
         item = dict(item)
-        for method, key in item_keys(item):
-            candidates = sorted(by_name.get(key, []), key=lambda m: (m["group"], m["index"]))
+        keys = item_keys(item)
+        if reordered_name(item["name"]) is not None:
+            keys.append(("item de skill sem espaços", slugify(item["name"]).replace("-", "")))
+        for method, key in keys:
+            pool = compact if method == "item de skill sem espaços" else by_name
+            candidates = sorted(pool.get(key, []), key=lambda m: (m["group"], m["index"]))
             if not candidates:
                 continue
             base = candidates[0]
@@ -96,6 +124,29 @@ def _item_diffs(fanz: dict, muemu: dict) -> list[str]:
         if a is not None and b is not None and a != b:
             diffs.append(f"item {fanz['id']}: {stat} Fanz={a} MuEmu={b}")
     return diffs
+
+
+# Itens de skill que o Fanz não lista (orbs do Slayer, do Gun Crusher e da 4ª classe do DK, livros do Rune Wizard...):
+# entram do MuEmu (grupo/índice, classes e requisitos), para as skills apontarem para eles e os drops do GMO casarem.
+# Ficam de fora os que o Fanz já tem com outro nome: "Orb of Greater Defense" (no Fanz, "Orb of Greater Fortitude")
+# e "Orb of Summoning" (no Fanz, um item por monstro: "Goblin Summoning Orb"...).
+MUEMU_SKILL_ITEM_SKIP = {"orb-of-greater-defense", "orb-of-summoning"}
+
+
+def muemu_skill_items(items: list[dict], muemu: list[dict], matches: list[dict]) -> list[dict]:
+    matched = {m["muemu_id"] for m in matches}
+    known = {_name_key(i["name"]) for i in items}
+    out = []
+    for item in muemu:
+        if item.get("group") not in (12, 15) or item["id"] in matched or item["id"] in MUEMU_SKILL_ITEM_SKIP:
+            continue
+        if reordered_name(item["name"]) is None or not 0 < len(item.get("classes") or []) <= 3:
+            continue
+        if _name_key(item["name"]) in known:
+            continue
+        known.add(_name_key(item["name"]))
+        out.append(dict(item))
+    return out
 
 
 # Diferença de nível aceita num par só por nome: até ~10 níveis é rebalanceamento entre seasons; bem mais
@@ -145,6 +196,7 @@ def combine(fanz: dict[str, list[dict]], muemu: dict[str, list[dict]]) -> tuple[
     fanz = dict(fanz, monster=[{"number": None, **m} for m in fanz["monster"]],
                 spawn=[{**SPAWN_DEFAULTS, **s} for s in fanz["spawn"]])
     items, item_matches, item_diffs = match_items(fanz["item"], muemu["item"])
+    items += muemu_skill_items(items, muemu["item"], item_matches)
     monsters, monster_matches, monster_diffs = match_monsters(fanz["monster"], muemu["monster"])
     to_fanz = {m["muemu_id"]: m["fanz_id"] for m in monster_matches}
     spawns = list(fanz["spawn"])
@@ -210,6 +262,28 @@ def _name_key(name: str) -> str:
     return re.sub(r"[^a-z0-9]", "", text)
 
 
+# Itens de skill com o nome do cliente novo nas listas do GMO: "Sword Inertia Bead" = Orb of Sword Inertia,
+# "Magic Arrow Act" = Magic Arrow Book, "Scroll of FireBurst" = Fire Burst Scroll. Nomes avulsos abaixo.
+GMO_SKILL_ITEM_ALIASES = {
+    "Orb of Anger Blow": "Orb of Rageful Blow",   # Rageful Blow = Anger Blow no cliente novo (mesmo nível 170)
+    "Deathfire Orb": "Orb of Fire Death",         # skill Death Fire do Gun Crusher (12/494 no MuEmu)
+    "Perlution Parchment": "Pollution Parchment",  # erro de grafia na lista
+    "Scroll of Lord Dignity": "Critical Damage Scroll",   # skill Dignity = Increase Critical Damage (ENE 102, CMD 300)
+}
+
+
+def skill_item_names(name: str) -> list[str]:
+    """Outros nomes possíveis de um item de skill (ordem trocada, Bead = Orb of, Act = Book)."""
+    out = [GMO_SKILL_ITEM_ALIASES[name]] if name in GMO_SKILL_ITEM_ALIASES else []
+    if (other := reordered_name(name)) is not None:
+        out.append(other)
+    if m := re.match(r"^(.+) Bead$", name):
+        out.append(f"Orb of {m.group(1)}")
+    if m := re.match(r"^(.+) Act$", name):
+        out.append(f"{m.group(1)} Book")
+    return out
+
+
 def item_resolver(items: list[dict], muemu_names: dict[str, str] | None = None) -> "Callable[[str], dict | None]":
     """Acha o item do site pelo nome de outra fonte: igual (slug ou chave de nome), pelo nome do MuEmu (mesmo
     grupo/índice), ou parecido (difflib ≥ 0,9 com a mesma última palavra: "Storm Jahad Armor" -> "Storm Zahard Armor").
@@ -222,12 +296,18 @@ def item_resolver(items: list[dict], muemu_names: dict[str, str] | None = None) 
     base_keys = list(base)
     cache: dict[str, dict | None] = {}
 
-    def resolve(name: str) -> dict | None:
-        if name in cache:
-            return cache[name]
+    def exact(name: str) -> dict | None:
         found = by_id.get(slugify(name)) or by_key.get(_name_key(name))
         if found is None and muemu_names:
             found = by_id.get(muemu_names.get(slugify(name), ""))
+        return found
+
+    def resolve(name: str) -> dict | None:
+        if name in cache:
+            return cache[name]
+        found = exact(name)
+        if found is None:
+            found = next((f for n in skill_item_names(name) if (f := exact(n)) is not None), None)
         if found is None:
             key = _name_key(name)
             last = name.lower().split()[-1] if name.split() else ""
@@ -433,6 +513,8 @@ def build_report(data: dict, matches: dict, diffs: list[str], fanz: dict, muemu:
         "## Casamento", "",
         f"- Itens: {len(matched_items)} de {len(fanz['item'])} casados ({dict(item_methods)}); "
         f"{len(ambiguous)} com mais de um candidato no MuEmu (usado o de menor grupo/índice).",
+        f"- Itens de skill que só o MuEmu tem (entram com os dados dele): "
+        f"{', '.join(sorted(i['name'] for i in data['item'] if i.get('source') == 'muemu')) or 'nenhum'}.",
         f"- Monstros: {len(matched_monsters)} de {len(fanz['monster'])} casados ({dict(monster_methods)}).",
         f"- Spawns com coordenadas vindos do MuEmu: {len(data['spawn']) - len(fanz['spawn'])}.", "",
         "## Campos preenchidos (antes → depois)", "",
