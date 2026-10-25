@@ -1,11 +1,14 @@
-"""Skills por classe: árvore do guia de classe do Fanz e tabela do guia do GMO (HTML real em tests/fixtures/skills e
-tests/fixtures/planner), e a ligação de cada skill ao item que a ensina."""
+"""Skills por classe: guia oficial (JSON dos chunks do Guide MU Online em tests/fixtures/guidemu), árvore do guia de classe
+do Fanz e tabela do guia do GMO (HTML real em tests/fixtures/skills e tests/fixtures/planner), o cruzamento das fontes e a
+ligação de cada skill ao item que a ensina."""
 from pathlib import Path
 
 from scrapers.combine import item_resolver, match_items, muemu_skill_items, reordered_name, skill_item_names
 from scrapers.common.model import validate
+from scrapers.guidemu.parse import SKILL_CLASSES
+from scrapers.guidemu.skills import parse_enhancements, parse_properties, parse_skills
 from scrapers.skills import fanz, gmo
-from scrapers.skills.build import key, link_items
+from scrapers.skills.build import fill_from_gmo, from_guide, from_tree, key, link_items, skill_slug
 
 FIX = Path(__file__).parent / "fixtures"
 
@@ -127,11 +130,72 @@ def test_skill_aponta_para_o_item_e_os_drops():
     link_items(skills, items, names, drops, {key("Shining Bird Law Book"): "Shining Bird Law Book"})
     assert skills["dark-lord"][0]["learn"]["item_id"] == "summon-scroll"
     assert skills["rune-mage"][0]["learn"]["item_id"] == "magic-arrow-book"
-    assert skills["gun-crusher"][0]["learn"] == {"method": "item", "item_name": "Orb of Ice Break", "item_id": "orb-of-ice-break", "drops": []}
+    assert skills["gun-crusher"][0]["learn"] == {"method": "item", "item_name": "Orb of Ice Break", "item_id": "orb-of-ice-break",
+                                                 "drops": [], "item_from_class": None}
     assert skills["gun-crusher"][1]["learn"]["method"] is None
     assert skills["alchemist"][0]["learn"]["item_id"] is None   # Scroll of Lightning é do DW: não vale para o Alchemist
     ww = skills["white-wizard"][0]["learn"]
     assert (ww["item_name"], ww["item_id"], ww["drops"]) == ("Shining Bird Law Book", None, [{"monster_id": "lizard-warrior", "map_id": "lorencia"}])
+
+
+def test_skill_de_varias_classes_usa_o_item_da_outra_classe():
+    items = [item("Scroll of Fire Ball", ["Dark Wizard"])]
+    skills = {"dark-wizard": [skill("dark-wizard", "Fire Ball", "guidemu", "item", "Scroll of Fire Ball")],
+              "alchemist": [skill("alchemist", "Fire Ball", "guidemu", "item")]}
+    link_items(skills, items, {"alchemist": {"Alchemist"}}, {}, {})
+    learn = skills["alchemist"][0]["learn"]
+    assert (learn["item_id"], learn["item_from_class"]) == ("scroll-of-fire-ball", "dark-wizard")
+    assert skills["dark-wizard"][0]["learn"]["item_from_class"] is None
+
+
+def guide_skills() -> dict[str, dict]:
+    return by_name(parse_skills(read("guidemu/chunk-skills.js"), SKILL_CLASSES, "2026-10-25T16:28:00Z"))
+
+
+def test_skills_do_guia_oficial():
+    s = guide_skills()
+    bat = s["Bat Flock"]
+    assert bat["classes"] == ["slayer"] and bat["type"] == "item"
+    assert {k: v for k, v in bat["requirements"].items() if v} == {"level": 270, "str": 100, "agi": 380}
+    assert (bat["mana_cost"], bat["ag_cost"], bat["range"], bat["base_dmg"], bat["imprint_dmg_pct"]) == (20, 5, 6, 90, 100)
+    assert bat["image_url"].startswith("https://firebasestorage.googleapis.com/") and bat["source_url"].endswith("/characters/slayer")
+    assert s["Fire Ball"]["classes"] == ["dark-wizard", "magic-gladiator", "summoner", "rune-mage", "mage", "alchemist"]
+    flare = s["Bursting Flare"]
+    assert (flare["require_skill"], flare["master_tree"]) == ("Death Fire", "Death Fire Mastery 10 Points")
+    assert s["Cyclone"]["type"] == "weapon" and s["Crescent Moon Slash"]["type"] == "default"
+    assert s["Charge Slash"]["requirements"]["level"] is None   # o guia não traz requisitos do Illusion Knight
+    assert parse_properties(["Range 6 / Cooldown: 1.5 sec", "Non-element"]) == {
+        "mana_cost": None, "ag_cost": None, "range": 6, "cooldown_s": 1.5, "base_dmg": None, "imprint_dmg_pct": None, "element": "none"}
+
+
+def test_arvore_de_melhorias_do_guia():
+    tree = by_name(parse_enhancements(read("guidemu/chunk-skill-tree.js"), SKILL_CLASSES, {"slayer": {"bat flock"}}, None))
+    assert set(tree) == {"Multi-Shot Enhancement Skill", "Bat Flock Enhancement", "Charge Slash Enhancement Skill"}
+    bat = tree["Bat Flock Enhancement"]
+    assert (bat["classes"], bat["base_skill"], bat["levels"][:3]) == (["slayer"], "Bat Flock", ["1", "2", "4"])
+    assert bat["image_url"].startswith("https://guidemuonline.com/static/media/BatFlockEnhancement.")
+    assert bat["requirements_text"] == ["Required Points: 1", "Bat Flock Mastery Master Skill 10 Point(s) required"]
+    rec = from_tree(bat)
+    assert (rec["stage"], rec["learn"]["method"], rec["requirements"]["other"][0]) == ("enhanced", "enhance-tree", "Required Points: 1")
+
+
+def test_guia_oficial_completado_pelo_fanz_e_pelo_gmo():
+    guide = guide_skills()
+    fanz_skills, _ = fanz.parse_class_skills(read("skills/fanz-class-slayer-skills.html"))
+    f = by_name(fanz_skills)["Bat Flock"]
+    bat = from_guide(guide["Bat Flock"], {**f, "preview_url": None})
+    assert bat["requirements"]["agi"] == 380 and bat["base_dmg"] == 90          # do guia
+    assert bat["learn"] == {"method": "item", "item_name": "Orb of Bat Flock"}    # do Fanz
+    assert bat["description"].startswith("Summons a flock of bats") and bat["element"] == "darkness"
+    flare = from_guide(guide["Bursting Flare"], None)
+    assert flare["requirements"]["other"] == ["Skill: Death Fire", "Master Skill: Death Fire Mastery 10 Points"]
+    # Illusion Knight: o guia não tem requisitos; vêm do GMO (Season 21).
+    ik, _ = gmo.parse_class_skills(read("skills/gmo-illusion-knight.html"))
+    charge = fill_from_gmo(from_guide(guide["Charge Slash"], None), by_name(ik)["Charge Slash"])
+    assert {k: v for k, v in charge["requirements"].items() if v} == {"level": 25, "agi": 80}
+    assert (charge["season"], charge["mana_cost"], charge["source"]) == ("S21", 3, "guidemu")
+    assert fill_from_gmo(bat, by_name(ik)["Charge Slash"]) is bat and bat["season"] is None   # já tem requisito: fica
+    assert skill_slug("Sword’s Fury") == "swords-fury" and key("Alchemy: Angel Homunculus") == key("Angel Homunculus")
 
 
 def test_schema_da_skill():
@@ -141,5 +205,6 @@ def test_schema_da_skill():
               **{k: v for k, v in s.items() if k != "id"}, "stage": "class", "unlocked_as": None, "range": None, "base_dmg": None,
               "season": None, "source": "fanz", "source_url": "https://muonlinefanz.com/guide/characters/slayer/",
               "scraped_at": "2026-10-21T20:03:59Z", "page_updated_at": "2025-05-08"}
-    record["learn"] = {**record["learn"], "item_id": "orb-of-bat-flock", "drops": []}
+    record["learn"] = {**record["learn"], "item_id": "orb-of-bat-flock", "drops": [], "item_from_class": None}
+    record.update(aliases=[], cooldown_s=None, levels=[], image_url=None, preview_url=record.get("preview_url"))
     assert validate("skill", record) == []

@@ -336,6 +336,27 @@ export const EN: Record<string, string> = {
     "Every skill of each class: what it does, its requirements and how it is learned. For skills learned from an item (orb, scroll, book or parchment), where the item drops: the monster, the map and the spot with the most of it.",
   "de todas as classes, com onde dropa o item de cada uma": "for every class, with where each skill item drops",
   "Nenhuma skill neste conjunto de dados.": "No skills in this dataset.", "Ensina a skill": "Teaches the skill", "Grupos": "Groups",
+  "Requisitos para usar": "Requirements to use", "Vídeo": "Video", "Propriedades": "Properties", "Como aprender": "How to learn",
+  "Buscar mais vídeos desta skill no YouTube ↗": "Search YouTube for more videos of this skill ↗", "abrir no YouTube ↗": "open on YouTube ↗",
+  "Clique com o botão direito no item, no inventário, para aprender a skill.": "Right-click the item in your inventory to learn the skill.",
+  "Sem requisito de nível ou atributo nas fontes.": "No level or stat requirement in the sources.",
+  "Árvore de melhorias (4ª classe)": "Enhancement tree (4th class)", "Liberada na árvore de melhorias da 4ª classe.": "Unlocked in the 4th class enhancement tree.",
+  "Melhoram uma skill da classe com pontos da árvore de melhorias da 4ª classe.": "They enhance a class skill with points from the 4th class enhancement tree.",
+  "Prévia animada da skill.": "Animated preview of the skill.", "As fontes não trazem a descrição desta skill.": "The sources don't describe this skill.",
+  "Builds que usam esta skill": "Builds that use this skill", "Aprendida com um item de skill; as fontes não dizem qual.": "Learned from a skill item; the sources don't say which one.",
+  "Também chamada de": "Also called", "Já vêm com a classe": "Come with the class", "Já vem com a classe.": "Comes with the class.",
+  "A classe já começa com elas.": "The class starts with them.", "Aprendida com um item de skill.": "Learned from a skill item.",
+  "Clique com o botão direito no item (orb, scroll, livro ou pergaminho) para aprender a skill, se tiver os requisitos. Abra a skill para ver onde o item dropa.":
+    "Right-click the item (orb, scroll, book or parchment) to learn the skill, if you meet the requirements. Open the skill to see where the item drops.",
+  "Toque numa skill para ver a descrição, os requisitos para usar, onde o item dropa e o vídeo.":
+    "Tap a skill to see its description, the requirements to use it, where the item drops and the video.",
+  "Skills com a etiqueta S21: requisitos e custos da Season 21; podem variar um pouco entre seasons.":
+    "Skills tagged S21: requirements and costs from Season 21; they may vary a little between seasons.",
+  "Requisitos e custos da Season 21; podem variar um pouco entre seasons.":
+    "Requirements and costs from Season 21; they may vary a little between seasons.",
+  "Skill anterior:": "Required skill:",
+  "Onde conseguir o item": "Where to get the item", "Recarga": "Cooldown", "Elemento": "Element", "· vendido por NPC": "· sold by an NPC",
+  "Prévia": "Preview",
 
   // ------------------------------------------------------------ API
   "API": "API", "Manifesto": "Manifest", "Endereços": "URLs", "entidade": "entity", "registros": "records", "lista": "list",
@@ -364,6 +385,11 @@ export const EN_PATTERNS: [string, string][] = [
   ["Dropa de {0} monstros em {1} mapas: ver todos →", "Dropped by {0} monsters in {1} maps: see all →"],
   ["Dropa de {0} monstros em {1} mapa: ver todos →", "Dropped by {0} monsters in {1} map: see all →"],
   ["Dropa de {0} monstros em {1} mapas.", "Dropped by {0} monsters in {1} maps."],
+  ["Ver o vídeo: {0}", "Watch the video: {0}"], ["Prévia da skill {0}", "{0} skill preview"], ["Mais skills de {0}", "More {0} skills"], ["Todas as skills de {0} →", "All {0} skills →"],
+  ["Sem vídeo só desta skill: vídeo com as skills de {0}.", "No video of this skill alone: video with the {0} skills."],
+  ["O guia oficial lista esta skill também para {0}; este é o item dela nessa classe.", "The official guide also lists this skill for {0}; this is its item in that class."],
+  ["· dropa em {0:n} mapas", "· drops in {0} maps"], ["· dropa em {0:n} mapa", "· drops in {0} map"],
+  ["Valor por ponto investido: {0} (1 ponto) a {1} ({2:n} pontos).", "Value per point invested: {0} (1 point) to {1} ({2} points)."],
   ["{0:n} skills", "{0} skills"], ["{0:n} aprendidas com item", "{0} learned from an item"], ["{0:n} com item", "{0} with an item"],
   ["{0:n} itens", "{0} items"], ["{0:n} item", "{0} item"], ["{0:n} mapas", "{0} maps"], ["{0:n} mapa", "{0} map"],
   ["{0:n} monstros", "{0} monsters"], ["{0:n} monstro", "{0} monster"], ["{0:n} guias", "{0} guides"],

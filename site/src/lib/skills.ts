@@ -15,15 +15,23 @@ export const ELEMENT_LABELS: Record<string, string> = {
 
 /** Grupos da página da classe, na ordem: como a skill se aprende. */
 export const LEARN_GROUPS: { id: string; label: string; text: string }[] = [
-  { id: "item", label: "Aprendidas com item", text: "Clique com o botão direito no item (orb, scroll, livro ou pergaminho) para aprender a skill, se tiver os requisitos. Abaixo de cada uma, onde o item dropa." },
+  { id: "item", label: "Aprendidas com item", text: "Clique com o botão direito no item (orb, scroll, livro ou pergaminho) para aprender a skill, se tiver os requisitos. Abra a skill para ver onde o item dropa." },
+  { id: "default", label: "Já vêm com a classe", text: "A classe já começa com elas." },
   { id: "weapon", label: "Da arma ou do escudo", text: "Vêm do equipamento com a opção Skill: não precisam de item." },
-  { id: "enhanced", label: "4ª e 5ª classe", text: "Melhorias da árvore de skills da 4ª classe e skills da 5ª classe." },
   { id: "master", label: "Árvore de mestre", text: "Liberadas com pontos da árvore de skills de mestre." },
+  { id: "enhanced", label: "Árvore de melhorias (4ª classe)", text: "Melhoram uma skill da classe com pontos da árvore de melhorias da 4ª classe." },
   { id: "quest", label: "De quest", text: "Liberadas por uma quest." },
   { id: "mount", label: "De montaria ou pet", text: "Vêm da montaria ou do pet equipado." },
   { id: "castle-siege", label: "Castle Siege", text: "Só no Castle Siege." },
   { id: "other", label: "Outras skills", text: "As fontes não dizem como se aprende." },
 ];
+/** Como se aprende, numa frase (página da skill). */
+export const METHOD_TEXT: Record<string, string> = {
+  item: "Aprendida com um item de skill.", default: "Já vem com a classe.",
+  weapon: "Vem da arma ou do escudo com a opção Skill.", mount: "Vem da montaria ou do pet.",
+  master: "Liberada na árvore de skills de mestre.", quest: "Liberada por quest.", "castle-siege": "Só no Castle Siege.",
+  "enhance-tree": "Liberada na árvore de melhorias da 4ª classe.",
+};
 
 export interface SkillLike {
   name: string; class_id: string; stage: string; learn: { method: string | null };
@@ -32,6 +40,24 @@ export function learnGroup(s: SkillLike): string {
   if (s.learn.method === "item") return "item";
   if (s.stage === "enhanced") return "enhanced";
   return s.learn.method && LEARN_GROUPS.some((g) => g.id === s.learn.method) ? s.learn.method : "other";
+}
+/** Endereço da página da skill. */
+export const skillUrl = (s: { class_id: string; skill_id: string }) => `/skills/${s.class_id}/${s.skill_id}/`;
+
+/** Descrições em modelo da árvore de melhorias ("Bat Flock skill damage is increased by 'X'"): em português. */
+const TREE_STATS: Record<string, string> = {
+  ATK: "o ataque", DEF: "a defesa", "Base DEF": "a defesa base", Stats: "os atributos", Healing: "a cura",
+  "Elemental ATK": "o ataque elemental", "Elemental DEF": "a defesa elemental",
+};
+const DESCRIPTION_RULES: Rule[] = [
+  [/^(.+?)(?:'s)? skill damage is increased by 'X'$/i, (m) => `Aumenta o dano da skill ${m[1]}.`],
+  [/^Increases (?:the )?DMG of (.+?) by 'X'$/i, (m) => `Aumenta o dano da skill ${m[1]}.`],
+  [/^When using (.+?) [Ss]kill, increases? (.+?) by 'X'$/i, (m) => `Ao usar a skill ${m[1]}, aumenta ${TREE_STATS[m[2]] ?? m[2]}.`],
+];
+/** Descrição em português: a tradução nossa (dicionário) ou a regra dos modelos; null quando não há. */
+export function descriptionPt(desc: string | null, dict: Record<string, string>): string | null {
+  if (!desc) return null;
+  return dict[desc] ?? apply(DESCRIPTION_RULES, desc);
 }
 
 const STAT_PT: Record<string, string> = {
@@ -115,6 +141,11 @@ const EFFECT_RULES: Rule[] = [
 /** Requisitos em texto ("Skill: Bat Flock", "Master Skill: Rank 8", "Mount: Horn of Fenrir"...). */
 const REQUIREMENT_RULES: Rule[] = [
   [/^Skill: (.+)$/i, (m) => `Skill anterior: ${m[1]}`],
+  [/^(.+?) is required\.?$/i, (m) => `Skill anterior: ${m[1]}`],
+  [/^Required Points: (\d+)$/i, (m) => `Custa ${m[1]} ${m[1] === "1" ? "ponto" : "pontos"} da árvore de melhorias`],
+  [/^Prerequisite (\d+) points? usage required\.?$/i, (m) => `Pede ${m[1]} pontos já usados na árvore de melhorias`],
+  [/^Master Skill: (.+?) (\d+) Points?$/i, (m) => `${m[1]} com ${m[2]} pontos na árvore de mestre`],
+  [/^(.+?) Master Skill (\d+) Point\(s\) required\.?$/i, (m) => `${m[1]} com ${m[2]} pontos na árvore de mestre`],
   [/^Master Skill:? Rank (\d+)(?: Level (\d+))?$/i, (m) => `Árvore de mestre: rank ${m[1]}${m[2] ? `, nível ${m[2]}` : ""}`],
   [/^Master Skill: (.+?) (?:Level|Lv) (\d+)$/i, (m) => `Skill de mestre ${m[1]} no nível ${m[2]}`],
   [/^(?:\(x(\d+)\)|(\d+)) Master Skill Points$/i, (m) => `${m[1] ?? m[2]} pontos de skill de mestre`],
@@ -139,6 +170,24 @@ const apply = (rules: Rule[], line: string): string | null => {
   }
   return null;
 };
+/** Skill pedida antes ("Skill: Bat Flock", "Ice Blast is required"), para virar link; null quando a linha é outra. */
+export const prerequisiteName = (line: string): string | null =>
+  /^Skill: (.+)$/i.exec(line.trim())?.[1] ?? /^(.+?) is required\.?$/i.exec(line.trim())?.[1] ?? null;
+
+/**
+ * Efeitos que a página mostra além das propriedades: sem o dano base e o alcance quando o guia oficial já dá o valor
+ * (o Fanz às vezes traz outro número, de outra season) e sem valores desconhecidos ("Range: ?").
+ */
+export function extraEffects(s: { effects: string[]; base_dmg?: number | null; range?: number | null }): string[] {
+  return s.effects.filter((e) => {
+    const line = e.trim();
+    if (/^(?:Skill DMG|Range|AoE Range|Cooldown|Duration|DEF|DMG):? \+?\?$/i.test(line)) return false;
+    if (s.base_dmg != null && /^Skill DMG:? \+?-?[\d.]+$/i.test(line)) return false;
+    if (s.range != null && /^Range: [\d.]+$/i.test(line)) return false;
+    return true;
+  });
+}
+
 /** Efeito em português, ou null quando a linha não tem regra (fica o original). */
 export const effectPt = (line: string): string | null => apply(EFFECT_RULES, line);
 /** Requisito em texto em português, ou null. */
@@ -149,21 +198,22 @@ export const skillKey = (name: string): string =>
   name.toLowerCase().replace(/^alchemy:\s*/, "").replace(/\s*\([^)]*\)\s*/g, " ").replace(/[’']/g, "").replace(/[^a-z0-9]/g, "");
 
 /**
- * Nomes que as builds usam -> skill da classe, quando o nome difere do guia. Conferidos pelos requisitos da build:
- * Water Blow (Força 1090, elemento água) = Sword Blow; skill de suporte do DK (Energia 1052) = Strong Blessing;
- * Lord of Dignity Strengthener (Energia 102, Comando 300) melhora a Increase Critical Damage; Retaliation do
- * Crusader (Energia 200) = Luguard's Protection: Punishment.
+ * Nomes que as builds usam -> skill da classe, quando o nome difere do guia oficial. Conferidos pelos requisitos da
+ * build: Water Blow (Força 1090, elemento água) = Sword Blow; Firm Belief = Strong Belief (Energia 1040); skill de
+ * suporte do DK (Energia 1052) = Solid Protection; Lord of Dignity Strengthener (Energia 102, Comando 300) melhora a
+ * Critical Damage Increase; Retaliation do Crusader (Energia 200) = Luguard's Protection: Punishment.
  */
 export const BUILD_SKILL_ALIASES: Record<string, Record<string, string>> = {
-  "dark-knight": { "Sword Fury": "Sword’s Fury Mastery", "Water Blow": "Sword Blow", "Skill de suporte do grupo": "Strong Blessing" },
-  "dark-lord": { "Lord of Dignity Strengthener": "Increase Critical Damage" },
+  "dark-knight": { "Sword Fury": "Sword's Fury", "Water Blow": "Sword Blow", "Firm Belief (com escudo)": "Strong Belief",
+    "Skill de suporte do grupo": "Solid Protection" },
+  "dark-lord": { "Lord of Dignity Strengthener": "Critical Damage Increase" },
   "grow-lancer": { "Shining Pick": "Shining Peak" },
   "illusion-knight": { "Charging Slash": "Charge Slash" },
   crusader: { Retaliation: "Luguard’s Protection: Punishment" },
 };
 
 /** Skill da classe com o nome usado em outra parte do site (builds); undefined quando não há. */
-export function findSkill<T extends { class_id: string; name: string }>(list: T[], classId: string, name: string): T | undefined {
+export function findSkill<T extends { class_id: string; name: string; aliases?: string[] }>(list: T[], classId: string, name: string): T | undefined {
   const target = skillKey(BUILD_SKILL_ALIASES[classId]?.[name] ?? name);
-  return list.find((s) => s.class_id === classId && skillKey(s.name) === target);
+  return list.find((s) => s.class_id === classId && [s.name, ...(s.aliases ?? [])].some((n) => skillKey(n) === target));
 }

@@ -1,0 +1,37 @@
+---
+// Vídeo do YouTube que só carrega o player ao clicar (a página fica leve: antes do clique, só a miniatura).
+// Usa youtube-nocookie.com (sem cookies de rastreio até a pessoa dar play).
+interface Props { id: string; title: string }
+const { id, title } = Astro.props;
+---
+<div class="yt" data-yt={id}>
+  <button type="button" class="yt-play" aria-label={`Ver o vídeo: ${title}`}>
+    <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" onerror="this.remove()" />
+    <span class="yt-btn" aria-hidden="true"><svg viewBox="0 0 68 48"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.2.3 34 .3 34 .3s-21.2 0-26.5 1.4a8.5 8.5 0 0 0-6 6C.1 13 .1 24 .1 24s0 11 1.4 16.3a8.5 8.5 0 0 0 6 6C12.8 47.7 34 47.7 34 47.7s21.2 0 26.5-1.4a8.5 8.5 0 0 0 6-6C67.9 35 67.9 24 67.9 24s0-11-1.4-16.3z" fill="#c4302b"/><path d="M45 24 27 14v20z" fill="#fff"/></svg></span>
+  </button>
+  <p class="yt-title"><span lang="en" translate="no">{title}</span> · <a href={`https://www.youtube.com/watch?v=${id}`} target="_blank" rel="noopener">abrir no YouTube ↗</a></p>
+</div>
+
+<script>
+  for (const box of document.querySelectorAll<HTMLElement>("[data-yt]")) {
+    box.querySelector("button")?.addEventListener("click", () => {
+      const frame = document.createElement("iframe");
+      frame.src = `https://www.youtube-nocookie.com/embed/${box.dataset.yt}?autoplay=1&rel=0`;
+      frame.title = box.querySelector(".yt-title span")?.textContent ?? "YouTube";
+      frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      frame.allowFullscreen = true;
+      box.querySelector("button")?.replaceWith(frame);
+    }, { once: true });
+  }
+</script>
+
+<style>
+  .yt { max-width: 40rem; }
+  .yt-play, .yt :global(iframe) { display: block; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: var(--radius); background: #000; overflow: hidden; }
+  .yt-play { position: relative; padding: 0; cursor: pointer; }
+  .yt-play img { width: 100%; height: 100%; object-fit: cover; opacity: .85; transition: opacity .15s; }
+  .yt-play:hover img { opacity: 1; }
+  .yt-btn { position: absolute; inset: 0; display: grid; place-items: center; }
+  .yt-btn svg { width: 68px; height: 48px; filter: drop-shadow(0 2px 6px rgba(0,0,0,.5)); }
+  .yt-title { margin: .4rem 0 0; font-size: .85rem; color: var(--muted); }
+</style>

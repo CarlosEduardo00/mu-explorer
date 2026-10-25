@@ -17,10 +17,11 @@ log = logging.getLogger("scrapers.guidemu")
 SOURCE = "guidemu"
 BASE = "https://guidemuonline.com"
 ENTRY = f"{BASE}/maps/lorencia"
-# Conteúdo procurado nos chunks: o JSON dos mapas (com spots) e o dos monstros.
-MARKERS = {"maps": "cantidadmobs", "monsters": "minattack"}
+# Conteúdo procurado nos chunks: o JSON dos mapas (com spots), o dos monstros, o das skills de cada classe (páginas
+# /characters/<classe>) e o da árvore de melhorias de skill da 4ª classe.
+MARKERS = {"maps": "cantidadmobs", "monsters": "minattack", "skills": "typeSkill", "skill_tree": "pagina"}
 # Chunks que tinham esses dados em out/2026: tentados primeiro (o id costuma ficar; o hash muda a cada versão).
-HINTS = (8413, 4972)
+HINTS = (8413, 4972, 2044, 5606)
 
 
 def image_urls(maps: list[dict]) -> list[tuple[str, str]]:
@@ -65,9 +66,11 @@ def cmd_fetch(args: argparse.Namespace) -> int:
                     data[name] = find_json(result.text, MARKERS[name])
                     del missing[name]
                     log.info("%s: chunk %s", name, chunks[chunk])
-        if missing:
+        if missing.keys() & {"maps", "monsters"}:
             log.error("dados não encontrados nos chunks: %s", ", ".join(missing))
             return 1
+        if missing:   # skills: sem elas o resto segue (o site usa as outras fontes)
+            log.warning("dados não encontrados nos chunks: %s", ", ".join(missing))
         done = failed = 0
         for key, url in [] if args.no_images else image_urls(data["maps"] or []):
             if not args.refresh and store.exists(SOURCE, "maps", key, url, ".webp"):

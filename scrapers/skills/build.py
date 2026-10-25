@@ -25,6 +25,7 @@ import sys
 from pathlib import Path
 
 from scrapers.combine import gmo_drop_map_id, item_resolver, skill_item_names
+from scrapers.common.html import absolute_url
 from scrapers.common.ids import slugify
 from scrapers.common.model import REPO_ROOT, validate
 from scrapers.common.storage import dump_records
@@ -42,6 +43,10 @@ GMO_TO_FANZ = {
 }
 # Buff de experiência do servidor (todas as classes, nível 50): não é skill de classe.
 GMO_SKIP = {"blessingofexperience"}
+# Skill do GMO que é a mesma do guia oficial com outra grafia.
+GMO_TO_GUIDE = {"angerstrike": "ragefulblow", "dignity": "criticaldamageincrease", "electricspike": "electricspark",
+                "beginnerbless": "basicbless", "beginnerbasicdefenseimprovement": "basicdefenseincrease",
+                "beginnerattackpowerimprovement": "basicattackincrease", "beginnerrecovery": "basicrecovery"}
 # Nome do item no guia -> nome do item no site, quando não basta trocar a ordem das palavras.
 ITEM_ALIASES = {
     "Summoning Scroll": "Summon Scroll",
@@ -57,8 +62,14 @@ GMO_ONLY_FORMS = ("{} Bead", "{} Act", "{} Law Book", "Orb of {}", "Scroll of {}
 
 
 def key(name: str) -> str:
-    """'Sword’s Fury' -> 'swordfury' (compara nomes das duas fontes)."""
-    return re.sub(r"[^a-z0-9]", "", name.lower().replace("’", "'").replace("'s ", " "))
+    """'Sword’s Fury' -> 'swordfury', 'Alchemy: Angel Homunculus' -> 'angelhomunculus' (compara nomes das fontes)."""
+    name = re.sub(r"^alchemy:\s*", "", name.lower())
+    return re.sub(r"[^a-z0-9]", "", name.replace("’", "'").replace("'s ", " "))
+
+
+def skill_slug(name: str) -> str:
+    """Endereço da skill: "Sword's Fury" -> "swords-fury", "Luguard’s Protection: Punishment" -> "luguards-protection-punishment"."""
+    return slugify(name.replace("’", "'").replace("'", ""))
 
 
 def _meta(path: Path) -> dict:
@@ -66,13 +77,90 @@ def _meta(path: Path) -> dict:
     return json.loads(meta.read_text(encoding="utf-8")) if meta.exists() else {}
 
 
-def load_class_skills(raw: Path) -> tuple[dict[str, list[dict]], list[str]]:
-    """Skills por classe (ordem do planner), já com procedência. Devolve também as linhas não mapeadas."""
+# Nome no Fanz -> nome no guia oficial (o mesmo skill com o nome do cliente atual).
+FANZ_TO_GUIDE = {
+    "swordfurymastery": "swordfury", "firmbelief": "strongbelief", "strongblessing": "solidprotection",
+    "increasecriticaldamage": "criticaldamageincrease",
+}
+
+
+def _empty(name: str) -> dict:
+    return {"id": slugify(name.replace("’", "'")), "name": name, "aliases": [], "tree": None, "stage": "class",
+            "unlocked_as": None, "kind": None, "description": None, "effects": [], "mana_cost": None, "ag_cost": None,
+            "range": None, "cooldown_s": None, "base_dmg": None, "element": None, "imprint_dmg_pct": None,
+            "requirements": {"level": None, "str": None, "agi": None, "vit": None, "ene": None, "cmd": None, "other": []},
+            "learn": {"method": None, "item_name": None}, "levels": [], "image_url": None, "preview_url": None, "slot": None}
+
+
+def from_guide(g: dict, fanz: dict | None) -> dict:
+    """Skill do guia oficial (requisitos, custos, ícone e tipo atuais) completada pelo Fanz (item, efeitos, elemento,
+    descrição já traduzida)."""
+    rec = _empty(g["name"])
+    req = {k: g["requirements"].get(k) for k in ("level", "str", "agi", "vit", "ene", "cmd")}
+    other = ([f"Skill: {g['require_skill']}"] if g.get("require_skill") else []) + \
+            ([f"Master Skill: {g['master_tree']}"] if g.get("master_tree") else [])
+    method = "castle-siege" if g.get("castle_siege") else g.get("type")
+    rec.update({k: g.get(k) for k in ("mana_cost", "ag_cost", "range", "cooldown_s", "base_dmg", "imprint_dmg_pct",
+                                      "element", "description", "image_url")})
+    rec.update(requirements={**req, "other": other}, learn={"method": method, "item_name": None},
+               season=g.get("season"), source="guidemu", source_url=g.get("source_url"), scraped_at=g.get("scraped_at"),
+               page_updated_at=None)
+    if fanz:
+        if fanz["name"] != g["name"]:
+            rec["aliases"] = [fanz["name"]]
+        rec.update(tree=fanz["tree"], kind=fanz["kind"], effects=fanz["effects"], slot=fanz["slot"],
+                   preview_url=fanz.get("preview_url"), element=fanz["element"] or rec["element"],
+                   imprint_dmg_pct=rec["imprint_dmg_pct"] or fanz["imprint_dmg_pct"],
+                   mana_cost=rec["mana_cost"] if rec["mana_cost"] is not None else fanz["mana_cost"],
+                   ag_cost=rec["ag_cost"] if rec["ag_cost"] is not None else fanz["ag_cost"])
+        # Descrição: a do Fanz (oficial, já com tradução nossa); a do guia fica quando o Fanz não tem.
+        rec["description"] = fanz["description"] or rec["description"]
+        if not any(req.values()) and not other:   # o guia não diz requisito: os do Fanz
+            rec["requirements"] = fanz["requirements"]
+        if fanz["learn"]["item_name"]:
+            rec["learn"] = {"method": "item", "item_name": fanz["learn"]["item_name"]}
+        elif rec["learn"]["method"] is None:
+            rec["learn"] = fanz["learn"]
+    return rec
+
+
+def fill_from_gmo(rec: dict, gmo: dict | None) -> dict:
+    """Skill do guia oficial sem requisito (nem no Fanz), como as do Illusion Knight: requisitos e custos que faltam vêm
+    da tabela do GMO, e a skill ganha `season: "S21"` (o site avisa que os requisitos são da Season 21)."""
+    req = rec["requirements"]
+    if gmo is None or any(req[k] is not None for k in ("level", "str", "agi", "vit", "ene", "cmd")) or req["other"]:
+        return rec
+    if not any(gmo["requirements"][k] is not None for k in ("level", "str", "agi", "vit", "ene", "cmd")):
+        return rec
+    rec["requirements"] = {**gmo["requirements"], "other": list(gmo["requirements"]["other"])}
+    for k in ("mana_cost", "ag_cost", "range"):
+        if rec[k] is None:
+            rec[k] = gmo.get(k)
+    rec["season"] = gmo_parser.SEASON
+    return rec
+
+
+def from_tree(t: dict) -> dict:
+    """Skill da árvore de melhorias da 4ª classe (guia oficial): melhora uma skill da classe com pontos da árvore."""
+    rec = _empty(t["name"])
+    rec.update(stage="enhanced", description=t.get("description"), image_url=t.get("image_url"), levels=t.get("levels") or [],
+               requirements={**rec["requirements"], "other": t.get("requirements_text") or []},
+               learn={"method": "enhance-tree", "item_name": None},
+               season=None, source="guidemu", source_url=t.get("source_url"), scraped_at=t.get("scraped_at"), page_updated_at=None)
+    return rec
+
+
+def load_class_skills(raw: Path, guide: list[dict] | None = None, tree: list[dict] | None = None) -> tuple[dict[str, list[dict]], list[str]]:
+    """Skills por classe (ordem do planner), já com procedência. Ordem das fontes: guia oficial (Guide MU Online), Fanz
+    (skills que o guia não lista, como Impale e Combo), árvore de melhorias da 4ª classe (guia) e, por último, o GMO:
+    a classe inteira quando nenhuma outra fonte a cobre (White Wizard, Crusader) e, nas outras, só as skills que faltam
+    (Dex Booster, Raining Arrow, Crown Force...). Devolve também as linhas de requisito não mapeadas."""
+    guide, tree = guide or [], tree or []
     out: dict[str, list[dict]] = {}
     unmapped: list[str] = []
-    for class_id, _, guide, _, _ in CLASSES + [(c, None, None, None, None) for c in GMO_KEYS if c not in FANZ_GUIDES]:
-        skills: list[dict] = []
-        fanz_path = raw / "fanz" / "tools" / f"class-{guide}.html" if guide else None
+    for class_id, _, fanz_key, _, _ in CLASSES + [(c, None, None, None, None) for c in GMO_KEYS if c not in FANZ_GUIDES]:
+        fanz: list[dict] = []
+        fanz_path = raw / "fanz" / "tools" / f"class-{fanz_key}.html" if fanz_key else None
         if fanz_path and fanz_path.exists():
             html = fanz_path.read_text(encoding="utf-8", errors="replace")
             meta = _meta(fanz_path)
@@ -80,22 +168,37 @@ def load_class_skills(raw: Path) -> tuple[dict[str, list[dict]], list[str]]:
             unmapped += [f"fanz/{class_id}: {x}" for x in lines]
             prov = {"season": None, "source": "fanz", "source_url": meta.get("url"), "scraped_at": meta.get("fetched_at"),
                     "page_updated_at": fanz_parser.page_updated_at(html)}
-            skills += [{**s, "stage": "class", "unlocked_as": None, "range": None, "base_dmg": None, **prov} for s in found]
+            for f in found:
+                preview = absolute_url(meta.get("url") or "", f["preview_url"]) if f.get("preview_url") else None
+                fanz.append({**_empty(f["name"]), **f, "preview_url": preview, **prov})
+        by_key = {FANZ_TO_GUIDE.get(key(f["name"]), key(f["name"])): f for f in fanz}
         gmo_path = raw / "gmo" / "guides" / f"{GMO_KEYS[class_id]}.html"
+        gmo_found: list[dict] = []
         if gmo_path.exists():
-            meta = _meta(gmo_path)
-            found, lines = gmo_parser.parse_class_skills(gmo_path.read_text(encoding="utf-8", errors="replace"))
+            gmo_found, lines = gmo_parser.parse_class_skills(gmo_path.read_text(encoding="utf-8", errors="replace"))
             unmapped += [f"gmo/{class_id}: {x}" for x in lines]
-            known = {key(s["name"]) for s in skills}
+        gmo_by_key = {GMO_TO_GUIDE.get(key(s["name"]), key(s["name"])): s for s in gmo_found if s["stage"] == "class"}
+        skills: list[dict] = []
+        for g in (g for g in guide if class_id in g["classes"]):
+            f = by_key.pop(key(g["name"]), None)
+            skills.append(fill_from_gmo(from_guide(g, f), gmo_by_key.get(key(g["name"]))))
+        used = {id(f) for f in by_key.values()}
+        skills += [f for f in fanz if id(f) in used]          # do Fanz e não do guia (ex.: Impale, Combo)
+        enhanced = [from_tree(t) for t in tree if class_id in t["classes"]]
+        skills += enhanced
+        if gmo_found:
+            meta = _meta(gmo_path)
+            known = {key(s["name"]) for s in skills} | {key(a) for s in skills for a in s["aliases"]}
             prov = {"season": gmo_parser.SEASON, "source": "gmo", "source_url": meta.get("url"),
                     "scraped_at": meta.get("fetched_at"), "page_updated_at": None}
-            for s in found:
+            for s in gmo_found:
                 k = key(s["name"])
-                if k in GMO_SKIP or k in known or GMO_TO_FANZ.get(k) in known:
+                if k in GMO_SKIP or k in known or GMO_TO_FANZ.get(k) in known or GMO_TO_GUIDE.get(k) in known:
+                    continue
+                if s["stage"] == "enhanced" and enhanced:   # a árvore oficial já descreve as melhorias
                     continue
                 known.add(k)
-                skills.append({**s, "tree": None, "kind": None, "description": None, "effects": [],
-                               "element": None, "imprint_dmg_pct": None, "slot": None, **prov})
+                skills.append({**_empty(s["name"]), **s, **prov})
         if skills:
             out[class_id] = skills
     return out, unmapped
@@ -158,7 +261,7 @@ def link_items(skills: dict[str, list[dict]], items: list[dict], names: dict[str
                 if found is None and (drops := gmo_drops.get(key(learn["item_name"]))):
                     learn["drops"] = drops
                 continue
-            if s["source"] != "gmo" or learn["method"] is not None:
+            if s["source"] == "fanz" or learn["method"] not in (None, "item"):
                 continue
             # Classes sem o guia do Fanz: item com o nome da skill, só se o site diz que é da própria classe
             # (itens de outras classes com o mesmo nome, como Scroll of Lightning do DW, ficam de fora).
@@ -174,12 +277,28 @@ def link_items(skills: dict[str, list[dict]], items: list[dict], names: dict[str
                 if learn["item_id"] is None and resolve(name) is None and (drops := gmo_drops.get(key(name))):
                     learn.update(method="item", item_name=gmo_names.get(key(name), name), drops=drops)
                     break
+    # Skill que o guia oficial lista para várias classes (Fire Ball: DW, MG, Summoner, Rune Wizard, Mage, Alchemist): a
+    # classe sem item conhecido mostra o item da mesma skill em outra classe, dizendo de qual (`item_from_class`).
+    shared: dict[str, tuple[str, dict]] = {}
+    for class_id, rows in skills.items():
+        for s in rows:
+            if s["learn"].get("item_id") and s["source"] == "guidemu":
+                shared.setdefault(key(s["name"]), (class_id, s["learn"]))
+    for class_id, rows in skills.items():
+        for s in rows:
+            learn = s["learn"]
+            learn.setdefault("item_from_class", None)
+            if learn["method"] == "item" and not learn.get("item_id") and not learn["drops"] and key(s["name"]) in shared:
+                other, src = shared[key(s["name"])]
+                if other != class_id:
+                    learn.update(item_name=src["item_name"], item_id=src["item_id"], item_from_class=other)
 
 
 def build(data_dir: Path, folder: Path) -> tuple[list[dict], list[str]]:
     raw = data_dir / "raw"
     load = lambda path: json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
-    skills, unmapped = load_class_skills(raw)
+    guide_dir = data_dir / "processed" / "guidemu"
+    skills, unmapped = load_class_skills(raw, load(guide_dir / "skills.json"), load(guide_dir / "skill_tree.json"))
     planner = load(data_dir / "curated" / "planner.json") or {}
     lists = load(data_dir / "processed" / "gmo" / "drop_lists.json")
     gmo_names = {key(n): n for lst in lists for m in lst["monsters"] for n in m["items"]}
@@ -187,8 +306,13 @@ def build(data_dir: Path, folder: Path) -> tuple[list[dict], list[str]]:
                gmo_item_drops(lists, load(folder / "monsters.json"), load(folder / "maps.json")), gmo_names)
     out = []
     for class_id, rows in skills.items():
+        seen: set[str] = set()
         for order, s in enumerate(rows):
-            record = {"id": f"{class_id}--{s['id']}", "skill_id": s["id"], "class_id": class_id, "order": order,
+            sid = skill_slug(s["name"])
+            if sid in seen:
+                continue
+            seen.add(sid)
+            record = {"id": f"{class_id}--{sid}", "skill_id": sid, "class_id": class_id, "order": order,
                       **{k: v for k, v in s.items() if k != "id"}}
             out.append(record)
     return out, unmapped

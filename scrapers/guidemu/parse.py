@@ -150,6 +150,37 @@ def load_bundle(store: RawStore) -> tuple[list, list, dict]:
     return maps or [], monsters or [], meta
 
 
+# Classe no guia -> id da classe no site (planner).
+SKILL_CLASSES = {
+    "Dark Wizard": "dark-wizard", "Dark Knight": "dark-knight", "Fairy Elf": "fairy-elf", "Magic Gladiator": "magic-gladiator",
+    "Dark Lord": "dark-lord", "Summoner": "summoner", "Rage Fighter": "rage-fighter", "Grow Lancer": "grow-lancer",
+    "Rune Wizard": "rune-mage", "Slayer": "slayer", "Gun Crusher": "gun-crusher", "Lemuria": "mage",
+    "Illusion Knight": "illusion-knight", "Alchemist": "alchemist", "Crusader": "crusader", "White Wizard": "white-wizard",
+    "Kundun Mephis": "white-wizard",   # White Wizard (Light Wizard): no guia, Kundun Mephis
+}
+
+
+def parse_class_skills(store: RawStore) -> tuple[list[dict], list[dict]]:
+    """Skills das páginas de classe e skills da árvore de melhorias (4ª classe), de data/raw/guidemu/js."""
+    from scrapers.guidemu.skills import parse_enhancements, parse_skills
+    skills: list[dict] = []
+    tree: list[dict] = []
+    pages = [p for p in store.iter(SOURCE, "js") if p.path.stem != "main"]
+    for page in pages:
+        text = page.content.decode("utf-8", errors="replace")
+        if "typeSkill" in text and not skills:
+            skills = parse_skills(text, SKILL_CLASSES, page.meta.get("fetched_at"))
+    known: dict[str, set[str]] = {}
+    for s in skills:
+        for c in s["classes"]:
+            known.setdefault(c, set()).add(s["name"].lower())
+    for page in pages:
+        text = page.content.decode("utf-8", errors="replace")
+        if "pagina" in text and "typeSkill" not in text and not tree:
+            tree = parse_enhancements(text, SKILL_CLASSES, known, page.meta.get("fetched_at"))
+    return skills, tree
+
+
 def parse_store(data_dir: Path) -> int:
     store = RawStore(data_dir / "raw")
     maps, monsters, meta = load_bundle(store)
@@ -180,6 +211,9 @@ def parse_store(data_dir: Path) -> int:
     for dup in sorted({i for i in ids if ids.count(i) > 1}):
         errors.append(f"guias com o mesmo id: {dup}")
     dump_records(out / "guides.json", guides)
+    skills, tree = parse_class_skills(store)
+    dump_records(out / "skills.json", skills)
+    dump_records(out / "skill_tree.json", tree)
     dump_records(out / "sources.json", [{
         "id": SOURCE, "name": "Guide MU Online", "url": BASE,
         "credit": "Mapas, spots, monstros e guias do Guide MU Online (guidemuonline.com), guia do MU Online oficial. Publicados com autorização.",
@@ -190,4 +224,5 @@ def parse_store(data_dir: Path) -> int:
     log.info("mapas: %d · zonas: %d · spots: %d · monstros: %d · imagens: %d (sem transformação: %s) · guias: %d · erros de schema: %d",
              len(groups), sum(len(g["zones"]) for g in groups), len(spots), len(records), len(images), ", ".join(bad) or "nenhuma",
              len(guides), len(errors))
+    log.info("skills das páginas de classe: %d · skills da árvore de melhorias: %d", len(skills), len(tree))
     return 1 if errors else 0

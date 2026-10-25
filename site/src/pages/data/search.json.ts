@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { items, monsters, maps, npcs, spotsUrl, spotsByMap, guides, skills, rulesets } from "../../lib/data";
 import { SERIES, translated, guideCover } from "../../lib/guides";
+import { skillUrl } from "../../lib/skills";
 import { itemView, mapLevels } from "../../lib/view";
 import { gradeLabel, npcTypeLabel } from "../../lib/taxonomy";
 
@@ -23,7 +24,7 @@ export const GET: APIRoute = () => {
       SERIES.find((s) => s.id === g.series)?.label ?? "", plain(g.title.t, g).replace(/^\[Guide\]\s*/, "")]),
     ...skills.map((s): Entry => {
       const cls = rulesets[0]?.classes.find((c) => c.id === s.class_id);
-      return ["Skill", s.name, `/skills/${s.class_id}/#${s.skill_id}`, cls?.image_url ?? null, cls?.name ?? ""];
+      return ["Skill", s.name, skillUrl(s), s.image_url ?? cls?.image_url ?? null, cls?.name ?? ""];
     }),
     ...items.map((i): Entry => ["Item", i.name, `/itens/${i.id}/`, i.image_url, [itemView(i).kindLabel, gradeLabel(i.grade)].filter(Boolean).join(" · ")]),
   ];
