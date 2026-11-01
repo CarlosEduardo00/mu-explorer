@@ -205,6 +205,7 @@ def test_schema_da_skill():
               **{k: v for k, v in s.items() if k != "id"}, "stage": "class", "unlocked_as": None, "range": None, "base_dmg": None,
               "season": None, "source": "fanz", "source_url": "https://muonlinefanz.com/guide/characters/slayer/",
               "scraped_at": "2026-10-21T20:03:59Z", "page_updated_at": "2025-05-08"}
-    record["learn"] = {**record["learn"], "item_id": "orb-of-bat-flock", "drops": [], "item_from_class": None}
+    record["learn"] = {**record["learn"], "item_id": "orb-of-bat-flock", "drops": [], "item_from_class": None,
+                       "drop_maps": ["karutan"], "shop": None}
     record.update(aliases=[], cooldown_s=None, levels=[], image_url=None, preview_url=record.get("preview_url"))
     assert validate("skill", record) == []

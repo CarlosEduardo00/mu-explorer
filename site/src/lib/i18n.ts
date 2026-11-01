@@ -24,6 +24,7 @@ export const EN: Record<string, string> = {
   "Projeto de fãs, sem vínculo com a Webzen. MU Online é marca da Webzen Inc.":
     "Fan project, not affiliated with Webzen. MU Online is a trademark of Webzen Inc.",
   "Dados e imagens:": "Data and images:", "MuEmu (emulador open source)": "MuEmu (open source emulator)",
+  "Só fatos, reescritos por nós (drop de itens de skill, eventos e sistemas):": "Facts only, rewritten by us (skill item drops, events and systems):",
   ". Publicados com autorização; o conteúdo continua sendo dos autores de cada fonte.":
     ". Published with permission; the content still belongs to the authors of each source.",
   "API e dados abertos": "API and open data",
@@ -307,6 +308,16 @@ export const EN: Record<string, string> = {
   "Pandora's Jewels, Guardian e Artifact.": "Pandora's Jewels, Guardian and Artifact.",
   "Passo a passo das quests e dos sistemas do jogo. Os textos estão em português (tradução aproximada); os nomes de itens e termos do jogo ficam como no jogo.":
     "Step-by-step guides to the game's quests and systems, in the original English. Item names and game terms are kept as in the game.",
+  "Eventos": "Events", "Criação e evolução": "Crafting and upgrades", "Dia a dia": "Everyday",
+  "Castle Siege, Crywolf, Arca War e os ingressos de Blood Castle, Devil Square e Kalima.":
+    "Castle Siege, Crywolf, Arca War and the Blood Castle, Devil Square and Kalima tickets.",
+  "Bound Wings, Spirit Stones, Bloodangel e montarias.": "Bound Wings, Spirit Stones, Bloodangel and mounts.",
+  "Ruud, itens de skill, cartas, loja pessoal e teclas de atalho.": "Ruud, skill items, cards, personal store and hotkeys.",
+  "Passo a passo das quests, dos eventos e dos sistemas do jogo, em português; os nomes de itens e termos do jogo ficam como no jogo.":
+    "Step-by-step guides to the game's quests, events and systems. Item names and game terms are kept as in the game.",
+  "Guia escrito pelo MU Explorer. Valores, horários e recompensas podem mudar entre servidores e seasons.":
+    "Guide written by MU Explorer. Values, schedules and rewards can change between servers and seasons.",
+  "quests, eventos, asas e sistemas do jogo": "quests, events, wings and game systems",
   "Nenhum guia neste conjunto de dados.": "No guides in this dataset.",
   "Idioma do texto": "Text language", "Guias da série": "Guides in this series",
   "Tradução aproximada, não oficial. Itens de quest e termos do jogo (em destaque) ficam como no jogo.":
@@ -355,6 +366,16 @@ export const EN: Record<string, string> = {
   "Requisitos e custos da Season 21; podem variar um pouco entre seasons.":
     "Requirements and costs from Season 21; they may vary a little between seasons.",
   "Skill anterior:": "Required skill:",
+  "Loja de Ruud": "Ruud Shop", "· loja de Ruud": "· Ruud Shop", "Item de skill": "Skill item",
+  "Mapas onde o item dropa (Season 21)": "Maps where the item drops (Season 21)",
+  "Monstros destes mapas podem dropar o item. A lista não diz qual monstro nem a chance.":
+    "Monsters in these maps can drop the item. The list doesn't say which monster or the drop rate.",
+  "Compre o item com Ruud na loja de Ruud.": "Buy the item with Ruud at the Ruud Shop.",
+  "O Ruud vem de eventos (Blood Castle, Devil Square, Chaos Castle, Castle Siege...), invasões e chefes.":
+    "Ruud comes from events (Blood Castle, Devil Square, Chaos Castle, Castle Siege...), invasions and bosses.",
+  "Como conseguir Ruud": "How to get Ruud",
+  "Aprendida com o item da skill. As fontes não dão o nome do item; veja abaixo onde ele dropa.":
+    "Learned with the skill item. The sources don't name the item; see below where it drops.",
   "Onde conseguir o item": "Where to get the item", "Recarga": "Cooldown", "Elemento": "Element", "· vendido por NPC": "· sold by an NPC",
   "Prévia": "Preview",
 
@@ -389,6 +410,7 @@ export const EN_PATTERNS: [string, string][] = [
   ["Sem vídeo só desta skill: vídeo com as skills de {0}.", "No video of this skill alone: video with the {0} skills."],
   ["O guia oficial lista esta skill também para {0}; este é o item dela nessa classe.", "The official guide also lists this skill for {0}; this is its item in that class."],
   ["· dropa em {0:n} mapas", "· drops in {0} maps"], ["· dropa em {0:n} mapa", "· drops in {0} map"],
+  ["Dropa em {0:n} mapas (Season 21)", "Drops in {0} maps (Season 21)"], ["Dropa em {0:n} mapa (Season 21)", "Drops in {0} map (Season 21)"],
   ["Valor por ponto investido: {0} (1 ponto) a {1} ({2:n} pontos).", "Value per point invested: {0} (1 point) to {1} ({2} points)."],
   ["{0:n} skills", "{0} skills"], ["{0:n} aprendidas com item", "{0} learned from an item"], ["{0:n} com item", "{0} with an item"],
   ["{0:n} itens", "{0} items"], ["{0:n} item", "{0} item"], ["{0:n} mapas", "{0} maps"], ["{0:n} mapa", "{0} map"],

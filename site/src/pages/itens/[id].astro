@@ -90,7 +90,9 @@ const gradeClass = item.grade ? `grade-${item.grade}` : undefined;
     </>
   )}
 
-  <DropSources sources={itemSources(item)} />
+  <DropSources sources={itemSources(item)} skillDrop={teaches.length ? {
+    maps: [...new Set(teaches.flatMap(({ s }) => s.learn.drop_maps))], shop: teaches.some(({ s }) => s.learn.shop === "ruud") ? "ruud" : null,
+  } : undefined} />
 
   {related.length > 0 && (
     <>

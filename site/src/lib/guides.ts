@@ -9,7 +9,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-export interface Text { t: string; m?: string[] }
+/** t: modelo em inglês (HTML já escapado); pt: texto em português quando o guia foi escrito por nós (sem marcadores). */
+export interface Text { t: string; m?: string[]; pt?: string }
 export type Block =
   | { type: "heading"; level: number; text: Text; style?: string }
   | { type: "paragraph"; text: Text; style?: string; center?: boolean }
@@ -28,9 +29,12 @@ export interface Guide {
 /** Séries de guias (como as do site de origem), na ordem da página /guias/. */
 export const SERIES: { id: string; label: string; text: string }[] = [
   { id: "class-change", label: "Quests de troca de classe", text: "Da 2ª à 5ª classe: onde começa, o que pede e o que dá cada parte." },
+  { id: "events", label: "Eventos", text: "Castle Siege, Crywolf, Arca War e os ingressos de Blood Castle, Devil Square e Kalima." },
   { id: "wings", label: "Como criar asas", text: "Materiais, combinações e chances, das 1ª às 4ª asas e capas." },
+  { id: "crafting", label: "Criação e evolução", text: "Bound Wings, Spirit Stones, Bloodangel e montarias." },
   { id: "elemental", label: "Sistema elemental", text: "Pentagramas, errtels e as versões mastery." },
   { id: "systems", label: "Sistemas do jogo", text: "Pandora's Jewels, Guardian e Artifact." },
+  { id: "everyday", label: "Dia a dia", text: "Ruud, itens de skill, cartas, loja pessoal e teclas de atalho." },
 ];
 
 // ---------------------------------------------------------------- layout das grades de cartões
@@ -106,9 +110,66 @@ export const placeholders = (t: string) => [...t.matchAll(/\{(\d+)\}/g)].map((m)
 const translationPath = resolve(process.cwd(), "data", "curated", "translations", "guides.pt-BR.json");
 export const PT: Record<string, string> = existsSync(translationPath) ? JSON.parse(readFileSync(translationPath, "utf-8")) : {};
 
-/** Tradução do modelo, se houver uma válida (com os mesmos marcadores). */
+/** Tradução do modelo, se houver uma válida (com os mesmos marcadores). Guias nossos já trazem o português. */
 export function translated(text: Text | null | undefined, dict: Record<string, string> = PT): string | null {
   if (!text) return null;
+  if (text.pt != null) return text.pt;
   const pt = dict[text.t];
   return pt != null && placeholders(pt) === placeholders(text.t) ? pt : null;
+}
+
+// ---------------------------------------------------------------- guias escritos por nós
+
+/** Texto do arquivo curado: [português, inglês] ou um texto igual nas duas línguas (nomes, números). */
+export type CuratedText = string | [string, string];
+export type CuratedBlock =
+  | { h: CuratedText } | { h3: CuratedText } | { p: CuratedText } | { tip: CuratedText } | { list: CuratedText[] }
+  | { table: { head: CuratedText[]; rows: CuratedText[][] } };
+export interface CuratedGuide {
+  id: string; series: string; title: CuratedText; blocks: CuratedBlock[];
+  cover: { item?: string; npc?: string } | null;
+}
+/** Resolve um link [[tipo:id|texto]] para endereço e nome; null quando o registro não existe. */
+export type LinkResolver = (kind: string, id: string) => { href: string; label: string } | null;
+
+const LINK = /\[\[(item|npc|map|guide|skills)(?::([a-z0-9-]+))?(?:\|([^\]]+))?\]\]/g;
+
+/** Texto do arquivo curado -> HTML: escapa, **negrito** vira <b> e [[...]] vira link. Link sem destino lança erro. */
+export function curatedHtml(text: string, link: LinkResolver): string {
+  return escapeHtml(text)
+    .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
+    .replace(LINK, (whole, kind: string, id: string | undefined, label: string | undefined) => {
+      const target = link(kind, id ?? "");
+      if (!target) throw new Error(`link sem destino nos guias: ${whole}`);
+      return `<a href="${target.href}">${label ?? escapeHtml(target.label)}</a>`;
+    });
+}
+
+/** [português, inglês] -> Text com os dois; texto único -> Text só com o original (igual nas duas línguas). */
+export function curatedText(text: CuratedText, link: LinkResolver): Text {
+  return Array.isArray(text) ? { t: curatedHtml(text[1], link), pt: curatedHtml(text[0], link) } : { t: curatedHtml(text, link) };
+}
+
+/** Blocos do arquivo curado -> blocos dos guias (os mesmos que GuideBlocks já desenha). */
+export function curatedBlocks(blocks: CuratedBlock[], link: LinkResolver): Block[] {
+  const tx = (t: CuratedText) => curatedText(t, link);
+  return blocks.map((b): Block => {
+    if ("h" in b) return { type: "heading", level: 2, text: tx(b.h), style: "section" };
+    if ("h3" in b) return { type: "heading", level: 2, text: tx(b.h3) };
+    if ("p" in b) return { type: "paragraph", text: tx(b.p) };
+    if ("tip" in b) return { type: "card", kind: "info", blocks: [{ type: "paragraph", text: tx(b.tip) }] };
+    if ("list" in b) return { type: "list", items: b.list.map(tx) };
+    return { type: "table", head: b.table.head.map(tx), rows: b.table.rows.map((r) => r.map(tx)) };
+  });
+}
+
+/** Guias do arquivo curado (data/curated/guides.mu-explorer.json) no formato dos guias do site. */
+export function curatedGuides(list: CuratedGuide[], link: LinkResolver, cover: (c: CuratedGuide["cover"]) => string | null): Guide[] {
+  return list.map((g) => {
+    const img = cover(g.cover);
+    return {
+      id: g.id, path: `${g.series}/${g.id}`, series: g.series, title: curatedText(g.title, link), siblings: [],
+      blocks: curatedBlocks(g.blocks, link), image_urls: img ? [img] : [], source: "mu-explorer", source_url: "", scraped_at: null,
+    };
+  });
 }

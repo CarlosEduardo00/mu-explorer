@@ -9,6 +9,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import type { Ruleset, BuildTemplate } from "./planner";
+import { curatedGuides, type CuratedGuide, type LinkResolver } from "./guides";
 
 export type Requirements = Record<"level" | "strength" | "agility" | "vitality" | "energy" | "command", number | null>;
 
@@ -61,9 +62,10 @@ export interface Skill {
   range: number | null; cooldown_s: number | null; base_dmg: number | null; image_url: string | null; preview_url: string | null;
   requirements: { level: number | null; str: number | null; agi: number | null; vit: number | null; ene: number | null; cmd: number | null; other: string[] };
   /** method: como se aprende; item_id: item do site; drops: só para item que o site não tem (listas do GMO);
-   *  item_from_class: o item veio da mesma skill em outra classe. */
+   *  item_from_class: o item veio da mesma skill em outra classe; drop_maps: mapas onde o item dropa (Season 21, sem
+   *  monstro); shop: "ruud" quando o item se compra na loja de Ruud. */
   learn: { method: string | null; item_name: string | null; item_id: string | null; item_from_class: string | null;
-    drops: { monster_id: string; map_id: string | null }[] };
+    drops: { monster_id: string; map_id: string | null }[]; drop_maps: string[]; shop: string | null };
   season: string | null; source: string; source_url: string | null;
 }
 export interface MapMarker { map_id: string; kind: string; name: string; x: number | null; y: number | null; description: string | null }
@@ -107,8 +109,9 @@ export const spawns = load<Spawn>("spawns.json");
 export const drops = load<Drop>("drops.json");
 export const sources = load<Source>("sources.json");
 export const farmSpots = load<FarmSpot>("farm_spots.json");
-/** Guias (aba de guias do Guide MU Online); vazio no conjunto sem essa fonte. */
-export const guides = load<import("./guides").Guide>("guides.json").map((g) => ({ ...g, image_urls: g.image_urls.map((u) => localImage(u) ?? u) }));
+/** Guias da aba de guias do Guide MU Online (vazio no conjunto sem essa fonte); os guias escritos por nós
+ * (data/curated/guides.mu-explorer.json) entram no fim de `guides`, depois que itens, NPCs e mapas existem. */
+const sourceGuides = load<import("./guides").Guide>("guides.json").map((g) => ({ ...g, image_urls: g.image_urls.map((u) => localImage(u) ?? u) }));
 export const mapMarkers = load<MapMarker>("map_markers.json");
 /** Skills por classe; vazio no conjunto sem o Fanz e o GMO. Ícones e prévias pela cópia local. */
 export const skills = load<Skill>("skills.json").map((s) => ({ ...s, image_url: localImage(s.image_url), preview_url: localImage(s.preview_url) }));
@@ -165,6 +168,24 @@ export const itemById = new Map(items.map((i) => [i.id, i]));
 export const monsterById = new Map(monsters.map((m) => [m.id, m]));
 export const mapById = new Map(maps.map((m) => [m.id, m]));
 export const npcById = new Map(npcs.map((n) => [n.id, n]));
+
+// Guias escritos por nós (eventos, criação, dia a dia), só no conjunto completo: os fatos vêm de fontes fora do MuEmu.
+const curatedGuidesPath = resolve(process.cwd(), "data", "curated", "guides.mu-explorer.json");
+const curatedGuideList: CuratedGuide[] = dataset === "combined" && existsSync(curatedGuidesPath)
+  ? JSON.parse(readFileSync(curatedGuidesPath, "utf-8")).guides : [];
+const guideLink: LinkResolver = (kind, id) => {
+  if (kind === "item") { const x = itemById.get(id); return x ? { href: `/itens/${x.id}/`, label: x.name } : null; }
+  if (kind === "npc") { const x = npcById.get(id); return x ? { href: `/npcs/${x.id}/`, label: x.name } : null; }
+  if (kind === "map") { const x = mapById.get(id); return x ? { href: `/mapas/${x.id}/`, label: x.name } : null; }
+  if (kind === "guide") {
+    const x = sourceGuides.find((g) => g.id === id) ?? curatedGuideList.find((g) => g.id === id);
+    return x ? { href: `/guias/${x.id}/`, label: x.id } : null;
+  }
+  if (kind === "skills") return { href: "/skills/", label: "Skills" };
+  return null;
+};
+export const guides = [...sourceGuides, ...curatedGuides(curatedGuideList, guideLink,
+  (c) => (c?.item ? itemById.get(c.item)?.image_url : c?.npc ? npcById.get(c.npc)?.image_url : null) ?? null)];
 
 export const spawnsByMonster = groupBy(spawns, (s) => s.monster_id);
 export const spawnsByMap = groupBy(spawns, (s) => s.map_id);

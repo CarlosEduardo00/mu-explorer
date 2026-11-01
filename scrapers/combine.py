@@ -569,6 +569,10 @@ def main(argv: list[str] | None = None) -> int:
                    "guide": read("guides.json")}
         guidemu["scraped_at"] = next((s.get("last_scraped_at") for s in guidemu["source"]), None)
     guidemu_stats = add_guidemu(data, guidemu)
+    # MasterMU: só fatos (drop de itens de skill, usados por scrapers.skills); aqui entra só o crédito da fonte.
+    mastermu_sources = processed / "mastermu" / "sources.json"
+    if mastermu_sources.exists():
+        data["source"] = data["source"] + json.loads(mastermu_sources.read_text(encoding="utf-8"))
     out = processed / "combined"
     out.mkdir(parents=True, exist_ok=True)
     for entity, filename in OUTPUT.items():

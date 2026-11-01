@@ -198,7 +198,9 @@
         "item_name",
         "item_id",
         "drops",
-        "item_from_class"
+        "item_from_class",
+        "drop_maps",
+        "shop"
       ],
       "properties": {
         "method": {
@@ -258,6 +260,20 @@
             "null"
           ],
           "description": "Classe de onde veio o item quando a fonte só o cita para outra classe que usa a mesma skill."
+        },
+        "drop_maps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slug"
+          },
+          "description": "Mapas onde o item da skill dropa (guia de drop do MasterMU, Season 21; sem monstro nem taxa)."
+        },
+        "shop": {
+          "enum": [
+            "ruud",
+            null
+          ],
+          "description": "Loja que vende o item: ruud = loja de Ruud (Priest James)."
         }
       }
     },
