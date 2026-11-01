@@ -34,6 +34,10 @@ const MORE = [
   { href: "/api/", label: "API e dados abertos", icon: "api" },
 ];
 const moreActive = MORE.some((m) => path.startsWith(m.href));
+// Fontes sem autorização para publicar o conteúdo: o site usa só fatos delas, em texto nosso.
+const FACTS_ONLY = new Set(["mastermu"]);
+const published = sources.filter((s) => !FACTS_ONLY.has(s.id));
+const factsOnly = sources.filter((s) => FACTS_ONLY.has(s.id));
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -94,12 +98,18 @@ const moreActive = MORE.some((m) => path.startsWith(m.href));
     <footer>
       <div class="foot-in">
         <p>Projeto de fãs, sem vínculo com a Webzen. MU Online é marca da Webzen Inc.</p>
-        {sources.length > 0 && (
+        {published.length > 0 && (
           <p class="credits">
             Dados e imagens:{" "}
-            {sources.map((s, i) => <>{i > 0 && " · "}<a href={s.url}>{s.name}</a></>)}.
+            {published.map((s, i) => <>{i > 0 && " · "}<a href={s.url}>{s.name}</a></>)}.
             Publicados com autorização; o conteúdo continua sendo dos autores de cada fonte.
             {datasetName !== "combined" && <> Conjunto “{datasetName}”.</>}
+          </p>
+        )}
+        {factsOnly.length > 0 && (
+          <p class="credits">
+            Só fatos, reescritos por nós (drop de itens de skill, eventos e sistemas):{" "}
+            {factsOnly.map((s, i) => <>{i > 0 && " · "}<a href={s.url}>{s.name}</a></>)}.
           </p>
         )}
         <p class="credits"><a href="/api/">API e dados abertos</a> · fontes Cinzel e Source Sans 3 (SIL OFL)</p>

@@ -7,9 +7,9 @@ import { SERIES, guideCover } from "../../lib/guides";
 
 const bySeries = SERIES.map((s) => ({ ...s, list: guides.filter((g) => g.series === s.id) })).filter((s) => s.list.length);
 ---
-<Base title="Guias" description="Guias de MU Online: quests de troca de classe, como criar asas, sistema elemental, Guardian, Pandora e Artifact.">
+<Base title="Guias" description="Guias de MU Online: quests de troca de classe, eventos, como criar asas, montarias, sistema elemental, Guardian, Pandora e Artifact.">
   <h1>Guias</h1>
-  <p class="lead">Passo a passo das quests e dos sistemas do jogo. Os textos estão em português (tradução aproximada); os nomes de itens e termos do jogo ficam como no jogo.</p>
+  <p class="lead">Passo a passo das quests, dos eventos e dos sistemas do jogo, em português; os nomes de itens e termos do jogo ficam como no jogo.</p>
   {bySeries.length === 0 && <p class="muted">Nenhum guia neste conjunto de dados.</p>}
   {bySeries.map((s) => (
     <section class="g-series">

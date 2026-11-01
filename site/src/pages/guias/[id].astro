@@ -25,7 +25,9 @@ const plain = (s: string) => s.replace(/<[^>]+>|\{\d+\}/g, "").trim();
       <button type="button" data-lang-set="en" aria-pressed="false"><Flag lang="en" /> English</button>
     </div>
   </header>
-  <p class="g-note muted small">Tradução aproximada, não oficial. Itens de quest e termos do jogo (em destaque) ficam como no jogo.</p>
+  {guide.source === "mu-explorer"
+    ? <p class="g-note muted small">Guia escrito pelo MU Explorer. Valores, horários e recompensas podem mudar entre servidores e seasons.</p>
+    : <p class="g-note muted small">Tradução aproximada, não oficial. Itens de quest e termos do jogo (em destaque) ficam como no jogo.</p>}
   {siblings.length > 1 && (
     <nav class="g-siblings" aria-label="Guias da série">
       {siblings.map((s) => <a href={`/guias/${s.id}/`} aria-current={s.id === guide.id ? "page" : undefined}><GuideText text={{ t: s.label }} /></a>)}

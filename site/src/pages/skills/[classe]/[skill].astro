@@ -119,10 +119,15 @@ const levels = s.levels.filter(Boolean);
         </a>
         {fromClass && <p class="muted small">{`O guia oficial lista esta skill também para ${fromClass}; este é o item dela nessa classe.`}</p>}
       </div>
-    ) : <p class="muted">Aprendida com um item de skill; as fontes não dizem qual.</p>
+    ) : <p class="muted">{s.learn.drop_maps.length > 0 || s.learn.shop
+      ? "Aprendida com o item da skill. As fontes não dão o nome do item; veja abaixo onde ele dropa."
+      : "Aprendida com um item de skill; as fontes não dizem qual."}</p>
   ) : <p>{(s.learn.method && METHOD_TEXT[s.learn.method]) ?? "As fontes não dizem como se aprende."}</p>}
 
-  {sources && <DropSources sources={sources} heading="Onde conseguir o item" />}
+  {(sources || s.learn.drop_maps.length > 0 || s.learn.shop) && (
+    <DropSources sources={sources ?? { droppers: [], sellers: [], notes: [] }} heading="Onde conseguir o item"
+      skillDrop={{ maps: s.learn.drop_maps, shop: s.learn.shop }} />
+  )}
 
   <h2>Vídeo</h2>
   {video

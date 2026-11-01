@@ -1,13 +1,22 @@
 ---
 // Onde conseguir um item: monstros que dropam (melhores spots para farmar e uma linha por monstro e mapa, com o spot
 // com mais dele), NPCs que vendem e as frases de "como conseguir" das notas. Usado na página do item e na da skill.
-import { npcs, spotMapIds, spotsUrl, fmt } from "../lib/data";
+// Itens de skill: também os mapas onde o item dropa na Season 21 (sem monstro nem taxa) e a loja de Ruud.
+import { npcs, npcById, mapById, spotMapIds, spotsUrl, fmt } from "../lib/data";
 import { ACQUISITION_LABELS } from "../lib/taxonomy";
 import type { ItemSources } from "../lib/view";
 
-interface Props { sources: Pick<ItemSources, "droppers" | "sellers" | "notes">; heading?: string }
-const { sources, heading = "Onde conseguir" } = Astro.props;
+interface Props {
+  sources: Pick<ItemSources, "droppers" | "sellers" | "notes">; heading?: string;
+  /** Item de skill: mapas onde dropa (Season 21) e se a loja de Ruud vende. */
+  skillDrop?: { maps: string[]; shop: string | null };
+}
+const { sources, heading = "Onde conseguir", skillDrop } = Astro.props;
 const { droppers, sellers, notes } = sources;
+const s21Maps = (skillDrop?.maps ?? []).map((id) => mapById.get(id)).filter((m) => m !== undefined);
+const ruud = skillDrop?.shop === "ruud";
+const james = ruud ? npcById.get("priest-james") : undefined;
+const jamesWhere = james?.locations.map((l) => mapById.get(l.map_id)?.name ?? l.map_name).join(", ") ?? "";
 const placeCount = new Set(droppers.flatMap((d) => d.places.map((p) => p.map.id))).size;
 // Destaques para farmar: monstros de menor nível que têm spot conhecido; empate pelo spot com mais deles.
 const bestSpots = droppers.flatMap((d) => {
@@ -31,15 +40,37 @@ const linkNpcs = (text: string): (string | { id: string; name: string })[] => {
 const noteKinds = [...new Set(notes.map((n) => n.kind))].filter((k) => !(k === "drop" && droppers.length) && !(k === "npc" && sellers.length));
 ---
   <h2 id="onde-dropa">{heading}</h2>
-  {(droppers.length > 0 || sellers.length > 0 || notes.length > 0)
+  {(droppers.length > 0 || sellers.length > 0 || notes.length > 0 || s21Maps.length > 0 || ruud)
     ? (
       <ul class="chips how">
+        {ruud && <li><a class="chip gold" href="#loja-ruud">Loja de Ruud</a></li>}
+        {s21Maps.length > 0 && <li><a class="chip gold" href="#mapas-s21">{`Dropa em ${plural(s21Maps.length, "mapa", "mapas")} (Season 21)`}</a></li>}
         {droppers.length > 0 && <li><a class="chip gold" href="#onde-dropa-tabela">Dropa de {plural(droppers.length, "monstro", "monstros")}{placeCount > 0 && <> em {plural(placeCount, "mapa", "mapas")}</>}</a></li>}
         {sellers.length > 0 && <li><a class="chip gold" href="#vendido-por">Vendido por {plural(sellers.length, "NPC", "NPCs")}</a></li>}
         {noteKinds.map((k) => <li><span class="chip">{ACQUISITION_LABELS[k]}</span></li>)}
       </ul>
     )
     : <p class="muted">Nenhuma das fontes informa onde este item dropa ou como consegui-lo.</p>}
+
+  {ruud && (
+    <div class="panel s21" id="loja-ruud">
+      <h3 class="sub">Loja de Ruud</h3>
+      {james
+        ? <p><span class="tx" lang="pt-BR">Compre o item com Ruud na loja de <a href={`/npcs/${james.id}/`} translate="no">{james.name}</a> ({jamesWhere}).</span><span class="tx" lang="en">Buy the item with Ruud at <a href={`/npcs/${james.id}/`} translate="no">{james.name}</a>'s shop ({jamesWhere}).</span></p>
+        : <p>Compre o item com Ruud na loja de Ruud.</p>}
+      <p class="muted small">O Ruud vem de eventos (Blood Castle, Devil Square, Chaos Castle, Castle Siege...), invasões e chefes. <a href="/guias/ruud/">Como conseguir Ruud</a></p>
+    </div>
+  )}
+
+  {s21Maps.length > 0 && (
+    <div class="panel s21" id="mapas-s21">
+      <h3 class="sub">Mapas onde o item dropa (Season 21)</h3>
+      <p class="muted small">Monstros destes mapas podem dropar o item. A lista não diz qual monstro nem a chance.</p>
+      <ul class="chips">
+        {s21Maps.map((m) => <li><a class="chip" href={spotMapIds.includes(m.id) ? spotsUrl(m.id) : `/mapas/${m.id}/`}>{m.name}</a></li>)}
+      </ul>
+    </div>
+  )}
 
   {notes.length > 0 && (
     <ul class="panel lines how-notes">
@@ -126,6 +157,9 @@ const noteKinds = [...new Set(notes.map((n) => n.kind))].filter((k) => !(k === "
 
 <style>
   .how { margin-bottom: .75rem; }
+  .s21 { margin: 0 0 .9rem; padding: .7rem .9rem; }
+  .s21 h3.sub { margin-top: 0; }
+  .s21 p { margin: .2rem 0 .4rem; }
   .how-notes { list-style: disc; padding-left: 2rem; margin: 0 0 1rem; }
   h3.sub { margin: 1.25rem 0 .5rem; font-size: .95rem; color: var(--accent-2); }
   .drops-table td[rowspan] { vertical-align: top; }

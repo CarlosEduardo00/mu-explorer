@@ -26,10 +26,11 @@ const reqLine = (s: (typeof list)[number]) => [
 // Onde conseguir o item, resumido: mapas onde dropa e se algum NPC vende.
 const learnLine = (s: (typeof list)[number]) => {
   const item = s.learn.item_id ? itemById.get(s.learn.item_id) : undefined;
-  if (s.learn.method !== "item") return { item: null, maps: 0, npc: false, text: s.learn.method ? METHOD_TEXT[s.learn.method] ?? null : null };
+  if (s.learn.method !== "item") return { item: null, maps: 0, npc: false, ruud: false, text: s.learn.method ? METHOD_TEXT[s.learn.method] ?? null : null };
   const src = item ? itemSources(item) : { droppers: droppersFor(s.learn.drops), sellers: [] };
-  const maps = new Set(src.droppers.flatMap((d) => d.places.map((p) => p.map.id))).size;
-  return { item: item?.name ?? s.learn.item_name, maps, npc: src.sellers.length > 0, text: null };
+  // Mapas: os dos monstros que dropam o item e os da lista da Season 21.
+  const maps = new Set([...src.droppers.flatMap((d) => d.places.map((p) => p.map.id)), ...s.learn.drop_maps]).size;
+  return { item: item?.name ?? s.learn.item_name, maps, npc: src.sellers.length > 0, ruud: s.learn.shop === "ruud", text: null };
 };
 ---
 <Base title={`Skills · ${cls.name}`} description={`Skills de ${cls.name} em MU Online: requisitos, como aprender e onde dropa o item de cada skill.`} wide>
@@ -75,8 +76,8 @@ const learnLine = (s: (typeof list)[number]) => {
                     {s.season && <span class="s21">{s.season}</span>}
                   </span>
                   {req.length > 0 && <span class="sk-req">{req.join(" · ")}</span>}
-                  {how.item
-                    ? <span class="sk-how"><span lang="en" translate="no">{how.item}</span>{how.maps > 0 && <span>{` · dropa em ${fmt(how.maps)} ${how.maps === 1 ? "mapa" : "mapas"}`}</span>}{how.npc && <span> · vendido por NPC</span>}</span>
+                  {how.item || how.maps > 0 || how.ruud
+                    ? <span class="sk-how">{how.item ? <span lang="en" translate="no">{how.item}</span> : <span>Item de skill</span>}{how.maps > 0 && <span>{` · dropa em ${fmt(how.maps)} ${how.maps === 1 ? "mapa" : "mapas"}`}</span>}{how.ruud && <span> · loja de Ruud</span>}{how.npc && <span> · vendido por NPC</span>}</span>
                     : how.text && <span class="sk-how muted">{how.text}</span>}
                 </span>
                 <span class="sk-go" aria-hidden="true">›</span>

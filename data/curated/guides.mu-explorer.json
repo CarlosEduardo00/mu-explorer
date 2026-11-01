@@ -1,0 +1,361 @@
+{
+  "_about": "Guias escritos pelo MU Explorer (português e inglês, nossas palavras). Fatos conferidos nos guias do MasterMU (mastermu.net, servidor privado Season 21) e no que já temos das outras fontes; não copiamos texto nem imagens. Ficaram de fora valores próprios de um servidor (taxas VIP, recompensas em moeda, horários, comandos). Formato: cada texto é [português, inglês] ou uma string igual nas duas línguas (nomes, números). Blocos: h (seção), h3 (subtítulo), p (parágrafo), tip (cartão de destaque), list, table {head, rows}. Links: [[item:<id>]], [[npc:<id>]], [[map:<id>]], [[guide:<id>|texto]], [[skills|texto]]; **negrito**.",
+  "guides": [
+    {
+      "id": "castle-siege",
+      "series": "events",
+      "cover": {"item": "sign-of-lord"},
+      "title": ["Castle Siege: como funciona", "Castle Siege: how it works"],
+      "blocks": [
+        {"p": ["Castle Siege é a guerra de guildas pelo castelo de Valley of Loren. As guildas atacantes quebram as defesas, abrem a coroa e o Guild Master precisa registrar o selo oficial; quem estiver com o selo no fim vira dono do castelo.", "Castle Siege is the guild war for the castle in Valley of Loren. Attacking guilds break the defenses, open the crown and their Guild Master must register the official seal; whoever holds the seal at the end owns the castle."]},
+        {"h": ["Inscrição", "Registration"]},
+        {"list": [
+          ["Fale com o Guardsman em [[map:valley-of-loren]] (coordenadas 98, 60).", "Talk to the Guardsman in [[map:valley-of-loren]] (coordinates 98, 60)."],
+          ["No período de inscrição, a guilda entrega [[item:sign-of-lord]]. As guildas que entregam mais são as escolhidas para atacar.", "During registration, the guild hands in [[item:sign-of-lord]]. The guilds that hand in the most are the ones chosen to attack."],
+          ["Guildas da mesma aliança lutam do mesmo lado.", "Guilds in the same alliance fight on the same side."]
+        ]},
+        {"h": ["Defesas do castelo", "Castle defenses"]},
+        {"table": {"head": [["Defesa", "Defense"], ["O que faz", "What it does"]], "rows": [
+          [["Portões", "Gates"], ["Três portões (externo, do meio e interno) fecham o caminho até a Dragon Tower. Só podem ser atacados durante o cerco.", "Three gates (outer, middle and inner) block the way to the Dragon Tower. They can only be attacked during the siege."]],
+          [["Estátuas guardiãs", "Guardian Statues"], ["São quatro e recuperam HP, mana e AG de quem defende perto delas. Destruir as quatro tira o escudo da Dragon Tower.", "There are four; they restore HP, mana and AG to nearby defenders. Destroying all four removes the Dragon Tower shield."]],
+          [["Escudo da Dragon Tower", "Dragon Tower shield"], ["Enquanto existe, só os defensores atravessam.", "While it stands, only defenders can pass."]]
+        ]}},
+        {"tip": ["Bater em portão e estátua gasta muito a durabilidade da arma. Os defensores podem reforçar portões e estátuas em até três níveis antes da batalha, mas não durante.", "Hitting gates and statues drains weapon durability fast. Defenders can upgrade gates and statues up to three stages before the battle, but not during it."]},
+        {"h": ["Coroa e selo oficial", "Crown and official seal"]},
+        {"list": [
+          ["Dois personagens da aliança atacante precisam ficar parados nos dois **interruptores da coroa** (crown switches). Se um sair ou morrer, a coroa fecha.", "Two characters from the attacking alliance must stand still on the two **crown switches**. If either one moves or dies, the crown closes."],
+          ["Com a coroa aberta, só o **Guild Master** registra o selo: ele precisa acumular cerca de 60 segundos no pedestal.", "With the crown open, only the **Guild Master** can register the seal: they must accumulate about 60 seconds on the pedestal."],
+          ["A tentativa cai se o Guild Master morrer, for empurrado ou sair da sala do trono.", "The attempt fails if the Guild Master dies, is pushed or leaves the throne room."]
+        ]},
+        {"h3": ["Dicas", "Tips"]},
+        {"list": [
+          ["Um Dark Lord montado no Dark Horse não é empurrado enquanto registra o selo: bom candidato a Guild Master.", "A Dark Lord riding the Dark Horse is not pushed while registering the seal: a good Guild Master pick."],
+          ["Para parar o selo inimigo, derrube quem está nos interruptores ou use skills que empurram (Cyclone, Lightning, Earthshake).", "To stop an enemy seal, take down the switch holders or use skills that push (Cyclone, Lightning, Earthshake)."],
+          ["Durante o cerco dá para atacar sem segurar Ctrl, e o dano normal é reduzido.", "During the siege you can attack without holding Ctrl, and normal damage is reduced."]
+        ]},
+        {"h": ["Life Stone (ponto de volta dos atacantes)", "Life Stone (attackers' respawn point)"]},
+        {"p": ["Combinada na Chaos Machine com 5 [[item:jewel-of-bless]], 5 [[item:jewel-of-soul]], 1 [[item:jewel-of-guardian]] e 1 [[item:jewel-of-chaos]]. Só o Guild Master ou o assistente de uma guilda atacante pode colocá-la; depois de 60 segundos ela vira ponto de renascimento da guilda e recupera HP, mana e AG de quem está a até três casas. Os defensores não podem usá-la e ela pode ser destruída.", "Combined in the Chaos Machine with 5 [[item:jewel-of-bless]], 5 [[item:jewel-of-soul]], 1 [[item:jewel-of-guardian]] and 1 [[item:jewel-of-chaos]]. Only the Guild Master or assistant of an attacking guild can place it; after 60 seconds it becomes the guild's respawn point and restores HP, mana and AG within three tiles. Defenders can't use it, and it can be destroyed."]},
+        {"h": ["Poções do cerco", "Siege potions"]},
+        {"table": {"head": [["Poção", "Potion"], ["Duração", "Duration"], ["Efeito", "Effect"]], "rows": [
+          ["Potion of Bless", "120 s", ["+20% de dano em portões e estátuas (não vale contra jogadores).", "+20% damage to gates and statues (not against players)."]],
+          ["Potion of Soul", "60 s", ["+8 de recuperação de AG, +20 de velocidade de ataque e 50% de defesa contra raio e gelo.", "+8 AG recovery, +20 attack speed and 50% defense against lightning and ice."]]
+        ]}}
+      ]
+    },
+    {
+      "id": "crywolf",
+      "series": "events",
+      "cover": {"item": "horn-of-fenrir"},
+      "title": ["Crywolf: defenda a estátua", "Crywolf: defend the statue"],
+      "blocks": [
+        {"p": ["Crywolf é uma batalha contra monstros de uns 15 minutos dentro de uma área com PvP. O servidor inteiro defende a estátua de Crywolf e os cinco altares, mata 12 Dark Elves e, no fim, o chefe Balgass.", "Crywolf is a battle against monsters of about 15 minutes inside a PvP zone. The whole server defends the Crywolf statue and its five altars, kills 12 Dark Elves and, at the end, the boss Balgass."]},
+        {"h": ["Como entrar", "How to enter"]},
+        {"p": ["Quando o evento começa, o ícone de Crywolf aparece na tela. Abra a janela de teleporte (M) e vá para [[map:crywolf]]. Quem morre volta em outro ponto do mapa.", "When the event starts, the Crywolf icon shows up on screen. Open the warp window (M) and go to [[map:crywolf]]. If you die, you come back somewhere else on the map."]},
+        {"h": ["Estátua e altares", "Statue and altars"]},
+        {"list": [
+          ["Os cinco altares protegem a estátua. Cada altar recebe uma **Muse Elf** (Fairy Elf de nível alto; a Season 21 pede nível 350), e o HP das elfas ligadas forma o HP da estátua.", "Five altars protect the statue. Each altar takes a **Muse Elf** (a high-level Fairy Elf; Season 21 asks for level 350), and the linked elves' HP makes up the statue's HP."],
+          ["Altar perdido deixa a estátua mais fraca.", "Each lost altar weakens the statue."],
+          ["Se nenhuma elfa ficar ligada a um altar, a missão falha.", "If no elf stays linked to an altar, the mission fails."]
+        ]},
+        {"tip": ["Antes de começar, combinem pelo menos uma elfa de confiança para ficar no altar o evento todo.", "Before it starts, agree on at least one reliable elf to stay on an altar for the whole event."]},
+        {"h": ["Missões", "Missions"]},
+        {"table": {"head": [["Fase", "Phase"], ["O que fazer", "What to do"]], "rows": [
+          [["1. Dark Elves", "1. Dark Elves"], ["Limpar as ondas de monstros e matar os 12 Dark Elves sem deixar os altares caírem.", "Clear the monster waves and kill the 12 Dark Elves without losing the altars."]],
+          [["2. Balgass", "2. Balgass"], ["Com uns quatro minutos para o fim, Balgass aparece numa das entradas da fortaleza. Ele precisa morrer antes do tempo acabar.", "With about four minutes left, Balgass shows up at one of the fortress entrances. He must die before time runs out."]]
+        ]}},
+        {"h": ["Quem faz o quê", "Who does what"]},
+        {"list": [
+          ["Muse Elves: ligam nos altares cedo e ficam protegidas.", "Muse Elves: link to the altars early and stay protected."],
+          ["Quem bate forte: mata os Dark Elves rápido e guarda o dano para Balgass.", "Heavy hitters: kill the Dark Elves fast and save burst for Balgass."],
+          ["Suporte e defesa: protegem quem está nos altares de monstros e de jogadores.", "Support and defense: protect the altar holders from monsters and players."],
+          ["Time do chefe: vigia as entradas da fortaleza nos minutos finais.", "Boss team: watches the fortress entrances in the final minutes."]
+        ]},
+        {"h": ["Drops do mapa", "Map drops"]},
+        {"p": ["Os monstros de Crywolf dropam materiais do Fenrir ([[item:horn-of-fenrir]]): Splinter of Armor, Bless of Guardian e Claw of Beast. Os Dark Elves e Balgass têm drops próprios (Balgass pode dropar armas Holyangel, raras).", "Crywolf monsters drop Fenrir materials ([[item:horn-of-fenrir]]): Splinter of Armor, Bless of Guardian and Claw of Beast. Dark Elves and Balgass have their own drops (Balgass can drop Holyangel weapons, rarely)."]}
+      ]
+    },
+    {
+      "id": "arca-war",
+      "series": "events",
+      "cover": {"item": "jewel-of-guardian"},
+      "title": ["Arca War: guerra das torres elementais", "Arca War: the elemental towers war"],
+      "blocks": [
+        {"p": ["Arca War é uma guerra entre guildas em Acheron. A guilda ativa três interruptores, derruba uma torre elemental e precisa segurá-la até o fim; quem estiver com a torre ganha o buff do elemento dela.", "Arca War is a guild war in Acheron. The guild activates three switches, takes down an elemental tower and must hold it until the end; whoever holds the tower gets that element's buff."]},
+        {"h": ["Requisitos", "Requirements"]},
+        {"table": {"head": [["Regra", "Rule"], ["Detalhe", "Detail"]], "rows": [
+          [["Guilda", "Guild"], ["Só membros de guilda inscrita.", "Only members of a registered guild."]],
+          [["Mínimo", "Minimum"], ["Pelo menos 10 membros precisam se inscrever um por um, senão a guilda é desclassificada.", "At least 10 members must register one by one, or the guild is disqualified."]],
+          [["Máximo", "Maximum"], ["20 inscritos por guilda.", "20 registered players per guild."]]
+        ]}},
+        {"h": ["Inscrição (NPC Protector Sir Lesnar, em Devias)", "Registration (NPC Protector Sir Lesnar, in Devias)"]},
+        {"list": [
+          ["Durante a semana, o Guild Master entrega [[item:sign-of-lord]]; as seis guildas que mais entregam seguem.", "During the week, the Guild Master hands in [[item:sign-of-lord]]; the six guilds that hand in the most move on."],
+          ["No dia da guerra: o Guild Master confirma, cada membro se inscreve, as guildas são anunciadas e os inscritos entram na área segura.", "On war day: the Guild Master confirms, each member registers, guilds are announced and registered players enter the safe zone."]
+        ]},
+        {"tip": ["Quem é da guilda mas não fez a própria inscrição não entra.", "A guild member who didn't register individually can't enter."]},
+        {"h": ["Como se vence", "How to win"]},
+        {"table": {"head": [["Passo", "Step"], ["O que fazer", "What to do"]], "rows": [
+          ["1", ["Escolher uma entrada: Alkmar ou Ubaid.", "Pick an entrance: Alkmar or Ubaid."]],
+          ["2", ["Pôr três membros parados nos três interruptores ao mesmo tempo.", "Put three members standing still on all three switches at once."]],
+          ["3", ["Com os três ativos, a torre fica vulnerável: derrubá-la põe a guilda na defesa.", "With all three active, the tower becomes vulnerable: taking it down puts the guild on defense."]],
+          ["4", ["Segurar a torre: ganha quem estiver com ela quando o tempo acabar.", "Hold the tower: whoever has it when time runs out wins."]]
+        ]}},
+        {"table": {"head": [["Entrada", "Entrance"], ["Interruptores", "Switches"], ["Torre", "Tower"]], "rows": [
+          ["Alkmar", "89, 58 · 84, 30 · 104, 36", "89, 41"],
+          ["Ubaid", "175, 102 · 192, 110 · 200, 96", "188, 101"]
+        ]}},
+        {"h": ["Dicas", "Tips"]},
+        {"list": [
+          ["Concentre a guilda numa entrada só; não precisa dominar as duas.", "Focus the guild on one entrance; you don't need both."],
+          ["Quem entra pela porta é levado até o Guild Master: deixe-o perto da luta primeiro.", "Players entering a gate are taken to the Guild Master: get them near the fight first."],
+          ["Morrer deixa dois minutos de lentidão, e nesse tempo a entrada não leva até o Guild Master.", "Dying gives two minutes of slowness, and during that time the gate doesn't take you to the Guild Master."]
+        ]},
+        {"h": ["Buffs das torres", "Tower buffs"]},
+        {"p": ["Todo buff de torre dá mais experiência e mais drop para a guilda vencedora, além de um bônus do elemento: Fogo (dano de skill), Água (defesa), Vento (chance de dano crítico), Terra (ataque) e Trevas (redução de dano). Cada um também aumenta o drop de itens do próprio elemento.", "Every tower buff gives the winning guild more experience and drops, plus an element bonus: Fire (skill damage), Water (defense), Wind (critical damage rate), Earth (attack) and Darkness (damage reduction). Each also raises drops of items of its own element."]}
+      ]
+    },
+    {
+      "id": "event-tickets",
+      "series": "events",
+      "cover": {"item": "archangel-scroll-1"},
+      "title": ["Ingressos de Blood Castle, Devil Square e Kalima", "Blood Castle, Devil Square and Kalima tickets"],
+      "blocks": [
+        {"p": ["Os três eventos pedem um ingresso montado com peças que os monstros dropam. O nível da peça (+1 a +7) depende do nível do monstro, e as duas peças precisam ter o mesmo nível.", "All three events need a ticket made from pieces that monsters drop. The piece level (+1 to +7) depends on the monster's level, and both pieces must have the same level."]},
+        {"table": {"head": [["Material", "Material"], ["Serve para", "Used for"]], "rows": [
+          ["Scroll of Archangel + Blood Bone", ["Convite do Blood Castle", "Blood Castle invitation"]],
+          ["Devil's Eye + Devil's Key", ["Convite do Devil Square", "Devil Square invitation"]],
+          ["5 × Symbol of Kundun", ["Lost Map (entrada de Kalima)", "Lost Map (Kalima entrance)"]]
+        ]}},
+        {"h": ["Blood Castle e Devil Square", "Blood Castle and Devil Square"]},
+        {"p": ["Leve as duas peças do mesmo nível ao Chaos Goblin, escolha a combinação normal e junte 1 [[item:jewel-of-chaos]] e o Zen pedido. Faixas de nível de monstro na Season 21 (iguais para as peças dos dois eventos):", "Take both pieces of the same level to the Chaos Goblin, pick the regular combination and add 1 [[item:jewel-of-chaos]] and the Zen required. Monster level bands in Season 21 (the same for both events' pieces):"]},
+        {"table": {"head": [["Ingresso", "Ticket"], ["Nível do monstro", "Monster level"], ["Mapas de exemplo", "Example maps"]], "rows": [
+          ["+1", "25–94", "Devias, Dungeon, Atlans, Tarkan, Icarus"],
+          ["+2", "80–135", "Kanturu, Swamp, Karutan, Vulcanus, Acheron"],
+          ["+3", "115–170", "Raklion, Nars, Ferea, Deep Dungeon 1"],
+          ["+4", "160–300", "Nixies Lake, Deep Dungeon, Swamp of Darkness"],
+          ["+5", "280–500", "Kubera Mine, Abyss of Atlans, Scorched Canyon"],
+          ["+6", "480–600", "Red Smoke Icarus, Arenil Temple, Ashen Aida"],
+          ["+7", "540–1000", "Ashen Aida, Blaze Kethotum, Kanturu Undergrounds"]
+        ]}},
+        {"h": ["Kalima", "Kalima"]},
+        {"p": ["Junte cinco [[item:symbol-of-kundun-1|Symbol of Kundun]] do mesmo nível: ao empilhar o quinto, eles viram um Lost Map daquele nível. Jogue o Lost Map no chão para abrir o portal (Magic Stone) para Kalima; só quem está no grupo de quem abriu pode entrar.", "Collect five [[item:symbol-of-kundun-1|Symbol of Kundun]] of the same level: stacking the fifth turns them into a Lost Map of that level. Drop the Lost Map on the ground to open the portal (Magic Stone) to Kalima; only the opener's party members can enter."]},
+        {"table": {"head": [["Symbol", "Symbol"], ["Nível do monstro", "Monster level"], ["Mapas de exemplo", "Example maps"]], "rows": [
+          ["+1", "25–46", "Dungeon, Devias, Lost Tower"],
+          ["+2", "47–65", "Atlans, Tarkan, Icarus"],
+          ["+3", "66–77", "Aida, Kanturu"],
+          ["+4", "78–100", "Swamp, Vulcanus"],
+          ["+5", "84–115", "Karutan, Raklion"],
+          ["+6", "92–125", "Ferea"],
+          ["+7", "125–300", "Deep Dungeon, Nixies Lake"]
+        ]}},
+        {"tip": ["Em [[map:kalima-6|Kalima 6]] fica o Illusion of Kundun, que não é o chefe; o Kundun de verdade está em [[map:kalima-7|Kalima 7]].", "[[map:kalima-6|Kalima 6]] has the Illusion of Kundun, which is not the boss; the real Kundun is in [[map:kalima-7|Kalima 7]]."]}
+      ]
+    },
+    {
+      "id": "bound-wings",
+      "series": "crafting",
+      "cover": {"item": "condor-feather"},
+      "title": ["Bound Wings: asas com a Magic Solution", "Bound Wings: wings with the Magic Solution"],
+      "blocks": [
+        {"p": ["Bound Wings são asas criadas a partir de uma asa que o personagem já pode usar e de uma Magic Solution cheia. A combinação dá certo sempre (100%) quando a classe, a ordem da asa e a solução batem; ganhar opção na asa é que é raro.", "Bound Wings are made from a wing the character can already wear plus a full Magic Solution. The combination always succeeds (100%) when class, wing tier and solution match; getting an option on the wing is what's rare."]},
+        {"h": ["Passo a passo", "Step by step"]},
+        {"table": {"head": [["Passo", "Step"], ["O que fazer", "What to do"]], "rows": [
+          ["1", ["Compre a Magic Solution vazia na loja de Ruud de [[npc:priest-james]]: Loch (asas de 2º nível) ou Condor (3º nível).", "Buy the empty Magic Solution at [[npc:priest-james]]'s Ruud shop: Loch (2nd-tier wings) or Condor (3rd tier)."]],
+          ["2", ["Com a solução no inventário, cace monstros do nível certo para dropar os Magic Bells (eles só caem enquanto você carrega a solução).", "With the solution in your inventory, hunt monsters of the right level to drop Magic Bells (they only drop while you carry the solution)."]],
+          ["3", ["Arraste cada Magic Bell sobre a solução até chegar a 100%: ela vira uma Completed Magic Solution.", "Drag each Magic Bell onto the solution until it reaches 100%: it becomes a Completed Magic Solution."]],
+          ["4", ["Leve a solução completa e uma asa da sua classe da mesma ordem ao Goblin de Noria (180, 102) e escolha a combinação de Bound Wing.", "Take the completed solution and a wing of your class of the same tier to the Goblin in Noria (180, 102) and pick the Bound Wing combination."]]
+        ]}},
+        {"table": {"head": [["Gota", "Drop"], ["Nível do monstro", "Monster level"], ["Enche", "Fills"]], "rows": [
+          ["Loch Magic Bell", "75–100", "Loch Magic Solution"],
+          ["Condor Magic Bell", "95–200", "Condor Magic Solution"]
+        ]}},
+        {"tip": ["No MU Helper (Z), ative a coleta de itens e adicione os nomes curtos **Loch** e **Condor** à lista extra para pegar os Magic Bells sozinho.", "In MU Helper (Z), turn on item pickup and add the short names **Loch** and **Condor** to the extra list so it picks up the Magic Bells for you."]},
+        {"p": ["Veja também o guia das asas de 2º e 3º nível em [[guide:second-wings|Como criar asas]].", "See also the 2nd and 3rd tier wings guide in [[guide:second-wings|How to create wings]]."]}
+      ]
+    },
+    {
+      "id": "spirit-stones",
+      "series": "crafting",
+      "cover": {"item": "jewel-of-chaos"},
+      "title": ["Magic Spirit Stones", "Magic Spirit Stones"],
+      "blocks": [
+        {"p": ["As Spirit Stones são feitas na Chaos Machine de Noria, na opção Magic Stone Combination. O grau da pedra depende do tipo de equipamento que você coloca, e todo equipamento precisa estar no mínimo em +12 com opção adicional +16.", "Spirit Stones are made in the Chaos Machine in Noria, under Magic Stone Combination. The stone grade depends on the kind of equipment you put in, and every piece must be at least +12 with a +16 additional option."]},
+        {"table": {"head": [["Pedra", "Stone"], ["Equipamento", "Equipment"], ["Mínimo", "Minimum"]], "rows": [
+          ["Lower Spirit Stone", ["Item normal", "Normal item"], "+12, +16"],
+          ["Medium Spirit Stone", ["Item excellent", "Excellent item"], "+12, +16"],
+          ["Higher Spirit Stone", ["Item ancient", "Ancient item"], "+12, +16"],
+          ["Top Spirit Stone", ["Item Bloodangel", "Bloodangel item"], "+12, +16"]
+        ]}},
+        {"tip": ["Resumo: normal → Lower, excellent → Medium, ancient → Higher, Bloodangel → Top.", "In short: normal → Lower, excellent → Medium, ancient → Higher, Bloodangel → Top."]}
+      ]
+    },
+    {
+      "id": "bloodangel-soul",
+      "series": "crafting",
+      "cover": {"item": "bloodangel-knight-armor"},
+      "title": ["Bloodangel: alma e retirada do selo", "Bloodangel: soul and seal removal"],
+      "blocks": [
+        {"p": ["As peças Bloodangel compradas com Ruud vêm seladas. Para usar, você cria uma Ancient Hero Soul (aparece no jogo como Bloodangel Soul) e tira o selo na Chaos Machine. As duas combinações ficam na Chaos Machine de Lorencia ou de Noria.", "Bloodangel pieces bought with Ruud come sealed. To use one, you make an Ancient Hero Soul (shown in game as Bloodangel Soul) and remove the seal at the Chaos Machine. Both combinations are at the Chaos Machine in Lorencia or Noria."]},
+        {"h": ["1. Criar a alma", "1. Make the soul"]},
+        {"list": [
+          ["Chaos Machine → Mastery Crafting → Blood Angel's Spirit Crafting.", "Chaos Machine → Mastery Crafting → Blood Angel's Spirit Crafting."],
+          ["Coloque um equipamento **ancient** em +11 ou mais, com opção adicional +16 ou mais.", "Put in an **ancient** piece at +11 or higher, with a +16 or higher additional option."],
+          ["O resultado é a Bloodangel Soul.", "The result is the Bloodangel Soul."]
+        ]},
+        {"h": ["2. Tirar o selo", "2. Remove the seal"]},
+        {"list": [
+          ["Chaos Machine → Mastery Crafting → Mastery Equipment Crafting → Mastery Crafting/Upgrading.", "Chaos Machine → Mastery Crafting → Mastery Equipment Crafting → Mastery Crafting/Upgrading."],
+          ["Coloque a peça Bloodangel selada e a alma, confira os dois e combine. A chance é de 100%.", "Put in the sealed Bloodangel piece and the soul, check both and combine. The rate is 100%."]
+        ]},
+        {"p": ["Peças Bloodangel também servem de material para as Top Spirit Stones ([[guide:spirit-stones|Magic Spirit Stones]]).", "Bloodangel pieces are also the material for Top Spirit Stones ([[guide:spirit-stones|Magic Spirit Stones]])."]}
+      ]
+    },
+    {
+      "id": "mounts",
+      "series": "crafting",
+      "cover": {"item": "dark-raven"},
+      "title": ["Montarias: criar, evoluir e trocar opções", "Mounts: create, evolve and reroll options"],
+      "blocks": [
+        {"p": ["Tudo das montarias é feito com o NPC Trainer, em [[map:lorencia]] (122, 112): criar, subir de nível, evoluir e trocar opções.", "Everything about mounts is done with the Trainer NPC in [[map:lorencia]] (122, 112): create, level up, evolve and change options."]},
+        {"table": {"head": [["O que fazer", "What to do"], ["Como", "How"]], "rows": [
+          [["Criar", "Create"], ["O selo (Seal) da montaria e um Fragment of Resurrection.", "The mount's Seal and a Fragment of Resurrection."]],
+          [["Subir de nível", "Level up"], ["Guardian Upgrade Stone ou Elite Guardian Upgrade Stone com [[item:jewel-of-life]]. Vai até +15; se falhar, a montaria fica, mas perde níveis e os materiais.", "Guardian Upgrade Stone or Elite Guardian Upgrade Stone with [[item:jewel-of-life]]. Goes up to +15; on failure the mount stays but loses levels and the materials."]],
+          [["Evoluir", "Evolve"], ["A partir de +11, com o selo da próxima montaria e as joias pedidas. A evolução dá certo sempre.", "From +11, with the next mount's Seal and the required jewels. Evolution always succeeds."]],
+          [["Opções", "Options"], ["A montaria evoluída ganha de 1 a 4 opções (de combate ou de resistência contra monstros elite) e pode sair normal ou rara.", "The evolved mount gets 1 to 4 options (combat or resistance against elite monsters) and can come out normal or rare."]],
+          [["Trocar resistência elite", "Reroll elite resistance"], ["Guardian Elite Option Conversion Stone → Change Guardian Options.", "Guardian Elite Option Conversion Stone → Change Guardian Options."]]
+        ]}},
+        {"h": ["Dark Lord: corvo e cavalo", "Dark Lord: raven and horse"]},
+        {"p": ["Só o Dark Lord usa as opções Spirit Upgrade (para o [[item:dark-raven]]) e Horse Upgrade (para o Dark Horse). O pet precisa estar no nível 70. O corvo pode sair com visual de fogo, gelo ou divino, com raridades diferentes.", "Only the Dark Lord uses Spirit Upgrade (for the [[item:dark-raven]]) and Horse Upgrade (for the Dark Horse). The pet must be level 70. The raven can come out with a fire, ice or divine look, with different rarities."]}
+      ]
+    },
+    {
+      "id": "ruud",
+      "series": "everyday",
+      "cover": {"npc": "priest-james"},
+      "title": ["Ruud: como conseguir e onde gastar", "Ruud: how to get it and where to spend it"],
+      "blocks": [
+        {"p": ["Ruud é a moeda da loja de [[npc:priest-james]]. Com ela se compram itens de skill da 4ª classe, peças Bloodangel seladas, Magic Solutions e materiais de combinação.", "Ruud is the currency of [[npc:priest-james]]'s shop. It buys 4th class skill items, sealed Bloodangel pieces, Magic Solutions and crafting materials."]},
+        {"h": ["Onde conseguir", "Where to get it"]},
+        {"table": {"head": [["Tipo", "Type"], ["Exemplos", "Examples"]], "rows": [
+          [["Eventos clássicos", "Classic events"], "Blood Castle, Devil Square, Chaos Castle, Illusion Temple, Doppelganger"],
+          [["Guerras de guilda", "Guild wars"], "Castle Siege, Arca War"],
+          [["Batalhas", "Battles"], "Boss Battle Together, Empire Guardians"],
+          [["No mapa", "In the world"], ["Invasões e chefes", "Invasions and bosses"]]
+        ]}},
+        {"h": ["Regras da moeda", "Currency rules"]},
+        {"list": [
+          ["Só se gasta na loja de Priest James; as lojas comuns não aceitam.", "It can only be spent at Priest James's shop; regular shops don't take it."],
+          ["Fica no personagem e não pode ser jogada fora.", "It stays on the character and can't be thrown away."],
+          ["A loja só mostra equipamento da classe de quem compra.", "The shop only shows equipment for the buyer's class."],
+          ["O que se compra com Ruud não volta a ser Ruud: dá para vender por Zen em NPC ou negociar com jogadores.", "What you buy with Ruud can't be turned back into Ruud: you can sell it for Zen to an NPC or trade it with players."]
+        ]},
+        {"p": ["Skills que se compram com Ruud aparecem nas páginas de [[skills|skills]] com a marca \"loja de Ruud\".", "Skills bought with Ruud show up on the [[skills|skills]] pages marked \"Ruud Shop\"."]}
+      ]
+    },
+    {
+      "id": "skill-items",
+      "series": "everyday",
+      "cover": {"item": "orb-of-death-stab"},
+      "title": ["Itens de skill: onde caçar", "Skill items: where to hunt"],
+      "blocks": [
+        {"p": ["As skills de classe se aprendem com itens: orbs, scrolls, livros, pergaminhos e cristais. Clique com o botão direito no item para aprender, se o personagem tiver os requisitos (nível e atributos).", "Class skills are learned from items: orbs, scrolls, books, parchments and crystals. Right-click the item to learn it, if the character meets the requirements (level and stats)."]},
+        {"h": ["Onde dropam (Season 21)", "Where they drop (Season 21)"]},
+        {"table": {"head": [["Fase", "Stage"], ["Mapas", "Maps"]], "rows": [
+          [["Skills do começo", "Early skills"], "Devias, Dungeon, Lost Tower"],
+          [["Skills do meio", "Mid skills"], "Atlans, Tarkan, Icarus, Aida, Kanturu"],
+          [["Skills avançadas", "Late skills"], "Raklion, Swamp of Calmness, Vulcanus, Karutan, Acheron"],
+          [["Crusader", "Crusader"], "Swamp of Calmness"],
+          [["Skills da 4ª classe", "4th class skills"], ["Loja de Ruud ([[npc:priest-james]])", "Ruud Shop ([[npc:priest-james]])"]]
+        ]}},
+        {"tip": ["No MU Helper, adicione **Orb**, **Scroll**, **Crystal** e **Parchment** à lista de coleta extra para pegar os itens de skill sozinho.", "In MU Helper, add **Orb**, **Scroll**, **Crystal** and **Parchment** to the extra pickup list so it grabs skill items for you."]},
+        {"p": ["A lista completa, skill por skill, com os requisitos, os mapas e os monstros que dropam cada item, está nas páginas de [[skills|skills de cada classe]].", "The full list, skill by skill, with requirements, maps and the monsters that drop each item, is on the [[skills|class skills]] pages."]}
+      ]
+    },
+    {
+      "id": "card-deck",
+      "series": "everyday",
+      "cover": {"item": "box-of-kundun-5"},
+      "title": ["Card Pieces e minijogos de cartas", "Card Pieces and card mini-games"],
+      "blocks": [
+        {"p": ["Card Pieces caem de monstros em qualquer mapa e vão para o inventário de eventos (Ctrl + V). Com 24 peças você monta um Card Deck, que é a entrada dos minijogos de cartas. Quanto maior a pontuação, melhor a caixa de joias.", "Card Pieces drop from monsters on any map and go to the event inventory (Ctrl + V). With 24 pieces you build a Card Deck, the entry ticket for the card mini-games. The higher the score, the better the jewel box."]},
+        {"tip": ["Ative a coleta de itens de evento no MU Helper para pegar as Card Pieces sozinho.", "Turn on event item pickup in MU Helper so it grabs Card Pieces for you."]},
+        {"h": ["Minijogos e recompensas", "Mini-games and rewards"]},
+        {"table": {"head": [["Jogo", "Game"], ["Pontuação", "Score"], ["Joias possíveis", "Possible jewels"]], "rows": [
+          ["Find Bombs", "0–150 · 151–850 · 851–1100 · 1100+", ["Bless/Soul → + Life → + Chaos e Creation → só Chaos, Creation e Life", "Bless/Soul → + Life → + Chaos and Creation → only Chaos, Creation and Life"]],
+          ["Jewel Bingo", "0–700 · 700–899 · 900–999 · 1000+", ["Bless/Soul → + Life → + Chaos e Creation → só Chaos, Creation e Life", "Bless/Soul → + Life → + Chaos and Creation → only Chaos, Creation and Life"]],
+          ["Balls and Cows", "0–300 · 301–449 · 450+", ["Bless/Soul → Bless, Soul, Chaos, Creation e Life", "Bless/Soul → Bless, Soul, Chaos, Creation and Life"]],
+          ["MU Roomy", "0–249 · 250–399 · 400–499 · 500+", ["Zen (falhou) → Bless, Soul, Harmony, Chaos, Creation e Life → as melhores sem Bless/Soul", "Zen (failed) → Bless, Soul, Harmony, Chaos, Creation and Life → the best ones without Bless/Soul"]]
+        ]}},
+        {"p": ["Cada caixa traz uma quantidade aleatória de joias.", "Each box holds a random number of jewels."]}
+      ]
+    },
+    {
+      "id": "personal-store",
+      "series": "everyday",
+      "cover": {"item": "jewel-of-bless"},
+      "title": ["Loja pessoal: comprar e vender com segurança", "Personal store: buy and sell safely"],
+      "blocks": [
+        {"p": ["A loja pessoal (tecla P) mostra as lojas abertas pelos jogadores, a lista de itens à venda e uma busca. O que você compra ou vende vai para o Gremory Case (tecla K, aba da loja pessoal).", "The personal store (P key) lists the stores players have opened, the items for sale and a search. What you buy or sell goes to the Gremory Case (K key, personal store tab)."]},
+        {"h": ["Comprar", "Buying"]},
+        {"list": [
+          ["Abra a loja (P) ou clique na loja de um jogador.", "Open the store (P) or click a player's store."],
+          ["Veja se o anúncio é um item só ou um pacote: comprar o pacote leva todos os itens dele.", "Check whether the listing is a single item or a bundle: buying a bundle takes every item in it."],
+          ["Confira preço, quantidade e moeda que o jogo mostra antes de clicar em comprar.", "Check the price, quantity and currency the game shows before clicking buy."],
+          ["Pegue a compra no Gremory Case (K).", "Collect your purchase from the Gremory Case (K)."]
+        ]},
+        {"tip": ["Confie no aviso de moeda que o jogo mostra, não no nome da loja: um vendedor pode escrever \"por Zen\" e cobrar em outra moeda. Compra e venda não se desfazem por engano do jogador.", "Trust the currency warning the game shows, not the store name: a seller can write \"for Zen\" and charge another currency. Purchases and sales are not undone for player mistakes."]},
+        {"h": ["Vender", "Selling"]},
+        {"list": [
+          ["Abra a loja (P), escolha um espaço vazio, defina item único ou pacote, o preço, e clique com o botão direito nos itens para colocar.", "Open the store (P), pick an empty slot, choose single item or bundle, set the price, and right-click items to add them."],
+          ["Revise tudo e use o botão Open no fim da janela.", "Review everything and use the Open button at the bottom of the window."],
+          ["Para mudar preço ou tirar um item, feche a loja antes.", "To change a price or remove an item, close the store first."],
+          ["O vendedor paga uma taxa sobre a venda; vendas pagas em joias também têm taxa.", "The seller pays a fee on each sale; sales paid in jewels are taxed too."]
+        ]},
+        {"h": ["Gremory Case", "Gremory Case"]},
+        {"p": ["Guarda os itens comprados, vendidos e retirados da loja. Tem limite de espaço (cheio, a loja para de comprar e vender) e os itens vencem depois de alguns dias: retire logo.", "It holds items bought, sold and taken out of the store. It has a space limit (when full, the store stops buying and selling) and items expire after some days: collect them soon."]}
+      ]
+    },
+    {
+      "id": "hotkeys",
+      "series": "everyday",
+      "cover": null,
+      "title": ["Teclas de atalho", "Hotkeys"],
+      "blocks": [
+        {"p": ["As teclas do cliente atual de MU Online para abrir janelas, controlar o minimapa e a câmera.", "The current MU Online client keys to open windows and control the mini-map and camera."]},
+        {"h": ["Janelas", "Windows"]},
+        {"table": {"head": [["Tecla", "Key"], ["Abre", "Opens"]], "rows": [
+          ["I / V", ["Inventário", "Inventory"]],
+          ["C", ["Atributos do personagem", "Character stats"]],
+          ["A", ["Árvore de mestre", "Master Skill Tree"]],
+          ["Ctrl + A", ["Árvore de melhorias (4ª classe)", "Enhance skill tree (4th class)"]],
+          ["Ctrl + J", ["Árvore da 5ª classe", "5th class skill tree"]],
+          ["M", ["Teleporte (warp)", "Warp window"]],
+          ["T", ["Quests", "Quests"]],
+          ["P", ["Loja pessoal", "Personal store"]],
+          ["K", ["Gremory Case", "Gremory Case"]],
+          ["Ctrl + V", ["Inventário de eventos", "Event inventory"]],
+          ["Y", ["Inventário de Muun", "Muun inventory"]],
+          ["G", ["Guilda", "Guild"]],
+          ["B", ["Gens", "Gens"]],
+          ["F", ["Amigos e correio", "Friends and mail"]],
+          ["N", ["Busca de grupo e guilda", "Party and guild matching"]],
+          ["D", ["Lista de comandos", "Command list"]],
+          ["X", ["Loja de cash", "Cash shop"]],
+          ["O", ["Opções", "Options"]],
+          ["Esc", ["Menu do sistema", "System menu"]]
+        ]}},
+        {"h": ["MU Helper, minimapa e câmera", "MU Helper, mini-map and camera"]},
+        {"table": {"head": [["Tecla", "Key"], ["Faz", "Does"]], "rows": [
+          ["Z", ["Configura o MU Helper", "MU Helper settings"]],
+          ["Home", ["Liga e desliga o MU Helper", "Turns MU Helper on and off"]],
+          ["End", ["Registro de caça", "Hunting log"]],
+          ["Tab", ["Abre o minimapa", "Opens the mini-map"]],
+          ["[ / ]", ["Menos / mais transparência do minimapa", "Less / more mini-map opacity"]],
+          ["- / +", ["Diminui / aumenta o minimapa", "Shrinks / grows the mini-map"]],
+          ["F10 / F11", ["Liga a câmera 3D / volta a câmera padrão", "Turns on the 3D camera / restores the default camera"]],
+          [["Roda do mouse", "Mouse wheel"], ["Zoom com a câmera 3D ligada", "Zoom with the 3D camera on"]]
+        ]}}
+      ]
+    }
+  ]
+}

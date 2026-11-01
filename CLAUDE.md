@@ -45,6 +45,8 @@ python -m scrapers.terrain                           # terreno (.att do MuEmu; i
                                                      #    -> data/processed/terrain/terrains.json (mapas vetoriais)
 python -m scrapers.media list|fetch                  # imagens usadas pelo site -> site/public/media/ + data/media.json (1 req/s)
                                                      #    (compact: prévias GIF das skills -> WebM + MP4 com ffmpeg, ~7x menor)
+python -m scrapers.mastermu fetch                    # MasterMU: guias pelo sitemap (32 páginas, ~40 s); só fatos, ver Fontes
+python -m scrapers.mastermu parse                    # -> data/processed/mastermu/skill_drops.json (mapas/Ruud Store dos itens de skill)
 python -m scrapers.skills                            # skills de cada classe (guia oficial + guias de classe do Fanz e do GMO já baixados)
                                                      #    -> data/processed/combined/skills.json (rodar depois do combine)
 ```
@@ -71,7 +73,10 @@ campo `credit` de `sources.json`): **a referência às fontes fica só no rodap�
 não citam fontes; os dados guardam `source`/`source_url` como procedência). As imagens são servidas por nós: cópias
 em `site/public/media/` (`python -m scrapers.media fetch`), ligadas pela URL original em `data/media.json`;
 `lib/data.ts` troca a URL pela cópia na exibição (a API mantém a URL da fonte). `SITE_DATA=muemu`
-gera um build só com dados de licença aberta. O `wrangler.jsonc` tem `build.command`, então o "Build command" do
+gera um build só com dados de licença aberta. **MasterMU não tem autorização**: dele entram só fatos (mapas onde dropam
+os itens de skill, o que vem da loja de Ruud) e guias escritos por nós com esses fatos; nada de texto ou imagem copiados.
+No rodapé ele fica numa linha à parte ("Só fatos, reescritos por nós"), fora do "Publicados com autorização" (`FACTS_ONLY`
+no `Base.astro`). O `wrangler.jsonc` tem `build.command`, então o "Build command" do
 painel da Cloudflare pode ficar vazio.
 
 ## Ambientes e branches
@@ -108,9 +113,11 @@ scrapers/skills/   fanz.py (árvore de skills dos guias de classe do Fanz), gmo.
                    build.py (junta guia oficial, Fanz e GMO, liga cada skill ao item que a ensina e, sem item no site, aos
                    drops do GMO)
 scrapers/spots.py  spots de farm: os do Guide MU Online; fora dele, agrupa spawns do MuEmu -> farm_spots.json
+scrapers/mastermu/ cli.py (fetch pelo sitemap), parse.py (tabelas do guia de drop de itens de skill -> skill_drops.json)
 data/curated/      arquivos curados por nós, commitados: planner.json, builds.json, skill_videos.json (vídeo do YouTube por
-                   skill e por classe, escolhidos à mão) e translations/guides.pt-BR.json e translations/skills.pt-BR.json
-                   (traduções aproximadas dos guias e das descrições de skill, nossas)
+                   skill e por classe, escolhidos à mão), guides.mu-explorer.json (guias escritos por nós, PT e EN) e
+                   translations/guides.pt-BR.json e translations/skills.pt-BR.json (traduções aproximadas dos guias e das
+                   descrições de skill, nossas)
 docs/              rascunhos e notas (ex.: pedido de acesso ao muonline.us)
 schema/            JSON Schema (draft 2020-12) de cada entidade publicada
 data/raw/          HTML bruto + .meta.json por página (fora do git)
@@ -328,8 +335,33 @@ o que foi mapeado antes do bloqueio.
   `data/curated/translations/guides.pt-BR.json` (modelo em inglês -> modelo em português, com os mesmos marcadores e
   tags; o site ignora a que não bater). Guia novo ou texto mudado = traduzir as frases novas (o teste confere a marcação).
   No site (`/guias/`), português por padrão e botão Português/English (preferência `mu-explorer:lang` no navegador).
+  Guias escritos por nós (`data/curated/guides.mu-explorer.json`, só no conjunto combined): textos `[português, inglês]`,
+  blocos `h`/`h3`/`p`/`tip`/`list`/`table` e links `[[item:<id>]]`, `[[npc:<id>]]`, `[[map:<id>]]`, `[[guide:<id>|texto]]`,
+  `[[skills|texto]]` (link sem destino quebra o build; o teste confere todos). `lib/guides.ts: curatedGuides` converte para
+  os mesmos blocos; séries novas: Eventos, Criação e evolução, Dia a dia.
 
-### 6. Outras (referência, não prioritárias)
+### 6. MasterMU (mastermu.net) — drop de itens de skill e guias de eventos/sistemas (só fatos)
+- Servidor **privado** Season 21 (x100, sem reset). **Sem autorização para publicar o conteúdo** (dono do projeto, nov/2026):
+  usamos só fatos e escrevemos os guias com as nossas palavras; não copiamos texto nem imagens (as imagens deles ficam em
+  assets.muhelper.com e não entram). robots.txt bloqueia só /admin, /api, /install, /panel, /cron; o sitemap lista 32 guias
+  (`/guides/view/<slug>`, HTML com o texto inteiro em `article.hm-prose`).
+- Guia de drop de skills (`mu-online-skill-drop-guide-scrolls-orbs-crystals-and-parchments`): um `h3#<classe>` e uma tabela
+  "Skill | Drop Location" por classe (16 classes; "Lemuria" = Mage, "White Wizard: Kundun Mephis" = White Wizard,
+  "Rune Wizard" = Rune Mage). O nome às vezes é o do item ("Articulation: Ignition Bomber Book of Laws") ou antigo
+  ("Fortitude" = Swell Life, "Reflect" = Damage Reflection): casamos pelo rótulo, pelo rótulo sem prefixo/sufixo, pelo
+  nome do ícone (`skilldrop/<Nome>.webp`) e por `MASTERMU_ALIASES` (scrapers/skills/build.py). Local = mapas separados
+  por vírgula ou "Ruud Store". "Kanturu" = Kanturu Ruins; "Swamp" e "Swamp of Calmness" = swamp-of-calmness (o mesmo
+  mapa do Swamp of Peace do Fanz; os spots estão no de Calmness). Resultado: 114 skills, 35 da loja de Ruud.
+- Diverge das tabelas de monstro do Fanz/GMO em 9 de 57 skills que têm as duas: o site mostra as duas coisas, com os
+  mapas do MasterMU marcados como Season 21.
+- Guias que viraram guias nossos (`data/curated/guides.mu-explorer.json`, 13): Castle Siege, Crywolf, Arca War, ingressos
+  de Blood Castle/Devil Square/Kalima, Bound Wings, Spirit Stones, Bloodangel (alma e selo), montarias, Ruud, itens de
+  skill, cartas, loja pessoal e teclas. Ficaram de fora os próprios do servidor (taxas da Chaos Machine com VIP, invasões e
+  eventos customizados, WCoinC, Goblin Points, MU Pass, parceria de streamer, comandos, FAQ, ranking de dano de chefe,
+  lista de drop por mapa e opções de socket com valores do servidor). Nos guias nossos não vão valores de um servidor
+  (recompensas em moeda, horários, VIP).
+
+### 7. Outras (referência, não prioritárias)
 muonline.fandom.com (MediaWiki, `/api.php`, cobertura parcial), StrategyWiki (antiga),
 wiki.infinitymu.net e info.topmuonline.net (servidores privados), globalmuonline.com/drop
 (Season 19/21).
@@ -368,7 +400,8 @@ Schemas em `schema/*.schema.json` (fonte de verdade). Resumo:
 - `skill` (`skills.json`, schema `skill.schema.json`, gerado por `python -m scrapers.skills`): id `<classe>--<skill>`, class_id,
   name, tree (basic/special/item do Fanz), stage (class ou enhanced = 4ª/5ª classe), unlocked_as, kind, description (inglês
   da fonte), effects, mana/AG, element, requisitos (nível, atributos, `other` em texto) e `learn` {method: item/weapon/
-  mount/master/quest/castle-siege/default/enhance-tree/null, item_name, item_id, drops, item_from_class}, aliases, cooldown_s,
+  mount/master/quest/castle-siege/default/enhance-tree/null, item_name, item_id, drops, item_from_class, drop_maps (mapas onde o
+  item dropa, MasterMU S21, sem monstro), shop ("ruud" = loja de Ruud de Priest James)}, aliases, cooldown_s,
   levels (árvore de melhorias), image_url (ícone do guia) e preview_url (GIF do Fanz). Ordem das fontes: **guia oficial**
   (Guide MU Online: requisitos, custos, ícone, tipo; 15 classes) completado pelo **Fanz** (item que ensina, efeitos,
   elemento, descrição; 10 classes; layout do MG diferente: "learned via <strong>X</strong>"; `FANZ_TO_GUIDE` = mesmo skill

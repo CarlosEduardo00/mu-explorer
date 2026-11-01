@@ -14,6 +14,8 @@ Castle Siege. O item que o guia cita é ligado ao item do site (`item_id`): pelo
 classes que só o GMO cobre, o item vem do nome da skill ("Orb of Ice Break"), só quando o item é da própria classe.
 Item que o site não tem, mas que aparece nas listas de drop do GMO ("Shining Bird Law Book"), guarda os drops ali
 mesmo (`learn.drops`: monstro e mapa). Onde dropa o item do site sai do drops.json, no build do site.
+MasterMU (guia de drop de itens de skill, Season 21, só fatos): mapas onde o item dropa (`learn.drop_maps`) e o que se
+compra na loja de Ruud (`learn.shop = "ruud"`), lidos de data/processed/mastermu/skill_drops.json.
 """
 from __future__ import annotations
 
@@ -294,6 +296,51 @@ def link_items(skills: dict[str, list[dict]], items: list[dict], names: dict[str
                     learn.update(item_name=src["item_name"], item_id=src["item_id"], item_from_class=other)
 
 
+# Nome do guia de drop do MasterMU -> nome da skill no site, quando nem o rótulo nem o ícone casam.
+MASTERMU_ALIASES = {
+    "Elemental Attack": "Improve Elemental Attack Power", "Elemental Defense": "Improve Elemental Defense",
+    "Lugard Protection": "Luguard’s Protection: Punishment", "Swords Fury": "Sword's Fury",
+}
+
+
+def mastermu_names(row: dict) -> list[str]:
+    """Nomes candidatos de uma linha do guia: o rótulo, o rótulo sem o prefixo e o sufixo dos livros do Alchemist
+    ("Articulation: Ignition Bomber Book of Laws" -> "Ignition Bomber"), o nome do ícone e o apelido conhecido."""
+    label = row["label"]
+    bare = re.sub(r"\s+Book of Laws$", "", re.sub(r"^\w+:\s*", "", label))
+    return [n for n in (MASTERMU_ALIASES.get(label), label, bare, row.get("icon_name")) if n]
+
+
+def link_mastermu(skills: dict[str, list[dict]], rows: list[dict]) -> list[str]:
+    """Mapas onde o item da skill dropa e o que vem da Ruud Store (guia de drop do MasterMU, Season 21), em
+    `learn.drop_maps` e `learn.shop`. Só fatos: a fonte não diz o monstro nem a taxa. Skill sem método passa a "item"
+    (o guia diz que ela se aprende com um item que dropa ou se compra). Devolve as linhas que não casaram."""
+    unmatched = []
+    for class_id, rows_ in skills.items():
+        for s in rows_:
+            s["learn"].setdefault("drop_maps", [])
+            s["learn"].setdefault("shop", None)
+    for row in rows:
+        by_key = {}
+        for s in skills.get(row["class_id"], []):
+            if s["stage"] != "class":
+                continue
+            for n in (s["name"], *s["aliases"]):
+                by_key.setdefault(key(n), s)
+        found = next((by_key[key(n)] for n in mastermu_names(row) if key(n) in by_key), None)
+        if found is None:
+            unmatched.append(f"{row['class_id']}: {row['label']}")
+            continue
+        learn = found["learn"]
+        learn["drop_maps"] = list(row["map_ids"])
+        learn["shop"] = "ruud" if row["ruud_store"] else None
+        if learn["method"] in (None, "default"):
+            learn["method"] = "item"
+        if learn["item_name"] is None and row["label"].endswith("Book of Laws"):
+            learn["item_name"] = row["label"]
+    return unmatched
+
+
 def build(data_dir: Path, folder: Path) -> tuple[list[dict], list[str]]:
     raw = data_dir / "raw"
     load = lambda path: json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
@@ -302,6 +349,7 @@ def build(data_dir: Path, folder: Path) -> tuple[list[dict], list[str]]:
     planner = load(data_dir / "curated" / "planner.json") or {}
     lists = load(data_dir / "processed" / "gmo" / "drop_lists.json")
     gmo_names = {key(n): n for lst in lists for m in lst["monsters"] for n in m["items"]}
+    unmapped += [f"mastermu: {x}" for x in link_mastermu(skills, load(data_dir / "processed" / "mastermu" / "skill_drops.json"))]
     link_items(skills, load(folder / "items.json"), class_names(planner),
                gmo_item_drops(lists, load(folder / "monsters.json"), load(folder / "maps.json")), gmo_names)
     out = []
